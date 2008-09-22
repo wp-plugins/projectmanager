@@ -1,9 +1,9 @@
 === ProjectManager ===
 Contributors: Kolja Schleich
 Tags: Sidebar, visitor counter
-Requires at least: 2.2
+Requires at least: 2.3
 Tested up to: 2.5
-Stable tag: 1.0
+Stable tag: 1.0.1
 
 This plugin can be used to manage any number of projects with recurrent datasets (e.g. portrait system, dvd collection)
 
@@ -39,7 +39,7 @@ You can also put additional code into a 'my-hacks.php' file in the base director
 
 To display projects in the frontend you need to add the following tag into a post or page
 
-`[print_projects id=$project_id grp_id=$grp_id]`
+`[print_projects id=$project_id grp=$grp_id]`
 
 Substitute $project_id with the respective project ID to display. The `grp_id` tag is optional to display only the datasets of a specific group of the project.
 
