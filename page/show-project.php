@@ -2,7 +2,8 @@
 $project_id = $_GET['id'];
 $projectmanager->setSettings( $project_id );
 if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
-	if ( 'dataset' == $_POST['updateProjectManager'] && check_admin_referer( 'projectmanager_edit-dataset' ) ) {
+	if ( 'dataset' == $_POST['updateProjectManager'] ) {
+		check_admin_referer( 'projectmanager_edit-dataset' );
 		if ( '' == $_POST['dataset_id'] ) {
 			$return_message = $projectmanager->addDataset( $_POST['project_id'], $_POST['name'], $_POST['grp_id'], $_POST['form_field'] );
 		} else {
@@ -13,7 +14,8 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 	}
 	echo '<div id="message" class="updated fade"><p><strong>'.__( $return_message, 'projectmanager' ).'</strong></p></div>';
 } elseif ( isset($_POST['deleteit']) AND isset($_POST['delete']) ) {
-	if ( 'datasets' == $_POST['item'] && check_admin_referer('projectmanager_delete-datasets') ) {
+	if ( 'datasets' == $_POST['item'] ) {
+		check_admin_referer('projectmanager_delete-datasets');
 		foreach ( $_POST['delete'] AS $dataset_id )
 			$projectmanager->delDataset( $dataset_id );
 	}

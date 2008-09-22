@@ -139,3 +139,6 @@ p.projectmanager_breadcrumb {
 div.wrap h2 {
 	clear: none;
 	}
+div.bottom h2 {
+	margin-top: 1.5em;
+	}

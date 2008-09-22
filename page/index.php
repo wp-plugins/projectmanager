@@ -4,7 +4,8 @@ if ( !current_user_can( 'manage_projects' ) ) :
 else :
 
 if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
-	if ( 'project' == $_POST['updateProjectManager'] && check_admin_referer('projectmanager_manage-projects') ) {
+	if ( 'project' == $_POST['updateProjectManager'] ) {
+		check_admin_referer('projectmanager_manage-projects');
 		if ( '' == $_POST['project_id'] )
 			$return_message = $projectmanager->addProject( $_POST['project_title'] );
 		else
@@ -12,7 +13,8 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 	}
 	echo '<div id="message" class="updated fade"><p><strong>'.__( $return_message, 'projectmanager' ).'</strong></p></div>';
 } elseif ( isset($_POST['deleteit']) AND isset($_POST['delete']) ) {
-	if ( 'projects' == $_POST['item'] && check_admin_referer('projectmanager_delete-projects') ) {
+	if ( 'projects' == $_POST['item'] ) {
+		check_admin_referer('projectmanager_delete-projects');
 		foreach ( $_POST['delete'] AS $project_id )
 			$projectmanager->delProject( $project_id );
 	}

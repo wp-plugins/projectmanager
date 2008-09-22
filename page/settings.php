@@ -6,7 +6,8 @@ else :
 $project_id = $_GET['project_id'];
 $projectmanager->setSettings( $project_id );
 if ( isset($_POST['updateProjectManager']) ) {
-	if ( 'settings' == $_POST['updateProjectManager'] && check_admin_referer('projectmanager_manage-settings') ) {
+	if ( 'settings' == $_POST['updateProjectManager'] ) {
+		check_admin_referer('projectmanager_manage-settings');
 		$options = get_option( 'projectmanager' );
 		$options[$_POST['project_id']]['num_cols'] = $_POST['thumbcols'];
 		$options[$_POST['project_id']]['num_rows'] = $_POST['thumbrows'];
@@ -18,7 +19,8 @@ if ( isset($_POST['updateProjectManager']) ) {
 						
 		update_option( 'projectmanager', $options );
 		$return_message = 'Settings saved';
-	} elseif ( 'form_fields' == $_POST['updateProjectManager'] && check_admin_referer('projectmanager_manage-formfields') ) {
+	} elseif ( 'form_fields' == $_POST['updateProjectManager'] ) {
+		check_admin_referer('projectmanager_manage-formfields');
 		$return_message = $projectmanager->setFormFields( $_POST['project_id'], $_POST['form_name'], $_POST['form_type'], $_POST['show_on_startpage'], $_POST['form_order'], $_POST['new_form_name'], $_POST['new_form_type'], $_POST['new_show_on_startpage'], $_POST['new_form_order'] );
 	}
 	echo '<div id="message" class="updated fade"><p><strong>'.__( $return_message, 'projectmanager' ).'</strong></p></div>';
@@ -72,7 +74,7 @@ $options = get_option( 'projectmanager' );
 	</form> 
 </div>
 
-<div class="wrap">
+<div class="wrap bottom">
 	<h2><?php _e( 'Form Fields', 'projectmanager' ) ?></h2>
 	
 	<form class="projectmanager" method="post" action="edit.php?page=projectmanager/page/settings.php&amp;project_id=<?php echo $project_id ?>">

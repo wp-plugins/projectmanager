@@ -54,8 +54,8 @@ if ( isset($_GET['edit']) ) {
 	<label for="name"><?php _e( 'Name', 'projectmanager' ) ?>:</label><input type="text" name="name" id="name" value="<?php echo $name ?>" size="45" /><br />
 		
 	<?php if ( 1 == $options[$project_id]['show_image'] ) : ?>
-	<label for="projectmanager_image"><?php echo __( 'Image', 'projectmanager' ) ?>:</label><input type="file" name="projectmanager_image" id="projectmanager_image" size="45"/><br />
-	<p class="info"><?php echo __( 'Supported file types', 'projectmanager' ) ?>: <?php echo implode( ',',$projectmanager->getSupportedImageTypes() ); ?></p>
+	<label for="projectmanager_image"><?php _e( 'Image', 'projectmanager' ) ?>:</label><input type="file" name="projectmanager_image" id="projectmanager_image" size="45"/><br />
+	<p class="info"><?php _e( 'Supported file types', 'projectmanager' ) ?>: <?php echo implode( ',',$projectmanager->getSupportedImageTypes() ); ?></p>
 	<?php endif; ?>
 				
 	<?php if ( $form_fields = $projectmanager->getProjectMeta() ) : ?>

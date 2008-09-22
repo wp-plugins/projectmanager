@@ -834,7 +834,7 @@ class WP_ProjectManager
 		$this->setSettings( $project_id );
 		$options = get_option( 'projectmanager' );
 		$template = $this->plugin_path.'/templates/'.$options[$project_id]['template'];
-		
+			
 		echo '</p>';
 		if ( file_exists($template) )
 			include $template;
