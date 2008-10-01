@@ -1,0 +1,249 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2008-05-29 23:17+0100\n"
+"Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Country: GERMANY\n"
+
+#: projectmanager.php
+msgid "Text"
+msgstr "Text"
+
+#: projectmanager.php
+msgid "Textfield"
+msgstr "Textfeld"
+
+#: projectmanager.php
+msgid "E-Mail"
+msgstr "E-Mail"
+
+#: projectmanager.php
+msgid "Date"
+msgstr "Datum"
+
+#: projectmanager.php
+msgid "URL"
+msgstr "URL"
+
+#: projectmanager.php
+msgid "Project added"
+msgstr "Projekt hinzugefügt"
+
+#: projectmanager.php
+msgid "Project updated"
+msgstr "Projekt aktualisiert"
+
+#: projectmanager.php
+msgid "New dataset added to the database"
+msgstr "Neuer Datensatz hinzugefügt"
+
+#: projectmanager.php
+msgid "Dataset updated"
+msgstr "Datensatz aktualisiert"
+
+#: projectmanager.php
+msgid "File exists and is not uploaded."
+msgstr "Die Datei existiert bereits und wurde nicht hochgeladen"
+
+#: projectmanager.php
+msgid "An upload error occured. Please try again."
+msgstr "Ein Upload Fehler ist aufgetreten. Bitte versuche es erneut"
+
+#: projectmanager.php
+msgid "The file type is not supported. No Image was uploaded."
+msgstr "Der Dateityp wird nicht unterstützt. Es wurde kein Bild hochgeladen."
+
+#: projectmanager.php
+msgid "Form Fields updated"
+msgstr "Formularfelder aktualisiert"
+
+#: projectmanager.php
+msgid "Search"
+msgstr "Suchen"
+
+#: projectmanager.php
+msgid "Number"
+msgstr "Anzahl"
+
+#: projectmanager.php
+msgid "Projects"
+msgstr "Projekte"
+
+#: page/index.php
+msgid "Delete"
+msgstr "Löschen"
+
+#: page/index.php:
+msgid "Project"
+msgstr "Projekt"
+
+#: page/index.php
+msgid "Number of Datasets"
+msgstr "Anzahl Datensätze"
+
+#: page/index.php
+msgid "Action"
+msgstr "Aktion"
+
+#: page/index.php
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: page/index.php
+msgid "Add Project"
+msgstr "Projekt hinzufügen"
+
+#: page/index.php
+msgid "Title"
+msgstr "Titel"
+
+#: page/index.php
+msgid "Uninstall ProjectManager"
+msgstr "Projektmanager deinstallieren"
+
+#: page/index.php
+msgid "Yes I want to uninstall ProjectManager Plugin. All Data will be deleted!"
+msgstr "Ja, ich möchte ProjektManager Plugin deinstallieren. Alle Daten werden gelöscht!"
+
+#: page/dataset.php:
+msgid "Edit Dataset"
+msgstr "Datensatz bearbeiten"
+
+#: page/dataset.php:
+msgid "Add Dataset"
+msgstr "Datensatz hinzufügen"
+
+#: page/index.php
+#: page/dataset.php
+msgid "Projectmanager"
+msgstr "Projektmanager"
+
+#: page/dataset.php
+msgid "Current Image"
+msgstr "Aktuelles Bild"
+
+#: page/dataset.php
+msgid "Delete Image"
+msgstr "Bild löschen"
+
+#: page/dataset.php:
+msgid "Name"
+msgstr "Name"
+
+#: page/dataset.php
+msgid "Image"
+msgstr "Bild"
+
+#: page/dataset.php
+msgid "Supported file types"
+msgstr "Unterstützte Dateitypen"
+
+#: page/dataset.php
+msgid "Group"
+msgstr "Gruppe"
+
+#: page/dataset.php
+msgid "Select group"
+msgstr "Wähle Gruppe"
+
+#: page/settings.php:
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: page/settings.php:
+msgid "Number of cols"
+msgstr "Anzahl Spalten"
+
+#: page/settings.php:
+msgid "Number of rows"
+msgstr "Anzahl Zeilen"
+
+#: page/settings.php:
+msgid "Groups"
+msgstr "Gruppen"
+
+#: page/settings.php:
+msgid "Template"
+msgstr "Template"
+
+#: page/settings.php:
+msgid "Use Widget"
+msgstr "Widget verwenden"
+
+#: page/settings.php:
+msgid "Show Image"
+msgstr "Bild anzeigen"
+
+#: page/settings.php:
+msgid "Thumbnail size"
+msgstr "Thumbnail Größe"
+
+#: page/settings.php:
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
+
+#: page/settings.php:
+msgid "Form Fields"
+msgstr "Formfelder"
+
+#: page/settings.php:
+msgid "Label"
+msgstr "Label"
+
+#: page/settings.php:
+msgid "Type"
+msgstr "Typ"
+
+#: page/settings.php:
+msgid "Show on startpage"
+msgstr "Show"
+
+#: page/settings.php:
+msgid "Order"
+msgstr "Order"
+
+#: page/settings.php:
+msgid "Delete formfield"
+msgstr "Formfeld löschen"
+
+#: page/settings.php:
+msgid "Add new formfield"
+msgstr "Neues Formfeld hinzufügen"
+
+#: page/settings.php:
+msgid "Save Form Fields"
+msgstr "Formfelder speichern"
+
+#: page/edit-project.php
+msgid "Edit Project"
+msgstr "Projekt bearbeiten"
+
+#: page/show-project.php:
+msgid "Edit Project Title"
+msgstr "Projekttitel bearbeiten"
+
+#: pagination.php
+msgid "Previous"
+msgstr "Zurück"
+
+#: pagination.php
+msgid "Next"
+msgstr "Weiter"
+
+#: includes/single.php:29
+msgid "Back to thumbnail list"
+msgstr "Zurück zur Übersicht"
+
+#: includes/single.php:31
+msgid "Profile of "
+msgstr "Profil von "
+
+#: includes/single.php:36
+msgid "Portrait of "
+msgstr "Profil von "
+
