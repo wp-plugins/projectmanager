@@ -13,22 +13,13 @@
 	<?php if ( projectmanager_has_dataset() ) : ?>
 		<fieldset><legend>Profile of <?php projectmanager_dataset_name() ?></legend>
 			<?php if ( projectmanager_dataset_has_image() ) : ?>
-				<img src="<?php projectmanager_dataset_image() ?>" title="Portrait of <?php projectmanager_dataset_name() ?>" alt="Portrait of <?php projectmanager_dataset_name() ?>" style="float: right; margin-right: 1.5em;" />
+				<img src="<?php projectmanager_dataset_image() ?>" title="Portrait of <?php projectmanager_dataset_name() ?>" alt="Portrait of <?php projectmanager_dataset_name() ?>" style="float: right;" />
 			<?php endif; ?>
-			<?php projectmanager_dataset_meta( 'dl' ) ?>
+			<dl><?php projectmanager_dataset_meta( 'dl' ) ?></dl>
 		</fieldset>	
 	<?php endif; ?>
 <?php else : ?>
-	<?php if ( projectmanager_has_groups() ) : ?>
-	<form class="projectmanager" action="" method="get" onchange="this.submit()" style="float: left; margin-bottom: 2em;">
-		<select size="1" name="grp_id">
-			<option value="">Groups</option>
-			<option value="">-------------</option>
-			<?php projectmanager_groups_selections() ?>
-		</select>
-		<input type="submit" value="Los" />
-	</form>
-	<?php endif; ?>
+	<?php //if ( projectmanager_has_groups() ) projectmanager_groups_form(); ?>
 	
 	<?php projectmanager_pagination() ?>
 	

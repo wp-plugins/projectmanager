@@ -12,24 +12,15 @@
 	<?php if ( projectmanager_has_dataset() ) : ?>
 	<fieldset><legend><?php projectmanager_dataset_name() ?></legend>
 		<?php if ( projectmanager_dataset_has_image() ) : ?>
-		<img src="<?php projectmanager_dataset_image() ?>" title="<?php projectmanager_dataset_name() ?>" alt="<?php projectmanager_dataset_name() ?>" style="float: right; margin-right: 1.5em;" />
+		<img src="<?php projectmanager_dataset_image() ?>" title="<?php projectmanager_dataset_name() ?>" alt="<?php projectmanager_dataset_name() ?>" style="float: right;" />
 		<?php endif; ?>
-		<?php projectmanager_dataset_meta( 'dl' ) ?>
+		<dl><?php projectmanager_dataset_meta( 'dl' ) ?></dl>
 	</fieldset>	
 	<?php endif; ?>
 <?php else : ?>
 	<?php projectmanager_search_form( 'float: right; position: relative; top: 0.5em;' ); ?>
 	
-	<?php if ( projectmanager_has_groups() ) : ?>
-	<form class="projectmanager" action="" method="get" onchange="this.submit()" style="float: left; margin-bottom: 2em;">
-		<select size="1" name="grp_id">
-			<option value="">Groups</option>
-			<option value="">-------------</option>
-			<?php projectmanager_groups_selections() ?>
-		</select>
-		<input type="submit" value="Go" />
-	</form>
-	<?php endif; ?>
+	<?php //if ( projectmanager_has_groups() ) projectmanager_groups_form(); ?>
 
 	<?php if ( projectmanager_is_home() ) : ?>
 		<h3 style="clear: both;"><?php projectmanager_project_title() ?></h3>
@@ -39,6 +30,8 @@
 	<h3 style="clear: both;"><?php projectmanager_project_title()?> - <?php projectmanager_group_title() ?></h3>
 	<?php endif; ?>
 		
+	<?php projectmanager_pagination() ?>
+	
 	<table class="projectmanager" summary="" title="">
 		<thead>
 			<tr>
@@ -52,4 +45,6 @@
 			<?php endif; ?>
 		</tbody>
 	</table>
+	
+	<?php projectmanager_pagination() ?>
 <?php endif; ?>

@@ -284,7 +284,7 @@ function projectmanager_get_datasets_table( $single = true ) {
 	$out = '';
 	if ( $PROJECTMANAGER_DATASET ) {
 		foreach ( $PROJECTMANAGER_DATASET AS $dataset ) {
-			$name = ( $single ) ? '<a href="?grp_id='.$projectmanager->getCurrentGroup().'&amp;show='.$dataset->id.'">'.$dataset->name.'</a>' : $dataset->name;
+			$name = ( $single ) ? '<a href="'.$projectmanager->pagination->createURL().'?grp_id='.$projectmanager->getCurrentGroup().'&amp;show='.$dataset->id.'">'.$dataset->name.'</a>' : $dataset->name;
 			$class = ("alternate" == $class) ? '' : "alternate";
 			$out .= '<tr class="'.$class.'"><td>'.$name.'</td>';
 			$out .= $projectmanager->getDatasetMetaData( $dataset->id, 'td' );
@@ -346,7 +346,7 @@ function projectmanager_gallery() {
 		$i++;
 		$out .= '<td style="padding: 5px;">';
 		if ($options[$project_id]['show_image'] == 1)
-			$out .= '<a href="?grp_id='.$projectmanager->getCurrentGroup().'&amp;show='.$dataset->id.'"><img src="'.get_bloginfo('wpurl').'/wp-content/'.$projectmanager->getThumbsDir().$dataset->image.'" alt="'.$dataset->name.'" title="'.$dataset->name.'" /></a>';
+			$out .= '<a href="'.$projectmanager->pagination->createURL().'?grp_id='.$projectmanager->getCurrentGroup().'&amp;show='.$dataset->id.'"><img src="'.get_bloginfo('wpurl').'/wp-content/'.$projectmanager->getThumbsDir().$dataset->image.'" alt="'.$dataset->name.'" title="'.$dataset->name.'" /></a>';
 			
 		$out .= '<p class="caption" style="margin: 2px 0px 5px 0px;"><a href="?grp_id='.$projectmanager->getCurrentGroup().'&amp;show='.$dataset->id.'">'.$dataset->name.'</a></p>';
 		$out .= '</td>';
@@ -449,4 +449,26 @@ function projectmanager_get_dataset_image() {
  */
 function projectmanager_dataset_image() {
 	echo projectmanager_get_dataset_image();
+}
+
+
+/**
+ * print current URL
+ *
+ * @param none
+ * @return echo
+ */
+function projectmanager_groups_form() {
+	global $projectmanager, $wp_query;
+	
+	$page_obj = $wp_query->get_queried_object();
+		echo get_permalink($page_obj->ID);
+	echo '<form class="projectmanager" action="" method="get" onchange="this.submit()" style="float: left; margin-bottom: 2em;">
+		<select size="1" name="grp_id">
+			<option value="">Groups</option>
+			<option value="">-------------</option>';
+			projectmanager_groups_selections();
+	echo  '</select>
+		<input type="submit" value="Go" />
+	</form>';
 }

@@ -8,16 +8,7 @@
 ?>
 <?php projectmanager_search_form( 'float: right; position: relative; top: 0.5em;' ); ?>
 
-<?php if ( projectmanager_has_groups() ) : ?>
-<form class="projectmanager" action="" method="get" onchange="this.submit()" style="float: left; margin-bottom: 2em;">
-	<select size="1" name="grp_id">
-		<option value="">Filmkategorie</option>
-		<option value="">-------------</option>
-		<?php projectmanager_groups_selections() ?>
-	</select>
-	<input type="submit" value="Los" />
-</form>
-<?php endif; ?>
+<?php //if ( projectmanager_has_groups() ) projectmanager_groups_form(); ?>
 
 
 <?php if ( projectmanager_is_home() ) : ?>
@@ -28,6 +19,9 @@
 	<?php else : ?>
 		<h3 style="clear: both;">DVD <?php projectmanager_group_title() ?></h3>
 	<?php endif; ?>
+	
+	<?php projectmanager_pagination() ?>
+	
 	<table class="projectmanager" summary="" title="">
 		<thead>
 			<tr>
