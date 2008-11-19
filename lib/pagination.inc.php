@@ -160,7 +160,7 @@ class Pagination
 	{
 		$page = $this->page;
 	
-		$out = "<p class='pagination'>";
+		$out = "\n\n<p class='pagination'>";
 		
 		// determine number of pages
 		$num_pages = ( 0 == $this->per_page ) ? 1 : ceil( $this->num_items/$this->per_page );
@@ -203,7 +203,7 @@ class Pagination
 				$out .= '<a href="'.$this->createURL().'paging='.($page+1).'">'.__( 'Next', 'prjctmngr' ).' &gt;&gt;</a>';
 		}
 	
-		return $out .= "</p>";
+		return $out .= "</p>\n\n";
 	}
 }
 }

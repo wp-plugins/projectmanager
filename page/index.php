@@ -48,7 +48,7 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 					<td class="num"><?php echo $project->id ?></td>
 					<td><a href="edit.php?page=projectmanager/page/show-project.php&amp;id=<?php echo $project->id ?>"><?php echo $project->title ?></a></td>
 					<td class="num"><?php echo $projectmanager->getNumDatasets( $project->id ) ?></td>
-					<td><a href="edit.php?page=projectmanager/page/edit-project.php&amp;id=<?php echo $project->id ?>"><?php _e( 'Edit', 'projectmanager' ) ?></a></td>
+					<td><a href="edit.php?page=projectmanager/page/settings.php&amp;project_id=<?php echo $project->id ?>"><?php _e( 'Settings', 'projectmanager' ) ?></a> - <a href="edit.php?page=projectmanager/page/dataset.php&amp;project_id=<?php echo $project->id ?>"><?php _e( 'Add Dataset', 'projectmanager' ) ?></a></td>
 				</tr>
 				<?php endforeach; ?>
 				<?php endif; ?>
@@ -56,4 +56,30 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 		</table>
 	</form>
 </div>
+
+<div class="wrap">
+	<h2><?php _e( 'Add Project', 'projectmanager' ) ?></h2>
+	<!-- Add New Project -->
+	<form class="projectmanager" action="" method="post">
+		<label for="project_title"><?php _e( 'Title', 'projectmanager' ) ?>:</label><input type="text" name="project_title" id="project_title" value="" size="30" style="margin-bottom: 1em;" /><br />
+		
+		<input type="hidden" name="project_id" value="" />
+		<input type="hidden" name="updateProjectManager" value="project" />
+		
+		<p class="submit"><input type="submit" value="<?php _e( 'Add Project', 'projectmanager' ) ?> &raquo;" class="button" /></p>
+	</form>
+</div>
+
+<!-- Uninstallation Form not need in WP 2.7 -->
+<?php if ( version_compare($wp_version, '2.7-hemorrhage', '<') ) : ?>
+<div class="wrap">
+	<!-- Plugin Uninstallation -->
+	<h3 style='clear: both; padding-top: 1em;'><?php _e( 'Uninstall ProjectManager', 'projectmanager' ) ?></h3>
+	<form method="get" action="index.php">
+		<input type="hidden" name="projectmanager" value="uninstall" />
+		
+		<p><input type="checkbox" name="delete_plugin" value="1" id="delete_plugin" /> <label for="delete_plugin"><?php _e( 'Yes I want to uninstall ProjectManager Plugin. All Data will be deleted!', 'projectmanager' ) ?></label> <input type="submit" value="<?php _e( 'Uninstall ProjectManager', 'projectmanager' ) ?> &raquo;" class="button" /></p>
+	</form>
+</div>
+<?php endif; ?>
 <?php endif; ?>

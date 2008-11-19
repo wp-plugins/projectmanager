@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-05-29 23:17+0100\n"
+"PO-Revision-Date: 2008-11-18 10:19+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -201,11 +201,11 @@ msgstr "Typ"
 
 #: page/settings.php:
 msgid "Show on startpage"
-msgstr "Show"
+msgstr "Zeige auf Startseite"
 
 #: page/settings.php:
 msgid "Order"
-msgstr "Order"
+msgstr "Reihenfolge"
 
 #: page/settings.php:
 msgid "Delete formfield"
