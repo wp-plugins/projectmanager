@@ -17,7 +17,7 @@ if ( isset($_POST['saveFormFields']) ) {
 	
 	<h2><?php _e( 'Form Fields', 'projectmanager' ) ?></h2>
 	
-	<form class="projectmanager" method="post" action="edit.php?page=projectmanager/page/formfields.php&amp;project_id=<?php echo $project_id ?>">
+	<form method="post" action="edit.php?page=projectmanager/page/formfields.php&amp;project_id=<?php echo $project_id ?>">
 		
 	<?php wp_nonce_field( 'projectmanager_manage-formfields' ) ?>
 	<table id="projectmanager_form_fields_table" class="form-table">

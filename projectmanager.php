@@ -957,11 +957,11 @@ class WP_ProjectManager
 		
 		$out = "</p>";
 		if ( !isset($_GET['show'])) {
-			$out .= "\n\n<div class='projectmanager_".$pos."'>\n\t<form action='".get_permalink($page_ID)."' method='get'>\n";
+			$out .= "\n\n<div class='projectmanager_".$pos."'>\n<form action='".get_permalink($page_ID)."' method='get'>\n";
 			$out .= wp_dropdown_categories(array('echo' => 0, 'hide_empty' => 0, 'name' => 'grp_id', 'orderby' => 'name', 'selected' => $grp_id, 'hierarchical' => true, 'child_of' => $options[$project_id]['category'], 'show_option_all' => __('Groups', 'projectmanager'), 'show_option_none' => '----------'));
-			$out .= "\n\t\t<input type='hidden' name='page_id' value='".$page_ID."' />";
-			$out .= "\n\t\t<input type='submit' value='".__( 'Go', 'projectmanager' )."' />";
-			$out .= "\n\t</form>\n</div>\n\n";
+			$out .= "\n<input type='hidden' name='page_id' value='".$page_ID."' />";
+			$out .= "\n<input type='submit' value='".__( 'Go', 'projectmanager' )."' />";
+			$out .= "\n</form>\n</div>\n\n";
 		}
 		$out .= "<p>";
 
@@ -1014,9 +1014,10 @@ class WP_ProjectManager
 			$out .= "</p>";
 			if ( $datasets ) {
 				if ( 'table' == $output ) {
-					$out .= "\n<table class='projectmanager'>\n\t<tr>\n";
-					$out .= "\t\t<th scope='col'>".__( 'Name', 'projectmanager' )."</th>\n";
+					$out .= "\n<table class='projectmanager'>\n<tr>\n";
+					$out .= "\t<th scope='col'>".__( 'Name', 'projectmanager' )."</th>";
 					$out .= $this->getTableHeader();
+					$out .= "\n</tr>";
 				} else {
 					$out .= "\n<".$output." class='projectmanager'>";
 				}
@@ -1028,14 +1029,14 @@ class WP_ProjectManager
 					$class = ("alternate" == $class) ? '' : "alternate";
 					
 					if ( 'table' == $output )
-						$out .= "\n\t<tr class='".$class."'><td>".$name."</td>";
+						$out .= "\n<tr class='".$class."'><td>".$name."</td>";
 					else
 						$out .= "\n\t<li>".$name."</li>";
 						
 					$out .= $this->getDatasetMetaData( $dataset->id, $dataset_output );
 					
 					if ( 'table' == $output )
-						$out .= "\n\t</tr>";
+						$out .= "\n</tr>";
 				}
 				
 				$out .= "\n</$output>\n";
@@ -1073,25 +1074,25 @@ class WP_ProjectManager
 			
 			$out .= "</p>";
 			if ( $datasets ) {
-				$out .= "\n\n<table class='projectmanager' summary='' title=''>\n\t<tr>";
+				$out .= "\n\n<table class='projectmanager' summary='' title=''>\n<tr>";
 				
 				foreach ( $datasets AS $dataset ) {
 					$i++;
 					$before_name = ($this->hasDetails($project_id)) ? '<a href="'.$this->pagination->createURL().'?grp_id='.$this->getGroup().'&amp;show='.$dataset->id.'">' : '';
 					$after_name = ($this->hasDetails($project_id)) ? '</a>' : '';
 					
-					$out .= "\n\t\t<td style='padding: 5px;'>";
+					$out .= "\n\t<td style='padding: 5px;'>";
 					if ($options[$project_id]['show_image'] == 1 && '' != $dataset->image)
-						$out .= "\n\t\t\t".$before_name.'<img src="'.WP_CONTENT_URL.'/'.$this->getImageDir().'thumb.'.$dataset->image.'" alt="'.$dataset->name.'" title="'.$dataset->name.'" />'.$after_name;
+						$out .= "\n\t\t".$before_name.'<img src="'.WP_CONTENT_URL.'/'.$this->getImageDir().'thumb.'.$dataset->image.'" alt="'.$dataset->name.'" title="'.$dataset->name.'" />'.$after_name;
 					
-					$out .= "\n\t\t\t<p class='caption'>".$before_name.$dataset->name.$after_name."</p>";
-					$out .= "\n\t\t</td>";
+					$out .= "\n\t\t<p class='caption'>".$before_name.$dataset->name.$after_name."</p>";
+					$out .= "\n\t</td>";
 				
 					if ( ( ( 0 == $i % $num_cols)) && ( $i < count($datasets) ) )
-						$out .= "\n\t</tr>\n\t<tr>";
+						$out .= "\n</tr>\n<tr>";
 				}
 				
-				$out .= "\n\t</tr>\n</table>\n\n";
+				$out .= "\n</tr>\n</table>\n\n";
 		
 				$out .= $this->pagination->get();
 			}
@@ -1115,15 +1116,15 @@ class WP_ProjectManager
 		$options = get_option( 'projectmanager' );
 	
 		$out = "</p>";
-		$out .= "\n\n<p class='return_to_overview'><a href='".$this->pagination->createURL()."'paging=".$page.">".__('Back to list', 'projectmanager')."</a></p>\n";
+		$out .= "\n<p class='return_to_overview'><a href='".$this->pagination->createURL()."'paging=".$page.">".__('Back to list', 'projectmanager')."</a></p>\n";
 		
 		if ( $dataset = $this->getDataset( $dataset_id ) ) {
 			$out .= "<fieldset class='dataset'><legend>".__( 'Details of', 'projectmanager' )." ".$dataset[0]->name."</legend>\n";
 			if ($options[$project_id]['show_image'] == 1 && '' != $dataset[0]->image)
 				$out .= "\t<img src='".$dataset[0]->image."' title='".$dataset[0]->name."' alt='".$dataset[0]->name."' style='float: right;' />\n";
 				
-			$out .= "\t<dl>".$this->getDatasetMetaData( $dataset_id, 'dl', true )."</dl>\n";
-			$out .= "</fieldset>\n\n";
+			$out .= "<dl>".$this->getDatasetMetaData( $dataset_id, 'dl', true )."\n</dl>\n";
+			$out .= "</fieldset>\n";
 		}
 		
 		$out .= "<p>";
@@ -1171,6 +1172,7 @@ class WP_ProjectManager
 		$options = get_option( 'projectmanager_widget' );
 		$widget_id = $args['widget_id'];
 		$project_id = $options[$widget_id];
+		$this->setSettings($project_id);
 		
 		$defaults = array(
 			'before_widget' => '<li id="projectmanager" class="widget '.get_class($this).'_'.__FUNCTION__.'">',
@@ -1190,7 +1192,9 @@ class WP_ProjectManager
 		echo "<ul id='projectmanager_widget'>";
 		if ( $datasets ) {
 			foreach ( $datasets AS $dataset ) {
-				echo "<li>".$dataset->name."</li>";
+				$name = ($this->hasDetails($project_id)) ? '<a href="'.get_permalink($options[$project_id]['page_id']).'&amp;show='.$dataset->id.'">'.$dataset->name.'</a>' : $dataset->name;
+			
+				echo "<li>".$name."</li>";
 			}
 		}
 		echo "</ul>";
@@ -1212,6 +1216,7 @@ class WP_ProjectManager
 			$options[$widget_id] = $project_id;
 			$options[$project_id]['title'] = $_POST['widget_title'][$project_id];
 			$options[$project_id]['limit'] = $_POST['limit'][$project_id];
+			$options[$project_id]['page_id'] = $_POST['page_id'][$project_id];
 				
 			update_option( 'projectmanager_widget', $options );
 		}
@@ -1223,6 +1228,9 @@ class WP_ProjectManager
 			echo '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
 		}
 		echo '</select></p>';
+		echo '<p style="text-align: left;"><label for="page_id['.$project_id.']" class="projectmanager-widget">'.__('Page').'</label>';
+		wp_dropdown_pages(array('name' => 'page_id['.$project_id.']', 'selected' => $options[$project_id]['page_id']));
+		echo '</p>';
 			
 		echo '<input type="hidden" name="projectmanager-submit" value="1" />';
 	}
