@@ -52,3 +52,11 @@ To install the plugin to the following steps
 
 1. Unzip the zip-file and upload the content to your Wordpress Plugin directory.
 2. Activiate the plugin via the admin plugin page.
+
+== Screenshots ==
+1. Project Overview Page
+2. Settings page
+3. Add different form fields dynamically
+4. Easy adding of new datasets
+5. Widget control panel
+6. Easy adding of tags via TinyMCE Button
