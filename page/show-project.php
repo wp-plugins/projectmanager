@@ -9,7 +9,8 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 			$return_message = $projectmanager->addDataset( $_POST['project_id'], $_POST['name'], $_POST['grp_id'], $_POST['form_field'] );
 		} else {
 			$del_image = isset( $_POST['del_old_image'] ) ? true : false;
-			$return_message = $projectmanager->editDataset( $_POST['project_id'], $_POST['name'], $_POST['grp_id'], $_POST['dataset_id'], $_POST['form_field'], $del_image, $_POST['image_file'] );
+			$overwrite_image = isset( $_POST['overwrite_image'] ) ? true: false;
+			$return_message = $projectmanager->editDataset( $_POST['project_id'], $_POST['name'], $_POST['grp_id'], $_POST['dataset_id'], $_POST['form_field'], $del_image, $_POST['image_file'], $overwrite_image );
 		}
 			
 	}

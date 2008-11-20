@@ -589,7 +589,7 @@ class WP_ProjectManager
 	 * @param string $image_file
 	 * @return string
 	 */
-	function editDataset( $project_id, $name, $group, $dataset_id, $dataset_meta = false, $del_image = false, $image_file = '' )
+	function editDataset( $project_id, $name, $group, $dataset_id, $dataset_meta = false, $del_image = false, $image_file = '', $overwrite_image = false )
 	{
 		global $wpdb;
 		$this->project_id = $project_id;
@@ -623,7 +623,7 @@ class WP_ProjectManager
 		* Set Image if supplied
 		*/
 		if ( isset($_FILES['projectmanager_image']['name']) AND '' != $_FILES['projectmanager_image']['name'] )
-			$tail = $this->uploadImage($dataset_id, $_FILES['projectmanager_image']['name'], $_FILES['projectmanager_image']['size'], $_FILES['projectmanager_image']['tmp_name'], $this->getImageDir());
+			$tail = $this->uploadImage($dataset_id, $_FILES['projectmanager_image']['name'], $_FILES['projectmanager_image']['size'], $_FILES['projectmanager_image']['tmp_name'], $this->getImageDir(), $overwrite_image);
 			
 			
 		return __('Dataset updated', 'projectmanager').'. '.$tail;
@@ -693,8 +693,10 @@ class WP_ProjectManager
 	 * @param int $img_size
 	 * @param string $img_tmp_name
 	 * @param string $uploaddir
+	 * @param boolean $overwrite_image
+	 * @return void | string
 	 */
-	function uploadImage( $dataset_id, $img_name, $img_size, $img_tmp_name, $uploaddir )
+	function uploadImage( $dataset_id, $img_name, $img_size, $img_tmp_name, $uploaddir, $overwrite_image = false )
 	{
 		global $wpdb;
 		
@@ -722,11 +724,17 @@ class WP_ProjectManager
 				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `image` = '%s' WHERE id = '%d'", basename($img_name), $dataset_id ) );
 	
 				$uploadfile = $uploaddir.basename($img_name);
-				if ( file_exists($uploadfile) ) {
+				if ( file_exists($uploadfile) && !$overwrite_image ) {
 					return __('File exists and is not uploaded.','projectmanager');
 				} else {
 					if ( move_uploaded_file($img_tmp_name, $uploadfile) ) {
 						$thumb = new Thumbnail($uploadfile);
+						
+						// Resize original file
+						$normal_width = $options[$this->project_id]['medium_size']['width'];
+						$normal_height = $options[$this->project_id]['medium_size']['height'];
+						$thumb->resize( $normal_width, $normal_height );
+						$thumb->save($uploadfile);
 						
 						// Create normal Thumbnail
 						$thumb_width = $options[$this->project_id]['thumb_size']['width'];
@@ -1121,7 +1129,7 @@ class WP_ProjectManager
 		if ( $dataset = $this->getDataset( $dataset_id ) ) {
 			$out .= "<fieldset class='dataset'><legend>".__( 'Details of', 'projectmanager' )." ".$dataset[0]->name."</legend>\n";
 			if ($options[$project_id]['show_image'] == 1 && '' != $dataset[0]->image)
-				$out .= "\t<img src='".$dataset[0]->image."' title='".$dataset[0]->name."' alt='".$dataset[0]->name."' style='float: right;' />\n";
+				$out .= "\t<img src='".WP_CONTENT_URL.'/'.$this->getImageDir().$dataset[0]->image."' title='".$dataset[0]->name."' alt='".$dataset[0]->name."' style='float: right;' />\n";
 				
 			$out .= "<dl>".$this->getDatasetMetaData( $dataset_id, 'dl', true )."\n</dl>\n";
 			$out .= "</fieldset>\n";

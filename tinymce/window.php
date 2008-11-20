@@ -39,7 +39,7 @@ global $wpdb;
 	<form name="ProjectManager" action="#">
 	<div class="tabs">
 		<ul>
-			<li id="list_tab" class="current"><span><a href="javascript:mcTabs.displayTab('list_tab', 'list_panel');" onmouseover="return false;"><?php _e( 'Datasets', 'projectmanager' ); ?></a></span></li>
+			<li id="list_tab" class="current"><span><a href="javascript:mcTabs.displayTab('list_tab', 'list_panel');" onmouseover="return false;"><?php _e( 'Simple Output', 'projectmanager' ); ?></a></span></li>
 			<li id="gallery_tab"><span><a href="javascript:mcTabs.displayTab('gallery_tab', 'gallery_panel');" onmouseover="return false;"><?php _e( 'Gallery', 'projectmanager' ); ?></a></span></li>
 			<li id="groups_tab"><span><a href="javascript:mcTabs.displayTab('groups_tab', 'groups_panel');" onmouseover="return false;"><?php _e( 'Groups', 'projectmanager' ); ?></a></span></li>
 			<li id="search_tab"><span><a href="javascript:mcTabs.displayTab('search_tab', 'search_panel');" onmouseover="return false;"><?php _e( 'Search Form', 'projectmanager' ); ?></a></span></li>

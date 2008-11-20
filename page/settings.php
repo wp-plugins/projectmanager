@@ -14,6 +14,7 @@ if ( isset($_POST['saveSettings']) ) {
 	$options[$_POST['project_id']]['groups'] = $_POST['groups'];
 	$options[$_POST['project_id']]['use_widget'] = isset( $_POST['use_widget'] ) ? 1 : 0;
 	$options[$_POST['project_id']]['thumb_size'] = array("width" => $_POST['thumb_width'], "height" => $_POST['thumb_height']);
+     	$options[$_POST['project_id']]['medium_size'] = array("width" => $_POST['medium_width'], "height" => $_POST['medium_height']);
 		
 	$projectmanager->editProject( $_POST['project_title'], $_POST['project_id'] );
 	update_option( 'projectmanager', $options );
@@ -45,11 +46,18 @@ $options = get_option( 'projectmanager' );
 		<tr valign="top">
 			<th scope="row"><?php if ( 1 == $options[$project_id]['use_widget']  ) $selected = ' checked="checked"'; else $selected = ''; ?><label for="use_widget"><?php _e( 'Use Widget', 'projectmanager' ) ?></label></th><td><input type="checkbox" name="use_widget" id="use_widget"<?php echo $selected ?> value="1"></td>
 		</tr>
+		</table>
+		
+		<h3><?php _e( 'Images', 'projectmanager' ) ?></h3>
+		<table class="form-table">
 		<tr valign="top">
 			<th scope="row"><?php if ( 1 == $options[$project_id]['show_image'] ) $selected = ' checked="checked"'; else $selected = ''; ?><label for="show_image"><?php _e( 'Show Image', 'projectmanager' ) ?></label></th><td><input type="checkbox" name="show_image" id="show_image"<?php echo $selected ?> value="1"></td>
 		</tr>
 		<tr valign="top">
-			<th scope="row"><label for="thumb_size"><?php _e( 'Thumbnail size', 'projectmanager' ) ?></label></th><td><input type="text" name="thumb_width" size="3" value="<?php echo $options[$project_id]['thumb_size']['width'] ?>" /> x <input type="text" name="thumb_height" size="3" value="<?php echo $options[$project_id]['thumb_size']['height'] ?>" /></td>
+			<th scope="row"><label for="thumb_size"><?php _e( 'Thumbnail size', 'projectmanager' ) ?></label></th><td><label for="thumb_width"><?php _e( 'Width' ) ?>&#160;</label><input type="text" name="thumb_width" id="thumb_width" size="3" value="<?php echo $options[$project_id]['thumb_size']['width'] ?>" />  <label for="thumb_height"><?php _e( 'Height' ) ?>&#160;</label><input type="text" name="thumb_height" id="thumb_height" size="3" value="<?php echo $options[$project_id]['thumb_size']['height'] ?>" /></td>
+		</tr>
+		<tr valign="top">
+			<th scope="row"><label for="medium_size"><?php _e( 'Medium size', 'projectmanager' ) ?></label></th><td><label for="medium_width"><?php _e( 'Max Width' ) ?>&#160;</label><input type="text" id="medium_width" name="medium_width" size="3" value="<?php echo $options[$project_id]['medium_size']['width'] ?>" /> <label for="medium_height"><?php _e( 'Max Height' ) ?>&#160;</label> <input type="text" id="medium_height" name="medium_height" size="3" value="<?php echo $options[$project_id]['medium_size']['height'] ?>" /></td>
 		</tr>
 		</table>
 		
