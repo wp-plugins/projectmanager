@@ -9,7 +9,7 @@ $projectmanager->setSettings( $project_id );
 $options = get_option( 'projectmanager' );
 
 if ( isset($_GET['edit']) ) {
-	$form_title = 'Edit Dataset';
+	$form_title = __('Edit Dataset','projectmanager');
 	$dataset_id = $_GET['edit'];
 	$dataset = $projectmanager->getDataset( $dataset_id );
 	$grp_id = $dataset[0]->grp_id;
@@ -21,7 +21,7 @@ if ( isset($_GET['edit']) ) {
 	foreach ( $dataset_meta AS $meta )
 		$meta_data[$meta->form_field_id] = $meta->value;
 }  else {
-	$form_title = 'Add Dataset';
+	$form_title = __('Add Dataset','projectmanager');
 	$dataset_id = ''; $grp_id = '';
 }
 ?>
@@ -32,7 +32,7 @@ if ( isset($_GET['edit']) ) {
 <div class="wrap">
 	<?php $projectmanager->printBreadcrumb( $project_id, $form_title ) ?>
 			
-	<h2><?php echo __( $form_title, 'projectmanager' ) ?></h2>
+	<h2><?php echo $form_title ?></h2>
 	
 	<table class="form-table">
 	<tr valign="top">
@@ -65,10 +65,7 @@ if ( isset($_GET['edit']) ) {
 				<input type="text" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" value="<?php echo $meta_data[$form_field->id] ?>" size="45" />
 				<?php elseif ( 2 == $form_field->type ) : ?>
 				<div id="poststuff" style="margin:1em auto 0.5em 0; width: 60%;">
-					<!--<fieldset id="<?php echo user_can_richedit() ? 'postdiv' : 'postdiv'; ?>">-->
-						<?php //the_editor($form_field_data[$form_field->id], 'form_field['.$form_field->id.']') ?>
-						<div><textarea class="projectmanager_mceEditor" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" cols="42" rows="5"><?php echo $meta_data[$form_field->id] ?></textarea></div>
-					<!--</fieldset>-->
+					<textarea class="projectmanager_mceEditor" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" cols="42" rows="5"><?php echo $meta_data[$form_field->id] ?></textarea>
 				</div>
 				<?php elseif ( 4 == $form_field->type ) : ?>
 				<select size="1" name="form_field[<?php echo $form_field->id ?>][day]">
@@ -111,7 +108,7 @@ if ( isset($_GET['edit']) ) {
 	<input type="hidden" name="dataset_id" value="<?php echo $dataset_id ?>" />
 	<input type="hidden" name="updateProjectManager" value="dataset" />
 			
-	<p class="submit"><input type="submit" name="addportrait" value="<?php echo __( $form_title, 'projectmanager' ) ?> &raquo;" class="button" /></p>
+	<p class="submit"><input type="submit" name="addportrait" value="<?php echo $form_title ?> &raquo;" class="button" /></p>
 </div>
 </form>
 

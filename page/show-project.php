@@ -6,15 +6,15 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 	if ( 'dataset' == $_POST['updateProjectManager'] ) {
 		check_admin_referer( 'projectmanager_edit-dataset' );
 		if ( '' == $_POST['dataset_id'] ) {
-			$return_message = $projectmanager->addDataset( $_POST['project_id'], $_POST['name'], $_POST['grp_id'], $_POST['form_field'] );
+			$message = $projectmanager->addDataset( $_POST['project_id'], $_POST['name'], $_POST['grp_id'], $_POST['form_field'] );
 		} else {
 			$del_image = isset( $_POST['del_old_image'] ) ? true : false;
 			$overwrite_image = isset( $_POST['overwrite_image'] ) ? true: false;
-			$return_message = $projectmanager->editDataset( $_POST['project_id'], $_POST['name'], $_POST['grp_id'], $_POST['dataset_id'], $_POST['form_field'], $del_image, $_POST['image_file'], $overwrite_image );
+			$message = $projectmanager->editDataset( $_POST['project_id'], $_POST['name'], $_POST['grp_id'], $_POST['dataset_id'], $_POST['form_field'], $del_image, $_POST['image_file'], $overwrite_image );
 		}
 			
 	}
-	echo '<div id="message" class="updated fade"><p><strong>'.__( $return_message, 'projectmanager' ).'</strong></p></div>';
+	echo '<div id="message" class="updated fade"><p><strong>'.$message.'</strong></p></div>';
 } elseif ( isset($_POST['deleteit']) AND isset($_POST['delete']) ) {
 	if ( 'datasets' == $_POST['item'] ) {
 		check_admin_referer('projectmanager_delete-datasets');
@@ -34,7 +34,6 @@ $project_title = $projectmanager->getProjectTitle( $project_id );
 	<p>
 		<a href="edit.php?page=projectmanager/page/settings.php&amp;project_id=<?php echo $project_id ?>"><?php _e( 'Settings', 'projectmanager' ) ?></a> &middot;
 		<a href="edit.php?page=projectmanager/page/formfields.php&amp;project_id=<?php echo $project_id ?>"><?php _e( 'Form Fields', 'projectmanager' ) ?></a> &middot;
-		<!--<a href="edit.php?page=projectmanager/page/groups.php&amp;project_id=<?php echo $project_id ?>"><?php _e( 'Groups', 'projectmanager' ) ?></a> &middot;-->
 		<a href="edit.php?page=projectmanager/page/dataset.php&amp;project_id=<?php echo $project_id ?>"><?php _e( 'Add Dataset', 'projectmanager' ) ?></a>
 	</p>
 	

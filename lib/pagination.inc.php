@@ -1,5 +1,4 @@
-
-ll<?php
+<?php
 /**
  * This file contains a simple class to create a multiple pages navigation
  *
