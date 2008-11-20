@@ -1,4 +1,5 @@
-<?php
+
+ll<?php
 /**
  * This file contains a simple class to create a multiple pages navigation
  *
@@ -169,7 +170,7 @@ class Pagination
 		if( $num_pages > 1 ) {
 			// create link to previous page if current page is not the first page
 			if ( $page > 1 )
-				$out .= '<a href='.$this->createURL().'paging='.($page-1).'>&lt;&lt; '.__( 'Previous', 'prjctmngr' ).'</a>';
+				$out .= '<a href='.$this->createURL().'paging='.($page-1).'>&lt;&lt;</a>';
 				
 			// links for all pages
 			$i = 1;
@@ -200,7 +201,7 @@ class Pagination
 		
 			// create link to next page if current page is not last page
 			if ( $page < $num_pages )
-				$out .= '<a href="'.$this->createURL().'paging='.($page+1).'">'.__( 'Next', 'prjctmngr' ).' &gt;&gt;</a>';
+				$out .= '<a href="'.$this->createURL().'paging='.($page+1).'">&gt;&gt;</a>';
 		}
 	
 		return $out .= "</p>\n\n";
