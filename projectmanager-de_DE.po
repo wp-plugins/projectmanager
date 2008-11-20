@@ -1,16 +1,29 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
-"POT-Creation-Date: 2008-11-20 16:01+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2008-11-20 18:21+0000\n"
+"PO-Revision-Date: 2008-11-20 19:33+0100\n"
+"Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Country: GERMANY\n"
 
-#: page/dataset.php:39 page/show-project.php:51 projectmanager.php:918
+#: page/dataset.php:12
+msgid "Edit Dataset"
+msgstr "Datensatz bearbeiten"
+
+#: page/dataset.php:24
+#: page/index.php:51
+#: page/show-project.php:37
+msgid "Add Dataset"
+msgstr "Datensatz hinzufügen"
+
+#: page/dataset.php:39
+#: page/show-project.php:50
+#: projectmanager.php:918
 #: projectmanager.php:1026
 msgid "Name"
 msgstr "Name"
@@ -31,262 +44,322 @@ msgstr "Überschreibe existierendes Bild"
 msgid "Delete current image"
 msgstr "Lösche aktuelles Bild"
 
-#: page/dataset.php:105 page/show-project.php:53
+#: page/dataset.php:102
+#: page/show-project.php:52
 msgid "Group"
-msgstr ""
+msgstr "Gruppe"
 
-#: page/dataset.php:106 page/settings.php:44 page/show-project.php:72
+#: page/dataset.php:103
+#: page/settings.php:43
+#: page/show-project.php:71
 msgid "None"
-msgstr ""
+msgstr "Keine"
 
-#: page/formfields.php:18 page/show-project.php:36
+#: page/formfields.php:16
+#: page/formfields.php:18
+#: page/show-project.php:36
 msgid "Form Fields"
-msgstr ""
+msgstr "Formularfelder"
 
 #: page/formfields.php:26
 msgid "Label"
-msgstr ""
+msgstr "Label"
 
 #: page/formfields.php:27
 msgid "Type"
-msgstr ""
+msgstr "Typ"
 
 #: page/formfields.php:28
 msgid "Show on startpage"
-msgstr ""
+msgstr "Zeige auf Startseite"
 
 #: page/formfields.php:29
 msgid "Order"
-msgstr ""
+msgstr "Reihenfolge"
 
-#: page/formfields.php:51 page/index.php:31 page/show-project.php:45
+#: page/formfields.php:51
+#: page/index.php:31
+#: page/show-project.php:44
 msgid "Delete"
-msgstr ""
+msgstr "Löschen"
 
 #: page/formfields.php:51
 msgid "Delete formfield"
-msgstr ""
+msgstr "Lösche Formularfeld"
 
 #: page/formfields.php:57
 msgid "Add new formfield"
-msgstr ""
+msgstr "Neues Formularfeld hinzufügen"
 
 #: page/formfields.php:61
 msgid "Save Form Fields"
-msgstr ""
+msgstr "Formularfelder speichern"
 
-#: page/index.php:24 page/index.php:33 projectmanager.php:1292
+#: page/index.php:24
+#: page/index.php:33
+#: projectmanager.php:1292
 #: tinymce/window.php:29
 msgid "Projectmanager"
-msgstr ""
+msgstr "Projektmanager"
 
-#: page/index.php:38 tinymce/window.php:54 tinymce/window.php:83
-#: tinymce/window.php:110 tinymce/window.php:148
+#: page/index.php:37
+msgid "ID"
+msgstr "ID"
+
+#: page/index.php:38
+#: tinymce/window.php:54
+#: tinymce/window.php:83
+#: tinymce/window.php:110
+#: tinymce/window.php:148
 msgid "Project"
-msgstr ""
+msgstr "Projekt"
 
 #: page/index.php:39
 msgid "Number of Datasets"
-msgstr ""
+msgstr "Anzahl Datensätze"
 
 #: page/index.php:40
 msgid "Action"
-msgstr ""
+msgstr "Aktion"
 
-#: page/index.php:51 page/settings.php:35 page/show-project.php:35
+#: page/index.php:51
+#: page/settings.php:29
+#: page/settings.php:34
+#: page/show-project.php:35
 msgid "Settings"
-msgstr ""
+msgstr "Einstellungen"
 
-#: page/index.php:51 page/show-project.php:38
-msgid "Add Dataset"
-msgstr ""
-
-#: page/index.php:61 page/index.php:73
+#: page/index.php:61
+#: page/index.php:73
 msgid "Add Project"
-msgstr ""
+msgstr "Projekt hinzufügen"
 
-#: page/index.php:66 page/settings.php:38 projectmanager.php:1232
+#: page/index.php:66
+#: page/settings.php:37
+#: projectmanager.php:1232
 msgid "Title"
-msgstr ""
+msgstr "Titel"
 
-#: page/index.php:81 page/index.php:84
+#: page/index.php:81
+#: page/index.php:84
 msgid "Uninstall ProjectManager"
-msgstr ""
+msgstr "ProjectManager Deinstallieren"
 
 #: page/index.php:84
 msgid "Yes I want to uninstall ProjectManager Plugin. All Data will be deleted!"
-msgstr ""
+msgstr "Ja, ich möchte das ProjektManager Plugin deinstallieren. Alle Daten werden gelöscht!"
 
-#: page/settings.php:41
+#: page/settings.php:22
+msgid "Settings saved"
+msgstr "Einstellungen gespeichert"
+
+#: page/settings.php:40
 msgid "Datasets per page"
-msgstr ""
+msgstr "Datensätze pro Seite"
 
-#: page/settings.php:44
+#: page/settings.php:43
 msgid "Category"
-msgstr ""
+msgstr "Kategorie"
 
-#: page/settings.php:47
+#: page/settings.php:46
 msgid "Use Widget"
-msgstr ""
+msgstr "Verwende Widget"
 
-#: page/settings.php:51
+#: page/settings.php:50
 msgid "Images"
-msgstr ""
+msgstr "Bilder"
 
-#: page/settings.php:54
+#: page/settings.php:53
 msgid "Show Image"
-msgstr ""
+msgstr "Zeige Bild"
 
-#: page/settings.php:57
+#: page/settings.php:56
 msgid "Thumbnail size"
-msgstr ""
+msgstr "Vorschaubild-Größe"
 
-#: page/settings.php:57
+#: page/settings.php:56
 msgid "Width"
-msgstr ""
+msgstr "Breite"
 
-#: page/settings.php:57
+#: page/settings.php:56
 msgid "Height"
-msgstr ""
+msgstr "Höhe"
 
-#: page/settings.php:60
+#: page/settings.php:59
 msgid "Medium size"
-msgstr ""
+msgstr "Mittlere Größe"
 
-#: page/settings.php:60
+#: page/settings.php:59
 msgid "Max Width"
-msgstr ""
+msgstr "Max. Breite"
 
-#: page/settings.php:60
+#: page/settings.php:59
 msgid "Max Height"
-msgstr ""
+msgstr "Max. Höhe"
 
-#: page/settings.php:65
+#: page/settings.php:64
 msgid "Save Settings"
-msgstr ""
+msgstr "Einstesllungen speichern"
 
-#: page/show-project.php:37 projectmanager.php:969 projectmanager.php:993
-#: tinymce/window.php:44
-msgid "Groups"
-msgstr ""
+#: projectmanager.php:100
+msgid "Text"
+msgstr "Text"
+
+#: projectmanager.php:100
+msgid "Textfield"
+msgstr "Textfeld"
+
+#: projectmanager.php:100
+msgid "E-Mail"
+msgstr "E-Mail"
+
+#: projectmanager.php:100
+msgid "Date"
+msgstr "Datum"
+
+#: projectmanager.php:100
+msgid "URL"
+msgstr "URL"
+
+#: projectmanager.php:505
+msgid "Project added"
+msgstr "Projekt hinzugefügt"
+
+#: projectmanager.php:520
+msgid "Project updated"
+msgstr "Projekt aktualisiert"
 
 #: projectmanager.php:576
-msgid "New dataset added to the database"
-msgstr ""
+msgid "New dataset added to the database."
+msgstr "Neuer Datensatz der Datenbank hinzugefügt."
 
 #: projectmanager.php:629
-msgid "Dataset updated"
-msgstr ""
+msgid "Dataset updated."
+msgstr "Datensatz aktualisiert."
 
 #: projectmanager.php:728
 msgid "File exists and is not uploaded."
-msgstr ""
+msgstr "Die Datei existiert bereits und wird nicht hochgeladen."
 
 #: projectmanager.php:749
 msgid "An upload error occured. Please try again."
-msgstr ""
+msgstr "Es ist ein Fehler beim Upload aufgetaucht. Versuche es nochmal."
 
 #: projectmanager.php:753
 msgid "The file type is not supported. No Image was uploaded."
-msgstr ""
+msgstr "Der Dateityp wird nicht unterstützt. Es wurde kein Bild hochgeladen."
 
 #: projectmanager.php:821
 msgid "Form Fields updated"
-msgstr ""
+msgstr "Formularfelder aktualisiert"
 
 #: projectmanager.php:925
 msgid "Search"
-msgstr ""
+msgstr "Suchen"
+
+#: projectmanager.php:969
+#: projectmanager.php:993
+#: tinymce/window.php:44
+msgid "Groups"
+msgstr "Gruppen"
 
 #: projectmanager.php:971
 msgid "Go"
-msgstr ""
+msgstr "Los"
 
 #: projectmanager.php:1127
 msgid "Back to list"
-msgstr ""
+msgstr "Zurück zur Liste"
 
 #: projectmanager.php:1130
 msgid "Details of"
-msgstr ""
+msgstr "Details von"
 
 #: projectmanager.php:1233
 msgid "Number"
-msgstr ""
+msgstr "Anzahl"
 
 #: projectmanager.php:1239
 msgid "Page"
-msgstr ""
+msgstr "Seite"
 
-#: projectmanager.php:1446
+#: projectmanager.php:1438
 msgid "Projects"
-msgstr ""
+msgstr "Projekte"
 
 #: tinymce/window.php:42
 msgid "Simple Output"
-msgstr ""
+msgstr "Einfache Ausgabe"
 
 #: tinymce/window.php:43
 msgid "Gallery"
-msgstr ""
+msgstr "Galerie"
 
 #: tinymce/window.php:45
 msgid "Search Form"
-msgstr ""
+msgstr "Suchformular"
 
-#: tinymce/window.php:57 tinymce/window.php:86 tinymce/window.php:113
+#: tinymce/window.php:57
+#: tinymce/window.php:86
+#: tinymce/window.php:113
 #: tinymce/window.php:151
 msgid "No Project"
-msgstr ""
+msgstr "Kein Projekt"
 
-#: tinymce/window.php:69 tinymce/window.php:125
+#: tinymce/window.php:69
+#: tinymce/window.php:125
 msgid "Show as"
-msgstr ""
+msgstr "Zeige als"
 
 #: tinymce/window.php:71
 msgid "Table"
-msgstr ""
+msgstr "Tabelle"
 
 #: tinymce/window.php:72
 msgid "Unsorted List"
-msgstr ""
+msgstr "Unsortierte Liste"
 
 #: tinymce/window.php:73
 msgid "Sorted List"
-msgstr ""
+msgstr "Sortierte Liste"
 
 #: tinymce/window.php:100
 msgid "Columns"
-msgstr ""
+msgstr "Spalten"
 
 #: tinymce/window.php:127
 msgid "Dropdown Menu"
-msgstr ""
+msgstr "Dropdown Menu"
 
 #: tinymce/window.php:128
 msgid "List"
-msgstr ""
+msgstr "Liste"
 
-#: tinymce/window.php:132 tinymce/window.php:163
+#: tinymce/window.php:132
+#: tinymce/window.php:163
 msgid "Alignment"
-msgstr ""
+msgstr "Ausrichtung"
 
-#: tinymce/window.php:135 tinymce/window.php:166
+#: tinymce/window.php:135
+#: tinymce/window.php:166
 msgid "Left"
-msgstr ""
+msgstr "Links"
 
-#: tinymce/window.php:136 tinymce/window.php:167
+#: tinymce/window.php:136
+#: tinymce/window.php:167
 msgid "Center"
-msgstr ""
+msgstr "Zentriert"
 
-#: tinymce/window.php:137 tinymce/window.php:168
+#: tinymce/window.php:137
+#: tinymce/window.php:168
 msgid "Right"
-msgstr ""
+msgstr "Rechts"
 
 #: tinymce/window.php:179
 msgid "Cancel"
-msgstr ""
+msgstr "Abbrechen"
 
 #: tinymce/window.php:183
 msgid "Insert"
-msgstr ""
+msgstr "Einfügen"
+
