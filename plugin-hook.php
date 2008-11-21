@@ -38,6 +38,7 @@ define( 'PROJECTMANAGER_URL', WP_PLUGIN_URL.'/projectmanager' );
 include_once( 'projectmanager.php' );
 include_once( 'lib/pagination.inc.php' );
 include_once( 'lib/thumbnail.inc.php' );
+include_once( 'ajax.php' );
 
 $projectmanager = new WP_ProjectManager();
 

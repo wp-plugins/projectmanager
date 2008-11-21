@@ -1,4 +1,9 @@
 <?php
+if ( !current_user_can( 'manage_projects' ) ) : 
+     echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
+
+else :
+
 $project_id = $_GET['id'];
 $projectmanager->setSettings( $project_id );
 $options = get_option( 'projectmanager' );
@@ -72,7 +77,9 @@ $project_title = $projectmanager->getProjectTitle( $project_id );
 			?>
 				<tr class="<?php echo $class ?>">
 					<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $dataset->id ?>" name="delete[<?php echo $dataset->id ?>]" /></th>
-					<td><a href="edit.php?page=projectmanager/page/dataset.php&amp;edit=<?php echo $dataset->id ?>&amp;project_id=<?php echo $project_id ?>"><?php echo $dataset->name ?></a></td>
+					<td>
+						<span id="pm_dataset_name"><a href="edit.php?page=projectmanager/page/dataset.php&amp;edit=<?php echo $dataset->id ?>&amp;project_id=<?php echo $project_id ?>"><span id="pm_dataset_name_text"><?php echo $dataset->name ?></span></a>&#160;<a id="dataset_name_link<?php echo $dataset->id ?>" href="javascript.void(0);" onClick="pm_ajax_form_dataset_name(<?php echo $dataset->id ?>); return false;"></a></span>
+					</td>
 					<?php if ( '' != $options[$project_id]['category'] ) : ?>
 					<td><?php echo $group ?></td>
 					<?php endif; ?>
@@ -85,3 +92,4 @@ $project_title = $projectmanager->getProjectTitle( $project_id );
 	</form>
 	<?php if ( !isset($_POST['projectmanager_search']) ) echo $projectmanager->pagination->get() ?>
 </div>
+<?php endif; ?>
