@@ -1,6 +1,6 @@
 === ProjectManager ===
 Contributors: Kolja Schleich
-Tags: Sidebar, visitor counter
+Tags: datamanager
 Requires at least: 2.5
 Tested up to: 2.5
 Stable tag: 1.1
