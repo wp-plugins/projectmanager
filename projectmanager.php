@@ -1313,7 +1313,7 @@ class WP_ProjectManager
 		echo "<link rel='stylesheet' href='".$this->plugin_url."/style.css' type='text/css' />\n";
 		
 		if ( is_admin() AND isset( $_GET['page'] ) AND substr( $_GET['page'], 0, 14 ) == 'projectmanager' ) {
-			wp_register_script( 'projectmanager', $this->plugin_url.'/projectmanager.js', array( 'tiny_mce' ), '1.0' );
+			wp_register_script( 'projectmanager', $this->plugin_url.'/js/formfields.js', array( 'tiny_mce' ), '1.0' );
 			wp_print_scripts( 'projectmanager' );
 			
 			echo "<script type='text/javascript'>\n";

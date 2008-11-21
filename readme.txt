@@ -17,6 +17,7 @@ This plugin is a datamanager for any recurrent datasets. It can be used to manag
 * widget use for any project, controlled via admin panel
 * adding of form fields (text, textfield, e-mail, date, url) for each project independently
 * simple search of any form field
+* usage of Wordpress Category System for grouping
 * various output formats (table, list, gallery)
 * simple display in frontend over shortcodes
 * easy adding of shortcodes via TinyMCE Button

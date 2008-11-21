@@ -42,7 +42,7 @@ include_once( 'lib/thumbnail.inc.php' );
 $projectmanager = new WP_ProjectManager();
 
 // Load textdomain for translation
-load_plugin_textdomain( 'projectmanager', $path = PLUGINDIR.'/projectmanager' );
+load_plugin_textdomain( 'projectmanager', $path = PLUGINDIR.'/projectmanager/languages' );
 
 register_activation_hook(__FILE__, array(&$projectmanager, 'init') );
 
