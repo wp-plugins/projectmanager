@@ -78,7 +78,7 @@ $project_title = $projectmanager->getProjectTitle( $project_id );
 				<tr class="<?php echo $class ?>">
 					<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $dataset->id ?>" name="delete[<?php echo $dataset->id ?>]" /></th>
 					<td>
-						<span id="pm_dataset_name"><a href="edit.php?page=projectmanager/page/dataset.php&amp;edit=<?php echo $dataset->id ?>&amp;project_id=<?php echo $project_id ?>"><span id="pm_dataset_name_text"><?php echo $dataset->name ?></span></a>&#160;<a id="dataset_name_link<?php echo $dataset->id ?>" href="javascript.void(0);" onClick="pm_ajax_form_dataset_name(<?php echo $dataset->id ?>); return false;"></a></span>
+						<span id="pm_dataset_name"><a href="edit.php?page=projectmanager/page/dataset.php&amp;edit=<?php echo $dataset->id ?>&amp;project_id=<?php echo $project_id ?>"><span id="pm_dataset_name_text"><?php echo $dataset->name ?></span></a>&#160;<a id="dataset_name_link<?php echo $dataset->id ?>" href="javascript.void(0);" onClick="pm_ajax_form_dataset_name(<?php echo $dataset->id ?>); return false;"><img src="<?php echo PROJECTMANAGER_URL ?>'/images/edit.gif" border="0" alt="<?php _e('Edit') ?>" title="<?php _e('Edit') ?>" /></a></span>
 					</td>
 					<?php if ( '' != $options[$project_id]['category'] ) : ?>
 					<td><?php echo $group ?></td>
