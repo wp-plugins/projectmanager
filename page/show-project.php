@@ -79,7 +79,16 @@ $project_title = $projectmanager->getProjectTitle( $project_id );
 					<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $dataset->id ?>" name="delete[<?php echo $dataset->id ?>]" /></th>
 					<td><a href="edit.php?page=projectmanager/page/dataset.php&amp;edit=<?php echo $dataset->id ?>&amp;project_id=<?php echo $project_id ?>"><?php echo $dataset->name ?></a></td>
 					<?php if ( '' != $options[$project_id]['category'] ) : ?>
-					<td><?php echo $group ?></td>
+					<td>
+						<!-- Popup Window for group changing -->
+						<div id="groupchoosewrap<?php echo $dataset->id; ?>" style="width:250px;height:160px;overflow:auto;display:none;">
+							<div id="groupchoose<?php echo $dataset->id; ?>">
+								<form><?php wp_dropdown_categories(array('hide_empty' => 0, 'name' => 'grp_id'.$dataset->id, 'orderby' => 'name', 'selected' => $dataset->grp_id, 'hierarchical' => true, 'child_of' => $options[$project_id]['category'], 'show_option_none' => __('None'))); ?>
+								<div style="text-align:center; margin-top: 1em;"><input type="button" value="<?php _e('Save') ?>" class="button-secondary" onclick="ProjectManager.ajaxSaveGroup(<?php echo $dataset->id; ?>);return false;" />&nbsp;<input type="button" value="<?php _e('Cancel') ?>" class="button" onclick="tb_remove();" /></div></form>
+							</div>
+						</div>
+						<span id="prjctmngr_group<?php echo $dataset->id ?>"><?php echo $group ?></span>&#160;<a class="thickbox" id="thickboxlink<?php echo $dataset->id ?>" href="#TB_inline?height=205&amp;width=250&amp;inlineId=groupchoosewrap<?php echo $dataset->id ?>&amp;modal=true" title="<?php _e('Edit') ?>"><img src="<?php echo PROJECTMANAGER_URL ?>/images/edit.gif" border="0" alt="<?php _e('Edit') ?>" /></a>
+					</td>
 					<?php endif; ?>
 					<?php $projectmanager->printDatasetMetaData( $dataset->id, 'td' ) ?>
 				</tr>

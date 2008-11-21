@@ -1313,14 +1313,24 @@ class WP_ProjectManager
 		echo "<link rel='stylesheet' href='".$this->plugin_url."/style.css' type='text/css' />\n";
 		
 		if ( is_admin() AND isset( $_GET['page'] ) AND substr( $_GET['page'], 0, 14 ) == 'projectmanager' ) {
-			wp_register_script( 'projectmanager', $this->plugin_url.'/js/formfields.js', array( 'tiny_mce' ), '1.0' );
+			wp_register_script( 'projectmanager', $this->plugin_url.'/js/functions.js', array( 'tiny_mce' , 'sack', 'thickbox' ), '1.0' );
 			wp_print_scripts( 'projectmanager' );
+			
+			echo '<link rel="stylesheet" href="'.get_option( 'siteurl' ).'/wp-includes/js/thickbox/thickbox.css" type="text/css" media="screen" />';
 			
 			echo "<script type='text/javascript'>\n";
 			echo "var PRJCTMNGR_HTML_FORM_FIELD_TYPES = \"";
 			foreach ($this->getFormFieldTypes() AS $form_type_id => $form_type)
 				echo "<option value='".$form_type_id."'>".$form_type."</option>";
 			echo "\";\n";
+			
+			?>
+			//<![CDATA[
+			ProjectManagerAjaxL10n = {
+				blogUrl: "<?php bloginfo( 'wpurl' ); ?>", pluginPath: "<?php echo $this->plugin_path; ?>", pluginUrl: "<?php echo $this->plugin_url; ?>", requestUrl: "<?php bloginfo( 'wpurl' ); ?>/wp-admin/admin-ajax.php", imgUrl: "<?php echo $this->plugin_url; ?>/images", Edit: "<?php _e("Edit"); ?>", Post: "<?php _e("Post"); ?>", Save: "<?php _e("Save"); ?>", Cancel: "<?php _e("Cancel"); ?>", pleaseWait: "<?php _e("Please wait..."); ?>", Revisions: "<?php _e("Page Revisions"); ?>", Time: "<?php _e("Insert time"); ?>"
+				   }
+			//]]>
+			<?php
 			echo "</script>\n";
 		}
 		echo "<!-- WP-ProjectManager END -->\n\n";

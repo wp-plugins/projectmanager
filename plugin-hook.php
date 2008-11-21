@@ -38,9 +38,11 @@ define( 'PROJECTMANAGER_URL', WP_PLUGIN_URL.'/projectmanager' );
 include_once( 'projectmanager.php' );
 include_once( 'lib/pagination.inc.php' );
 include_once( 'lib/thumbnail.inc.php' );
-include_once( 'ajax.php' );
 
 $projectmanager = new WP_ProjectManager();
+
+include_once( 'functions.php' );
+
 
 // Load textdomain for translation
 load_plugin_textdomain( 'projectmanager', $path = PLUGINDIR.'/projectmanager/languages' );
@@ -54,7 +56,11 @@ add_action( 'admin_head', array(&$projectmanager, 'addHeaderCode') );
 add_action( 'wp_head', array(&$projectmanager, 'addHeaderCode') );
 add_action( 'admin_menu', array(&$projectmanager, 'addAdminMenu') );
 add_action( 'widgets_init', array(&$projectmanager, 'initWidget') );
-	
+
+// Ajax Actions
+add_action('wp_ajax_projectmanager_save_group', 'projectmanager_save_group' );
+
+
 // Filters
 add_filter( 'the_content', array(&$projectmanager, 'insert') );
 
