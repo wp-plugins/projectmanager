@@ -97,7 +97,7 @@ class WP_ProjectManager
 	*/
 	function getFormFieldTypes()
 	{
-		$form_field_types = array( 1 => "Text", 2 => "Textfield", 3 => "E-Mail", 4 => "Date", 5 => "URL" );
+		$form_field_types = array( 1 => __('Text', 'projectmanager'), 2 => __('Textfield', 'projectmanager'), 3 => __('E-Mail', 'projectmanager'), 4 => __('Date', 'projectmanager'), 5 => __('URL', 'projectmanager') );
 		return $form_field_types;
 	}
 	
@@ -502,7 +502,7 @@ class WP_ProjectManager
 		global $wpdb;
 	
 		$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_projects} (title) VALUES ('%s')", $title ) );
-		return 'Project added';
+		return __('Project added','projectmanager');
 	}
 	
 	
@@ -517,7 +517,7 @@ class WP_ProjectManager
 	{
 		global $wpdb;
 		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projects} SET `title` = '%s' WHERE `id` = '%d'", $title, $project_id ) );
-		return 'Project updated';
+		return __('Project updated','projectmanager');
 	}
 	
 	
@@ -573,7 +573,7 @@ class WP_ProjectManager
 		if ( isset($_FILES['projectmanager_image']['name']) AND '' != $_FILES['projectmanager_image']['name'] )
 			$tail = $this->uploadImage( $dataset_id, $_FILES['projectmanager_image']['name'], $_FILES['projectmanager_image']['size'], $_FILES['projectmanager_image']['tmp_name'], $this->getImageDir() );
 		
-		return __( 'New dataset added to the database', 'projectmanager' ).'. '.$tail;
+		return __( 'New dataset added to the database.', 'projectmanager' ).' '.$tail;
 	}
 		
 		
@@ -626,7 +626,7 @@ class WP_ProjectManager
 			$tail = $this->uploadImage($dataset_id, $_FILES['projectmanager_image']['name'], $_FILES['projectmanager_image']['size'], $_FILES['projectmanager_image']['tmp_name'], $this->getImageDir(), $overwrite_image);
 			
 			
-		return __('Dataset updated', 'projectmanager').'. '.$tail;
+		return __('Dataset updated.', 'projectmanager').' '.$tail;
 	}
 		
 		
@@ -1294,7 +1294,7 @@ class WP_ProjectManager
 		if ( $page_title != $this->getProjectTitle( $project_id ) )
 			echo '<a href="edit.php?page=projectmanager/page/show-project.php&amp;id='.$project_id.'">'.$this->getProjectTitle( $project_id ).'</a> &raquo; ';
 		
-		_e( $page_title, 'projectmanager' );
+		echo $page_title;
 		
 		echo '</p>';
 	}
@@ -1319,7 +1319,7 @@ class WP_ProjectManager
 			echo "<script type='text/javascript'>\n";
 			echo "var PRJCTMNGR_HTML_FORM_FIELD_TYPES = \"";
 			foreach ($this->getFormFieldTypes() AS $form_type_id => $form_type)
-				echo "<option value='".$form_type_id."'>".__( $form_type, 'projectmanager' )."</option>";
+				echo "<option value='".$form_type_id."'>".$form_type."</option>";
 			echo "\";\n";
 			echo "</script>\n";
 		}
@@ -1435,16 +1435,7 @@ class WP_ProjectManager
 	{
 		global $wpdb;
 		
-		/*
-		if ( 1 == $this->getNumProjects() ) {
-			$project = $wpdb->get_results( "SELECT `id` FROM {$wpdb->projectmanager_projects} ORDER BY `id` ASC LIMIT 0,1" );
-			$management_page = 'edit.php?page=projectmanager/page/show-project.php&id='.$project[0]->id;
-		} else
-			$management_page = basename( __FILE__, ".php" ).'/page/index.php';
-		*/
-		
 		add_management_page( __( 'Projects', 'projectmanager' ), __( 'Projects', 'projectmanager' ), 'manage_projects', basename( __FILE__, ".php" ).'/page/index.php' );
-		//add_options_page( __( 'Projectmanager', 'projectmanager' ), __( 'Projectmanager', 'projectmanager' ), 'manage_projectmanager', basename(__FILE__), array(&$this, 'addOptionsPage') );
 	}
 
 

@@ -51,10 +51,10 @@ global $wpdb;
 	<div id="list_panel" class="panel current"><br />
 	<table style="border: 0;" cellpadding="5">
 	<tr>
-		<td><label for="list_projects"><?php _e("Project", 'leaguemanager'); ?></label></td>
+		<td><label for="list_projects"><?php _e("Project", 'projectmanager'); ?></label></td>
 		<td>
 		<select id="list_projects" name="list_projects" style="width: 200px">
-        	<option value="0"><?php _e("No Project", 'leaguemanager'); ?></option>
+        	<option value="0"><?php _e("No Project", 'projectmanager'); ?></option>
 		<?php
 			$projectlist = $wpdb->get_results("SELECT * FROM {$wpdb->projectmanager_projects} ORDER BY id ASC");
 			if( is_array($projectlist) ) {
@@ -80,10 +80,10 @@ global $wpdb;
 	<div id="gallery_panel" class="panel"><br />
 	<table style="border: 0;" cellpadding="5">
 	<tr>
-		<td><label for="gallery_projects"><?php _e("Project", 'leaguemanager'); ?></label></td>
+		<td><label for="gallery_projects"><?php _e("Project", 'projectmanager'); ?></label></td>
 		<td>
 		<select id="gallery_projects" name="gallery_projects" style="width: 200px">
-        	<option value="0"><?php _e("No Project", 'leaguemanager'); ?></option>
+		<option value="0"><?php _e("No Project", 'projectmanager'); ?></option>
 		<?php
 			$projectlist = $wpdb->get_results("SELECT * FROM {$wpdb->projectmanager_projects} ORDER BY id ASC");
 			if( is_array($projectlist) ) {
@@ -107,10 +107,10 @@ global $wpdb;
 	<div id="groups_panel" class="panel"><br />
 	<table style="border: 0;" cellpadding="5">
 	<tr>
-		<td><label for="groups_projects"><?php _e("Project", 'leaguemanager'); ?></label></td>
+		<td><label for="groups_projects"><?php _e("Project", 'projectmanager'); ?></label></td>
 		<td>
 		<select id="groups_projects" name="groups_projects" style="width: 200px">
-        	<option value="0"><?php _e("No Project", 'leaguemanager'); ?></option>
+		<option value="0"><?php _e("No Project", 'projectmanager'); ?></option>
 		<?php
 			$projectlist = $wpdb->get_results("SELECT * FROM {$wpdb->projectmanager_projects} ORDER BY id ASC");
 			if( is_array($projectlist) ) {
@@ -125,7 +125,7 @@ global $wpdb;
 		<td nowrap="nowrap" valign="top"><label><?php _e( 'Show as', 'projectmanager' ) ?></label></td>
 		<td>
 			<input type="radio" name="groups_showtype" id="groups_showtype_dropdown" value="dropdown" /><label for="groups_showtype_dropdown"><?php _e( 'Dropdown Menu', 'projectmaanger' ) ?></label><br />
-			<input type="radio" name="groups_showtype" id="groups_showtype_list" value="list" /><label for="groups_showtype_list"><?php _e( 'List', 'projectmaanger' ) ?></label>
+			<input type="radio" name="groups_showtype" id="groups_showtype_list" value="list" /><label for="groups_showtype_list"><?php _e( 'List', 'projectmanager' ) ?></label>
 		</td>
 	</tr>
 	<tr>
@@ -145,10 +145,10 @@ global $wpdb;
 	<div id="search_panel" class="panel"><br />
 	<table style="border: 0;" cellpadding="5">
 	<tr>
-		<td><label for="search_projects"><?php _e("Project", 'leaguemanager'); ?></label></td>
+		<td><label for="search_projects"><?php _e("Project", 'projectmanager'); ?></label></td>
 		<td>
 		<select id="search_projects" name="search_projects" style="width: 200px">
-        	<option value="0"><?php _e("No Project", 'leaguemanager'); ?></option>
+		<option value="0"><?php _e("No Project", 'projectmanager'); ?></option>
 		<?php
 			$projectlist = $wpdb->get_results("SELECT * FROM {$wpdb->projectmanager_projects} ORDER BY id ASC");
 			if( is_array($projectlist) ) {
@@ -176,11 +176,11 @@ global $wpdb;
 	
 	<div class="mceActionPanel">
 		<div style="float: left">
-			<input type="button" id="cancel" name="cancel" value="<?php _e("Cancel", 'projetmanager'); ?>" onclick="tinyMCEPopup.close();" />
+			<input type="button" id="cancel" name="cancel" value="<?php _e("Cancel", 'projectmanager'); ?>" onclick="tinyMCEPopup.close();" />
 		</div>
 
 		<div style="float: right">
-			<input type="submit" id="insert" name="insert" value="<?php _e("Insert", 'projetmanager'); ?>" onclick="insertProjectManagerLink();" />
+			<input type="submit" id="insert" name="insert" value="<?php _e("Insert", 'projectmanager'); ?>" onclick="insertProjectManagerLink();" />
 		</div>
 	</div>
 
