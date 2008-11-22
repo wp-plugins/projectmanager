@@ -27,7 +27,6 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 			$projectmanager->delDataset( $dataset_id );
 	}
 }
-$projectmanager->setPerPage(20);
 $project_title = $projectmanager->getProjectTitle( $project_id );	
 ?>
 <div class="wrap">
@@ -49,7 +48,10 @@ $project_title = $projectmanager->getProjectTitle( $project_id );
 		
 	<?php wp_nonce_field( 'projectmanager_delete-datasets' ) ?>
 	<input type="hidden" name="item" value="datasets" />
-	<div class="tablenav" style="margin-bottom: 0.1em;"><input type="submit" name="deleteit" value="<?php _e( 'Delete','projectmanager' ) ?>" class="button-secondary" /></div>			
+	<div class="tablenav" style="margin-bottom: 0.1em;">
+		<p class="num_datasets"><?php printf(__ngettext('%d Dataset', '%d Datasets', $projectmanager->getNumDatasets(), 'projectmanager'),$projectmanager->getNumDatasets()) ?></p>
+		<input type="submit" name="deleteit" value="<?php _e( 'Delete','projectmanager' ) ?>" class="button-secondary" />
+	</div>
 	
 	<table class="widefat">
 		<thead>
@@ -64,18 +66,17 @@ $project_title = $projectmanager->getProjectTitle( $project_id );
 		</thead>
 		<tbody id="the-list">
 		<?php
-		if ( isset($_POST['projectmanager_search']) AND '' != $_POST['projectmanager_search'] )
-			$dataset_list = $projectmanager->getSearchResults( $_POST['projectmanager_search'], $_POST['form_field'] );
+		if ( $projectmanager->isSearch() AND '' != $projectmanager->getSearchString() )
+			$dataset_list = $projectmanager->getSearchResults( $projectmanager->getSearchString(), $_POST['form_field'] );
 		else
 			$dataset_list = $projectmanager->getDataset( false, 'name ASC', true );
 		
 		if ( $dataset_list ) :
 			foreach ( $dataset_list AS $dataset ) :
 				$class = ( 'alternate' == $class ) ? '' : 'alternate';
-				if ( -1 != $dataset->grp_id ) {
-					$cat = get_category( $dataset->grp_id );
-					$group = $cat->name;
-				} else
+				if ( -1 != $dataset->grp_id )
+					$group = $projectmanager->getGroupTitle( $dataset->grp_id );
+				else
 					$group = __( 'None', 'projectmanager' );
 			?>
 				<tr class="<?php echo $class ?>">
@@ -109,6 +110,6 @@ $project_title = $projectmanager->getProjectTitle( $project_id );
 		</tbody>
 	</table>
 	</form>
-	<?php if ( !isset($_POST['projectmanager_search']) ) echo $projectmanager->pagination->get() ?>
+	<?php if ( !$projectmanager->isSearch() ) echo $projectmanager->pagination->get() ?>
 </div>
 <?php endif; ?>

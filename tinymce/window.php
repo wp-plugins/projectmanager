@@ -1,6 +1,7 @@
 <?php
 
-$root = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
+//$root = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
+$root = '/var/www/wordpress';
 
 if (file_exists($root.'/wp-load.php')) {
 	// WP 2.6
@@ -20,6 +21,8 @@ require_once(ABSPATH.'/wp-admin/admin.php');
 if(!current_user_can('edit_posts')) die;
 
 global $wpdb;
+
+$options = get_option('projectmanager');
 
 ?>
 
@@ -65,6 +68,10 @@ global $wpdb;
 		</td>
 	</tr>
 	<tr>
+		<td><label for="list_projects_group"><?php _e("Group", 'projectmanager'); ?></label></td>
+		<td><?php wp_dropdown_categories(array('hide_empty' => 0, 'name' => 'list_projects_group', 'orderby' => 'name', 'hierarchical' => true, 'show_option_none' => __('None'))); ?></td>
+	</tr>
+	<tr>
 		<td nowrap="nowrap" valign="top"><label><?php _e( 'Show as', 'projectmanager' ) ?></label></td>
 		<td>
 		<input type="radio" name="list_showtype" id="list_showtype_table" value="table" checked="ckecked" /><label for="list_showtype_table"><?php _e( 'Table', 'projectmanager' ) ?></label><br />
@@ -94,6 +101,10 @@ global $wpdb;
 		?>
         	</select>
 		</td>
+	</tr>
+	<tr>
+		<td><label for="gallery_projects_group"><?php _e("Group", 'projectmanager'); ?></label></td>
+		<td><?php wp_dropdown_categories(array('hide_empty' => 0, 'name' => 'gallery_projects_group', 'orderby' => 'name', 'hierarchical' => true, 'show_option_none' => __('None'))); ?></td>
 	</tr>
 	<tr>
 		<td nowrap="nowrap" valign="top"><label for="num_cols"><?php _e( 'Columns', 'projectmanager' ) ?></label></td>

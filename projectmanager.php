@@ -155,7 +155,35 @@ class WP_ProjectManager
 		return $this->group;
 	}
 		
+	
+	/**
+	 * gets group title
+	 *
+	 * @param int $grp_id
+	 * @return string
+	 */
+	function getGroupTitle( $grp_id )
+	{
+		$group = get_category($grp_id);
+		return $group->name;
+	}
+	
+	
+	/**
+	 * check if group is selected
+	 * 
+	 * @param none
+	 * @return boolean
+	 */
+	function isGroup()
+	{
+		if ( null != $this->getGroup() )
+			return true;
 		
+		return false;
+	}
+	
+	
 	/**
  	 * sets current group
 	 *
@@ -167,12 +195,42 @@ class WP_ProjectManager
 		if ( $grp_id )
 			$this->group = $grp_id;
 		else
-			$this->group = ( isset($_GET['grp_id']) AND '' != $_GET['grp_id'] ) ? (int)$_GET['grp_id'] : false;
+			$this->group = ( isset($_GET['grp_id']) && '' != $_GET['grp_id'] ) ? (int)$_GET['grp_id'] : null;
 		
 		return;
 	}
 		
 		
+	/**
+	 * check if search was performed
+	 *
+	 * @param none
+	 * @return boolean
+	 */
+	function isSearch()
+	{
+		if ( isset( $_POST['projectmanager_search'] ) )
+			return true;
+	
+		return false;
+	}
+	
+	
+	/**
+	 * returns search string
+	 *
+	 * @param none
+	 * @return string
+	 */
+	function getSearchString()
+	{
+		if ( $this->isSearch() )
+			return $_POST['projectmanager_search'];
+		
+		return '';
+	}
+	
+	
 	/**
 	 * gets supported file types
 	 *
@@ -335,7 +393,7 @@ class WP_ProjectManager
 			$search = " WHERE `project_id` = {$project_id}";
 		} else {
 			$search = " WHERE `project_id` = {$this->project_id}";
-			$search .= ( null != $this->group )? " AND `grp_id` = {$this->group}" : '';
+			$search .= ( $this->isGroup() )? " AND `grp_id` = {$this->group}" : '';
 		}
 					
 		$num_dataset = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_dataset} $search" );
@@ -366,7 +424,7 @@ class WP_ProjectManager
 
 		$sql = "SELECT `id`, `name`, `image`, `grp_id` FROM {$wpdb->projectmanager_dataset}";
 	
-		if ( $this->group )
+		if ( $this->isGroup() )
 			$sql .= " WHERE `project_id` = {$project_id} AND `grp_id` = {$this->group}";
 		elseif ( $dataset_id )
 			$sql .= " WHERE `id` = {$dataset_id}";
@@ -566,7 +624,7 @@ class WP_ProjectManager
 			
 		$search = "WHERE `id` < '".$dataset_id."' AND project_id = {$this->project_id}";
 				
-		if ( $this->group )
+		if ( $this->isGroup() )
 			$search .= " AND `grp_id` = '".$this->group."'";
 		
 		$offset = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_dataset} $search" );
@@ -947,14 +1005,14 @@ class WP_ProjectManager
 		}
 		
 		if ( stristr( $content, '[dataset_list' )) {
-			$search = "@\[dataset_list\s*=\s*(\w+),(|table|ul|ol|)\]@i";
+			$search = "@\[dataset_list\s*=\s*(\w+),(|\d+),(|table|ul|ol|)\]@i";
 		
 			if ( preg_match_all($search, $content , $matches) ) {
 				if (is_array($matches)) {
 					foreach($matches[1] AS $key => $v0) {
 						$project_id = $v0;
 						$search = $matches[0][$key];
-						$replace = $this->getDatasetList($project_id, $matches[2][$key]);
+						$replace = $this->getDatasetList($project_id, $matches[3][$key], $matches[2][$key]);
 			
 						$content = str_replace($search, $replace, $content);
 					}
@@ -963,14 +1021,14 @@ class WP_ProjectManager
 		}
 		
 		if ( stristr( $content, '[dataset_gallery' )) {
-			$search = "@\[dataset_gallery\s*=\s*(\w+),(\d+)\]@i";
+			$search = "@\[dataset_gallery\s*=\s*(\w+),(\d+),(|\d+)\]@i";
 		
 			if ( preg_match_all($search, $content , $matches) ) {
 				if (is_array($matches)) {
 					foreach($matches[1] AS $key => $v0) {
 						$project_id = $v0;
 						$search = $matches[0][$key];
-						$replace = $this->getGallery($project_id, $matches[2][$key]);
+						$replace = $this->getGallery($project_id, $matches[2][$key], $matches[3][$key]);
 			
 						$content = str_replace($search, $replace, $content);
 					}
@@ -991,7 +1049,7 @@ class WP_ProjectManager
 	function getSearchForm( $project_id, $pos )
 	{
 		$this->project_id = $project_id;
-		$search_string = isset( $_POST['projectmanager_search'] ) ? $_POST['projectmanager_search'] : '';
+		$search_string = ($this->isSearch()) ? $this->getSearchString() : '';
 		$form_field_id = isset( $_POST['form_field'] ) ? $_POST['form_field'] : 0;
 		
 		if ( !isset($_GET['show'])) {
@@ -1005,7 +1063,9 @@ class WP_ProjectManager
 					$out .= "\n\t\t<option value='".$form_field->id."'".$selected.">".$form_field->label."</option>";
 				}
 				$out .= "\n\t</select>";
-			}
+			} else
+				$out .= "\n\t<input type='hidden' name='form_field' value='0' />";
+				
 			$out .= "\n\t<input type='submit' value='".__('Search', 'projectmanager')." &raquo;' class='button' />";
 			$out .= "\n</form>\n</div>\n\n<p>";
 		}
@@ -1098,23 +1158,34 @@ class WP_ProjectManager
 	 *
 	 * @param int $project_id
 	 * @param string $output
+	 * @param ing $grp_id
 	 * @return string
 	 */
-	function getDatasetList( $project_id, $output = 'table' )
+	function getDatasetList( $project_id, $output = 'table', $grp_id = false )
 	{
 		$out = '';
 		$this->setSettings($project_id);
+		if ( $grp_id ) $this->setGroup($grp_id);
 	
 		if ( isset( $_GET['show'] ) ) {
 			$out .= $this->getSingleView($project_id, $_GET['show']);
 		} else {
-			if ( isset( $_POST['projectmanager_search'] ) )
-				$datasets = $this->getSearchResults($_POST['projectmanager_search'], $_POST['form_field']);
+			if ( $this->isSearch() )
+				$datasets = $this->getSearchResults($this->getSearchString(), $_POST['form_field']);
 			else
 				$datasets = $this->getDataset( null, 'name ASC', true, $project_id );
 			
 			$out .= "</p>";
 			if ( $datasets ) {
+				$num_datasets = ( $this->isSearch() ) ? count($datasets) : $this->getNumDatasets();
+				$out .= "\n<div id='projectmanager_datasets_header'>";
+				$out .= "\n\t<p id='projectmanager_num_datasets'>".sprintf(__ngettext('%d Dataset', '%d Datasets', $num_datasets , 'projectmanager'),$num_datasets)."</p>";
+				if ( $this->isGroup() && !$grp_id )
+					$out .= "<h3>".$this->getGroupTitle($this->getGroup())."</h3>";
+				elseif ( $this->isSearch() )
+					$out .= "<h3>".sprintf(__('Search: %d of %d', 'projectmanager'), $num_datasets, $this->getNumDatasets($project_id))."</h3>";
+				$out .= "\n</div>";
+				
 				if ( 'table' == $output ) {
 					$out .= "\n<table class='projectmanager'>\n<tr>\n";
 					$out .= "\t<th scope='col'>".__( 'Name', 'projectmanager' )."</th>";
@@ -1157,20 +1228,22 @@ class WP_ProjectManager
 	 *
 	 * @param int $project_id
 	 * @param int $num_cols
+	 * @param int $grp_id
 	 * @return string
 	 */
-	function getGallery( $project_id, $num_cols )
+	function getGallery( $project_id, $num_cols, $grp_id = false )
 	{
 		$out = '';
 		$options = get_option( 'projectmanager' );
 		
 		$this->setSettings($project_id);
+		if ( $grp_id ) $this->setGroup($grp_id);
 					
 		if ( isset( $_GET['show'] ) ) {
 			$out .= $this->getSingleView($project_id, $_GET['show']);
 		} else {
-			if ( isset( $_POST['projectmanager_search'] ) )
-				$datasets = $this->getSearchResults($_POST['projectmanager_search'], $_POST['form_field']);
+			if ( $this->isSearch() )
+				$datasets = $this->getSearchResults($this->getSearchString(), $_POST['form_field']);
 			else
 				$datasets = $this->getDataset( null, 'name ASC', true, $project_id );
 			
@@ -1241,7 +1314,7 @@ class WP_ProjectManager
 	 * @param string $search
 	 * @param int $meta_id
 	 */
-	function getSearchResults( $search, $meta_id )
+	function getSearchResults( $search )
 	{
 		global $wpdb;
 		

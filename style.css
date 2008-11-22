@@ -3,8 +3,10 @@
 .projectmanager_right { float: right; margin: auto 0 1em 1.5em; }
 .projectmanager_center { display: block; margin: auto; }
 
+div#projectmanager_datasets_header { clear: both; padding: 1em 0 0 0; margin: 0; }
+p#projectmanager_num_datasets { float: right; margin: 0; padding: 0; }
 
-table.projectmanager { clear: both; border: none; margin-top: 1em; width: 100%; color: #000000;	}
+table.projectmanager { clear: both; border: none; width: 100%; color: #000000; margin: 0; padding: 0; }
 table.projectmanager th, table.projectmanager td { padding: 3px 5px; }
 table.projectmanager th { background: #dfdfdf; }
 table.projectmanager .alternate { background: #f1f1f1; }
@@ -27,6 +29,8 @@ form.projectmanager input, select { margin: 1em 0em 0em 0em; line-height: 1.5em;
 	
 /* ---Admin Panel --- */
 div#projectmanager_navbar { clear: both; width: 100%; }
+
+div.tablenav p.num_datasets { float: right; margin: 0; padding: 0; }
 
 p.info { font-size: 0.8em; font-style: italic; margin: 0.5em 0; padding: 0; }
 

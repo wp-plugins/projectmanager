@@ -42,15 +42,15 @@ to display the group selections. $project_id is again the ID of the project to d
 
 Use
 
-`[dataset_list=$project_id,$type]`
+`[dataset_list=$project_id,$group,$type]`
 
-to display the datasets of the project with ID=$project_id in a simple form. Display types can be 'table', 'ul', 'ol'.
+to display the datasets of the project with ID=$project_id in a simple form. Display types can be 'table', 'ul', 'ol'. $group is either the groupID of a specific group or left empty.
 
 Use
 
-`[dataset_gallery=$project_id,$cols]`
+`[dataset_gallery=$project_id,$cols,$group]`
 
-to display the datasets as a gallery, with a picture if one is supplied. $cols is the number of columns.
+to display the datasets as a gallery, with a picture if one is supplied. $cols is the number of columns. $group is same as above.
 
 
 == Installation ==
@@ -59,6 +59,7 @@ To install the plugin to the following steps
 
 1. Unzip the zip-file and upload the content to your Wordpress Plugin directory.
 2. Activiate the plugin via the admin plugin page.
+
 
 == Screenshots ==
 1. Project Overview Page
@@ -73,6 +74,8 @@ To install the plugin to the following steps
 **Version 1.2**, *November--2008*
 
 - Ajax editing of datasets
+- display of specific group only
+- some other minor new features
 
 **Version 1.1**, *November-21-2008*
 

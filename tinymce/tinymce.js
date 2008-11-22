@@ -33,9 +33,13 @@ function insertProjectManagerLink() {
 	if (list.className.indexOf('current') != -1) {
 		var projectId = document.getElementById('list_projects').value;
 		var showtype = ProjectManagerGetCheckedValue(document.getElementsByName('list_showtype'));
+		var grpid = document.getElementById('list_projects_group').value;
 		
+		if ( grpid == -1 )
+			var grpid = '';
+			
 		if (projectId != 0)
-			tagtext = "[dataset_list=" + projectId + "," + showtype + "]";
+			tagtext = "[dataset_list=" + projectId + "," + grpid + "," + showtype + "]";
 		else
 			tinyMCEPopup.close();
 	}
@@ -43,9 +47,13 @@ function insertProjectManagerLink() {
 	if (gallery.className.indexOf('current') != -1) {
 		var projectId = document.getElementById('gallery_projects').value;
 		var numCols = document.getElementById('num_cols').value;
+		var grpid = document.getElementById('gallery_projects_group').value;
 		
+		if ( grpid == -1 )
+			var grpid = '';
+			
 		if (projectId != 0)
-			tagtext = "[dataset_gallery=" + projectId + "," + numCols + "]";
+			tagtext = "[dataset_gallery=" + projectId + "," + numCols + "," + grpid + "]";
 		else
 			tinyMCEPopup.close();
 	}
