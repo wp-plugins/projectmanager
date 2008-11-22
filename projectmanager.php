@@ -998,7 +998,7 @@ class WP_ProjectManager
 			$out = "</p>\n\n<div class='projectmanager_".$pos."'>\n<form class='projectmanager' action='' method='post'>";
 			$out .= "\n\t<input type='text' name='projectmanager_search' value='".$search_string."' />";
 			if ( $form_fields = $this->getFormFields() ) {
-				$out .= "\n\t<select size='1' style='margin: 1em 1em 0em 1em;' name='form_field'>";
+				$out .= "\n\t<select size='1' name='form_field'>";
 				$out .= "\n\t\t<option value='0'>".__( 'Name', 'projectmanager' )."</option>";
 				foreach ( $form_fields AS $form_field ) {
 					$selected = ( $form_field_id == $form_field->id ) ? " selected='selected'" : "";
@@ -1042,17 +1042,27 @@ class WP_ProjectManager
 	function getGroupDropdown( $project_id, $pos )
 	{
 		global $wpdb, $wp_query;
-		$page_obj = $wp_query->get_queried_object();
-		$page_ID = $page_obj->ID;
+		
+		if ( is_admin() ) {
+			$hidden = "\n<input type='hidden' name='page' value='".$_GET['page']."' />\n<input type='hidden' name='id' value='".$project_id."' />";
+			$action = 'edit.php';
+		} else {
+			$page_obj = $wp_query->get_queried_object();
+			$page_ID = $page_obj->ID;
+		
+			$hidden = "\n<input type='hidden' name='page_id' value='".$page_ID."' />";
+			$action = get_permalink($page_ID);
+		}
 		
 		$options = get_option( 'projectmanager' );
 		
 		$out = "</p>";
 		if ( !isset($_GET['show'])) {
-			$out .= "\n\n<div class='projectmanager_".$pos."'>\n<form action='".get_permalink($page_ID)."' method='get'>\n";
-			$out .= wp_dropdown_categories(array('echo' => 0, 'hide_empty' => 0, 'name' => 'grp_id', 'orderby' => 'name', 'selected' => $grp_id, 'hierarchical' => true, 'child_of' => $options[$project_id]['category'], 'show_option_all' => __('Groups', 'projectmanager'), 'show_option_none' => '----------'));
-			$out .= "\n<input type='hidden' name='page_id' value='".$page_ID."' />";
-			$out .= "\n<input type='submit' value='".__( 'Go', 'projectmanager' )."' />";
+			$selected = isset($_GET['grp_id']) ? $_GET['grp_id'] : null;
+			$out .= "\n\n<div class='projectmanager_".$pos."'>\n<form class='projectmanager' action='".$action."' method='get'>\n";
+			$out .= wp_dropdown_categories(array('echo' => 0, 'hide_empty' => 0, 'name' => 'grp_id', 'orderby' => 'name', 'selected' => $selected, 'hierarchical' => true, 'child_of' => $options[$project_id]['category'], 'show_option_all' => __('Groups', 'projectmanager'), 'show_option_none' => '&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;'));
+			$out .= $hidden;
+			$out .= "\n<input type='submit' value='".__( 'Go', 'projectmanager' )."' class='button' />";
 			$out .= "\n</form>\n</div>\n\n";
 		}
 		$out .= "<p>";

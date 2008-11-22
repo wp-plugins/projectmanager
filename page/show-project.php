@@ -35,12 +35,15 @@ $project_title = $projectmanager->getProjectTitle( $project_id );
 	
 	<h2><?php echo $project_title ?></h2>
 	
+	<div id="projectmanager_navbar">
 	<?php $projectmanager->printSearchForm( $project_id, 'right' ); ?>
+	<?php echo $projectmanager->getGroupDropdown( $project_id, 'right' ) ?>
 	<p>
 		<a href="edit.php?page=projectmanager/page/settings.php&amp;project_id=<?php echo $project_id ?>"><?php _e( 'Settings', 'projectmanager' ) ?></a> &middot;
 		<a href="edit.php?page=projectmanager/page/formfields.php&amp;project_id=<?php echo $project_id ?>"><?php _e( 'Form Fields', 'projectmanager' ) ?></a> &middot;
 		<a href="edit.php?page=projectmanager/page/dataset.php&amp;project_id=<?php echo $project_id ?>"><?php _e( 'Add Dataset', 'projectmanager' ) ?></a>
 	</p>
+	</div>
 	
 	<form id="dataset-filter" method="post" action="">
 		
