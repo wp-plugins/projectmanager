@@ -72,7 +72,7 @@ To install the plugin to the following steps
 
 **Version 1.2**, *November--2008*
 
-- Ajax editing of groups and dynamic form fields
+- Ajax editing of datasets
 
 **Version 1.1**, *November-21-2008*
 
