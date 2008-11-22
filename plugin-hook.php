@@ -58,6 +58,7 @@ add_action( 'admin_menu', array(&$projectmanager, 'addAdminMenu') );
 add_action( 'widgets_init', array(&$projectmanager, 'initWidget') );
 
 // Ajax Actions
+add_action('wp_ajax_projectmanager_save_name', 'projectmanager_save_name' );
 add_action('wp_ajax_projectmanager_save_group', 'projectmanager_save_group' );
 add_action('wp_ajax_projectmanager_save_form_field_data', 'projectmanager_save_form_field_data' );
 

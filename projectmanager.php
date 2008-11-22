@@ -447,8 +447,7 @@ class WP_ProjectManager
 				elseif ( 2 == $meta->type ) {
 					if ( strlen($meta_value) > 150 && !$show_all )
 						$meta_value = substr($meta_value, 0, 150)."...";
-					if ( $show_all )
-						$meta_value = nl2br($meta_value);
+					$meta_value = nl2br($meta_value);
 						
 					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset_id."'>".$meta_value."</span>";
 				} elseif ( 3 == $meta->type )
@@ -464,7 +463,7 @@ class WP_ProjectManager
 							$out .= "\n\t<dt class='projectmanager'>".$meta->label."</dt><dd>".$meta_value."</dd>";
 						} else {
 							$out .= "\n\t<".$output.">";
-							$out .= $this->getAjaxThickbox( $dataset_id, $meta->form_field_id, $meta->type, $meta->value );
+							$out .= $this->getThickbox( $dataset_id, $meta->form_field_id, $meta->type, $meta->value );
 							$out .= "\n\t\t".$meta_value . $this->getThickboxLink($dataset_id, $meta->form_field_id, $meta->type, $meta->label." ".__('of','projectmanager')." ".$dataset_name);
 							$out .= "\n\t</".$output.">";
 						}
@@ -511,7 +510,7 @@ class WP_ProjectManager
 	 * @param string $value
 	 * @return string
 	 */
-	function getAjaxThickbox( $dataset_id, $formfield_id, $formfield_type, $value )
+	function getThickbox( $dataset_id, $formfield_id, $formfield_type, $value )
 	{
 		$out = '';
 		if ( is_admin() && current_user_can( 'manage_projects' ) ) {
@@ -1398,7 +1397,7 @@ class WP_ProjectManager
 		echo "<link rel='stylesheet' href='".$this->plugin_url."/style.css' type='text/css' />\n";
 		
 		if ( is_admin() AND isset( $_GET['page'] ) AND substr( $_GET['page'], 0, 14 ) == 'projectmanager' ) {
-			wp_register_script( 'projectmanager', $this->plugin_url.'/js/functions.js', array( 'tiny_mce' ), PROJECTMANAGER_VERSION );
+			wp_register_script( 'projectmanager', $this->plugin_url.'/js/functions.js', array( ), PROJECTMANAGER_VERSION );
 			wp_register_script( 'projectmanager_formfields', $this->plugin_url.'/js/formfields.js', array( 'projectmanager' ), PROJECTMANAGER_VERSION );
 			wp_register_script ('projectmanager_ajax', $this->plugin_url.'/js/ajax.js', array( 'sack', 'thickbox', 'projectmanager' ), PROJECTMANAGER_VERSION );
 		

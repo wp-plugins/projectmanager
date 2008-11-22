@@ -77,7 +77,16 @@ $project_title = $projectmanager->getProjectTitle( $project_id );
 			?>
 				<tr class="<?php echo $class ?>">
 					<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $dataset->id ?>" name="delete[<?php echo $dataset->id ?>]" /></th>
-					<td><a href="edit.php?page=projectmanager/page/dataset.php&amp;edit=<?php echo $dataset->id ?>&amp;project_id=<?php echo $project_id ?>"><?php echo $dataset->name ?></a></td>
+					<td>
+						<!-- Popup Window for Ajax name editing -->
+						<div id="datasetnamewrap<?php echo $dataset->id; ?>" style="width:250px;height:80px;overflow:auto;display:none;">
+							<div id="datasetnamebox<?php echo $dataset->id; ?>" class='projectmanager_thickbox'>
+								<form><input type='text' name='dataset_name<?php echo $dataset_id ?>' id='dataset_name<?php echo $dataset->id ?>' value='<?php echo $dataset->name ?>' size='30' />
+								<div style="text-align:center; margin-top: 1em;"><input type="button" value="<?php _e('Save') ?>" class="button-secondary" onclick="ProjectManager.ajaxSaveDatasetName(<?php echo $dataset->id; ?>);return false;" />&#160;<input type="button" value="<?php _e('Cancel') ?>" class="button" onclick="tb_remove();" /></div></form>
+							</div>
+						</div>
+						<a href="edit.php?page=projectmanager/page/dataset.php&amp;edit=<?php echo $dataset->id ?>&amp;project_id=<?php echo $project_id ?>"><span id="dataset_name_text<?php echo $dataset->id ?>"><?php echo $dataset->name ?></span></a>&#160;<a class="thickbox" id="thickboxlink_name<?php echo $dataset->id ?>" href="#TB_inline?height=100&amp;width=250&amp;inlineId=datasetnamewrap<?php echo $dataset->id ?>" title="<?php _e('Name','projectmanager') ?>"><img src="<?php echo PROJECTMANAGER_URL ?>/images/edit.gif" border="0" alt="<?php _e('Edit') ?>" /></a>
+					</td>
 					<?php if ( '' != $options[$project_id]['category'] ) : ?>
 					<td>
 						<!-- Popup Window for Ajax group editing -->
@@ -87,7 +96,7 @@ $project_title = $projectmanager->getProjectTitle( $project_id );
 								<div style="text-align:center; margin-top: 1em;"><input type="button" value="<?php _e('Save') ?>" class="button-secondary" onclick="ProjectManager.ajaxSaveGroup(<?php echo $dataset->id; ?>);return false;" />&#160;<input type="button" value="<?php _e('Cancel') ?>" class="button" onclick="tb_remove();" /></div></form>
 							</div>
 						</div>
-						<span id="prjctmngr_group<?php echo $dataset->id ?>"><?php echo $group ?></span>&#160;<a class="thickbox" id="thickboxlink<?php echo $dataset->id ?>" href="#TB_inline?height=100&amp;width=250&amp;inlineId=groupchoosewrap<?php echo $dataset->id ?>" title="<?php printf(__('Group of %s','projectmanager'),$dataset->name) ?>"><img src="<?php echo PROJECTMANAGER_URL ?>/images/edit.gif" border="0" alt="<?php _e('Edit') ?>" /></a>
+						<span id="dataset_group_text<?php echo $dataset->id ?>"><?php echo $group ?></span>&#160;<a class="thickbox" id="thickboxlink_group<?php echo $dataset->id ?>" href="#TB_inline?height=100&amp;width=250&amp;inlineId=groupchoosewrap<?php echo $dataset->id ?>" title="<?php printf(__('Group of %s','projectmanager'),$dataset->name) ?>"><img src="<?php echo PROJECTMANAGER_URL ?>/images/edit.gif" border="0" alt="<?php _e('Edit') ?>" /></a>
 					</td>
 					<?php endif; ?>
 					<?php $projectmanager->printDatasetMetaData( $dataset->id, 'td', false, $dataset->name ) ?>

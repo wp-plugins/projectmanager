@@ -1,6 +1,26 @@
 <?php
 
 /**
+ * SACK response function for saving dataset name
+ *
+ * @since 1.2
+ */
+function projectmanager_save_name() {
+	global $wpdb;
+	
+	$dataset_id = intval($_POST['dataset_id']);
+	$new_name = $_POST['new_name'];
+	
+	$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `name` = '%s' WHERE `id` = '%d'", $new_name, $dataset_id ) );
+
+	die( "ProjectManager.reInit;jQuery('span#dataset_name_text" . $dataset_id . "').fadeOut('fast', function() {
+		jQuery('a#thickboxlink_name" . $dataset_id . "').show();
+		jQuery('span#dataset_name_text" . $dataset_id . "').html('" . addslashes_gpc( $new_name ) . "').fadeIn('fast');
+	});");
+}
+
+
+/**
  * SACK response function for saving group
  *
  * @since 1.2
@@ -9,19 +29,19 @@ function projectmanager_save_group() {
 	global $wpdb;
 	
 	$dataset_id = intval($_POST['dataset_id']);
-	$group = intval($_POST['group']);
+	$new_group = intval($_POST['group']);
 	
 	if ( $group != -1 ) {
-		$cat = get_category($group);
+		$cat = get_category($new_group);
 		$cat_name = $cat->name;
 	} else
 		$cat_name = __('None', 'projectmanager');
 	
-	$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->projectmanager_dataset} SET `grp_id` = %d WHERE `id` = %d", $group, $dataset_id ) );
+	$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->projectmanager_dataset} SET `grp_id` = %d WHERE `id` = %d", $new_group, $dataset_id ) );
 
-	die( "ProjectManager.reInit;jQuery('span#prjctmngr_group" . $dataset_id . "').fadeOut('fast', function() {
-		jQuery('a#thickboxlink" . $dataset_id . "').show();
-		jQuery('span#prjctmngr_group" . $dataset_id . "').html('" . addslashes_gpc( $cat_name ) . "').fadeIn('fast');
+	die( "ProjectManager.reInit;jQuery('span#dataset_group_text" . $dataset_id . "').fadeOut('fast', function() {
+		jQuery('a#thickboxlink_group" . $dataset_id . "').show();
+		jQuery('span#dataset_group_text" . $dataset_id . "').html('" . addslashes_gpc( $cat_name ) . "').fadeIn('fast');
 	});");
 }
 
