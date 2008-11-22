@@ -64,7 +64,7 @@ if ( isset($_GET['edit']) ) {
 				<?php if ( 1 == $form_field->type || 3 == $form_field->type || 5 == $form_field->type ) : ?>
 				<input type="text" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" value="<?php echo $meta_data[$form_field->id] ?>" size="45" />
 				<?php elseif ( 2 == $form_field->type ) : ?>
-				<div id="poststuff" style="margin:1em auto 0.5em 0; width: 60%;">
+				<div style="width: 60%;">
 					<textarea class="projectmanager_mceEditor" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" cols="42" rows="5"><?php echo $meta_data[$form_field->id] ?></textarea>
 				</div>
 				<?php elseif ( 4 == $form_field->type ) : ?>

@@ -426,7 +426,7 @@ class WP_ProjectManager
 	 * @param boolean $show_all
 	 * @return string
 	 */
-	function getDatasetMetaData( $dataset_id, $output = 'li', $show_all = false )
+	function getDatasetMetaData( $dataset_id, $output = 'li', $show_all = false, $dataset_name = null )
 	{
 		$out = '';
 		if ( $dataset_meta = $this->getDatasetMeta( $dataset_id ) ) {
@@ -441,22 +441,33 @@ class WP_ProjectManager
 				* 5: External URL
 				*/
 				$meta_value = htmlspecialchars( $meta->value );
-					
-				if ( 2 == $meta->type )
-					$meta_value = nl2br( $meta_value );
-				elseif ( 3 == $meta->type )
-					$meta_value = "<a href='mailto:".$meta_value."'>".$meta_value."</a>";
+				
+				if ( 1 == $meta->type )
+					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset_id."'>".$meta_value."</span>";
+				elseif ( 2 == $meta->type ) {
+					if ( strlen($meta_value) > 150 && !$show_all )
+						$meta_value = substr($meta_value, 0, 150)."...";
+					if ( $show_all )
+						$meta_value = nl2br($meta_value);
+						
+					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset_id."'>".$meta_value."</span>";
+				} elseif ( 3 == $meta->type )
+					$meta_value = "<a href='mailto:".$meta_value."'><span id='datafield".$meta->form_field_id."_".$dataset_id."'>".$meta_value."</span></a>";
 				elseif ( 4 == $meta->type )
-					$meta_value = mysql2date(get_option('date_format'), $meta_value);
+					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset_id."'>".mysql2date(get_option('date_format'), $meta_value )."</span>";
 				elseif ( 5 == $meta->type )
-					$meta_value = "<a href='http://".$meta_value."' target='_blank' title='".$meta_value."'>".$meta_value."</a>";
+					$meta_value = "<a href='http://".$meta_value."' target='_blank' title='".$meta_value."'><span id='datafield".$meta->form_field_id."_".$dataset_id."'>".$meta_value."</span></a>";
 				
 				if ( 1 == $meta->show_on_startpage || $show_all ) {
 					if ( '' != $meta_value ) {
-						if ( 'dl' == $output )
+						if ( 'dl' == $output ) {
 							$out .= "\n\t<dt class='projectmanager'>".$meta->label."</dt><dd>".$meta_value."</dd>";
-						else
-							$out .= "\n\t<".$output.">".$meta_value."</".$output.">";
+						} else {
+							$out .= "\n\t<".$output.">";
+							$out .= $this->getAjaxThickbox( $dataset_id, $meta->form_field_id, $meta->type, $meta->value );
+							$out .= "\n\t\t".$meta_value . $this->getThickboxLink($dataset_id, $meta->form_field_id, $meta->type, $meta->label." ".__('of','projectmanager')." ".$dataset_name);
+							$out .= "\n\t</".$output.">";
+						}
 					} elseif ( 'td' == $output )
 						$out .= "\n\t<".$output.">&#160;</".$output.">";
 				}
@@ -464,12 +475,86 @@ class WP_ProjectManager
 		}
 		return $out;
 	}
-	function printDatasetMetaData( $dataset_id, $output = 'li', $show_all = false )
+	function printDatasetMetaData( $dataset_id, $output = 'li', $show_all = false, $dataset_name = null )
 	{
-		echo $this->getDatasetMetaData( $dataset_id, $output, $show_all );
+		echo $this->getDatasetMetaData( $dataset_id, $output, $show_all, $dataset_name );
 	}
 		 
 		 
+	/**
+	 * get Thickbox Link for Ajax editing
+	 *
+	 * @param ing $dataset_id
+	 * @param int $formfield_id
+	 * @return string
+	 */
+	function getThickboxLink( $dataset_id, $formfield_id,  $formfield_type, $title )
+	{
+		$out = '';
+		if ( is_admin() && current_user_can( 'manage_projects' ) ) {
+			$dims = array('width' => '250', 'height' => '100');
+			if ( 2 == $formfield_type )
+				$dims = array('width' => '350', 'height' => '305');
+						
+			$out .= "&#160;<a class='thickbox' id='thickboxlink".$formfield_id."_".$dataset_id."' href='TB_inline?height=".$dims['height']."&width=".$dims['width']."&inlineId=datafieldwrap".$formfield_id."_".$dataset_id."' title='".$title."'><img src='".$this->plugin_url."/images/edit.gif' border='0' alt='".__('Edit')."' /></a>";
+		}
+		return $out;
+	}
+	
+	
+	/**
+	 * get Ajax Thickbox
+	 *
+	 * @param int $dataset_id
+	 * @param int $formfield_id
+	 * @param int $formfield_type
+	 * @param string $value
+	 * @return string
+	 */
+	function getAjaxThickbox( $dataset_id, $formfield_id, $formfield_type, $value )
+	{
+		$out = '';
+		if ( is_admin() && current_user_can( 'manage_projects' ) ) {
+			$dims = array('width' => '250px', 'height' => '80px');
+			if ( 2 == $formfield_type )
+				$dims = array('width' => '350px', 'height' => '250px');
+			
+			$out .= "\n\t\t<div id='datafieldwrap".$formfield_id."_".$dataset_id."' style='width:".$dims['width'].";height:".$dims['height'].";overfow:auto;display:none;'>";
+			$out .= "\n\t\t<div id='datafieldbox".$formfield_id."_".$dataset_id."' class='projectmanager_thickbox'>";
+			$out .= "\n\t\t\t<form>";
+			if ( 1 == $formfield_type || 3 == $formfield_type || 5 == $formfield_type )
+				$out .= "\n\t\t\t<input type='text' name='form_field_".$formfield_id."_".$dataset_id."' id='form_field_".$formfield_id."_".$dataset_id."' value='".$value."' size='30' />";
+			elseif ( 2 == $formfield_type )
+				$out .= "\n\t\t\t<textarea name='form_field_".$formfield_id."_".$dataset_id."' id='form_field_".$formfield_id."_".$dataset_id."' rows='10' cols='40'>".$value."</textarea>";
+			elseif  ( 4 == $formfield_type ) {
+				$out .= "\n\t\t\t<select size='1' name='form_field_".$formfield_id."_".$dataset_id."_day' id='form_field_".$formfield_id."_".$dataset_id."_day'>\n\t\t\t<option value=''>Tag</option>\n\t\t\t<option value=''>&#160;</option>";
+				for ( $day = 1; $day <= 30; $day++ ) {
+					$selected = ( $day == substr($value, 8, 2) ) ? ' selected="selected"' : '';
+					$out .= "\n\t\t\t<option value='".str_pad($day, 2, 0, STR_PAD_LEFT)."'".$selected.">".$day."</option>";
+				}
+				$out .= "\n\t\t\t</select>";
+				$out .= "\n\t\t\t<select size='1' name='form_field_".$formfield_id."_".$dataset_id."_month' id='form_field_".$formfield_id."_".$dataset_id."_month'>\n\t\t\t<option value=''>Monat</option>\n\t\t\t<option value=''>&#160;</option>";
+				foreach ( $this->getMonths() AS $key => $month ) {
+					$selected = ( $key == substr($value, 5, 2) ) ? ' selected="selected"' : '';
+					$out .= "\n\t\t\t<option value='".str_pad($key, 2, 0, STR_PAD_LEFT)."'".$selected.">".$month."</option>";
+				}
+				$out .= "\n\t\t\t</select>";
+				$out .= "\n\t\t\t<select size='1' name='form_field_".$formfield_id."_".$dataset_id."_year' id='form_field_".$formfield_id."_".$dataset_id."_year'>\n\t\t\t<option value=''>Jahr</option>\n\t\t\t<option value=''>&#160;</option>";
+				for ( $year = date('Y')-50; $year <= date('Y')+10; $year++ ) {
+					$selected = ( $year == substr($value, 0, 4) ) ? ' selected="selected"' : '';
+					$out .= "\n\t\t\t<option value='".$year."'".$selected.">".$year."</option>";
+				}
+				$out .= "\n\t\t\t</select>";
+			}
+			$out .= "\n\t\t\t<div style='text-align:center; margin-top: 1em;'><input type='button' value='".__('Save')."' class='button-secondary' onclick='ProjectManager.ajaxSaveDataField(".$dataset_id.",".$formfield_id.",".$formfield_type.");return false;' />&#160;<input type='button' value='".__('Cancel')."' class='button' onclick='tb_remove();' /></div>";
+			$out .= "\n\t\t\t</form>";
+			$out .= "\n\t\t</div>";
+			$out .= "\n\t\t</div>";
+		}
+		return $out;
+	}
+	
+	
 	/**
 	 * gets offset of dataset
 	 *
@@ -1086,8 +1171,8 @@ class WP_ProjectManager
 				
 				foreach ( $datasets AS $dataset ) {
 					$i++;
-					$before_name = ($this->hasDetails($project_id)) ? '<a href="'.$this->pagination->createURL().'?grp_id='.$this->getGroup().'&amp;show='.$dataset->id.'">' : '';
-					$after_name = ($this->hasDetails($project_id)) ? '</a>' : '';
+					$before_name = '<a href="'.$this->pagination->createURL().'?grp_id='.$this->getGroup().'&amp;show='.$dataset->id.'">';
+					$after_name = '</a>';
 					
 					$out .= "\n\t<td style='padding: 5px;'>";
 					if ($options[$project_id]['show_image'] == 1 && '' != $dataset->image)
@@ -1313,8 +1398,12 @@ class WP_ProjectManager
 		echo "<link rel='stylesheet' href='".$this->plugin_url."/style.css' type='text/css' />\n";
 		
 		if ( is_admin() AND isset( $_GET['page'] ) AND substr( $_GET['page'], 0, 14 ) == 'projectmanager' ) {
-			wp_register_script( 'projectmanager', $this->plugin_url.'/js/functions.js', array( 'tiny_mce' , 'sack', 'thickbox' ), '1.0' );
-			wp_print_scripts( 'projectmanager' );
+			wp_register_script( 'projectmanager', $this->plugin_url.'/js/functions.js', array( 'tiny_mce' ), PROJECTMANAGER_VERSION );
+			wp_register_script( 'projectmanager_formfields', $this->plugin_url.'/js/formfields.js', array( 'projectmanager' ), PROJECTMANAGER_VERSION );
+			wp_register_script ('projectmanager_ajax', $this->plugin_url.'/js/ajax.js', array( 'sack', 'thickbox', 'projectmanager' ), PROJECTMANAGER_VERSION );
+		
+			wp_print_scripts( 'projectmanager_formfields' );
+			wp_print_scripts( 'projectmanager_ajax');
 			
 			echo '<link rel="stylesheet" href="'.get_option( 'siteurl' ).'/wp-includes/js/thickbox/thickbox.css" type="text/css" media="screen" />';
 			

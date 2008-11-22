@@ -37,3 +37,6 @@ label.projectmanager-widget { padding: 0.5em 0.5em; width: 5em; float: left; fon
 p.projectmanager_breadcrumb { float: right; margin: 0 1.5em 1.3em auto; }
 
 div.wrap h2 { clear: none; }
+
+div.projectmanager_thickbox { text-align: center; }
+div.projectmanager_thickbox input, div.projectmanager_thickbox textarea, div.projectmanager_thickbox select { margin-top: 1em; }

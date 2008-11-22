@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
 "POT-Creation-Date: 2008-11-20 18:21+0000\n"
-"PO-Revision-Date: 2008-11-20 19:33+0100\n"
+"PO-Revision-Date: 2008-11-22 01:37+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -362,4 +362,10 @@ msgstr "Abbrechen"
 #: tinymce/window.php:183
 msgid "Insert"
 msgstr "Einfügen"
+
+msgid "Group of %s"
+msgstr "Gruppe von %s"
+
+msgid "of"
+msgstr "von"
 
