@@ -908,7 +908,7 @@ class WP_ProjectManager
 		 
 		
 	/**
-	 * insert search form in post or page
+	 * replace shortcodes with respective HTML in posts or pages
 	 *
 	 * @param string $content
 	 * @return string

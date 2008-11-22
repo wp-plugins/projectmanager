@@ -19,6 +19,7 @@ This plugin is a datamanager for any recurrent datasets. It can be used to manag
 * simple search of any form field
 * usage of Wordpress Category System for grouping
 * various output formats (table, list, gallery)
+* Ajax enabled editing of datasets
 * simple display in frontend over shortcodes
 * easy adding of shortcodes via TinyMCE Button
 
@@ -69,7 +70,11 @@ To install the plugin to the following steps
 
 == ChangeLog ==
 
-**Version 1.1**, *November-21*
+**Version 1.2**, *November--2008*
+
+- Ajax editing of groups and dynamic form fields
+
+**Version 1.1**, *November-21-2008*
 
 - major restructuring of plugin
 - full control of display via shortcodes
