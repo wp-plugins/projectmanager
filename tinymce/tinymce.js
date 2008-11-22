@@ -1,3 +1,7 @@
+function addAttributes() {
+	document.getElementById('list_projects').setAttribute("onChange", "displayListGroupSelection()", 1);
+}
+
 function init() {
 	tinyMCEPopup.resizeToInnerSize();
 }

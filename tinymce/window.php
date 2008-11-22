@@ -36,7 +36,7 @@ $options = get_option('projectmanager');
 	<script language="javascript" type="text/javascript" src="<?php echo PROJECTMANAGER_URL ?>/tinymce/tinymce.js"></script>
 	<base target="_self" />
 </head>
-<body id="link" onload="tinyMCEPopup.executeOnLoad('init();');document.body.style.display='';document.getElementById('projecttag').focus();" style="display: none">
+<body id="link" onload="tinyMCEPopup.executeOnLoad('init();');document.body.style.display='';" style="display: none">
 <!-- <form onsubmit="insertLink();return false;" action="#"> -->
 	<form name="ProjectManager" action="#">
 	<div class="tabs">
@@ -51,7 +51,7 @@ $options = get_option('projectmanager');
 		
 	<!-- dataset list panel -->
 	<div id="list_panel" class="panel current"><br />
-	<table style="border: 0;" cellpadding="5">
+	<table style="border: 0;" cellpadding="5" id="list_panel_table">
 	<tr>
 		<td><label for="list_projects"><?php _e("Project", 'projectmanager'); ?></label></td>
 		<td>
@@ -67,9 +67,19 @@ $options = get_option('projectmanager');
         	</select>
 		</td>
 	</tr>
-	<tr>
-		<td><label for="list_projects_group"><?php _e("Group", 'projectmanager'); ?></label></td>
-		<td><?php wp_dropdown_categories(array('hide_empty' => 0, 'name' => 'list_projects_group', 'orderby' => 'name', 'hierarchical' => true, 'show_option_none' => __('None'))); ?></td>
+	<tr id='list_projects_groups_form'>
+	<script language="javascript" type="text/javascript">
+	function displayListGroupSelection() {
+		var list_projects_id = document.getElementById('list_projects').value;
+		<?php echo 'groupTitle = "'.__("Group", "projectmanager").'";'; ?>
+		<?php echo 'groupSelection = "'.wp_dropdown_categories(array('hide_empty' => 0, 'name' => 'list_projects_group', 'orderby' => 'name', 'hierarchical' => true, 'show_option_none' => __('None').'";'; ?>
+		if ( list_projects_id != 0 ) {
+			out = "\n\t<td><label for='list_projects_group'>" + groupTitle + "</label></td>";
+			//out += "\n\t<td><?php //)); ?></td>";
+			document.getElementById('list_projects_groups_form').innerHTML = out;
+		}
+	}
+	</script>
 	</tr>
 	<tr>
 		<td nowrap="nowrap" valign="top"><label><?php _e( 'Show as', 'projectmanager' ) ?></label></td>
@@ -195,5 +205,8 @@ $options = get_option('projectmanager');
 	</div>
 
 </form>
+<script language="javascript" type="text/javascript">
+	addAttributes();
+</script>
 </body>
 </html>
