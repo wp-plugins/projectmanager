@@ -30,7 +30,7 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 $project_title = $projectmanager->getProjectTitle( $project_id );	
 ?>
 <div class="wrap">
-	<?php $projectmanager->printBreadcrumb( $project_id, $project_title ) ?>
+	<?php $projectmanager->printBreadcrumb( $project_id, $project_title, true ) ?>
 	
 	<h2><?php echo $project_title ?></h2>
 	

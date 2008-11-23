@@ -71,6 +71,10 @@ To install the plugin to the following steps
 
 == ChangeLog ==
 
+**Version 1.3**, **
+
+- option to add direct link to project in navigation panel
+
 **Version 1.2.2**, *November-23-2008*
 
 - fixed upgrade bug

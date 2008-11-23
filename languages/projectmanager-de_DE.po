@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
 "POT-Creation-Date: 2008-11-20 18:21+0000\n"
-"PO-Revision-Date: 2008-11-23 14:17+0100\n"
+"PO-Revision-Date: 2008-11-23 23:48+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -380,4 +380,10 @@ msgstr "Suche: %d von %d"
 
 msgid "%d of %d Datasets"
 msgstr "%d von %d Datensätze"
+
+msgid "Set this option to add a direct link in the navigation panel. If there is only one project in the database, the link to the index page will be disabled."
+msgstr "Setze diese Option, um einen direkten Link im Navigations-Panel zu setzen. Wenn nur ein Projekt vorhanden ist, wird der Link zur Hauptseite deaktiviert."
+
+msgid "Navi Link"
+msgstr "Navi Link"
 

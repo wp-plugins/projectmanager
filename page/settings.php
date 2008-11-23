@@ -15,6 +15,7 @@ if ( isset($_POST['saveSettings']) ) {
 	$options[$_POST['project_id']]['use_widget'] = isset( $_POST['use_widget'] ) ? 1 : 0;
 	$options[$_POST['project_id']]['thumb_size'] = array("width" => $_POST['thumb_width'], "height" => $_POST['thumb_height']);
      	$options[$_POST['project_id']]['medium_size'] = array("width" => $_POST['medium_width'], "height" => $_POST['medium_height']);
+     	$options[$_POST['project_id']]['navi_link'] = isset( $_POST['navi_link'] ) ? 1 : 0;
 		
 	$projectmanager->editProject( $_POST['project_title'], $_POST['project_id'] );
 	update_option( 'projectmanager', $options );
@@ -43,7 +44,11 @@ $options = get_option( 'projectmanager' );
 			<th scope="row"><label for="category"><?php _e( 'Category', 'projectmanager' ) ?></label><td><?php wp_dropdown_categories(array('hide_empty' => 0, 'name' => 'category', 'orderby' => 'name', 'selected' => $options[$project_id]['category'], 'hierarchical' => true, 'show_option_none' => __('None'))); ?></td>
 		</tr>
 		<tr valign="top">
-			<th scope="row"><?php if ( 1 == $options[$project_id]['use_widget']  ) $selected = ' checked="checked"'; else $selected = ''; ?><label for="use_widget"><?php _e( 'Use Widget', 'projectmanager' ) ?></label></th><td><input type="checkbox" name="use_widget" id="use_widget"<?php echo $selected ?> value="1"></td>
+			<th scope="row"><?php if ( 1 == $options[$project_id]['use_widget']  ) $selected = ' checked="checked"'; else $selected = ''; ?><label for="use_widget"><?php _e( 'Use Widget', 'projectmanager' ) ?></label></th><td><input type="checkbox" name="use_widget" id="use_widget"<?php echo $selected ?> value="1" /></td>
+		</tr>
+		<tr valign="top">
+			<?php if ( 1 == $options[$project_id]['navi_link']  ) $selected = ' checked="checked"'; else $selected = ''; ?>
+			<th scope="row"><label for="navi_link"><?php _e( 'Navi Link', 'projectmanager' ) ?></th><td><input type="checkbox" name="navi_link" id="navi_link" value="1"<?php echo $selected ?> /><br /><?php _e( 'Set this option to add a direct link in the navigation panel. If there is only one project in the database, the link to the index page will be disabled.', 'projectmanager' ) ?></td>
 		</tr>
 		</table>
 		

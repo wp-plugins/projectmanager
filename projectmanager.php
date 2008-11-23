@@ -1288,7 +1288,7 @@ class WP_ProjectManager
 	 */
 	function getSingleView( $project_id, $dataset_id )
 	{
-		$offset = $this->getDatasetOffset( $dataset_id ) +1;
+		$offset = $this->getDatasetOffset( $dataset_id ) + 1;
 		$page = ceil($offset/$this->getPerPage());
 		$options = get_option( 'projectmanager' );
 	
@@ -1454,16 +1454,18 @@ class WP_ProjectManager
 	 *
 	 * @param int $project_id
 	 * @param string $page_title
+	 * @param boolean $start
 	 */
-	function printBreadcrumb( $project_id, $page_title )
+	function printBreadcrumb( $project_id, $page_title, $start=false )
 	{
 		echo '<p class="projectmanager_breadcrumb">';
-		echo '<a href="edit.php?page=projectmanager/page/index.php">'.__( 'Projectmanager', 'projectmanager' ).'</a> &raquo; ';
+		if ( !$this->single )
+			echo '<a href="edit.php?page=projectmanager/page/index.php">'.__( 'Projectmanager', 'projectmanager' ).'</a> &raquo; ';
 		
 		if ( $page_title != $this->getProjectTitle( $project_id ) )
 			echo '<a href="edit.php?page=projectmanager/page/show-project.php&amp;id='.$project_id.'">'.$this->getProjectTitle( $project_id ).'</a> &raquo; ';
 		
-		echo $page_title;
+		if ( !$start || ($start && !$this->single) ) echo $page_title;
 		
 		echo '</p>';
 	}
@@ -1635,7 +1637,25 @@ class WP_ProjectManager
 	{
 		global $wpdb;
 		
-		add_management_page( __( 'Projects', 'projectmanager' ), __( 'Projects', 'projectmanager' ), 'manage_projects', basename( __FILE__, ".php" ).'/page/index.php' );
+		$this->single = false;
+		if ( $projects = $this->getProjects() ) {
+			$options = get_option( 'projectmanager' );
+			foreach( $projects AS $project ) {
+				if ( 1 == $options[$project->id]['navi_link'] ) {
+					$management_page = 'edit.php?page=projectmanager/page/show-project.php&id='.$project->id;
+					add_management_page( $project->title, $project->title, 'manage_projects', $management_page );
+				}
+			}
+			foreach ( $projects AS $project ) {
+				if ( 1 == $options[$project->id]['navi_link'] && $this->getNumProjects() == 1) {
+					$this->single = true;
+					break;
+				}
+			}
+		}
+		
+		if ( ! $this->single )
+			add_management_page( __( 'Projects', 'projectmanager' ), __( 'Projects', 'projectmanager' ), 'manage_projects', basename( __FILE__, ".php" ).'/page/index.php' );
 	}
 
 
