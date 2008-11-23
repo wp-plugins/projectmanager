@@ -1,0 +1,369 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
+"POT-Creation-Date: 2008-11-22 14:59+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: functions.php:38 page/dataset.php:103 page/settings.php:43
+#: page/show-project.php:76 page/show-project.php:95
+msgid "None"
+msgstr ""
+
+#: page/dataset.php:12
+msgid "Edit Dataset"
+msgstr ""
+
+#: page/dataset.php:24 page/index.php:51 page/show-project.php:42
+msgid "Add Dataset"
+msgstr ""
+
+#: page/dataset.php:39 page/show-project.php:55 page/show-project.php:88
+#: projectmanager.php:1002 projectmanager.php:1110
+msgid "Name"
+msgstr ""
+
+#: page/dataset.php:44
+msgid "Image"
+msgstr ""
+
+#: page/dataset.php:50
+msgid "Supported file types"
+msgstr ""
+
+#: page/dataset.php:52
+msgid "Overwrite existing image"
+msgstr ""
+
+#: page/dataset.php:54
+msgid "Delete current image"
+msgstr ""
+
+#: page/dataset.php:102 page/show-project.php:57
+msgid "Group"
+msgstr ""
+
+#: page/formfields.php:16 page/formfields.php:18 page/show-project.php:41
+msgid "Form Fields"
+msgstr ""
+
+#: page/formfields.php:26
+msgid "Label"
+msgstr ""
+
+#: page/formfields.php:27
+msgid "Type"
+msgstr ""
+
+#: page/formfields.php:28
+msgid "Show on startpage"
+msgstr ""
+
+#: page/formfields.php:29
+msgid "Order"
+msgstr ""
+
+#: page/formfields.php:51 page/index.php:31 page/show-project.php:49
+msgid "Delete"
+msgstr ""
+
+#: page/formfields.php:51
+msgid "Delete formfield"
+msgstr ""
+
+#: page/formfields.php:57
+msgid "Add new formfield"
+msgstr ""
+
+#: page/formfields.php:61
+msgid "Save Form Fields"
+msgstr ""
+
+#: page/index.php:24 page/index.php:33 projectmanager.php:1376
+#: tinymce/window.php:28
+msgid "Projectmanager"
+msgstr ""
+
+#: page/index.php:37
+msgid "ID"
+msgstr ""
+
+#: page/index.php:38 tinymce/window.php:53 tinymce/window.php:82
+#: tinymce/window.php:109 tinymce/window.php:147
+msgid "Project"
+msgstr ""
+
+#: page/index.php:39
+msgid "Number of Datasets"
+msgstr ""
+
+#: page/index.php:40
+msgid "Action"
+msgstr ""
+
+#: page/index.php:51 page/settings.php:29 page/settings.php:34
+#: page/show-project.php:40
+msgid "Settings"
+msgstr ""
+
+#: page/index.php:61 page/index.php:73
+msgid "Add Project"
+msgstr ""
+
+#: page/index.php:66 page/settings.php:37 projectmanager.php:1316
+msgid "Title"
+msgstr ""
+
+#: page/index.php:81 page/index.php:84
+msgid "Uninstall ProjectManager"
+msgstr ""
+
+#: page/index.php:84
+msgid "Yes I want to uninstall ProjectManager Plugin. All Data will be deleted!"
+msgstr ""
+
+#: page/settings.php:22
+msgid "Settings saved"
+msgstr ""
+
+#: page/settings.php:40
+msgid "Datasets per page"
+msgstr ""
+
+#: page/settings.php:43
+msgid "Category"
+msgstr ""
+
+#: page/settings.php:46
+msgid "Use Widget"
+msgstr ""
+
+#: page/settings.php:50
+msgid "Images"
+msgstr ""
+
+#: page/settings.php:53
+msgid "Show Image"
+msgstr ""
+
+#: page/settings.php:56
+msgid "Thumbnail size"
+msgstr ""
+
+#: page/settings.php:56
+msgid "Width"
+msgstr ""
+
+#: page/settings.php:56
+msgid "Height"
+msgstr ""
+
+#: page/settings.php:59
+msgid "Medium size"
+msgstr ""
+
+#: page/settings.php:59
+msgid "Max Width"
+msgstr ""
+
+#: page/settings.php:59
+msgid "Max Height"
+msgstr ""
+
+#: page/settings.php:64
+msgid "Save Settings"
+msgstr ""
+
+#: page/show-project.php:85 page/show-project.php:96 projectmanager.php:548
+#: projectmanager.php:1418
+msgid "Save"
+msgstr ""
+
+#: page/show-project.php:85 page/show-project.php:96 projectmanager.php:548
+#: projectmanager.php:1418 tinymce/window.php:178
+msgid "Cancel"
+msgstr ""
+
+#: page/show-project.php:88 page/show-project.php:99 projectmanager.php:498
+#: projectmanager.php:1418
+msgid "Edit"
+msgstr ""
+
+#: page/show-project.php:99
+#, php-format
+msgid "Group of %s"
+msgstr ""
+
+#: projectmanager.php:100
+msgid "Text"
+msgstr ""
+
+#: projectmanager.php:100
+msgid "Textfield"
+msgstr ""
+
+#: projectmanager.php:100
+msgid "E-Mail"
+msgstr ""
+
+#: projectmanager.php:100
+msgid "Date"
+msgstr ""
+
+#: projectmanager.php:100
+msgid "URL"
+msgstr ""
+
+#: projectmanager.php:467
+msgid "of"
+msgstr ""
+
+#: projectmanager.php:589
+msgid "Project added"
+msgstr ""
+
+#: projectmanager.php:604
+msgid "Project updated"
+msgstr ""
+
+#: projectmanager.php:660
+msgid "New dataset added to the database."
+msgstr ""
+
+#: projectmanager.php:713
+msgid "Dataset updated."
+msgstr ""
+
+#: projectmanager.php:812
+msgid "File exists and is not uploaded."
+msgstr ""
+
+#: projectmanager.php:833
+msgid "An upload error occured. Please try again."
+msgstr ""
+
+#: projectmanager.php:837
+msgid "The file type is not supported. No Image was uploaded."
+msgstr ""
+
+#: projectmanager.php:905
+msgid "Form Fields updated"
+msgstr ""
+
+#: projectmanager.php:1009
+msgid "Search"
+msgstr ""
+
+#: projectmanager.php:1053 projectmanager.php:1077 tinymce/window.php:43
+msgid "Groups"
+msgstr ""
+
+#: projectmanager.php:1055
+msgid "Go"
+msgstr ""
+
+#: projectmanager.php:1211
+msgid "Back to list"
+msgstr ""
+
+#: projectmanager.php:1214
+msgid "Details of"
+msgstr ""
+
+#: projectmanager.php:1317
+msgid "Number"
+msgstr ""
+
+#: projectmanager.php:1323
+msgid "Page"
+msgstr ""
+
+#: projectmanager.php:1418
+msgid "Post"
+msgstr ""
+
+#: projectmanager.php:1418
+msgid "Please wait..."
+msgstr ""
+
+#: projectmanager.php:1418
+msgid "Page Revisions"
+msgstr ""
+
+#: projectmanager.php:1418
+msgid "Insert time"
+msgstr ""
+
+#: projectmanager.php:1536
+msgid "Projects"
+msgstr ""
+
+#: tinymce/window.php:41
+msgid "Simple Output"
+msgstr ""
+
+#: tinymce/window.php:42
+msgid "Gallery"
+msgstr ""
+
+#: tinymce/window.php:44
+msgid "Search Form"
+msgstr ""
+
+#: tinymce/window.php:56 tinymce/window.php:85 tinymce/window.php:112
+#: tinymce/window.php:150
+msgid "No Project"
+msgstr ""
+
+#: tinymce/window.php:68 tinymce/window.php:124
+msgid "Show as"
+msgstr ""
+
+#: tinymce/window.php:70
+msgid "Table"
+msgstr ""
+
+#: tinymce/window.php:71
+msgid "Unsorted List"
+msgstr ""
+
+#: tinymce/window.php:72
+msgid "Sorted List"
+msgstr ""
+
+#: tinymce/window.php:99
+msgid "Columns"
+msgstr ""
+
+#: tinymce/window.php:126
+msgid "Dropdown Menu"
+msgstr ""
+
+#: tinymce/window.php:127
+msgid "List"
+msgstr ""
+
+#: tinymce/window.php:131 tinymce/window.php:162
+msgid "Alignment"
+msgstr ""
+
+#: tinymce/window.php:134 tinymce/window.php:165
+msgid "Left"
+msgstr ""
+
+#: tinymce/window.php:135 tinymce/window.php:166
+msgid "Center"
+msgstr ""
+
+#: tinymce/window.php:136 tinymce/window.php:167
+msgid "Right"
+msgstr ""
+
+#: tinymce/window.php:182
+msgid "Insert"
+msgstr ""

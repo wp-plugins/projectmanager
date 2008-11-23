@@ -7,11 +7,11 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 	if ( 'project' == $_POST['updateProjectManager'] ) {
 		check_admin_referer('projectmanager_manage-projects');
 		if ( '' == $_POST['project_id'] )
-			$return_message = $projectmanager->addProject( $_POST['project_title'] );
+			$message = $projectmanager->addProject( $_POST['project_title'] );
 		else
-			$return_message = $projectmanager->editProject( $_POST['project_title'], $_POST['project_id'] );
+			$message = $projectmanager->editProject( $_POST['project_title'], $_POST['project_id'] );
 	}
-	echo '<div id="message" class="updated fade"><p><strong>'.__( $return_message, 'projectmanager' ).'</strong></p></div>';
+	echo '<div id="message" class="updated fade"><p><strong>'.$message.'</strong></p></div>';
 } elseif ( isset($_POST['deleteit']) AND isset($_POST['delete']) ) {
 	if ( 'projects' == $_POST['item'] ) {
 		check_admin_referer('projectmanager_delete-projects');
@@ -34,7 +34,7 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 		<thead>
 			<tr>
 				<th scope="col" class="check-column"><input type="checkbox" onclick="ProjectManager.checkAll(document.getElementById('projects-filter'));" /></th>
-				<th scope="col" class="num">ID</th>
+				<th scope="col" class="num"><?php _e('ID', 'projectmanager') ?></th>
 				<th scope="col"><?php _e( 'Project', 'projectmanager' ) ?></th>
 				<th scope="col" class="num"><?php _e( 'Number of Datasets', 'projectmanager' ) ?></th>
 				<th scope="col"><?php _e( 'Action', 'projectmanager' ) ?></th>
