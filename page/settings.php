@@ -18,16 +18,15 @@ if ( isset($_POST['saveSettings']) ) {
 		
 	$projectmanager->editProject( $_POST['project_title'], $_POST['project_id'] );
 	update_option( 'projectmanager', $options );
-	$return_message = 'Settings saved';
 	
-	echo '<div id="message" class="updated fade"><p><strong>'.__( $return_message, 'projectmanager' ).'</strong></p></div>';
+	echo '<div id="message" class="updated fade"><p><strong>'.__( 'Settings saved', 'projectmanager' ).'</strong></p></div>';
 }
 
 $options = get_option( 'projectmanager' );
 ?>
 
 <div class="wrap">
-	<?php $projectmanager->printBreadcrumb( $project_id, 'Settings' ) ?>
+	<?php $projectmanager->printBreadcrumb( $project_id, __( 'Settings', 'projectmanager' ) ) ?>
 	
 	<form action="edit.php?page=projectmanager/page/settings.php&amp;project_id=<?php echo $project_id ?>" method="post">
 		<?php wp_nonce_field( 'projectmanager_manage-settings' ) ?>

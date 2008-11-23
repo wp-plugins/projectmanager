@@ -7,13 +7,13 @@ $project_id = $_GET['project_id'];
 $projectmanager->setSettings( $project_id );
 if ( isset($_POST['saveFormFields']) ) {
 	check_admin_referer('projectmanager_manage-formfields');
-	$return_message = $projectmanager->setFormFields( $_POST['project_id'], $_POST['form_name'], $_POST['form_type'], $_POST['show_on_startpage'], $_POST['form_order'], $_POST['new_form_name'], $_POST['new_form_type'], $_POST['new_show_on_startpage'], $_POST['new_form_order'] );
+	$message = $projectmanager->setFormFields( $_POST['project_id'], $_POST['form_name'], $_POST['form_type'], $_POST['show_on_startpage'], $_POST['form_order'], $_POST['new_form_name'], $_POST['new_form_type'], $_POST['new_show_on_startpage'], $_POST['new_form_order'] );
      
-	echo '<div id="message" class="updated fade"><p><strong>'.__( $return_message, 'projectmanager' ).'</strong></p></div>';
+	echo '<div id="message" class="updated fade"><p><strong>'.$message.'</strong></p></div>';
 }
 ?>
 <div class="wrap">
-	<?php $projectmanager->printBreadcrumb( $project_id, 'Form Fields' ) ?>
+	<?php $projectmanager->printBreadcrumb( $project_id, __('Form Fields','projectmanager') ) ?>
 	
 	<h2><?php _e( 'Form Fields', 'projectmanager' ) ?></h2>
 	
@@ -41,7 +41,7 @@ if ( isset($_POST['saveFormFields']) ) {
 				<?php foreach( $projectmanager->getFormFieldTypes() AS $form_type_id => $form_type ) : 
 				$selected = ( $form_type_id == $form_field->type ) ? "selected='selected'" : '';
 				?>
-				<option value="<?php echo $form_type_id ?>"<?php echo $selected ?>><?php _e( $form_type, 'projectmanager' ) ?></option>
+				<option value="<?php echo $form_type_id ?>"<?php echo $selected ?>><?php echo $form_type ?></option>
 				<?php endforeach; ?>
 				</select>
 			</td>
