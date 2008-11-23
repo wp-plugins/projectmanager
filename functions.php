@@ -1,6 +1,37 @@
 <?php
 
 /**
+ * SACK response for showing group selection in TinyMCE button
+ *
+ * @since 1.2
+ */
+function projectmanager_show_group_selection() {
+	$options = get_option('projectmanager');
+	$el_id = $_POST['el_id'];
+	$project_id = intval($_POST['project_id']);
+	
+	$group_selection = wp_dropdown_categories( array( "hide_empty" => 0, "name" => $el_id, "orderby" => "name", "hierarchical" => true, "child_of" => $options[$project_id]['category'], "show_option_none" => __("None") ));
+
+	$group_selection = str_replace("&nbsp;", "&#160;", $group_selection);
+	$group_selection =  str_replace("\n", '', $group_selection);
+	$group_selection = addslashes_gpc($group_selection);
+	
+	die( "function displayGroupSelection() {
+		var projectId = ".$project_id.";
+		groupTitle = '".__("Group", "projectmanager")."';
+		groupSelection = '".$group_selection."';
+		if ( projectId != 0 ) {
+			out = \"<td><label for='".$el_id."'>\" + groupTitle + \"</label></td>\";
+			out += \"<td>\" + groupSelection + \"</td>\";
+			document.getElementById('".$el_id."').innerHTML = out;
+		}
+	      }
+	      displayGroupSelection();
+	");
+}
+
+
+/**
  * SACK response function for saving dataset name
  *
  * @since 1.2

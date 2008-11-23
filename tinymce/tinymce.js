@@ -1,13 +1,33 @@
-function addAttributes() {
-	document.getElementById('list_projects').setAttribute("onChange", "displayListGroupSelection()", 1);
+function addAttributes () {
+	document.getElementById('list_projects').setAttribute("onChange", "ProjectManagerAjaxShowGroupFormList('list_projects_groups_form', getSelectedValue('list_projects'))", 1);
+	
+	document.getElementById('gallery_projects').setAttribute("onChange", "ProjectManagerAjaxShowGroupFormList('gallery_projects_groups_form', getSelectedValue('gallery_projects'))", 1);
 }
+function getSelectedValue( el_id ) {
+ 	return document.getElementById(el_id).value;
+}
+
+function ProjectManagerAjaxShowGroupFormList( el_id, projectId ) {
+	var ajax = new sack(ProjectManagerAjaxL10n.requestUrl);
+	ajax.execute = 1;
+	ajax.method = 'POST';
+	ajax.setVar( "action", "projectmanager_show_group_selection" );
+	ajax.setVar( "el_id", el_id );
+	ajax.setVar( "project_id", projectId );
+	ajax.onError = function() { alert('Ajax error on saving group'); };
+	ajax.onCompletion = function() { return true; };
+	ajax.runAJAX();
+
+	return true;
+}
+
 
 function init() {
 	tinyMCEPopup.resizeToInnerSize();
 }
 
 
-function ProjectManagerGetCheckedValue(radioObj) {
+function getCheckedValue(radioObj) {
 	if(!radioObj)
 		return "";
 	var radioLength = radioObj.length;
@@ -24,7 +44,7 @@ function ProjectManagerGetCheckedValue(radioObj) {
 	return "";
 }
 
-function insertProjectManagerLink() {
+function ProjectManagerInsertLink() {
 	
 	var tagtext;
 	
@@ -36,8 +56,8 @@ function insertProjectManagerLink() {
 	// who is active ?
 	if (list.className.indexOf('current') != -1) {
 		var projectId = document.getElementById('list_projects').value;
-		var showtype = ProjectManagerGetCheckedValue(document.getElementsByName('list_showtype'));
-		var grpid = document.getElementById('list_projects_group').value;
+		var showtype = getCheckedValue(document.getElementsByName('list_showtype'));
+		var grpid = document.getElementById('list_projects_groups_form').value;
 		
 		if ( grpid == -1 )
 			var grpid = '';
@@ -51,7 +71,7 @@ function insertProjectManagerLink() {
 	if (gallery.className.indexOf('current') != -1) {
 		var projectId = document.getElementById('gallery_projects').value;
 		var numCols = document.getElementById('num_cols').value;
-		var grpid = document.getElementById('gallery_projects_group').value;
+		var grpid = document.getElementById('gallery_projects_groups_form').value;
 		
 		if ( grpid == -1 )
 			var grpid = '';
@@ -64,7 +84,7 @@ function insertProjectManagerLink() {
 	
 	if (groups.className.indexOf('current') != -1) {
 		var projectId = document.getElementById('groups_projects').value;
-		var showtype = ProjectManagerGetCheckedValue(document.getElementsByName('groups_showtype'));
+		var showtype = getCheckedValue(document.getElementsByName('groups_showtype'));
 		var pos = document.getElementById('align_groups').value;
 		
 		if (projectId != 0)

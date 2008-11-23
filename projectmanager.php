@@ -1472,14 +1472,14 @@ class WP_ProjectManager
 	 *
 	 * @param none
 	 */
-	function addHeaderCode()
+	function addHeaderCode($show_all=false)
 	{
 		global $wp_version;
 		
 		echo "\n\n<!-- WP-ProjectManager START -->\n";
 		echo "<link rel='stylesheet' href='".$this->plugin_url."/style.css' type='text/css' />\n";
 		
-		if ( is_admin() AND isset( $_GET['page'] ) AND substr( $_GET['page'], 0, 14 ) == 'projectmanager' ) {
+		if ( is_admin() AND ((isset( $_GET['page'] ) AND substr( $_GET['page'], 0, 14 ) == 'projectmanager') || $show_all )) {
 			wp_register_script( 'projectmanager', $this->plugin_url.'/js/functions.js', array( ), PROJECTMANAGER_VERSION );
 			wp_register_script( 'projectmanager_formfields', $this->plugin_url.'/js/formfields.js', array( 'projectmanager' ), PROJECTMANAGER_VERSION );
 			wp_register_script ('projectmanager_ajax', $this->plugin_url.'/js/ajax.js', array( 'sack', 'thickbox', 'projectmanager' ), PROJECTMANAGER_VERSION );
