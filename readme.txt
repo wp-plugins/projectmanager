@@ -3,7 +3,7 @@ Contributors: Kolja Schleich
 Tags: datamanager
 Requires at least: 2.5
 Tested up to: 2.5
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 
 This plugin can be used to manage any number of projects with recurrent datasets (e.g. portrait system, dvd collection)
 
@@ -70,6 +70,10 @@ To install the plugin to the following steps
 6. Easy adding of shortcode tags via TinyMCE Button
 
 == ChangeLog ==
+
+**Version 1.2.2**, *November-23-2008*
+
+- fixed upgrade bug
 
 **Version 1.2.1**, *November-23-2008*
 

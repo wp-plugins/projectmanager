@@ -66,7 +66,7 @@ $project_title = $projectmanager->getProjectTitle( $project_id );
 		</thead>
 		<tbody id="the-list">
 		<?php
-		if ( $projectmanager->isSearch() AND '' != $projectmanager->getSearchString() )
+		if ( $projectmanager->isSearch() )
 			$dataset_list = $projectmanager->getSearchResults( $projectmanager->getSearchString(), $_POST['form_field'] );
 		else
 			$dataset_list = $projectmanager->getDataset( false, 'name ASC', true );

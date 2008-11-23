@@ -209,7 +209,7 @@ class WP_ProjectManager
 	 */
 	function isSearch()
 	{
-		if ( isset( $_POST['projectmanager_search'] ) )
+		if ( isset( $_POST['projectmanager_search'] ) && $_POST['projectmanager_search'] != '' )
 			return true;
 	
 		return false;
@@ -1549,6 +1549,8 @@ class WP_ProjectManager
 		$old_options = get_option( 'projectmanager' );
 		if ( version_compare($old_options['version'], PROJECTMANAGER_VERSION, '<') ) {
 			require_once( $this->plugin_path . '/projectmanager-upgrade.php' );
+			$options = $old_options;
+			$options['version'] = PROJECTMANAGER_VERSION;
 			update_option( 'projectmanager', $options );
 		}
 		
