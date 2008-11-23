@@ -4,9 +4,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version:\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
-"POT-Creation-Date: 2008-11-23 13:25+0000\n"
+"POT-Creation-Date: 2008-11-23 23:42+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: functions.php:13 functions.php:69 page/dataset.php:103 page/settings.php:43
+#: functions.php:13 functions.php:69 page/dataset.php:103 page/settings.php:44
 #: page/show-project.php:80 page/show-project.php:99
 msgid "None"
 msgstr ""
@@ -89,7 +89,7 @@ msgstr ""
 msgid "Save Form Fields"
 msgstr ""
 
-#: page/index.php:24 page/index.php:33 projectmanager.php:1460
+#: page/index.php:24 page/index.php:33 projectmanager.php:1463
 #: tinymce/window.php:30
 msgid "Projectmanager"
 msgstr ""
@@ -111,7 +111,7 @@ msgstr ""
 msgid "Action"
 msgstr ""
 
-#: page/index.php:51 page/settings.php:29 page/settings.php:34
+#: page/index.php:51 page/settings.php:30 page/settings.php:35
 #: page/show-project.php:41
 msgid "Settings"
 msgstr ""
@@ -120,7 +120,7 @@ msgstr ""
 msgid "Add Project"
 msgstr ""
 
-#: page/index.php:66 page/settings.php:37 projectmanager.php:1400
+#: page/index.php:66 page/settings.php:38 projectmanager.php:1401
 msgid "Title"
 msgstr ""
 
@@ -132,55 +132,63 @@ msgstr ""
 msgid "Yes I want to uninstall ProjectManager Plugin. All Data will be deleted!"
 msgstr ""
 
-#: page/settings.php:22
+#: page/settings.php:23
 msgid "Settings saved"
 msgstr ""
 
-#: page/settings.php:40
+#: page/settings.php:41
 msgid "Datasets per page"
 msgstr ""
 
-#: page/settings.php:43
+#: page/settings.php:44
 msgid "Category"
 msgstr ""
 
-#: page/settings.php:46
+#: page/settings.php:47
 msgid "Use Widget"
 msgstr ""
 
-#: page/settings.php:50
+#: page/settings.php:51
+msgid "Navi Link"
+msgstr ""
+
+#: page/settings.php:51
+msgid "Set this option to add a direct link in the navigation panel. If there is only one project in the database, the link to the index page will be disabled."
+msgstr ""
+
+#: page/settings.php:55
 msgid "Images"
 msgstr ""
 
-#: page/settings.php:53
+#: page/settings.php:58
 msgid "Show Image"
 msgstr ""
 
-#: page/settings.php:56
+#: page/settings.php:61
 msgid "Thumbnail size"
 msgstr ""
 
-#: page/settings.php:56
+#: page/settings.php:61
 msgid "Width"
 msgstr ""
 
-#: page/settings.php:56
+#: page/settings.php:61
 msgid "Height"
 msgstr ""
 
-#: page/settings.php:59
+#: page/settings.php:64
 msgid "Medium size"
 msgstr ""
 
-#: page/settings.php:59
+#: page/settings.php:64
 msgid "Max Width"
 msgstr ""
 
-#: page/settings.php:59
+#: page/settings.php:64
 msgid "Max Height"
 msgstr ""
 
-#: page/settings.php:64
+#: page/settings.php:69
 msgid "Save Settings"
 msgstr ""
 
@@ -192,17 +200,17 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: page/show-project.php:89 page/show-project.php:100 projectmanager.php:606
-#: projectmanager.php:1502
+#: projectmanager.php:1505
 msgid "Save"
 msgstr ""
 
 #: page/show-project.php:89 page/show-project.php:100 projectmanager.php:606
-#: projectmanager.php:1502 tinymce/window.php:186
+#: projectmanager.php:1505 tinymce/window.php:186
 msgid "Cancel"
 msgstr ""
 
 #: page/show-project.php:92 page/show-project.php:103 projectmanager.php:556
-#: projectmanager.php:1502
+#: projectmanager.php:1505
 msgid "Edit"
 msgstr ""
 
@@ -289,39 +297,39 @@ msgstr ""
 msgid "Search: %d of %d"
 msgstr ""
 
-#: projectmanager.php:1295
+#: projectmanager.php:1296
 msgid "Back to list"
 msgstr ""
 
-#: projectmanager.php:1298
+#: projectmanager.php:1299
 msgid "Details of"
 msgstr ""
 
-#: projectmanager.php:1401
+#: projectmanager.php:1402
 msgid "Number"
 msgstr ""
 
-#: projectmanager.php:1407
+#: projectmanager.php:1408
 msgid "Page"
 msgstr ""
 
-#: projectmanager.php:1502
+#: projectmanager.php:1505
 msgid "Post"
 msgstr ""
 
-#: projectmanager.php:1502
+#: projectmanager.php:1505
 msgid "Please wait..."
 msgstr ""
 
-#: projectmanager.php:1502
+#: projectmanager.php:1505
 msgid "Page Revisions"
 msgstr ""
 
-#: projectmanager.php:1502
+#: projectmanager.php:1505
 msgid "Insert time"
 msgstr ""
 
-#: projectmanager.php:1635
+#: projectmanager.php:1658
 msgid "Projects"
 msgstr ""
 
