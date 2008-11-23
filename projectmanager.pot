@@ -4,14 +4,14 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version:\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
-"POT-Creation-Date: 2008-11-23 12:55+0000\n"
+"POT-Creation-Date: 2008-11-23 13:25+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
@@ -33,7 +33,7 @@ msgid "Add Dataset"
 msgstr ""
 
 #: page/dataset.php:39 page/show-project.php:60 page/show-project.php:92
-#: projectmanager.php:1060 projectmanager.php:1191
+#: projectmanager.php:1060 projectmanager.php:1192
 msgid "Name"
 msgstr ""
 
@@ -89,7 +89,7 @@ msgstr ""
 msgid "Save Form Fields"
 msgstr ""
 
-#: page/index.php:24 page/index.php:33 projectmanager.php:1459
+#: page/index.php:24 page/index.php:33 projectmanager.php:1460
 #: tinymce/window.php:30
 msgid "Projectmanager"
 msgstr ""
@@ -120,7 +120,7 @@ msgstr ""
 msgid "Add Project"
 msgstr ""
 
-#: page/index.php:66 page/settings.php:37 projectmanager.php:1399
+#: page/index.php:66 page/settings.php:37 projectmanager.php:1400
 msgid "Title"
 msgstr ""
 
@@ -184,7 +184,7 @@ msgstr ""
 msgid "Save Settings"
 msgstr ""
 
-#: page/show-project.php:52 projectmanager.php:1182
+#: page/show-project.php:52
 #, php-format
 msgid "%d Dataset"
 msgid_plural "%d Datasets"
@@ -192,17 +192,17 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: page/show-project.php:89 page/show-project.php:100 projectmanager.php:606
-#: projectmanager.php:1501
+#: projectmanager.php:1502
 msgid "Save"
 msgstr ""
 
 #: page/show-project.php:89 page/show-project.php:100 projectmanager.php:606
-#: projectmanager.php:1501 tinymce/window.php:186
+#: projectmanager.php:1502 tinymce/window.php:186
 msgid "Cancel"
 msgstr ""
 
 #: page/show-project.php:92 page/show-project.php:103 projectmanager.php:556
-#: projectmanager.php:1501
+#: projectmanager.php:1502
 msgid "Edit"
 msgstr ""
 
@@ -279,44 +279,49 @@ msgstr ""
 msgid "Go"
 msgstr ""
 
-#: projectmanager.php:1186
+#: projectmanager.php:1183
+#, php-format
+msgid "%d of %d Datasets"
+msgstr ""
+
+#: projectmanager.php:1185
 #, php-format
 msgid "Search: %d of %d"
 msgstr ""
 
-#: projectmanager.php:1294
+#: projectmanager.php:1295
 msgid "Back to list"
 msgstr ""
 
-#: projectmanager.php:1297
+#: projectmanager.php:1298
 msgid "Details of"
 msgstr ""
 
-#: projectmanager.php:1400
+#: projectmanager.php:1401
 msgid "Number"
 msgstr ""
 
-#: projectmanager.php:1406
+#: projectmanager.php:1407
 msgid "Page"
 msgstr ""
 
-#: projectmanager.php:1501
+#: projectmanager.php:1502
 msgid "Post"
 msgstr ""
 
-#: projectmanager.php:1501
+#: projectmanager.php:1502
 msgid "Please wait..."
 msgstr ""
 
-#: projectmanager.php:1501
+#: projectmanager.php:1502
 msgid "Page Revisions"
 msgstr ""
 
-#: projectmanager.php:1501
+#: projectmanager.php:1502
 msgid "Insert time"
 msgstr ""
 
-#: projectmanager.php:1634
+#: projectmanager.php:1635
 msgid "Projects"
 msgstr ""
 
