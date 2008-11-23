@@ -1178,12 +1178,13 @@ class WP_ProjectManager
 			$out .= "</p>";
 			if ( $datasets ) {
 				$num_datasets = ( $this->isSearch() ) ? count($datasets) : $this->getNumDatasets();
+				$num_total_datasets = $this->getNumDatasets($project_id);
 				$out .= "\n<div id='projectmanager_datasets_header'>";
-				$out .= "\n\t<p id='projectmanager_num_datasets'>".sprintf(__ngettext('%d Dataset', '%d Datasets', $num_datasets , 'projectmanager'),$num_datasets)."</p>";
-				if ( $this->isGroup() && !$grp_id )
-					$out .= "<h3>".$this->getGroupTitle($this->getGroup())."</h3>";
-				elseif ( $this->isSearch() )
+				$out .= "\n\t<p>".sprintf(__('%d of %d Datasets', 'projectmanager'),$num_datasets, $num_total_datasets )."</p>";
+				if ( $this->isSearch() )
 					$out .= "<h3>".sprintf(__('Search: %d of %d', 'projectmanager'), $num_datasets, $this->getNumDatasets($project_id))."</h3>";
+				elseif ( $this->isGroup() && !$grp_id )
+					$out .= "<h3>".$this->getGroupTitle($this->getGroup())."</h3>";
 				$out .= "\n</div>";
 				
 				if ( 'table' == $output ) {
@@ -1314,7 +1315,7 @@ class WP_ProjectManager
 	 * @param string $search
 	 * @param int $meta_id
 	 */
-	function getSearchResults( $search )
+	function getSearchResults( $search, $meta_id )
 	{
 		global $wpdb;
 		

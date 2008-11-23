@@ -11,13 +11,16 @@ div#projectmanager_datasets_header {
 	padding: 1em 0 0 0;
 	margin: 0;
 	}
-p#projectmanager_num_datasets {
+div#projectmanager_datasets_header p {
 	float: right;
 	margin: 0;
 	padding: 0;
 	}
 div#projectmanager_datasets_header h3 {
+	clear: none;
 	float: left;
+	margin: 0;
+	padding: 0;
 	}
 
 table.projectmanager {
@@ -25,7 +28,7 @@ table.projectmanager {
 	border: none;
 	width: 100%;
 	color: #000000;
-	margin: 0;
+	margin: 1em 0 0 0;
 	padding: 0;
 	}
 table.projectmanager th, table.projectmanager td {
@@ -77,12 +80,6 @@ p.pagination span.current {
 	text-decoration: underline;
 	}
 
-form.projectmanager input, form.projectmanager select {
-	margin: 1em 0em 0em 0em;
-	line-height: 1.5em;
-	border: none;
-	padding: 0;
-	}
 form.projectmanager option {
 	margin: 0;
 	padding: 0;
