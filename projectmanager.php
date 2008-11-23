@@ -209,7 +209,7 @@ class WP_ProjectManager
 	 */
 	function isSearch()
 	{
-		if ( isset( $_POST['projectmanager_search'] ) && $_POST['projectmanager_search'] != '' )
+		if ( isset( $_POST['projectmanager_search'] ) )
 			return true;
 	
 		return false;
@@ -1215,6 +1215,7 @@ class WP_ProjectManager
 				
 				$out .= "\n</$output>\n";
 			
+				if ( !$this->isSearch() )
 				$out .= $this->pagination->get();
 			}
 			$out .= "<p>";
