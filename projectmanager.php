@@ -1541,11 +1541,28 @@ class WP_ProjectManager
 	{
 		global $wpdb;
 		include_once( ABSPATH.'/wp-admin/includes/upgrade.php' );
-			
+		
+		$options = array();
+		$options['version'] = PROJECTMANAGER_VERSION;
+		
+		$old_options = get_option( 'projectmanager' );
+		if ( version_compare($old_options['version'], PROJECTMANAGER_VERSION, '<') ) {
+			require_once( $this->plugin_path . '/projectmanager-upgrade.php' );
+			update_option( 'projectmanager', $options );
+		}
+		
+		$charset_collate = '';
+		if ( $wpdb->supports_collation() ) {
+			if ( ! empty($wpdb->charset) )
+				$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
+			if ( ! empty($wpdb->collate) )
+				$charset_collate .= " COLLATE $wpdb->collate";
+		}
+		
 		$create_projects_sql = "CREATE TABLE {$wpdb->projectmanager_projects} (
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT ,
 						`title` varchar( 50 ) NOT NULL default '',
-						PRIMARY KEY ( `id` ))";
+						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->projectmanager_projects, $create_projects_sql );
 			
 		$create_projectmeta_sql = "CREATE TABLE {$wpdb->projectmanager_projectmeta} (
@@ -1555,7 +1572,7 @@ class WP_ProjectManager
 						`order` int( 10 ) NOT NULL ,
 						`show_on_startpage` tinyint( 1 ) NOT NULL ,
 						`project_id` int( 11 ) NOT NULL ,
-						PRIMARY KEY ( `id` ))";
+						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->projectmanager_projectmeta, $create_projectmeta_sql );
 				
 		$create_dataset_sql = "CREATE TABLE {$wpdb->projectmanager_dataset} (
@@ -1564,7 +1581,7 @@ class WP_ProjectManager
 						`image` varchar( 50 ) NOT NULL default '' ,
 						`grp_id` int( 11 ) NOT NULL ,
 						`project_id` int( 11 ) NOT NULL ,
-						PRIMARY KEY ( `id` ))";
+						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->projectmanager_dataset, $create_dataset_sql );
 			
 		$create_datasetmeta_sql = "CREATE TABLE {$wpdb->projectmanager_datasetmeta} (
@@ -1572,15 +1589,13 @@ class WP_ProjectManager
 						`form_id` int( 11 ) NOT NULL ,
 						`dataset_id` int( 11 ) NOT NULL ,
 						`value` longtext NOT NULL default '' ,
-						PRIMARY KEY ( `id` ))";
+						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->projectmanager_datasetmeta, $create_datasetmeta_sql );
 
 
 		/*
 		* Set default options
 		*/
-		$options = array();
-		$options['version'] = PROJECTMANAGER_VERSION;
 		add_option( 'projectmanager', $options, 'ProjectManager Options', 'yes' );
 
 		/*
