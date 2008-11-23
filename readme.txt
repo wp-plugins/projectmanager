@@ -1,49 +1,56 @@
 === ProjectManager ===
 Contributors: Kolja Schleich
-Tags: Sidebar, visitor counter
-Requires at least: 2.3
+Tags: datamanager
+Requires at least: 2.5
 Tested up to: 2.5
-Stable tag: 1.0.2
+Stable tag: 1.2.2
 
 This plugin can be used to manage any number of projects with recurrent datasets (e.g. portrait system, dvd collection)
 
 == Description ==
 
-Manage any project consisting of recurrent datasets. This could be portrait systems (linke author profiles, athlete portraits), dvd collection, link collections or anything you can think of. To display projects in the frontend you need to create a template and put it in the template subdirectory. The plugin comes with a bunch of standard templates which can be adopted to your needs.
+This plugin is a datamanager for any recurrent datasets. It can be used to manage and list a DVD collection,to to present portraits (e.g. athlets of a team) or anything you can think of. Below is a least of features
 
-*Features*
+**Features**
 
-- add as many different projects as you want to
-- widget use for any project, controlled via checkbox
-- adding of form fields (text, textfield, e-mail, date, url) for each project independently
-- simple search of any form field
-- templates to display projects in frontend
-- output of datasets as table, list or description list
-- batch deletion of projects and datasets
-
-*Possible Applications*
-
-- user profile system (e.g. author profile, athlet portraits)
-- dvd collection, link collection
-- architect projects
-
-You can also put additional code into a 'my-hacks.php' file in the base directory of the plugin to tweak the plugin.
+* add as many different projects as you want to
+* widget use for any project, controlled via admin panel
+* adding of form fields (text, textfield, e-mail, date, url) for each project independently
+* simple search of any form field
+* usage of Wordpress Category System for grouping
+* various output formats (table, list, gallery)
+* Ajax enabled editing of datasets
+* simple display in frontend over shortcodes
+* easy adding of shortcodes via TinyMCE Button
 
 **Usage**
 
-- Add New Project in *Settings -> Projectmanager*. Then go to *Manage -> Projects*
-- If there is only one project in the database the Manage Link will point directly to this project
-- Select a project and go to *Settings*. There a template for frontend output and form fields can be set
-- You are ready to add datasets :)
+* After adding a project, check out the settings and form field pages first
+* the frontend display of datasets is controlled via shortcodes
 
+Use 
 
-To display projects in the frontend you need to add the following tag into a post or page
+`[prjctmngr_search_form=$project_id,$pos]`
 
-`[print_projects id=$project_id grp=$grp_id]`
+to display the search formular. Substitute $project_id with the respective project ID to display. $pos must have one of the three values 'right', 'center', 'left'.
 
-Substitute $project_id with the respective project ID to display. The `grp_id` tag is optional to display only the datasets of a specific group of the project.
+Use
 
-*Note: I tested the plugin as best as I can, but there might be some bugs to fix. Please report bugs or feature requests to: kolja.schleich@googlemail.com*
+`[prjcgmngr_group_selection=$project_id,$type,$pos]`
+
+to display the group selections. $project_id is again the ID of the project to display. $type can be 'dropdown' or 'list'. $pos has the same values as above.
+
+Use
+
+`[dataset_list=$project_id,$group,$type]`
+
+to display the datasets of the project with ID=$project_id in a simple form. Display types can be 'table', 'ul', 'ol'. $group is either the groupID of a specific group or left empty.
+
+Use
+
+`[dataset_gallery=$project_id,$cols,$group]`
+
+to display the datasets as a gallery, with a picture if one is supplied. $cols is the number of columns. $group is same as above.
 
 
 == Installation ==
@@ -52,3 +59,34 @@ To install the plugin to the following steps
 
 1. Unzip the zip-file and upload the content to your Wordpress Plugin directory.
 2. Activiate the plugin via the admin plugin page.
+
+
+== Screenshots ==
+1. Project Overview Page
+2. Settings page
+3. Add different form fields dynamically
+4. Easy adding of new datasets
+5. Widget control panel
+6. Easy adding of shortcode tags via TinyMCE Button
+
+== ChangeLog ==
+
+**Version 1.2.2**, *November-23-2008*
+
+- fixed upgrade bug
+
+**Version 1.2.1**, *November-23-2008*
+
+- fixed database collation
+
+**Version 1.2**, *November-22-2008*
+
+- Ajax editing of datasets
+- display of specific group only
+- some other minor new features
+
+**Version 1.1**, *November-21-2008*
+
+- major restructuring of plugin
+- full control of display via shortcodes
+- added TinyMCE Button for better usability

@@ -3,7 +3,7 @@
 Plugin Name: ProjectManager
 Description: This Plugin can be used to manage several different types of projects with redundant data. This could be athlet portraits, DVD database, architect projects. You can define different form field types and groups to sort your project entries.
 Plugin URI: http://wordpress.org/extend/plugins/projectmanager/
-Version: 1.0.2
+Version: 1.2.2
 Author: Kolja Schleich
 
 
@@ -32,7 +32,7 @@ if ( !defined( 'WP_CONTENT_DIR' ) )
 if ( !defined( 'WP_PLUGIN_DIR' ) )
 	define( 'WP_PLUGIN_DIR', WP_CONTENT_DIR . '/plugins' );
 	
-define( 'PROJECTMANAGER_VERSION', '1.0.2' );
+define( 'PROJECTMANAGER_VERSION', '1.2.2' );
 define( 'PROJECTMANAGER_URL', WP_PLUGIN_URL.'/projectmanager' );
 
 include_once( 'projectmanager.php' );
@@ -41,8 +41,11 @@ include_once( 'lib/thumbnail.inc.php' );
 
 $projectmanager = new WP_ProjectManager();
 
+include_once( 'functions.php' );
+
+
 // Load textdomain for translation
-load_plugin_textdomain( 'projectmanager', $path = PLUGINDIR.'/projectmanager' );
+load_plugin_textdomain( 'projectmanager', $path = PLUGINDIR.'/projectmanager/languages' );
 
 register_activation_hook(__FILE__, array(&$projectmanager, 'init') );
 
@@ -53,7 +56,13 @@ add_action( 'admin_head', array(&$projectmanager, 'addHeaderCode') );
 add_action( 'wp_head', array(&$projectmanager, 'addHeaderCode') );
 add_action( 'admin_menu', array(&$projectmanager, 'addAdminMenu') );
 add_action( 'widgets_init', array(&$projectmanager, 'initWidget') );
-	
+
+// Ajax Actions
+add_action( 'wp_ajax_projectmanager_save_name', 'projectmanager_save_name' );
+add_action( 'wp_ajax_projectmanager_save_group', 'projectmanager_save_group' );
+add_action( 'wp_ajax_projectmanager_save_form_field_data', 'projectmanager_save_form_field_data' );
+add_action( 'wp_ajax_projectmanager_show_group_selection', 'projectmanager_show_group_selection' );
+
 // Filters
 add_filter( 'the_content', array(&$projectmanager, 'insert') );
 

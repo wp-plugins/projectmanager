@@ -97,7 +97,7 @@ class WP_ProjectManager
 	*/
 	function getFormFieldTypes()
 	{
-		$form_field_types = array( 1 => "Text", 2 => "Textfield", 3 => "E-Mail", 4 => "Date", 5 => "URL" );
+		$form_field_types = array( 1 => __('Text', 'projectmanager'), 2 => __('Textfield', 'projectmanager'), 3 => __('E-Mail', 'projectmanager'), 4 => __('Date', 'projectmanager'), 5 => __('URL', 'projectmanager') );
 		return $form_field_types;
 	}
 	
@@ -155,7 +155,35 @@ class WP_ProjectManager
 		return $this->group;
 	}
 		
+	
+	/**
+	 * gets group title
+	 *
+	 * @param int $grp_id
+	 * @return string
+	 */
+	function getGroupTitle( $grp_id )
+	{
+		$group = get_category($grp_id);
+		return $group->name;
+	}
+	
+	
+	/**
+	 * check if group is selected
+	 * 
+	 * @param none
+	 * @return boolean
+	 */
+	function isGroup()
+	{
+		if ( null != $this->getGroup() )
+			return true;
 		
+		return false;
+	}
+	
+	
 	/**
  	 * sets current group
 	 *
@@ -167,12 +195,42 @@ class WP_ProjectManager
 		if ( $grp_id )
 			$this->group = $grp_id;
 		else
-			$this->group = ( isset($_GET['grp_id']) AND '' != $_GET['grp_id'] ) ? (int)$_GET['grp_id'] : false;
+			$this->group = ( isset($_GET['grp_id']) && '' != $_GET['grp_id'] ) ? (int)$_GET['grp_id'] : null;
 		
 		return;
 	}
 		
 		
+	/**
+	 * check if search was performed
+	 *
+	 * @param none
+	 * @return boolean
+	 */
+	function isSearch()
+	{
+		if ( isset( $_POST['projectmanager_search'] ) && $_POST['projectmanager_search'] != '' )
+			return true;
+	
+		return false;
+	}
+	
+	
+	/**
+	 * returns search string
+	 *
+	 * @param none
+	 * @return string
+	 */
+	function getSearchString()
+	{
+		if ( $this->isSearch() )
+			return $_POST['projectmanager_search'];
+		
+		return '';
+	}
+	
+	
 	/**
 	 * gets supported file types
 	 *
@@ -335,7 +393,7 @@ class WP_ProjectManager
 			$search = " WHERE `project_id` = {$project_id}";
 		} else {
 			$search = " WHERE `project_id` = {$this->project_id}";
-			$search .= ( null != $this->group )? " AND `grp_id` = {$this->group}" : '';
+			$search .= ( $this->isGroup() )? " AND `grp_id` = {$this->group}" : '';
 		}
 					
 		$num_dataset = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_dataset} $search" );
@@ -366,7 +424,7 @@ class WP_ProjectManager
 
 		$sql = "SELECT `id`, `name`, `image`, `grp_id` FROM {$wpdb->projectmanager_dataset}";
 	
-		if ( $this->group )
+		if ( $this->isGroup() )
 			$sql .= " WHERE `project_id` = {$project_id} AND `grp_id` = {$this->group}";
 		elseif ( $dataset_id )
 			$sql .= " WHERE `id` = {$dataset_id}";
@@ -426,7 +484,7 @@ class WP_ProjectManager
 	 * @param boolean $show_all
 	 * @return string
 	 */
-	function getDatasetMetaData( $dataset_id, $output = 'li', $show_all = false )
+	function getDatasetMetaData( $dataset_id, $output = 'li', $show_all = false, $dataset_name = null )
 	{
 		$out = '';
 		if ( $dataset_meta = $this->getDatasetMeta( $dataset_id ) ) {
@@ -441,22 +499,32 @@ class WP_ProjectManager
 				* 5: External URL
 				*/
 				$meta_value = htmlspecialchars( $meta->value );
-					
-				if ( 2 == $meta->type )
-					$meta_value = nl2br( $meta_value );
-				elseif ( 3 == $meta->type )
-					$meta_value = "<a href='mailto:".$meta_value."'>".$meta_value."</a>";
+				
+				if ( 1 == $meta->type )
+					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset_id."'>".$meta_value."</span>";
+				elseif ( 2 == $meta->type ) {
+					if ( strlen($meta_value) > 150 && !$show_all )
+						$meta_value = substr($meta_value, 0, 150)."...";
+					$meta_value = nl2br($meta_value);
+						
+					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset_id."'>".$meta_value."</span>";
+				} elseif ( 3 == $meta->type )
+					$meta_value = "<a href='mailto:".$meta_value."'><span id='datafield".$meta->form_field_id."_".$dataset_id."'>".$meta_value."</span></a>";
 				elseif ( 4 == $meta->type )
-					$meta_value = mysql2date(get_option('date_format'), $meta_value);
+					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset_id."'>".mysql2date(get_option('date_format'), $meta_value )."</span>";
 				elseif ( 5 == $meta->type )
-					$meta_value = "<a href='http://".$meta_value."' target='_blank' title='".$meta_value."'>".$meta_value."</a>";
+					$meta_value = "<a href='http://".$meta_value."' target='_blank' title='".$meta_value."'><span id='datafield".$meta->form_field_id."_".$dataset_id."'>".$meta_value."</span></a>";
 				
 				if ( 1 == $meta->show_on_startpage || $show_all ) {
 					if ( '' != $meta_value ) {
-						if ( 'dl' == $output )
+						if ( 'dl' == $output ) {
 							$out .= "\n\t<dt class='projectmanager'>".$meta->label."</dt><dd>".$meta_value."</dd>";
-						else
-							$out .= "\n\t<".$output.">".$meta_value."</".$output.">";
+						} else {
+							$out .= "\n\t<".$output.">";
+							$out .= $this->getThickbox( $dataset_id, $meta->form_field_id, $meta->type, $meta->value );
+							$out .= "\n\t\t".$meta_value . $this->getThickboxLink($dataset_id, $meta->form_field_id, $meta->type, $meta->label." ".__('of','projectmanager')." ".$dataset_name);
+							$out .= "\n\t</".$output.">";
+						}
 					} elseif ( 'td' == $output )
 						$out .= "\n\t<".$output.">&#160;</".$output.">";
 				}
@@ -464,12 +532,86 @@ class WP_ProjectManager
 		}
 		return $out;
 	}
-	function printDatasetMetaData( $dataset_id, $output = 'li', $show_all = false )
+	function printDatasetMetaData( $dataset_id, $output = 'li', $show_all = false, $dataset_name = null )
 	{
-		echo $this->getDatasetMetaData( $dataset_id, $output, $show_all );
+		echo $this->getDatasetMetaData( $dataset_id, $output, $show_all, $dataset_name );
 	}
 		 
 		 
+	/**
+	 * get Thickbox Link for Ajax editing
+	 *
+	 * @param ing $dataset_id
+	 * @param int $formfield_id
+	 * @return string
+	 */
+	function getThickboxLink( $dataset_id, $formfield_id,  $formfield_type, $title )
+	{
+		$out = '';
+		if ( is_admin() && current_user_can( 'manage_projects' ) ) {
+			$dims = array('width' => '250', 'height' => '100');
+			if ( 2 == $formfield_type )
+				$dims = array('width' => '350', 'height' => '305');
+						
+			$out .= "&#160;<a class='thickbox' id='thickboxlink".$formfield_id."_".$dataset_id."' href='#TB_inline?height=".$dims['height']."&width=".$dims['width']."&inlineId=datafieldwrap".$formfield_id."_".$dataset_id."' title='".$title."'><img src='".$this->plugin_url."/images/edit.gif' border='0' alt='".__('Edit')."' /></a>";
+		}
+		return $out;
+	}
+	
+	
+	/**
+	 * get Ajax Thickbox
+	 *
+	 * @param int $dataset_id
+	 * @param int $formfield_id
+	 * @param int $formfield_type
+	 * @param string $value
+	 * @return string
+	 */
+	function getThickbox( $dataset_id, $formfield_id, $formfield_type, $value )
+	{
+		$out = '';
+		if ( is_admin() && current_user_can( 'manage_projects' ) ) {
+			$dims = array('width' => '250px', 'height' => '80px');
+			if ( 2 == $formfield_type )
+				$dims = array('width' => '350px', 'height' => '250px');
+			
+			$out .= "\n\t\t<div id='datafieldwrap".$formfield_id."_".$dataset_id."' style='width:".$dims['width'].";height:".$dims['height'].";overfow:auto;display:none;'>";
+			$out .= "\n\t\t<div id='datafieldbox".$formfield_id."_".$dataset_id."' class='projectmanager_thickbox'>";
+			$out .= "\n\t\t\t<form>";
+			if ( 1 == $formfield_type || 3 == $formfield_type || 5 == $formfield_type )
+				$out .= "\n\t\t\t<input type='text' name='form_field_".$formfield_id."_".$dataset_id."' id='form_field_".$formfield_id."_".$dataset_id."' value='".$value."' size='30' />";
+			elseif ( 2 == $formfield_type )
+				$out .= "\n\t\t\t<textarea name='form_field_".$formfield_id."_".$dataset_id."' id='form_field_".$formfield_id."_".$dataset_id."' rows='10' cols='40'>".$value."</textarea>";
+			elseif  ( 4 == $formfield_type ) {
+				$out .= "\n\t\t\t<select size='1' name='form_field_".$formfield_id."_".$dataset_id."_day' id='form_field_".$formfield_id."_".$dataset_id."_day'>\n\t\t\t<option value=''>Tag</option>\n\t\t\t<option value=''>&#160;</option>";
+				for ( $day = 1; $day <= 30; $day++ ) {
+					$selected = ( $day == substr($value, 8, 2) ) ? ' selected="selected"' : '';
+					$out .= "\n\t\t\t<option value='".str_pad($day, 2, 0, STR_PAD_LEFT)."'".$selected.">".$day."</option>";
+				}
+				$out .= "\n\t\t\t</select>";
+				$out .= "\n\t\t\t<select size='1' name='form_field_".$formfield_id."_".$dataset_id."_month' id='form_field_".$formfield_id."_".$dataset_id."_month'>\n\t\t\t<option value=''>Monat</option>\n\t\t\t<option value=''>&#160;</option>";
+				foreach ( $this->getMonths() AS $key => $month ) {
+					$selected = ( $key == substr($value, 5, 2) ) ? ' selected="selected"' : '';
+					$out .= "\n\t\t\t<option value='".str_pad($key, 2, 0, STR_PAD_LEFT)."'".$selected.">".$month."</option>";
+				}
+				$out .= "\n\t\t\t</select>";
+				$out .= "\n\t\t\t<select size='1' name='form_field_".$formfield_id."_".$dataset_id."_year' id='form_field_".$formfield_id."_".$dataset_id."_year'>\n\t\t\t<option value=''>Jahr</option>\n\t\t\t<option value=''>&#160;</option>";
+				for ( $year = date('Y')-50; $year <= date('Y')+10; $year++ ) {
+					$selected = ( $year == substr($value, 0, 4) ) ? ' selected="selected"' : '';
+					$out .= "\n\t\t\t<option value='".$year."'".$selected.">".$year."</option>";
+				}
+				$out .= "\n\t\t\t</select>";
+			}
+			$out .= "\n\t\t\t<div style='text-align:center; margin-top: 1em;'><input type='button' value='".__('Save')."' class='button-secondary' onclick='ProjectManager.ajaxSaveDataField(".$dataset_id.",".$formfield_id.",".$formfield_type.");return false;' />&#160;<input type='button' value='".__('Cancel')."' class='button' onclick='tb_remove();' /></div>";
+			$out .= "\n\t\t\t</form>";
+			$out .= "\n\t\t</div>";
+			$out .= "\n\t\t</div>";
+		}
+		return $out;
+	}
+	
+	
 	/**
 	 * gets offset of dataset
 	 *
@@ -482,7 +624,7 @@ class WP_ProjectManager
 			
 		$search = "WHERE `id` < '".$dataset_id."' AND project_id = {$this->project_id}";
 				
-		if ( $this->group )
+		if ( $this->isGroup() )
 			$search .= " AND `grp_id` = '".$this->group."'";
 		
 		$offset = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_dataset} $search" );
@@ -502,7 +644,7 @@ class WP_ProjectManager
 		global $wpdb;
 	
 		$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_projects} (title) VALUES ('%s')", $title ) );
-		return 'Project added';
+		return __('Project added','projectmanager');
 	}
 	
 	
@@ -517,7 +659,7 @@ class WP_ProjectManager
 	{
 		global $wpdb;
 		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projects} SET `title` = '%s' WHERE `id` = '%d'", $title, $project_id ) );
-		return 'Project updated';
+		return __('Project updated','projectmanager');
 	}
 	
 	
@@ -573,7 +715,7 @@ class WP_ProjectManager
 		if ( isset($_FILES['projectmanager_image']['name']) AND '' != $_FILES['projectmanager_image']['name'] )
 			$tail = $this->uploadImage( $dataset_id, $_FILES['projectmanager_image']['name'], $_FILES['projectmanager_image']['size'], $_FILES['projectmanager_image']['tmp_name'], $this->getImageDir() );
 		
-		return __( 'New dataset added to the database', 'projectmanager' ).'. '.$tail;
+		return __( 'New dataset added to the database.', 'projectmanager' ).' '.$tail;
 	}
 		
 		
@@ -626,7 +768,7 @@ class WP_ProjectManager
 			$tail = $this->uploadImage($dataset_id, $_FILES['projectmanager_image']['name'], $_FILES['projectmanager_image']['size'], $_FILES['projectmanager_image']['tmp_name'], $this->getImageDir(), $overwrite_image);
 			
 			
-		return __('Dataset updated', 'projectmanager').'. '.$tail;
+		return __('Dataset updated.', 'projectmanager').' '.$tail;
 	}
 		
 		
@@ -823,7 +965,7 @@ class WP_ProjectManager
 		 
 		
 	/**
-	 * insert search form in post or page
+	 * replace shortcodes with respective HTML in posts or pages
 	 *
 	 * @param string $content
 	 * @return string
@@ -863,14 +1005,14 @@ class WP_ProjectManager
 		}
 		
 		if ( stristr( $content, '[dataset_list' )) {
-			$search = "@\[dataset_list\s*=\s*(\w+),(|table|ul|ol|)\]@i";
+			$search = "@\[dataset_list\s*=\s*(\w+),(|\d+),(|table|ul|ol|)\]@i";
 		
 			if ( preg_match_all($search, $content , $matches) ) {
 				if (is_array($matches)) {
 					foreach($matches[1] AS $key => $v0) {
 						$project_id = $v0;
 						$search = $matches[0][$key];
-						$replace = $this->getDatasetList($project_id, $matches[2][$key]);
+						$replace = $this->getDatasetList($project_id, $matches[3][$key], $matches[2][$key]);
 			
 						$content = str_replace($search, $replace, $content);
 					}
@@ -879,14 +1021,14 @@ class WP_ProjectManager
 		}
 		
 		if ( stristr( $content, '[dataset_gallery' )) {
-			$search = "@\[dataset_gallery\s*=\s*(\w+),(\d+)\]@i";
+			$search = "@\[dataset_gallery\s*=\s*(\w+),(\d+),(|\d+)\]@i";
 		
 			if ( preg_match_all($search, $content , $matches) ) {
 				if (is_array($matches)) {
 					foreach($matches[1] AS $key => $v0) {
 						$project_id = $v0;
 						$search = $matches[0][$key];
-						$replace = $this->getGallery($project_id, $matches[2][$key]);
+						$replace = $this->getGallery($project_id, $matches[2][$key], $matches[3][$key]);
 			
 						$content = str_replace($search, $replace, $content);
 					}
@@ -907,21 +1049,23 @@ class WP_ProjectManager
 	function getSearchForm( $project_id, $pos )
 	{
 		$this->project_id = $project_id;
-		$search_string = isset( $_POST['projectmanager_search'] ) ? $_POST['projectmanager_search'] : '';
+		$search_string = ($this->isSearch()) ? $this->getSearchString() : '';
 		$form_field_id = isset( $_POST['form_field'] ) ? $_POST['form_field'] : 0;
 		
 		if ( !isset($_GET['show'])) {
 			$out = "</p>\n\n<div class='projectmanager_".$pos."'>\n<form class='projectmanager' action='' method='post'>";
 			$out .= "\n\t<input type='text' name='projectmanager_search' value='".$search_string."' />";
 			if ( $form_fields = $this->getFormFields() ) {
-				$out .= "\n\t<select size='1' style='margin: 1em 1em 0em 1em;' name='form_field'>";
+				$out .= "\n\t<select size='1' name='form_field'>";
 				$out .= "\n\t\t<option value='0'>".__( 'Name', 'projectmanager' )."</option>";
 				foreach ( $form_fields AS $form_field ) {
 					$selected = ( $form_field_id == $form_field->id ) ? " selected='selected'" : "";
 					$out .= "\n\t\t<option value='".$form_field->id."'".$selected.">".$form_field->label."</option>";
 				}
 				$out .= "\n\t</select>";
-			}
+			} else
+				$out .= "\n\t<input type='hidden' name='form_field' value='0' />";
+				
 			$out .= "\n\t<input type='submit' value='".__('Search', 'projectmanager')." &raquo;' class='button' />";
 			$out .= "\n</form>\n</div>\n\n<p>";
 		}
@@ -958,17 +1102,27 @@ class WP_ProjectManager
 	function getGroupDropdown( $project_id, $pos )
 	{
 		global $wpdb, $wp_query;
-		$page_obj = $wp_query->get_queried_object();
-		$page_ID = $page_obj->ID;
+		
+		if ( is_admin() ) {
+			$hidden = "\n<input type='hidden' name='page' value='".$_GET['page']."' />\n<input type='hidden' name='id' value='".$project_id."' />";
+			$action = 'edit.php';
+		} else {
+			$page_obj = $wp_query->get_queried_object();
+			$page_ID = $page_obj->ID;
+		
+			$hidden = "\n<input type='hidden' name='page_id' value='".$page_ID."' />";
+			$action = get_permalink($page_ID);
+		}
 		
 		$options = get_option( 'projectmanager' );
 		
 		$out = "</p>";
 		if ( !isset($_GET['show'])) {
-			$out .= "\n\n<div class='projectmanager_".$pos."'>\n<form action='".get_permalink($page_ID)."' method='get'>\n";
-			$out .= wp_dropdown_categories(array('echo' => 0, 'hide_empty' => 0, 'name' => 'grp_id', 'orderby' => 'name', 'selected' => $grp_id, 'hierarchical' => true, 'child_of' => $options[$project_id]['category'], 'show_option_all' => __('Groups', 'projectmanager'), 'show_option_none' => '----------'));
-			$out .= "\n<input type='hidden' name='page_id' value='".$page_ID."' />";
-			$out .= "\n<input type='submit' value='".__( 'Go', 'projectmanager' )."' />";
+			$selected = isset($_GET['grp_id']) ? $_GET['grp_id'] : null;
+			$out .= "\n\n<div class='projectmanager_".$pos."'>\n<form class='projectmanager' action='".$action."' method='get'>\n";
+			$out .= wp_dropdown_categories(array('echo' => 0, 'hide_empty' => 0, 'name' => 'grp_id', 'orderby' => 'name', 'selected' => $selected, 'hierarchical' => true, 'child_of' => $options[$project_id]['category'], 'show_option_all' => __('Groups', 'projectmanager'), 'show_option_none' => '&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;'));
+			$out .= $hidden;
+			$out .= "\n<input type='submit' value='".__( 'Go', 'projectmanager' )."' class='button' />";
 			$out .= "\n</form>\n</div>\n\n";
 		}
 		$out .= "<p>";
@@ -1004,23 +1158,35 @@ class WP_ProjectManager
 	 *
 	 * @param int $project_id
 	 * @param string $output
+	 * @param ing $grp_id
 	 * @return string
 	 */
-	function getDatasetList( $project_id, $output = 'table' )
+	function getDatasetList( $project_id, $output = 'table', $grp_id = false )
 	{
 		$out = '';
 		$this->setSettings($project_id);
+		if ( $grp_id ) $this->setGroup($grp_id);
 	
 		if ( isset( $_GET['show'] ) ) {
 			$out .= $this->getSingleView($project_id, $_GET['show']);
 		} else {
-			if ( isset( $_POST['projectmanager_search'] ) )
-				$datasets = $this->getSearchResults($_POST['projectmanager_search'], $_POST['form_field']);
+			if ( $this->isSearch() )
+				$datasets = $this->getSearchResults($this->getSearchString(), $_POST['form_field']);
 			else
 				$datasets = $this->getDataset( null, 'name ASC', true, $project_id );
 			
 			$out .= "</p>";
 			if ( $datasets ) {
+				$num_datasets = ( $this->isSearch() ) ? count($datasets) : $this->getNumDatasets();
+				$num_total_datasets = $this->getNumDatasets($project_id);
+				$out .= "\n<div id='projectmanager_datasets_header'>";
+				$out .= "\n\t<p>".sprintf(__('%d of %d Datasets', 'projectmanager'),$num_datasets, $num_total_datasets )."</p>";
+				if ( $this->isSearch() )
+					$out .= "<h3>".sprintf(__('Search: %d of %d', 'projectmanager'), $num_datasets, $this->getNumDatasets($project_id))."</h3>";
+				elseif ( $this->isGroup() && !$grp_id )
+					$out .= "<h3>".$this->getGroupTitle($this->getGroup())."</h3>";
+				$out .= "\n</div>";
+				
 				if ( 'table' == $output ) {
 					$out .= "\n<table class='projectmanager'>\n<tr>\n";
 					$out .= "\t<th scope='col'>".__( 'Name', 'projectmanager' )."</th>";
@@ -1063,20 +1229,22 @@ class WP_ProjectManager
 	 *
 	 * @param int $project_id
 	 * @param int $num_cols
+	 * @param int $grp_id
 	 * @return string
 	 */
-	function getGallery( $project_id, $num_cols )
+	function getGallery( $project_id, $num_cols, $grp_id = false )
 	{
 		$out = '';
 		$options = get_option( 'projectmanager' );
 		
 		$this->setSettings($project_id);
+		if ( $grp_id ) $this->setGroup($grp_id);
 					
 		if ( isset( $_GET['show'] ) ) {
 			$out .= $this->getSingleView($project_id, $_GET['show']);
 		} else {
-			if ( isset( $_POST['projectmanager_search'] ) )
-				$datasets = $this->getSearchResults($_POST['projectmanager_search'], $_POST['form_field']);
+			if ( $this->isSearch() )
+				$datasets = $this->getSearchResults($this->getSearchString(), $_POST['form_field']);
 			else
 				$datasets = $this->getDataset( null, 'name ASC', true, $project_id );
 			
@@ -1086,8 +1254,8 @@ class WP_ProjectManager
 				
 				foreach ( $datasets AS $dataset ) {
 					$i++;
-					$before_name = ($this->hasDetails($project_id)) ? '<a href="'.$this->pagination->createURL().'?grp_id='.$this->getGroup().'&amp;show='.$dataset->id.'">' : '';
-					$after_name = ($this->hasDetails($project_id)) ? '</a>' : '';
+					$before_name = '<a href="'.$this->pagination->createURL().'?grp_id='.$this->getGroup().'&amp;show='.$dataset->id.'">';
+					$after_name = '</a>';
 					
 					$out .= "\n\t<td style='padding: 5px;'>";
 					if ($options[$project_id]['show_image'] == 1 && '' != $dataset->image)
@@ -1294,7 +1462,7 @@ class WP_ProjectManager
 		if ( $page_title != $this->getProjectTitle( $project_id ) )
 			echo '<a href="edit.php?page=projectmanager/page/show-project.php&amp;id='.$project_id.'">'.$this->getProjectTitle( $project_id ).'</a> &raquo; ';
 		
-		_e( $page_title, 'projectmanager' );
+		echo $page_title;
 		
 		echo '</p>';
 	}
@@ -1305,22 +1473,36 @@ class WP_ProjectManager
 	 *
 	 * @param none
 	 */
-	function addHeaderCode()
+	function addHeaderCode($show_all=false)
 	{
 		global $wp_version;
 		
 		echo "\n\n<!-- WP-ProjectManager START -->\n";
 		echo "<link rel='stylesheet' href='".$this->plugin_url."/style.css' type='text/css' />\n";
 		
-		if ( is_admin() AND isset( $_GET['page'] ) AND substr( $_GET['page'], 0, 14 ) == 'projectmanager' ) {
-			wp_register_script( 'projectmanager', $this->plugin_url.'/projectmanager.js', array( 'tiny_mce' ), '1.0' );
-			wp_print_scripts( 'projectmanager' );
+		if ( is_admin() AND ((isset( $_GET['page'] ) AND substr( $_GET['page'], 0, 14 ) == 'projectmanager') || $show_all )) {
+			wp_register_script( 'projectmanager', $this->plugin_url.'/js/functions.js', array( ), PROJECTMANAGER_VERSION );
+			wp_register_script( 'projectmanager_formfields', $this->plugin_url.'/js/formfields.js', array( 'projectmanager' ), PROJECTMANAGER_VERSION );
+			wp_register_script ('projectmanager_ajax', $this->plugin_url.'/js/ajax.js', array( 'sack', 'thickbox', 'projectmanager' ), PROJECTMANAGER_VERSION );
+		
+			wp_print_scripts( 'projectmanager_formfields' );
+			wp_print_scripts( 'projectmanager_ajax');
+			
+			echo '<link rel="stylesheet" href="'.get_option( 'siteurl' ).'/wp-includes/js/thickbox/thickbox.css" type="text/css" media="screen" />';
 			
 			echo "<script type='text/javascript'>\n";
 			echo "var PRJCTMNGR_HTML_FORM_FIELD_TYPES = \"";
 			foreach ($this->getFormFieldTypes() AS $form_type_id => $form_type)
-				echo "<option value='".$form_type_id."'>".__( $form_type, 'projectmanager' )."</option>";
+				echo "<option value='".$form_type_id."'>".$form_type."</option>";
 			echo "\";\n";
+			
+			?>
+			//<![CDATA[
+			ProjectManagerAjaxL10n = {
+				blogUrl: "<?php bloginfo( 'wpurl' ); ?>", pluginPath: "<?php echo $this->plugin_path; ?>", pluginUrl: "<?php echo $this->plugin_url; ?>", requestUrl: "<?php bloginfo( 'wpurl' ); ?>/wp-admin/admin-ajax.php", imgUrl: "<?php echo $this->plugin_url; ?>/images", Edit: "<?php _e("Edit"); ?>", Post: "<?php _e("Post"); ?>", Save: "<?php _e("Save"); ?>", Cancel: "<?php _e("Cancel"); ?>", pleaseWait: "<?php _e("Please wait..."); ?>", Revisions: "<?php _e("Page Revisions"); ?>", Time: "<?php _e("Insert time"); ?>"
+				   }
+			//]]>
+			<?php
 			echo "</script>\n";
 		}
 		echo "<!-- WP-ProjectManager END -->\n\n";
@@ -1360,11 +1542,30 @@ class WP_ProjectManager
 	{
 		global $wpdb;
 		include_once( ABSPATH.'/wp-admin/includes/upgrade.php' );
-			
+		
+		$options = array();
+		$options['version'] = PROJECTMANAGER_VERSION;
+		
+		$old_options = get_option( 'projectmanager' );
+		if ( version_compare($old_options['version'], PROJECTMANAGER_VERSION, '<') ) {
+			require_once( $this->plugin_path . '/projectmanager-upgrade.php' );
+			$options = $old_options;
+			$options['version'] = PROJECTMANAGER_VERSION;
+			update_option( 'projectmanager', $options );
+		}
+		
+		$charset_collate = '';
+		if ( $wpdb->supports_collation() ) {
+			if ( ! empty($wpdb->charset) )
+				$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
+			if ( ! empty($wpdb->collate) )
+				$charset_collate .= " COLLATE $wpdb->collate";
+		}
+		
 		$create_projects_sql = "CREATE TABLE {$wpdb->projectmanager_projects} (
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT ,
 						`title` varchar( 50 ) NOT NULL default '',
-						PRIMARY KEY ( `id` ))";
+						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->projectmanager_projects, $create_projects_sql );
 			
 		$create_projectmeta_sql = "CREATE TABLE {$wpdb->projectmanager_projectmeta} (
@@ -1374,7 +1575,7 @@ class WP_ProjectManager
 						`order` int( 10 ) NOT NULL ,
 						`show_on_startpage` tinyint( 1 ) NOT NULL ,
 						`project_id` int( 11 ) NOT NULL ,
-						PRIMARY KEY ( `id` ))";
+						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->projectmanager_projectmeta, $create_projectmeta_sql );
 				
 		$create_dataset_sql = "CREATE TABLE {$wpdb->projectmanager_dataset} (
@@ -1383,7 +1584,7 @@ class WP_ProjectManager
 						`image` varchar( 50 ) NOT NULL default '' ,
 						`grp_id` int( 11 ) NOT NULL ,
 						`project_id` int( 11 ) NOT NULL ,
-						PRIMARY KEY ( `id` ))";
+						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->projectmanager_dataset, $create_dataset_sql );
 			
 		$create_datasetmeta_sql = "CREATE TABLE {$wpdb->projectmanager_datasetmeta} (
@@ -1391,15 +1592,13 @@ class WP_ProjectManager
 						`form_id` int( 11 ) NOT NULL ,
 						`dataset_id` int( 11 ) NOT NULL ,
 						`value` longtext NOT NULL default '' ,
-						PRIMARY KEY ( `id` ))";
+						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->projectmanager_datasetmeta, $create_datasetmeta_sql );
 
 
 		/*
 		* Set default options
 		*/
-		$options = array();
-		$options['version'] = PROJECTMANAGER_VERSION;
 		add_option( 'projectmanager', $options, 'ProjectManager Options', 'yes' );
 
 		/*
@@ -1435,16 +1634,7 @@ class WP_ProjectManager
 	{
 		global $wpdb;
 		
-		/*
-		if ( 1 == $this->getNumProjects() ) {
-			$project = $wpdb->get_results( "SELECT `id` FROM {$wpdb->projectmanager_projects} ORDER BY `id` ASC LIMIT 0,1" );
-			$management_page = 'edit.php?page=projectmanager/page/show-project.php&id='.$project[0]->id;
-		} else
-			$management_page = basename( __FILE__, ".php" ).'/page/index.php';
-		*/
-		
 		add_management_page( __( 'Projects', 'projectmanager' ), __( 'Projects', 'projectmanager' ), 'manage_projects', basename( __FILE__, ".php" ).'/page/index.php' );
-		//add_options_page( __( 'Projectmanager', 'projectmanager' ), __( 'Projectmanager', 'projectmanager' ), 'manage_projectmanager', basename(__FILE__), array(&$this, 'addOptionsPage') );
 	}
 
 
