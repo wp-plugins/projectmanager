@@ -1,7 +1,6 @@
 <?php
 
-//$root = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
-$root = "/var/www/wordpress";
+$root = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
 
 if (file_exists($root.'/wp-load.php')) {
 	// WP 2.6
@@ -22,21 +21,25 @@ if(!current_user_can('edit_posts')) die;
 
 global $wpdb;
 
+$options = get_option('projectmanager');
+
 ?>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<title><?php _e('Projectmanager', 'projectmanager') ?></title>
 	<meta http-equiv="Content-Type" content="<?php bloginfo('html_type'); ?>; charset=<?php echo get_option('blog_charset'); ?>" />
+	<?php $projectmanager->addHeaderCode(true); ?>
 	<script language="javascript" type="text/javascript" src="<?php echo get_option('siteurl') ?>/wp-includes/js/tinymce/tiny_mce_popup.js"></script>
 	<script language="javascript" type="text/javascript" src="<?php echo get_option('siteurl') ?>/wp-includes/js/tinymce/utils/mctabs.js"></script>
 	<script language="javascript" type="text/javascript" src="<?php echo get_option('siteurl') ?>/wp-includes/js/tinymce/utils/form_utils.js"></script>
 	<script language="javascript" type="text/javascript" src="<?php echo PROJECTMANAGER_URL ?>/tinymce/tinymce.js"></script>
 	<base target="_self" />
+	
 </head>
-<body id="link" onload="tinyMCEPopup.executeOnLoad('init();');document.body.style.display='';document.getElementById('projecttag').focus();" style="display: none">
+<body id="link" onload="tinyMCEPopup.executeOnLoad('init();');document.body.style.display='';" style="display: none">
 <!-- <form onsubmit="insertLink();return false;" action="#"> -->
-	<form name="ProjectManager" action="#">
+	<form name="ProjectManagerTinyMCE" action="#">
 	<div class="tabs">
 		<ul>
 			<li id="list_tab" class="current"><span><a href="javascript:mcTabs.displayTab('list_tab', 'list_panel');" onmouseover="return false;"><?php _e( 'Simple Output', 'projectmanager' ); ?></a></span></li>
@@ -48,13 +51,13 @@ global $wpdb;
 	<div class="panel_wrapper">
 		
 	<!-- dataset list panel -->
-	<div id="list_panel" class="panel current"><br />
-	<table style="border: 0;" cellpadding="5">
+	<div id="list_panel" class="panel current">
+	<table style="border: 0;">
 	<tr>
-		<td><label for="list_projects"><?php _e("Project", 'leaguemanager'); ?></label></td>
+		<td><label for="list_projects"><?php _e("Project", 'projectmanager'); ?></label></td>
 		<td>
 		<select id="list_projects" name="list_projects" style="width: 200px">
-        	<option value="0"><?php _e("No Project", 'leaguemanager'); ?></option>
+        	<option value="0"><?php _e("No Project", 'projectmanager'); ?></option>
 		<?php
 			$projectlist = $wpdb->get_results("SELECT * FROM {$wpdb->projectmanager_projects} ORDER BY id ASC");
 			if( is_array($projectlist) ) {
@@ -64,6 +67,8 @@ global $wpdb;
 		?>
         	</select>
 		</td>
+	</tr>
+	<tr id='list_projects_groups_form'>
 	</tr>
 	<tr>
 		<td nowrap="nowrap" valign="top"><label><?php _e( 'Show as', 'projectmanager' ) ?></label></td>
@@ -77,13 +82,13 @@ global $wpdb;
 	</div>
 	
 	<!-- gallery panel -->
-	<div id="gallery_panel" class="panel"><br />
-	<table style="border: 0;" cellpadding="5">
+	<div id="gallery_panel" class="panel">
+	<table style="border: 0;">
 	<tr>
-		<td><label for="gallery_projects"><?php _e("Project", 'leaguemanager'); ?></label></td>
+		<td><label for="gallery_projects"><?php _e("Project", 'projectmanager'); ?></label></td>
 		<td>
 		<select id="gallery_projects" name="gallery_projects" style="width: 200px">
-        	<option value="0"><?php _e("No Project", 'leaguemanager'); ?></option>
+		<option value="0"><?php _e("No Project", 'projectmanager'); ?></option>
 		<?php
 			$projectlist = $wpdb->get_results("SELECT * FROM {$wpdb->projectmanager_projects} ORDER BY id ASC");
 			if( is_array($projectlist) ) {
@@ -96,6 +101,8 @@ global $wpdb;
         	</select>
 		</td>
 	</tr>
+	<tr id='gallery_projects_groups_form'>
+	</tr>
 	<tr>
 		<td nowrap="nowrap" valign="top"><label for="num_cols"><?php _e( 'Columns', 'projectmanager' ) ?></label></td>
 		<td><input type="text" name="num_cols" id="num_cols" value="" size="3" /></td>
@@ -104,13 +111,13 @@ global $wpdb;
 	</div>
 	
 	<!-- groups panel -->
-	<div id="groups_panel" class="panel"><br />
+	<div id="groups_panel" class="panel">
 	<table style="border: 0;" cellpadding="5">
 	<tr>
-		<td><label for="groups_projects"><?php _e("Project", 'leaguemanager'); ?></label></td>
+		<td><label for="groups_projects"><?php _e("Project", 'projectmanager'); ?></label></td>
 		<td>
 		<select id="groups_projects" name="groups_projects" style="width: 200px">
-        	<option value="0"><?php _e("No Project", 'leaguemanager'); ?></option>
+		<option value="0"><?php _e("No Project", 'projectmanager'); ?></option>
 		<?php
 			$projectlist = $wpdb->get_results("SELECT * FROM {$wpdb->projectmanager_projects} ORDER BY id ASC");
 			if( is_array($projectlist) ) {
@@ -125,7 +132,7 @@ global $wpdb;
 		<td nowrap="nowrap" valign="top"><label><?php _e( 'Show as', 'projectmanager' ) ?></label></td>
 		<td>
 			<input type="radio" name="groups_showtype" id="groups_showtype_dropdown" value="dropdown" /><label for="groups_showtype_dropdown"><?php _e( 'Dropdown Menu', 'projectmaanger' ) ?></label><br />
-			<input type="radio" name="groups_showtype" id="groups_showtype_list" value="list" /><label for="groups_showtype_list"><?php _e( 'List', 'projectmaanger' ) ?></label>
+			<input type="radio" name="groups_showtype" id="groups_showtype_list" value="list" /><label for="groups_showtype_list"><?php _e( 'List', 'projectmanager' ) ?></label>
 		</td>
 	</tr>
 	<tr>
@@ -142,13 +149,13 @@ global $wpdb;
 	</div>
 	
 	<!-- search panel -->
-	<div id="search_panel" class="panel"><br />
+	<div id="search_panel" class="panel">
 	<table style="border: 0;" cellpadding="5">
 	<tr>
-		<td><label for="search_projects"><?php _e("Project", 'leaguemanager'); ?></label></td>
+		<td><label for="search_projects"><?php _e("Project", 'projectmanager'); ?></label></td>
 		<td>
 		<select id="search_projects" name="search_projects" style="width: 200px">
-        	<option value="0"><?php _e("No Project", 'leaguemanager'); ?></option>
+		<option value="0"><?php _e("No Project", 'projectmanager'); ?></option>
 		<?php
 			$projectlist = $wpdb->get_results("SELECT * FROM {$wpdb->projectmanager_projects} ORDER BY id ASC");
 			if( is_array($projectlist) ) {
@@ -176,14 +183,17 @@ global $wpdb;
 	
 	<div class="mceActionPanel">
 		<div style="float: left">
-			<input type="button" id="cancel" name="cancel" value="<?php _e("Cancel", 'projetmanager'); ?>" onclick="tinyMCEPopup.close();" />
+			<input type="button" id="cancel" name="cancel" value="<?php _e("Cancel", 'projectmanager'); ?>" onclick="tinyMCEPopup.close();" />
 		</div>
 
 		<div style="float: right">
-			<input type="submit" id="insert" name="insert" value="<?php _e("Insert", 'projetmanager'); ?>" onclick="insertProjectManagerLink();" />
+			<input type="submit" id="insert" name="insert" value="<?php _e("Insert", 'projectmanager'); ?>" onclick="ProjectManagerInsertLink();" />
 		</div>
 	</div>
 
 </form>
+<script language="javascript" type="text/javascript">
+	addAttributes();
+</script>
 </body>
 </html>

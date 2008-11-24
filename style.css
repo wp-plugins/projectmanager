@@ -1,39 +1,138 @@
 /* --- Frontend Design --- */
-.projectmanager_left { float: left; margin: auto 1em 1em 0; }
-.projectmanager_right { float: right; margin: auto 0 1em 1em; }
-.projectmanager_center { display: block; margin: auto; }
+.projectmanager_left { float: left; margin: auto 1.5em 1em 0; }
+.projectmanager_right { float: right; margin: auto 0 1em 1.5em; }
+.projectmanager_center {
+	display: block;
+	margin: auto;
+	}
 
+div#projectmanager_datasets_header {
+	clear: both;
+	padding: 1em 0 0 0;
+	margin: 0;
+	}
+div#projectmanager_datasets_header p {
+	float: right;
+	margin: 0;
+	padding: 0;
+	}
+div#projectmanager_datasets_header h3 {
+	clear: none;
+	float: left;
+	margin: 0;
+	padding: 0;
+	}
 
-table.projectmanager { clear: both; border: none; margin-top: 1em; width: 100%; color: #000000;	}
-table.projectmanager th, table.projectmanager td { padding: 3px 5px; }
-table.projectmanager th { background: #dfdfdf; }
-table.projectmanager .alternate { background: #f1f1f1; }
-table.projectmanager ul { list-style-type: none; }
-table.projectmanager ul li { padding: 1px; }
+table.projectmanager {
+	clear: both;
+	border: none;
+	width: 100%;
+	color: #000000;
+	margin: 1em 0 0 0;
+	padding: 0;
+	}
+table.projectmanager th, table.projectmanager td {
+	padding: 3px 5px;
+	}
+table.projectmanager th {
+	background: #dfdfdf;
+	}
+table.projectmanager .alternate {
+	background: #f1f1f1;
+	}
+table.projectmanager ul {
+	list-style-type: none;
+	}
+table.projectmanager ul li {
+	padding: 1px;
+	}
 
-.caption { margin: 2px 0px 5px 0px; }
+.caption {
+	margin: 2px 0px 5px 0px;
+	}
 
-fieldset.dataset { font-size: 1em; border: 1px solid #a6b7b1; color: #000000; }
-fieldset.dataset legend { font-size: 1.1em; padding: 0px 3px; }
-fieldset.dataset img { margin-left: 0.5em; float: right; }
+fieldset.dataset {
+	font-size: 1em;
+	border: 1px solid #a6b7b1;
+	color: #000000;
+	}
+fieldset.dataset legend {
+	font-size: 1.1em;
+	padding: 0px 3px;
+	}
+fieldset.dataset img {
+	margin-left: 0.5em;
+	float: right;
+	}
 
-ul.projectmanager, ol.projectmanager { clear: both; }
+ul.projectmanager, ol.projectmanager {
+	clear: both;
+	}
 
-p.pagination { clear: both; text-align: left; font-size: 1em; margin: 0.5em 0; }
-p.pagination span.current { font-weight: bold; text-decoration: underline; }
+p.pagination {
+	clear: both;
+	text-align: left;
+	font-size: 1em;
+	margin: 0.5em 0;
+	}
+p.pagination span.current {
+	font-weight: bold;
+	text-decoration: underline;
+	}
 
-form.projectmanager input, select { margin: 1em 0em 0em 0em; line-height: 1.5em; }
+form.projectmanager option {
+	margin: 0;
+	padding: 0;
+	border: none;
+	}
 
 	
 /* ---Admin Panel --- */
-p.info { font-size: 0.8em; font-style: italic; margin: 0.5em 0; padding: 0; }
+div#projectmanager_navbar {
+	clear: both;
+	width: 100%;
+	}
 
-a.image_link { border-bottom: none !important; }
+div.tablenav p.num_datasets {
+	float: right;
+	margin: 0;
+	padding: 0;
+	}
 
-table#projectmanager_form_fields_table thead th { background-color: #ffffff; }
+p.info {
+	font-size: 0.8em;
+	font-style: italic;
+	margin: 0.5em 0;
+	padding: 0;
+	}
 
-label.projectmanager-widget { padding: 0.5em 0.5em; width: 5em; float: left; font-size: 1em; }
+a.image_link {
+	border-bottom: none !important;
+	}
+
+table#projectmanager_form_fields_table thead th {
+	background-color: #ffffff;
+	}
+
+label.projectmanager-widget {
+	padding: 0.5em 0.5em;
+	width: 5em;
+	float: left;
+	font-size: 1em;
+	}
 	
-p.projectmanager_breadcrumb { float: right; margin: 0 1.5em 1.3em auto; }
+p.projectmanager_breadcrumb {
+	float: right;
+	margin: 0 1.5em 1.3em auto;
+	}
 
-div.wrap h2 { clear: none; }
+div.wrap h2 {
+	clear: none;
+	}
+
+div.projectmanager_thickbox {
+	text-align: center;
+	}
+div.projectmanager_thickbox input, div.projectmanager_thickbox textarea, div.projectmanager_thickbox select {
+	margin-top: 1em;
+	}

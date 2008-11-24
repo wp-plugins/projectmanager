@@ -1,0 +1,399 @@
+# ProjectManager POT file.
+# Copyright (C) 2008 Kolja Schleich
+# This file is distributed under the same license as the WordPress package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
+"POT-Creation-Date: 2008-11-23 23:42+0000\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: functions.php:13 functions.php:69 page/dataset.php:103 page/settings.php:44
+#: page/show-project.php:80 page/show-project.php:99
+msgid "None"
+msgstr ""
+
+#: functions.php:21 page/dataset.php:102 page/show-project.php:62
+msgid "Group"
+msgstr ""
+
+#: page/dataset.php:12
+msgid "Edit Dataset"
+msgstr ""
+
+#: page/dataset.php:24 page/index.php:51 page/show-project.php:43
+msgid "Add Dataset"
+msgstr ""
+
+#: page/dataset.php:39 page/show-project.php:60 page/show-project.php:92
+#: projectmanager.php:1060 projectmanager.php:1192
+msgid "Name"
+msgstr ""
+
+#: page/dataset.php:44
+msgid "Image"
+msgstr ""
+
+#: page/dataset.php:50
+msgid "Supported file types"
+msgstr ""
+
+#: page/dataset.php:52
+msgid "Overwrite existing image"
+msgstr ""
+
+#: page/dataset.php:54
+msgid "Delete current image"
+msgstr ""
+
+#: page/formfields.php:16 page/formfields.php:18 page/show-project.php:42
+msgid "Form Fields"
+msgstr ""
+
+#: page/formfields.php:26
+msgid "Label"
+msgstr ""
+
+#: page/formfields.php:27
+msgid "Type"
+msgstr ""
+
+#: page/formfields.php:28
+msgid "Show on startpage"
+msgstr ""
+
+#: page/formfields.php:29
+msgid "Order"
+msgstr ""
+
+#: page/formfields.php:51 page/index.php:31 page/show-project.php:53
+msgid "Delete"
+msgstr ""
+
+#: page/formfields.php:51
+msgid "Delete formfield"
+msgstr ""
+
+#: page/formfields.php:57
+msgid "Add new formfield"
+msgstr ""
+
+#: page/formfields.php:61
+msgid "Save Form Fields"
+msgstr ""
+
+#: page/index.php:24 page/index.php:33 projectmanager.php:1463
+#: tinymce/window.php:30
+msgid "Projectmanager"
+msgstr ""
+
+#: page/index.php:37
+msgid "ID"
+msgstr ""
+
+#: page/index.php:38 tinymce/window.php:57 tinymce/window.php:88
+#: tinymce/window.php:117 tinymce/window.php:155
+msgid "Project"
+msgstr ""
+
+#: page/index.php:39
+msgid "Number of Datasets"
+msgstr ""
+
+#: page/index.php:40
+msgid "Action"
+msgstr ""
+
+#: page/index.php:51 page/settings.php:30 page/settings.php:35
+#: page/show-project.php:41
+msgid "Settings"
+msgstr ""
+
+#: page/index.php:61 page/index.php:73
+msgid "Add Project"
+msgstr ""
+
+#: page/index.php:66 page/settings.php:38 projectmanager.php:1401
+msgid "Title"
+msgstr ""
+
+#: page/index.php:81 page/index.php:84
+msgid "Uninstall ProjectManager"
+msgstr ""
+
+#: page/index.php:84
+msgid "Yes I want to uninstall ProjectManager Plugin. All Data will be deleted!"
+msgstr ""
+
+#: page/settings.php:23
+msgid "Settings saved"
+msgstr ""
+
+#: page/settings.php:41
+msgid "Datasets per page"
+msgstr ""
+
+#: page/settings.php:44
+msgid "Category"
+msgstr ""
+
+#: page/settings.php:47
+msgid "Use Widget"
+msgstr ""
+
+#: page/settings.php:51
+msgid "Navi Link"
+msgstr ""
+
+#: page/settings.php:51
+msgid "Set this option to add a direct link in the navigation panel. If there is only one project in the database, the link to the index page will be disabled."
+msgstr ""
+
+#: page/settings.php:55
+msgid "Images"
+msgstr ""
+
+#: page/settings.php:58
+msgid "Show Image"
+msgstr ""
+
+#: page/settings.php:61
+msgid "Thumbnail size"
+msgstr ""
+
+#: page/settings.php:61
+msgid "Width"
+msgstr ""
+
+#: page/settings.php:61
+msgid "Height"
+msgstr ""
+
+#: page/settings.php:64
+msgid "Medium size"
+msgstr ""
+
+#: page/settings.php:64
+msgid "Max Width"
+msgstr ""
+
+#: page/settings.php:64
+msgid "Max Height"
+msgstr ""
+
+#: page/settings.php:69
+msgid "Save Settings"
+msgstr ""
+
+#: page/show-project.php:52
+#, php-format
+msgid "%d Dataset"
+msgid_plural "%d Datasets"
+msgstr[0] ""
+msgstr[1] ""
+
+#: page/show-project.php:89 page/show-project.php:100 projectmanager.php:606
+#: projectmanager.php:1505
+msgid "Save"
+msgstr ""
+
+#: page/show-project.php:89 page/show-project.php:100 projectmanager.php:606
+#: projectmanager.php:1505 tinymce/window.php:186
+msgid "Cancel"
+msgstr ""
+
+#: page/show-project.php:92 page/show-project.php:103 projectmanager.php:556
+#: projectmanager.php:1505
+msgid "Edit"
+msgstr ""
+
+#: page/show-project.php:103
+#, php-format
+msgid "Group of %s"
+msgstr ""
+
+#: projectmanager.php:100
+msgid "Text"
+msgstr ""
+
+#: projectmanager.php:100
+msgid "Textfield"
+msgstr ""
+
+#: projectmanager.php:100
+msgid "E-Mail"
+msgstr ""
+
+#: projectmanager.php:100
+msgid "Date"
+msgstr ""
+
+#: projectmanager.php:100
+msgid "URL"
+msgstr ""
+
+#: projectmanager.php:525
+msgid "of"
+msgstr ""
+
+#: projectmanager.php:647
+msgid "Project added"
+msgstr ""
+
+#: projectmanager.php:662
+msgid "Project updated"
+msgstr ""
+
+#: projectmanager.php:718
+msgid "New dataset added to the database."
+msgstr ""
+
+#: projectmanager.php:771
+msgid "Dataset updated."
+msgstr ""
+
+#: projectmanager.php:870
+msgid "File exists and is not uploaded."
+msgstr ""
+
+#: projectmanager.php:891
+msgid "An upload error occured. Please try again."
+msgstr ""
+
+#: projectmanager.php:895
+msgid "The file type is not supported. No Image was uploaded."
+msgstr ""
+
+#: projectmanager.php:963
+msgid "Form Fields updated"
+msgstr ""
+
+#: projectmanager.php:1069
+msgid "Search"
+msgstr ""
+
+#: projectmanager.php:1123 projectmanager.php:1147 tinymce/window.php:47
+msgid "Groups"
+msgstr ""
+
+#: projectmanager.php:1125
+msgid "Go"
+msgstr ""
+
+#: projectmanager.php:1183
+#, php-format
+msgid "%d of %d Datasets"
+msgstr ""
+
+#: projectmanager.php:1185
+#, php-format
+msgid "Search: %d of %d"
+msgstr ""
+
+#: projectmanager.php:1296
+msgid "Back to list"
+msgstr ""
+
+#: projectmanager.php:1299
+msgid "Details of"
+msgstr ""
+
+#: projectmanager.php:1402
+msgid "Number"
+msgstr ""
+
+#: projectmanager.php:1408
+msgid "Page"
+msgstr ""
+
+#: projectmanager.php:1505
+msgid "Post"
+msgstr ""
+
+#: projectmanager.php:1505
+msgid "Please wait..."
+msgstr ""
+
+#: projectmanager.php:1505
+msgid "Page Revisions"
+msgstr ""
+
+#: projectmanager.php:1505
+msgid "Insert time"
+msgstr ""
+
+#: projectmanager.php:1658
+msgid "Projects"
+msgstr ""
+
+#: tinymce/window.php:45
+msgid "Simple Output"
+msgstr ""
+
+#: tinymce/window.php:46
+msgid "Gallery"
+msgstr ""
+
+#: tinymce/window.php:48
+msgid "Search Form"
+msgstr ""
+
+#: tinymce/window.php:60 tinymce/window.php:91 tinymce/window.php:120
+#: tinymce/window.php:158
+msgid "No Project"
+msgstr ""
+
+#: tinymce/window.php:74 tinymce/window.php:132
+msgid "Show as"
+msgstr ""
+
+#: tinymce/window.php:76
+msgid "Table"
+msgstr ""
+
+#: tinymce/window.php:77
+msgid "Unsorted List"
+msgstr ""
+
+#: tinymce/window.php:78
+msgid "Sorted List"
+msgstr ""
+
+#: tinymce/window.php:107
+msgid "Columns"
+msgstr ""
+
+#: tinymce/window.php:134
+msgid "Dropdown Menu"
+msgstr ""
+
+#: tinymce/window.php:135
+msgid "List"
+msgstr ""
+
+#: tinymce/window.php:139 tinymce/window.php:170
+msgid "Alignment"
+msgstr ""
+
+#: tinymce/window.php:142 tinymce/window.php:173
+msgid "Left"
+msgstr ""
+
+#: tinymce/window.php:143 tinymce/window.php:174
+msgid "Center"
+msgstr ""
+
+#: tinymce/window.php:144 tinymce/window.php:175
+msgid "Right"
+msgstr ""
+
+#: tinymce/window.php:190
+msgid "Insert"
+msgstr ""
