@@ -46,8 +46,13 @@ table.projectmanager ul {
 table.projectmanager ul li {
 	padding: 1px;
 	}
+table.projectmanager td img {
+	display: block;
+	margin: auto;
+	}
 
 .caption {
+	text-align: center;
 	margin: 2px 0px 5px 0px;
 	}
 
@@ -55,14 +60,18 @@ fieldset.dataset {
 	font-size: 1em;
 	border: 1px solid #a6b7b1;
 	color: #000000;
+	padding: 1em;
 	}
 fieldset.dataset legend {
 	font-size: 1.1em;
 	padding: 0px 3px;
 	}
 fieldset.dataset img {
-	margin-left: 0.5em;
+	margin: auto 1em 0 0.5em;
 	float: right;
+	}
+fieldset.dataset dt {
+	font-weight: bold;
 	}
 
 ul.projectmanager, ol.projectmanager {
@@ -80,6 +89,9 @@ p.pagination span.current {
 	text-decoration: underline;
 	}
 
+form.projectmanager select {
+	padding: 0;
+	}
 form.projectmanager option {
 	margin: 0;
 	padding: 0;

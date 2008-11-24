@@ -57,6 +57,10 @@ add_action( 'wp_head', array(&$projectmanager, 'addHeaderCode') );
 add_action( 'admin_menu', array(&$projectmanager, 'addAdminMenu') );
 add_action( 'widgets_init', array(&$projectmanager, 'initWidget') );
 
+add_filter( 'projectmanager_dataset_list', array(&$projectmanager, 'getDatasetList'), 10, 4 );
+add_filter( 'projectmanager_dataset_gallery', array(&$projectmanager, 'getGallery'), 10, 4 );
+add_filter( 'projectmanager_single_view', array(&$projectmanager, 'getSingleView'), 10, 3 );
+
 // Ajax Actions
 add_action( 'wp_ajax_projectmanager_save_name', 'projectmanager_save_name' );
 add_action( 'wp_ajax_projectmanager_save_group', 'projectmanager_save_group' );
@@ -65,6 +69,8 @@ add_action( 'wp_ajax_projectmanager_show_group_selection', 'projectmanager_show_
 
 // Filters
 add_filter( 'the_content', array(&$projectmanager, 'insert') );
+
+
 
 // TinyMCE Buttons
 add_action( 'init', array(&$projectmanager, 'addTinyMCEButton') );

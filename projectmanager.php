@@ -1012,7 +1012,7 @@ class WP_ProjectManager
 					foreach($matches[1] AS $key => $v0) {
 						$project_id = $v0;
 						$search = $matches[0][$key];
-						$replace = $this->getDatasetList($project_id, $matches[3][$key], $matches[2][$key]);
+						$replace = apply_filters('projectmanager_dataset_list', '', $project_id, $matches[3][$key], $matches[2][$key]);
 			
 						$content = str_replace($search, $replace, $content);
 					}
@@ -1028,7 +1028,7 @@ class WP_ProjectManager
 					foreach($matches[1] AS $key => $v0) {
 						$project_id = $v0;
 						$search = $matches[0][$key];
-						$replace = $this->getGallery($project_id, $matches[2][$key], $matches[3][$key]);
+						$replace =  apply_filters('projectmanager_dataset_gallery', '', $project_id, $matches[2][$key], $matches[3][$key]); 
 			
 						$content = str_replace($search, $replace, $content);
 					}
@@ -1161,14 +1161,13 @@ class WP_ProjectManager
 	 * @param ing $grp_id
 	 * @return string
 	 */
-	function getDatasetList( $project_id, $output = 'table', $grp_id = false )
+	function getDatasetList( $out = '', $project_id, $output = 'table', $grp_id = false )
 	{
-		$out = '';
 		$this->setSettings($project_id);
 		if ( $grp_id ) $this->setGroup($grp_id);
 	
 		if ( isset( $_GET['show'] ) ) {
-			$out .= $this->getSingleView($project_id, $_GET['show']);
+			$out .= apply_filters( 'projectmanager_single_view', $out, $project_id, $_GET['show'] );
 		} else {
 			if ( $this->isSearch() )
 				$datasets = $this->getSearchResults($this->getSearchString(), $_POST['form_field']);
@@ -1233,16 +1232,16 @@ class WP_ProjectManager
 	 * @param int $grp_id
 	 * @return string
 	 */
-	function getGallery( $project_id, $num_cols, $grp_id = false )
+	function getGallery( $out = '', $project_id, $num_cols, $grp_id = false )
 	{
-		$out = '';
+		
 		$options = get_option( 'projectmanager' );
 		
 		$this->setSettings($project_id);
 		if ( $grp_id ) $this->setGroup($grp_id);
 					
 		if ( isset( $_GET['show'] ) ) {
-			$out .= $this->getSingleView($project_id, $_GET['show']);
+			$out .= apply_filters( 'projectmanager_single_view', $out, $project_id, $_GET['show'] );
 		} else {
 			if ( $this->isSearch() )
 				$datasets = $this->getSearchResults($this->getSearchString(), $_POST['form_field']);
@@ -1286,7 +1285,7 @@ class WP_ProjectManager
 	 * @param int $dataset_id
 	 * @return string
 	 */
-	function getSingleView( $project_id, $dataset_id )
+	function getSingleView( $out, $project_id, $dataset_id )
 	{
 		$offset = $this->getDatasetOffset( $dataset_id ) + 1;
 		$page = ceil($offset/$this->getPerPage());
