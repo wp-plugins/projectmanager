@@ -135,9 +135,13 @@ label.projectmanager-widget {
 	
 p.projectmanager_breadcrumb {
 	float: right;
-	margin: 0 1.5em 1.3em auto;
+	margin: 0 1.5em 0em auto;
 	}
 
+div.wrap {
+	width: 98%;
+	max-width: 98%;
+	}
 div.wrap h2 {
 	clear: none;
 	}

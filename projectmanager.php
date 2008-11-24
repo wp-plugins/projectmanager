@@ -1274,7 +1274,7 @@ class WP_ProjectManager
 					$before_name = '<a href="'.$this->pagination->createURL().'&amp;grp_id='.$this->getGroup().'&amp;show='.$dataset->id.'">';
 					$after_name = '</a>';
 					
-					$out .= "\n\t<td style='padding: 5px;'>";
+					$out .= "\n\t<td style='padding: 5px; text-align: center;'>";
 					if ($options[$project_id]['show_image'] == 1 && '' != $dataset->image)
 						$out .= "\n\t\t".$before_name.'<img src="'.$this->getImageUrl('/thumb.'.$dataset->image).'" alt="'.$dataset->name.'" title="'.$dataset->name.'" />'.$after_name;
 					
