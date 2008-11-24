@@ -44,8 +44,8 @@ if ( isset($_GET['edit']) ) {
 		<th scope="row"><label for="projectmanager_image"><?php _e( 'Image', 'projectmanager' ) ?></label></th>
 		<td>
 			<?php if ( '' != $img_filename ) : ?>
-			<?php $img_url = WP_CONTENT_URL .'/'. $projectmanager->getImageDir(); ?>
-			<img src="<?php echo $img_url.'tiny.'.$img_filename ?>" style="float: right; margin-right: 1em;" />
+			<?php $img_url = $projectmanager->getImageUrl('tiny.'.$img_filename); ?>
+			<img src="<?php echo $img_url ?>" style="float: right; margin-right: 1em;" />
 			<?php endif; ?>
 			<input type="file" name="projectmanager_image" id="projectmanager_image" size="45"/><p><?php _e( 'Supported file types', 'projectmanager' ) ?>: <?php echo implode( ',',$projectmanager->getSupportedImageTypes() ); ?></p>
 			<?php if ( '' != $img_filename ) : ?>

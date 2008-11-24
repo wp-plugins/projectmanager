@@ -123,12 +123,30 @@ class WP_ProjectManager
 	/**
 	 * returns image directory
 	 *
-	 * @param none
+	 * @param string | false $file
 	 * @return string
 	 */
-	function getImageDir()
+	function getImagePath( $file = false )
 	{
-		return 'projects/';
+		if ( $file )
+			return WP_CONTENT_DIR.'/projects/'.$file;
+		else
+			return WP_CONTENT_DIR.'/projects';
+	}
+	
+	
+	/**
+	 * returns url of image directory
+	 *
+	 * @param string | false $file
+	 * @return string
+	 */
+	function getImageUrl( $file = false )
+	{
+		if ( $file )
+			return WP_CONTENT_URL.'/projects/'.$file;
+		else
+			return WP_CONTENT_URL.'/projects';
 	}
 	
 	
@@ -713,7 +731,7 @@ class WP_ProjectManager
 		* Set Image if supplied
 		*/
 		if ( isset($_FILES['projectmanager_image']['name']) AND '' != $_FILES['projectmanager_image']['name'] )
-			$tail = $this->uploadImage( $dataset_id, $_FILES['projectmanager_image']['name'], $_FILES['projectmanager_image']['size'], $_FILES['projectmanager_image']['tmp_name'], $this->getImageDir() );
+			$tail = $this->uploadImage( $dataset_id, $_FILES['projectmanager_image']['name'], $_FILES['projectmanager_image']['size'], $_FILES['projectmanager_image']['tmp_name'] );
 		
 		return __( 'New dataset added to the database.', 'projectmanager' ).' '.$tail;
 	}
@@ -765,7 +783,7 @@ class WP_ProjectManager
 		* Set Image if supplied
 		*/
 		if ( isset($_FILES['projectmanager_image']['name']) AND '' != $_FILES['projectmanager_image']['name'] )
-			$tail = $this->uploadImage($dataset_id, $_FILES['projectmanager_image']['name'], $_FILES['projectmanager_image']['size'], $_FILES['projectmanager_image']['tmp_name'], $this->getImageDir(), $overwrite_image);
+			$tail = $this->uploadImage($dataset_id, $_FILES['projectmanager_image']['name'], $_FILES['projectmanager_image']['size'], $_FILES['projectmanager_image']['tmp_name'], $overwrite_image);
 			
 			
 		return __('Dataset updated.', 'projectmanager').' '.$tail;
@@ -803,9 +821,9 @@ class WP_ProjectManager
 	 */
 	function delImage( $image )
 	{
-		@unlink( WP_CONTENT_DIR.'/'.$this->getImageDir().$image );
-		@unlink( WP_CONTENT_DIR.'/'.$this->getImageDir().'thumb.'.$image );
-		@unlink( WP_CONTENT_DIR.'/'.$this->getImageDir().'tiny.'.$image);
+		@unlink( $this->getImagePath($image) );
+		@unlink( $this->getImagePath('/thumb.'.$image) );
+		@unlink( $this->getImagePath('/tiny.'.$image) );
 	}
 		
 		
@@ -838,12 +856,12 @@ class WP_ProjectManager
 	 * @param boolean $overwrite_image
 	 * @return void | string
 	 */
-	function uploadImage( $dataset_id, $img_name, $img_size, $img_tmp_name, $uploaddir, $overwrite_image = false )
+	function uploadImage( $dataset_id, $img_name, $img_size, $img_tmp_name, $overwrite_image = false )
 	{
 		global $wpdb;
 		
 		if ( $this->ImageTypeIsSupported($img_name) ) {
-			$uploaddir = WP_CONTENT_DIR.'/'.$uploaddir;
+			$uploaddir = $this->getImagePath();
 			$options = get_option('projectmanager');
 				
 			/*
@@ -865,7 +883,7 @@ class WP_ProjectManager
 			if ( $img_size > 0 ) {
 				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `image` = '%s' WHERE id = '%d'", basename($img_name), $dataset_id ) );
 	
-				$uploadfile = $uploaddir.basename($img_name);
+				$uploadfile = $uploaddir.'/'.basename($img_name);
 				if ( file_exists($uploadfile) && !$overwrite_image ) {
 					return __('File exists and is not uploaded.','projectmanager');
 				} else {
@@ -882,11 +900,11 @@ class WP_ProjectManager
 						$thumb_width = $options[$this->project_id]['thumb_size']['width'];
 						$thumb_height = $options[$this->project_id]['thumb_size']['height'];
 						$thumb->resize( $thumb_width, $thumb_height );
-						$thumb->save($uploaddir.'thumb.'.basename($img_name));
+						$thumb->save($uploaddir.'/thumb.'.basename($img_name));
 									
 						// Create tiny Thumbnail
 						$thumb->resize(80,50);
-						$thumb->save($uploaddir.'tiny.'.basename($img_name));
+						$thumb->save($uploaddir.'/tiny.'.basename($img_name));
 					} else
 						return __('An upload error occured. Please try again.','projectmanager');
 				}
@@ -1234,7 +1252,6 @@ class WP_ProjectManager
 	 */
 	function getGallery( $out = '', $project_id, $num_cols, $grp_id = false )
 	{
-		
 		$options = get_option( 'projectmanager' );
 		
 		$this->setSettings($project_id);
@@ -1254,12 +1271,12 @@ class WP_ProjectManager
 				
 				foreach ( $datasets AS $dataset ) {
 					$i++;
-					$before_name = '<a href="'.$this->pagination->createURL().'?grp_id='.$this->getGroup().'&amp;show='.$dataset->id.'">';
+					$before_name = '<a href="'.$this->pagination->createURL().'&amp;grp_id='.$this->getGroup().'&amp;show='.$dataset->id.'">';
 					$after_name = '</a>';
 					
 					$out .= "\n\t<td style='padding: 5px;'>";
 					if ($options[$project_id]['show_image'] == 1 && '' != $dataset->image)
-						$out .= "\n\t\t".$before_name.'<img src="'.WP_CONTENT_URL.'/'.$this->getImageDir().'thumb.'.$dataset->image.'" alt="'.$dataset->name.'" title="'.$dataset->name.'" />'.$after_name;
+						$out .= "\n\t\t".$before_name.'<img src="'.$this->getImageUrl('/thumb.'.$dataset->image).'" alt="'.$dataset->name.'" title="'.$dataset->name.'" />'.$after_name;
 					
 					$out .= "\n\t\t<p class='caption'>".$before_name.$dataset->name.$after_name."</p>";
 					$out .= "\n\t</td>";
@@ -1297,7 +1314,7 @@ class WP_ProjectManager
 		if ( $dataset = $this->getDataset( $dataset_id ) ) {
 			$out .= "<fieldset class='dataset'><legend>".__( 'Details of', 'projectmanager' )." ".$dataset[0]->name."</legend>\n";
 			if ($options[$project_id]['show_image'] == 1 && '' != $dataset[0]->image)
-				$out .= "\t<img src='".WP_CONTENT_URL.'/'.$this->getImageDir().$dataset[0]->image."' title='".$dataset[0]->name."' alt='".$dataset[0]->name."' style='float: right;' />\n";
+				$out .= "\t<img src='".$this->getImageUrl($dataset[0]->image)."' title='".$dataset[0]->name."' alt='".$dataset[0]->name."' style='float: right;' />\n";
 				
 			$out .= "<dl>".$this->getDatasetMetaData( $dataset_id, 'dl', true )."\n</dl>\n";
 			$out .= "</fieldset>\n";
@@ -1622,8 +1639,8 @@ class WP_ProjectManager
 		/*
 		* Create directory for projects
 		*/
-		if ( !file_exists(WP_CONTENT_DIR.'/'.$this->getImageDir()) )
-			mkdir( WP_CONTENT_DIR.'/'.$this->getImageDir() );
+		if ( !file_exists($this->getImagePath()) )
+			mkdir( $this->getImagePath() );
 	}
 	
 	
