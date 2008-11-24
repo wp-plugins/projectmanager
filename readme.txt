@@ -3,7 +3,7 @@ Contributors: Kolja Schleich
 Tags: datamanager
 Requires at least: 2.5
 Tested up to: 2.5
-Stable tag: 1.2.2
+Stable tag: 1.2.3
 
 This plugin can be used to manage any number of projects with recurrent datasets (e.g. portrait system, dvd collection)
 
@@ -71,9 +71,10 @@ To install the plugin to the following steps
 
 == ChangeLog ==
 
-**Version 1.3**, **
+**Version 1.2.3**, *November-24-2008*
 
 - option to add direct link to project in navigation panel
+- fixed bug in project creation
 
 **Version 1.2.2**, *November-23-2008*
 
