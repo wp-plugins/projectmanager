@@ -71,6 +71,10 @@ To install the plugin to the following steps
 
 == ChangeLog ==
 
+**Version 1.3**, *November--2008*
+
+- implemented support for multiple categorization
+
 **Version 1.2.3**, *November-24-2008*
 
 - option to add direct link to project in navigation panel

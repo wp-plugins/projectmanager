@@ -12,7 +12,7 @@ if ( isset($_GET['edit']) ) {
 	$form_title = __('Edit Dataset','projectmanager');
 	$dataset_id = $_GET['edit'];
 	$dataset = $projectmanager->getDataset( $dataset_id );
-	$grp_id = $dataset[0]->grp_id;
+	$cat_ids = $projectmanager->getSelectedCategoryIDs($dataset[0]);
 	$dataset_meta = $projectmanager->getDatasetMeta( $dataset_id );
 
 	$name = $dataset[0]->name;
@@ -22,7 +22,7 @@ if ( isset($_GET['edit']) ) {
 		$meta_data[$meta->form_field_id] = $meta->value;
 }  else {
 	$form_title = __('Add Dataset','projectmanager');
-	$dataset_id = ''; $grp_id = '';
+	$dataset_id = ''; $cat_ids = array();
 }
 ?>
 <form name="post" id="post" action="edit.php?page=projectmanager/page/show-project.php&amp;id=<?php echo $project_id ?>" method="post" enctype="multipart/form-data">
@@ -97,11 +97,20 @@ if ( isset($_GET['edit']) ) {
 		</tr>
 		<?php endforeach; ?>
 	<?php endif; ?>
+	<?php if ( -1 != $options[$project_id]['category'] ) : ?>
 	<!-- groups selection form -->
 	<tr valign="top">
-		<th scope="row"><label for="category"><?php echo __( 'Group', 'projectmanager' ) ?></label></th>
-		<td><?php wp_dropdown_categories(array('hide_empty' => 0, 'name' => 'grp_id', 'orderby' => 'name', 'selected' => $grp_id, 'hierarchical' => true, 'child_of' => $options[$project_id]['category'], 'show_option_none' => __('None'))); ?></td>
+		<th scope="row"><label for="category"><?php echo __( 'Categories', 'projectmanager' ) ?></label></th>
+		<td>
+			<div id="projectmanager-category-adder">
+			<ul class="categorychecklist">
+				<?php $projectmanager->categoryChecklist( $options[$project_id]['category'], $cat_ids ) ?>
+			</ul>
+			</div>
+			<?php //wp_dropdown_categories(array('hide_empty' => 0, 'name' => 'grp_id', 'orderby' => 'name', 'selected' => $grp_id, 'hierarchical' => true, 'child_of' => $options[$project_id]['category'], 'show_option_none' => __('None'))); ?>
+		</td>
 	</tr>
+	<?php endif; ?>
 	</table>
 	
 	<input type="hidden" name="project_id" value="<?php echo $project_id ?>" />

@@ -18,4 +18,8 @@ if (version_compare($old_options['version'], '1.2.1', '<')) {
 	$wpdb->query( "ALTER TABLE {$wpdb->projectmanager_dataset} $charset_collate" );
 	$wpdb->query( "ALTER TABLE {$wpdb->projectmanager_datasetmeta} $charset_collate" );
 }
+
+if (version_compare($old_options['version'], '1.3', '<')) {
+	$wpdb->query( "ALTER TABLE {$wpdb->projectmanager_dataset} CHANGE `grp_id` `cat_ids` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL  ");
+}
 ?>

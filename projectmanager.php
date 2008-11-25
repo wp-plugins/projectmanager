@@ -85,7 +85,7 @@ class WP_ProjectManager
 		$options = get_option( 'projectmanager' );
 		$this->per_page = $options[$project_id]['per_page'];
 
-		$this->pagination = new Pagination( $this->per_page, $this->getNumDatasets(), array('show') );
+		$this->pagination = new Pagination( $this->per_page, $this->getNumDatasets($project_id), array('show') );
 	}
 	
 	
@@ -398,25 +398,110 @@ class WP_ProjectManager
 	
 	
 	/**
+	 * gets checklist for groups. Adopted from wp-admin/includes/template.php
+	 *
+	 * @param int $descendants
+	 * @param array $selected cats
+	 */
+	function categoryChecklist( $child_of, $selected_cats )
+	{
+		$walker = new Walker_Category_Checklist;
+		$child_of = (int) $child_of;
+		
+		$args = array();
+		$args['selected_cats'] = $selected_cats;
+		$args['popular_cats'] = array();
+		$categories = get_categories( "child_of=$child_of&hierarchical=0&hide_empty=0" );
+		
+		$checked_categories = array();
+		for ( $i = 0; isset($categories[$i]); $i++ ) {
+			if ( in_array($categories[$i]->term_id, $args['selected_cats']) ) {
+				$checked_categories[] = $categories[$i];
+				unset($categories[$i]);
+			}
+		}
+
+		// Put checked cats on top
+		echo call_user_func_array(array(&$walker, 'walk'), array($checked_categories, 0, $args));
+		// Then the rest of them
+		echo call_user_func_array(array(&$walker, 'walk'), array($categories, 0, $args));
+	}
+	
+	
+	/**
+	 * get selected categories for dataset
+	 *
+	 * @param object $dataset
+	 * @return array
+	 */
+	function getSelectedCategoryIDs( $dataset )
+	{
+		$cat_ids =  maybe_unserialize($dataset->cat_ids);
+		if ( !is_array($cat_ids) )
+			$cat_ids = array();
+		return $cat_ids;
+	}
+	
+	
+	/**
+	 * get selected categories string
+	 *
+	 * @param array $cat_ids
+	 *
+	 * @return string
+	 */
+	function getSelectedCategoryTitles( $cat_ids )
+	{
+		$categories = array();
+		foreach ( $cat_ids AS $cat_id )
+			$categories[] = $this->getGroupTitle($cat_id);
+
+		return implode(", ", $categories);
+	}
+	
+	
+	/**
+	 * gets datasets in a given group
+	 *
+	 * @param object $datasets
+	 * @return array
+	 */
+	function getSelectedDatasets( $project_id, $datasets = false )
+	{
+		if ( !$datasets ) $datasets = $this->getDataset( false, $project_id );
+		$selected_datasets = array();
+		foreach ( $datasets AS $dataset )
+			if ( in_array($this->getGroup(), $this->getSelectedCategoryIDs($dataset)) )
+				array_push($selected_datasets, $dataset);
+				
+		return $selected_datasets;
+	}
+	
+	
+	/**
 	 * gets number of datasets for specific project
 	 *
 	 * @param int $project_id (optional)
 	 * @return int
 	 */
-	function getNumDatasets( $project_id = false )
+	function getNumDatasets( $project_id )
 	{
 		global $wpdb;
 		
-		if ( $project_id ) {
-			$search = " WHERE `project_id` = {$project_id}";
-		} else {
+		if ( $this->isGroup() )
+			$num_datasets = count($this->getSelectedDatasets( $project_id ));
+		else
+			$num_datasets = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$project_id}" );
+		//if ( $project_id ) {
+			//$search = " WHERE `project_id` = {$project_id}";
+		/*} else {
 			$search = " WHERE `project_id` = {$this->project_id}";
-			$search .= ( $this->isGroup() )? " AND `grp_id` = {$this->group}" : '';
-		}
+			//$search .= ( $this->isGroup() )? " AND `grp_id` = {$this->group}" : '';
+		}*/
 					
-		$num_dataset = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_dataset} $search" );
-	
-		return $num_dataset;
+		//$num_datasets = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_dataset} $search" );
+				
+		return $num_datasets;
 	}
 		
 		
@@ -424,12 +509,12 @@ class WP_ProjectManager
 	 * gets dataset
 	 *
 	 * @param int $dataset_id
-	 * @param string $order 
-	 * @param bool $limit (optional)
-	 * @param int $project_id (optional)
+	 * @param int $project_id
+	 * @param bool $limit
+	 * @param string $order
 	 * @return array
 	 */
-	function getDataset( $dataset_id = false, $order = 'name ASC', $limit = false, $project_id = false )
+	 function getDataset( $dataset_id = false, $project_id = false, $limit = false, $order = 'name ASC' )
 	{
 		global $wpdb;
 		
@@ -440,11 +525,11 @@ class WP_ProjectManager
 		}
 		$project_id = ( $project_id ) ? $project_id : $this->project_id;
 
-		$sql = "SELECT `id`, `name`, `image`, `grp_id` FROM {$wpdb->projectmanager_dataset}";
+		$sql = "SELECT `id`, `name`, `image`, `cat_ids` FROM {$wpdb->projectmanager_dataset}";
 	
-		if ( $this->isGroup() )
-			$sql .= " WHERE `project_id` = {$project_id} AND `grp_id` = {$this->group}";
-		elseif ( $dataset_id )
+		/*if ( $this->isGroup() )
+			$sql .= " WHERE `project_id` = {$project_id} AND `grp_id` = {$this->group}";*/
+		if ( $dataset_id )
 			$sql .= " WHERE `id` = {$dataset_id}";
 		else
 			$sql .= " WHERE `project_id` = {$project_id}";
@@ -452,8 +537,15 @@ class WP_ProjectManager
 		$sql .= " ORDER BY $order";
 		$sql .= ( $limit ) ? " LIMIT ".$offset.",".$this->per_page.";" : ";";
 			
-		$dataset = $wpdb->get_results( $sql );
-		return $dataset;
+		$all_datasets = $wpdb->get_results( $sql );
+		
+		$datasets = array();
+		if ( $this->isGroup() )
+			$datasets = $this->getSelectedDatasets(false, $all_datasets);
+		else
+			$datasets = $all_datasets;
+
+		return $datasets;
 	}
 		
 		
@@ -640,12 +732,14 @@ class WP_ProjectManager
 	{
 		global $wpdb;
 			
-		$search = "WHERE `id` < '".$dataset_id."' AND project_id = {$this->project_id}";
-				
-		if ( $this->isGroup() )
-			$search .= " AND `grp_id` = '".$this->group."'";
+		$search = "";
 		
-		$offset = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_dataset} $search" );
+		if ( $this->isGroup() ) {
+			$datasets = $wpdb->get_results( "SELECT `id` FROM {$wpdb->projectmanager_dataset} WHERE `id` < '".$dataset_id."' AND project_id = {$this->project_id}" );
+			$num_datasets = count($this->getSelectedDatasets( false, $datasets ));
+			//$search .= " AND `grp_id` = '".$this->group."'";
+		} else
+			$offset = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_dataset} WHERE `id` < '".$dataset_id."' AND project_id = {$this->project_id}" );
 
 		return $offset;
 	}
@@ -704,16 +798,17 @@ class WP_ProjectManager
 	 *
 	 * @param int $project_id
 	 * @param string $name
-	 * @param int $group
+	 * @param array $cat_ids
 	 * @param array $dataset_meta
 	 * @return string
 	 */
-	function addDataset( $project_id, $name, $group, $dataset_meta = false )
+	function addDataset( $project_id, $name, $cat_ids, $dataset_meta = false )
 	{
 		global $wpdb;
 		$this->project_id = $project_id;
 
-		$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_dataset} (name, grp_id, project_id) VALUES ('%s', '%d', '%d')", $name, $group, $project_id ) );
+		$cat_ids = maybe_serialize($cat_ids);
+		$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_dataset} (name, cat_ids, project_id) VALUES ('%s', '%s', '%d')", $name, $cat_ids, $project_id ) );
 		$dataset_id = $wpdb->insert_id;
 			
 		if ( $dataset_meta ) {
@@ -742,20 +837,21 @@ class WP_ProjectManager
 	 *
 	 * @param int $project_id
 	 * @param string $name
-	 * @param int $group
+	 * @param array $cat_ids
 	 * @param int $dataset_id
 	 * @param array $dataset_meta
 	 * @param boolean $del_image
 	 * @param string $image_file
 	 * @return string
 	 */
-	function editDataset( $project_id, $name, $group, $dataset_id, $dataset_meta = false, $del_image = false, $image_file = '', $overwrite_image = false )
+	function editDataset( $project_id, $name, $cat_ids, $dataset_id, $dataset_meta = false, $del_image = false, $image_file = '', $overwrite_image = false )
 	{
 		global $wpdb;
 		$this->project_id = $project_id;
 
+		$cat_ids = maybe_serialize($cat_ids);
 		$tail = '';
-		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `name` = '%s', `grp_id` = '%d' WHERE `id` = '%d'", $name, $group, $dataset_id ) );
+		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `name` = '%s', `cat_ids` = '%s' WHERE `id` = '%d'", $name, $cat_ids, $dataset_id ) );
 			
 		if ( $dataset_meta ) {
 			foreach ( $dataset_meta AS $meta_id => $meta_value ) {
@@ -1148,6 +1244,7 @@ class WP_ProjectManager
 		return $out;
 	}
 	
+	
 	/**
 	 * get group list
 	 *
@@ -1190,11 +1287,11 @@ class WP_ProjectManager
 			if ( $this->isSearch() )
 				$datasets = $this->getSearchResults($this->getSearchString(), $_POST['form_field']);
 			else
-				$datasets = $this->getDataset( null, 'name ASC', true, $project_id );
+				$datasets = $this->getDataset( null, $project_id, true  );
 			
 			$out .= "</p>";
 			if ( $datasets ) {
-				$num_datasets = ( $this->isSearch() ) ? count($datasets) : $this->getNumDatasets();
+				$num_datasets = ( $this->isSearch() ) ? count($datasets) : $this->getNumDatasets($project_id);
 				$num_total_datasets = $this->getNumDatasets($project_id);
 				$out .= "\n<div id='projectmanager_datasets_header'>";
 				$out .= "\n\t<p>".sprintf(__('%d of %d Datasets', 'projectmanager'),$num_datasets, $num_total_datasets )."</p>";
@@ -1232,8 +1329,7 @@ class WP_ProjectManager
 				
 				$out .= "\n</$output>\n";
 			
-				if ( !$this->isSearch() )
-				$out .= $this->pagination->get();
+				if ( !$this->isSearch() ) $out .= $this->pagination->get();
 			}
 			$out .= "<p>";
 		}
@@ -1263,7 +1359,7 @@ class WP_ProjectManager
 			if ( $this->isSearch() )
 				$datasets = $this->getSearchResults($this->getSearchString(), $_POST['form_field']);
 			else
-				$datasets = $this->getDataset( null, 'name ASC', true, $project_id );
+				$datasets = $this->getDataset( null, $project_id, true );
 			
 			$out .= "</p>";
 			if ( $datasets ) {
@@ -1337,19 +1433,20 @@ class WP_ProjectManager
 		global $wpdb;
 		
 		if ( 0 == $meta_id ) {
-			$dataset_list = $wpdb->get_results( "SELECT `id`, `name`, `grp_id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id} AND `name` REGEXP CONVERT( _utf8 '".$search."' USING latin1 ) ORDER BY `name` ASC" );
+			$datasets = $wpdb->get_results( "SELECT `id`, `name`, `cat_ids` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id} AND `name` REGEXP CONVERT( _utf8 '".$search."' USING latin1 ) ORDER BY `name` ASC" );
 		} else {
 			$sql = "SELECT  t1.dataset_id AS id,
 					t2.name,
-					t2.grp_id
+					t2.cat_ids
 				FROM {$wpdb->projectmanager_datasetmeta} AS t1, {$wpdb->projectmanager_dataset} AS t2
 				WHERE t1.value REGEXP CONVERT( _utf8 '".$search."' USING latin1 )
 					AND t1.form_id = '".$meta_id."'
 					AND t1.dataset_id = t2.id
 				ORDER BY t1.dataset_id ASC";
-			$dataset_list = $wpdb->get_results( $sql );
+			$datasets = $wpdb->get_results( $sql );
 		}
-		return $dataset_list;
+		
+		return $datasets;
 	}
 	
 	
@@ -1601,7 +1698,7 @@ class WP_ProjectManager
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT ,
 						`name` varchar( 150 ) NOT NULL default '' ,
 						`image` varchar( 50 ) NOT NULL default '' ,
-						`grp_id` int( 11 ) NOT NULL ,
+						`cat_ids` longtext NOT NULL ,
 						`project_id` int( 11 ) NOT NULL ,
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->projectmanager_dataset, $create_dataset_sql );

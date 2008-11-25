@@ -19,19 +19,24 @@ ProjectManager.datasetnameSpanFadeOut = function( dataset_id, dataset_name ) {
 	return true;
 }
 
-ProjectManager.ajaxSaveGroup = function( dataset_id ) {
+ProjectManager.ajaxSaveCategories = function( dataset_id ) {
 	tb_remove();
-	var group = document.getElementById('grp_id' + dataset_id).value;
-	window.setTimeout("ProjectManager.groupSpanFadeOut(" + dataset_id + "," + group + ")", 50);
+	var n = jQuery("#groupchoose" + dataset_id + " #categorychecklist" + dataset_id + " input:checked").length;
+	//var cats = '';
+	var cats = new Array();
+	for(var a=0;a<n;a++){
+		cats += jQuery("#groupchoose" + dataset_id + " #categorychecklist" + dataset_id + " input:checked")[a].value + ",";
+	}
+	window.setTimeout("ProjectManager.categorySpanFadeOut(" + dataset_id + ",'" + cats + "')", 50);
 }
-ProjectManager.groupSpanFadeOut = function( dataset_id, group ) {
-	jQuery("span#dataset_group_text" + dataset_id).fadeIn('fast', function() {
+ProjectManager.categorySpanFadeOut = function( dataset_id, cats ) {
+	jQuery("span#dataset_category_text" + dataset_id).fadeIn('fast', function() {
 		var ajax = new sack(ProjectManagerAjaxL10n.requestUrl);
 		ajax.execute = 1;
 		ajax.method = 'POST';
-		ajax.setVar( "action", "projectmanager_save_group" );
+		ajax.setVar( "action", "projectmanager_save_categories" );
 		ajax.setVar( "dataset_id", dataset_id );
-		ajax.setVar( "group", group );
+		ajax.setVar( "cat_ids", cats );
 		ajax.onError = function() { alert('Ajax error on saving group'); };
 		ajax.onCompletion = function() { ProjectManager.reInit(); };
 		ajax.runAJAX();
