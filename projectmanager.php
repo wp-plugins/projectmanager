@@ -438,7 +438,7 @@ class WP_ProjectManager
 	{
 		$cat_ids =  maybe_unserialize($dataset->cat_ids);
 		if ( !is_array($cat_ids) )
-			$cat_ids = array();
+			$cat_ids = array($cat_ids);
 		return $cat_ids;
 	}
 	
@@ -492,15 +492,7 @@ class WP_ProjectManager
 			$num_datasets = count($this->getSelectedDatasets( $project_id ));
 		else
 			$num_datasets = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$project_id}" );
-		//if ( $project_id ) {
-			//$search = " WHERE `project_id` = {$project_id}";
-		/*} else {
-			$search = " WHERE `project_id` = {$this->project_id}";
-			//$search .= ( $this->isGroup() )? " AND `grp_id` = {$this->group}" : '';
-		}*/
-					
-		//$num_datasets = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_dataset} $search" );
-				
+
 		return $num_datasets;
 	}
 		
@@ -527,8 +519,6 @@ class WP_ProjectManager
 
 		$sql = "SELECT `id`, `name`, `image`, `cat_ids` FROM {$wpdb->projectmanager_dataset}";
 	
-		/*if ( $this->isGroup() )
-			$sql .= " WHERE `project_id` = {$project_id} AND `grp_id` = {$this->group}";*/
 		if ( $dataset_id )
 			$sql .= " WHERE `id` = {$dataset_id}";
 		else

@@ -1,6 +1,12 @@
 /* --- Frontend Design --- */
-.projectmanager_left { float: left; margin: auto 1.5em 1em 0; }
-.projectmanager_right { float: right; margin: auto 0 1em 1.5em; }
+.projectmanager_left {
+	float: left;
+	margin: auto 1.5em 1em 0;
+	}
+.projectmanager_right {
+	float: right;
+	margin: auto 0 1em 1.5em;
+	}
 .projectmanager_center {
 	display: block;
 	margin: auto;
