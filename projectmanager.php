@@ -1159,8 +1159,7 @@ class WP_ProjectManager
 					foreach($matches[1] AS $key => $v0) {
 						$project_id = $v0;
 						$search = $matches[0][$key];
-						$replace = apply_filters('projectmanager_dataset_list', '', $project_id, $matches[3][$key], $matches[2][$key]);
-			
+						$replace = apply_filters('projectmanager_dataset_list', $replace, $project_id, $matches[3][$key], $matches[2][$key]);
 						$content = str_replace($search, $replace, $content);
 					}
 				}
@@ -1175,7 +1174,7 @@ class WP_ProjectManager
 					foreach($matches[1] AS $key => $v0) {
 						$project_id = $v0;
 						$search = $matches[0][$key];
-						$replace =  apply_filters('projectmanager_dataset_gallery', '', $project_id, $matches[2][$key], $matches[3][$key]); 
+						$replace =  apply_filters('projectmanager_dataset_gallery', $replace, $project_id, $matches[2][$key], $matches[3][$key]); 
 			
 						$content = str_replace($search, $replace, $content);
 					}
@@ -1323,20 +1322,20 @@ class WP_ProjectManager
 	 * @param ing $cat_id
 	 * @return string
 	 */
-	function getDatasetList( $out = '', $project_id, $output = 'table', $cat_id = false )
+	function getDatasetList( $out, $project_id, $output = 'table', $cat_id = false )
 	{
 		$this->initialize($project_id);
 		if ( $cat_id ) $this->setCatID($cat_id);
 	
 		if ( isset( $_GET['show'] ) ) {
-			$out .= apply_filters( 'projectmanager_single_view', $out, $this->project_id, $_GET['show'] );
+			$out = apply_filters( 'projectmanager_single_view', $out, $this->project_id, $_GET['show'] );
 		} else {
 			if ( $this->isSearch() )
 				$datasets = $this->getSearchResults($this->getSearchString(), $this->getSearchFormFieldID());
 			else
 				$datasets = $this->getDatasets( true  );
 			
-			$out .= "</p>";
+			$out = "</p>";
 			if ( $datasets ) {
 				$num_datasets = ( $this->isSearch() ) ? count($datasets) : $this->getNumDatasets($this->project_id);
 				$num_total_datasets = $this->getNumDatasets($this->project_id, true);
@@ -1403,22 +1402,22 @@ class WP_ProjectManager
 	 * @param int $cat_id
 	 * @return string
 	 */
-	function getGallery( $out = '', $project_id, $num_cols, $cat_id = false )
+	function getGallery( $out, $project_id, $num_cols, $cat_id = false )
 	{
 		$options = get_option( 'projectmanager' );
 		$this->initialize($project_id);
-				
+
 		if ( $cat_id ) $this->setCatID($cat_id);
-					
+
 		if ( isset( $_GET['show'] ) ) {
-			$out .= apply_filters( 'projectmanager_single_view', $out, $this->project_id, $_GET['show'] );
+			$out = apply_filters( 'projectmanager_single_view', $out, $this->project_id, $_GET['show'] );
 		} else {
 			if ( $this->isSearch() )
 				$datasets = $this->getSearchResults($this->getSearchString(), $_POST['form_field']);
 			else
 				$datasets = $this->getDatasets( true );
 			
-			$out .= "</p>";
+			$out = "</p>";
 			if ( $datasets ) {
 				$out .= "\n\n<table class='projectmanager' summary='' title=''>\n<tr>";
 				
