@@ -3,8 +3,7 @@ if ( !current_user_can( 'manage_projects' ) ) :
      echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
 else :
 
-$project_id = $_GET['project_id'];
-$projectmanager->setSettings( $project_id );
+$project_id = $projectmanager->getProjectID();
 if ( isset($_POST['saveFormFields']) ) {
 	check_admin_referer('projectmanager_manage-formfields');
 	$message = $projectmanager->setFormFields( $_POST['project_id'], $_POST['form_name'], $_POST['form_type'], $_POST['show_on_startpage'], $_POST['form_order'], $_POST['new_form_name'], $_POST['new_form_type'], $_POST['new_show_on_startpage'], $_POST['new_form_order'] );
@@ -13,7 +12,7 @@ if ( isset($_POST['saveFormFields']) ) {
 }
 ?>
 <div class="wrap">
-	<?php $projectmanager->printBreadcrumb( $project_id, __('Form Fields','projectmanager') ) ?>
+	<?php $projectmanager->printBreadcrumb( __('Form Fields','projectmanager') ) ?>
 	
 	<h2><?php _e( 'Form Fields', 'projectmanager' ) ?></h2>
 	
@@ -45,8 +44,7 @@ if ( isset($_POST['saveFormFields']) ) {
 				<?php endforeach; ?>
 				</select>
 			</td>
-			<?php $selected = ( 1 == $form_field->show_on_startpage ) ? ' checked="checked"' : ''; ?>
-			<td><input type="checkbox" name="show_on_startpage[<?php echo $form_field->id ?>]"<?php echo $selected ?> value="1" /></td>
+			<td><input type="checkbox" name="show_on_startpage[<?php echo $form_field->id ?>]"<?php echo ( 1 == $form_field->show_on_startpage ) ? ' checked="checked"' : '' ?> value="1" /></td>
 			<td><input type="text" size="2" name="form_order[<?php echo $form_field->id ?>]" value="<?php echo $form_field->order ?>" /></td>
 			<td style="text-align: center; width: 12px; vertical-align: middle;"><a class="image_link" href="#" onclick='return ProjectManager.removeFormField("form_id_<?php echo $form_field->id ?>", <?php echo $form_field->id ?>);'><img src="../wp-content/plugins/projectmanager/images/trash.gif" alt="<?php _e( 'Delete', 'projectmanager' ) ?>" title="<?php _e( 'Delete formfield', 'projectmanager' ) ?>" /></a>
 		</tr>

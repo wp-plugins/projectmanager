@@ -1,6 +1,6 @@
 <?php
 if ( !current_user_can( 'manage_projects' ) ) : 
-     echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
+     echo '<div class="error"><p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p></div>';
 else :
 
 if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
@@ -41,12 +41,11 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 			</tr>
 			<tbody id="the-list">
 				<?php if ( $projects = $projectmanager->getProjects() ) : ?>
-				<?php foreach ( $projects AS $project ) : ?>
-				<?php $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
+				<?php foreach ( $projects AS $project ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
 				<tr class="<?php echo $class ?>">
 					<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $project->id ?>" name="delete[<?php echo $project->id ?>]" /></th>
 					<td class="num"><?php echo $project->id ?></td>
-					<td><a href="edit.php?page=projectmanager/page/show-project.php&amp;id=<?php echo $project->id ?>"><?php echo $project->title ?></a></td>
+					<td><a href="edit.php?page=projectmanager/page/show-project.php&amp;project_id=<?php echo $project->id ?>"><?php echo $project->title ?></a></td>
 					<td class="num"><?php echo $projectmanager->getNumDatasets( $project->id ) ?></td>
 					<td><a href="edit.php?page=projectmanager/page/settings.php&amp;project_id=<?php echo $project->id ?>"><?php _e( 'Settings', 'projectmanager' ) ?></a> - <a href="edit.php?page=projectmanager/page/dataset.php&amp;project_id=<?php echo $project->id ?>"><?php _e( 'Add Dataset', 'projectmanager' ) ?></a></td>
 				</tr>
@@ -57,9 +56,9 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 	</form>
 </div>
 
+<!-- Add New Project -->
 <div class="wrap">
 	<h2><?php _e( 'Add Project', 'projectmanager' ) ?></h2>
-	<!-- Add New Project -->
 	<form action="" method="post">
 	<?php wp_nonce_field( 'projectmanager_manage-projects' ) ?>	
 	<table class="form-table">
@@ -75,8 +74,8 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 	</form>
 </div>
 
-<!-- Uninstallation Form not need in WP 2.7 -->
-<?php if ( version_compare($wp_version, '2.7-hemorrhage', '<') ) : ?>
+<?php if ( !function_exists('register_uninstall_hook') ) : ?>
+<!-- Uninstallation Form -->
 <div class="wrap">
 	<!-- Plugin Uninstallation -->
 	<h3 style='clear: both; padding-top: 1em;'><?php _e( 'Uninstall ProjectManager', 'projectmanager' ) ?></h3>

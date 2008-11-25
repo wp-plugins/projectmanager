@@ -1,6 +1,7 @@
 <?php
 
-$root = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
+//$root = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
+$root = '/var/www/wordpress';
 
 if (file_exists($root.'/wp-load.php')) {
 	// WP 2.6
@@ -44,7 +45,7 @@ $options = get_option('projectmanager');
 		<ul>
 			<li id="list_tab" class="current"><span><a href="javascript:mcTabs.displayTab('list_tab', 'list_panel');" onmouseover="return false;"><?php _e( 'Simple Output', 'projectmanager' ); ?></a></span></li>
 			<li id="gallery_tab"><span><a href="javascript:mcTabs.displayTab('gallery_tab', 'gallery_panel');" onmouseover="return false;"><?php _e( 'Gallery', 'projectmanager' ); ?></a></span></li>
-			<li id="groups_tab"><span><a href="javascript:mcTabs.displayTab('groups_tab', 'groups_panel');" onmouseover="return false;"><?php _e( 'Groups', 'projectmanager' ); ?></a></span></li>
+			<li id="categories_tab"><span><a href="javascript:mcTabs.displayTab('categories_tab', 'categories_panel');" onmouseover="return false;"><?php _e( 'Categories', 'projectmanager' ); ?></a></span></li>
 			<li id="search_tab"><span><a href="javascript:mcTabs.displayTab('search_tab', 'search_panel');" onmouseover="return false;"><?php _e( 'Search Form', 'projectmanager' ); ?></a></span></li>
 		</ul>
 	</di>
@@ -68,7 +69,7 @@ $options = get_option('projectmanager');
         	</select>
 		</td>
 	</tr>
-	<tr id='list_projects_groups_form'>
+	<tr id='list_projects_category_form'>
 	</tr>
 	<tr>
 		<td nowrap="nowrap" valign="top"><label><?php _e( 'Show as', 'projectmanager' ) ?></label></td>
@@ -101,7 +102,7 @@ $options = get_option('projectmanager');
         	</select>
 		</td>
 	</tr>
-	<tr id='gallery_projects_groups_form'>
+	<tr id='gallery_projects_category_form'>
 	</tr>
 	<tr>
 		<td nowrap="nowrap" valign="top"><label for="num_cols"><?php _e( 'Columns', 'projectmanager' ) ?></label></td>
@@ -110,13 +111,13 @@ $options = get_option('projectmanager');
 	</table>
 	</div>
 	
-	<!-- groups panel -->
-	<div id="groups_panel" class="panel">
+	<!-- categories panel -->
+	<div id="categories_panel" class="panel">
 	<table style="border: 0;" cellpadding="5">
 	<tr>
-		<td><label for="groups_projects"><?php _e("Project", 'projectmanager'); ?></label></td>
+		<td><label for="categories_projects"><?php _e("Project", 'projectmanager'); ?></label></td>
 		<td>
-		<select id="groups_projects" name="groups_projects" style="width: 200px">
+		<select id="categories_projects" name="categories_projects" style="width: 200px">
 		<option value="0"><?php _e("No Project", 'projectmanager'); ?></option>
 		<?php
 			$projectlist = $wpdb->get_results("SELECT * FROM {$wpdb->projectmanager_projects} ORDER BY id ASC");
@@ -131,14 +132,14 @@ $options = get_option('projectmanager');
 	<tr>
 		<td nowrap="nowrap" valign="top"><label><?php _e( 'Show as', 'projectmanager' ) ?></label></td>
 		<td>
-			<input type="radio" name="groups_showtype" id="groups_showtype_dropdown" value="dropdown" /><label for="groups_showtype_dropdown"><?php _e( 'Dropdown Menu', 'projectmaanger' ) ?></label><br />
-			<input type="radio" name="groups_showtype" id="groups_showtype_list" value="list" /><label for="groups_showtype_list"><?php _e( 'List', 'projectmanager' ) ?></label>
+			<input type="radio" name="categories_showtype" id="categories_showtype_dropdown" value="dropdown" /><label for="categories_showtype_dropdown"><?php _e( 'Dropdown Menu', 'projectmaanger' ) ?></label><br />
+			<input type="radio" name="categories_showtype" id="categories_showtype_list" value="list" /><label for="categories_showtype_list"><?php _e( 'List', 'projectmanager' ) ?></label>
 		</td>
 	</tr>
 	<tr>
-		<td nowrap="nowrap" valign="top"><label for="align_groups"><?php _e( 'Alignment', 'projectmanager' ) ?></label></td>
+		<td nowrap="nowrap" valign="top"><label for="align_categories"><?php _e( 'Alignment', 'projectmanager' ) ?></label></td>
 		<td>
-			<select size="1" name="align_groups" id="align_groups">
+			<select size="1" name="align_categories" id="align_categories">
 				<option value="left"><?php _e( 'Left' ) ?></option>
 				<option value="center"><?php _e( 'Center' ) ?></option>
 				<option value="right"><?php _e( 'Right' ) ?></option>

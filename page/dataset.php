@@ -4,33 +4,31 @@ if ( !current_user_can( 'manage_projects' ) ) :
 	
 else :
 
-$project_id = $_GET['project_id'];
-$projectmanager->setSettings( $project_id );
 $options = get_option( 'projectmanager' );
-
+$project_id = $projectmanager->getProjectID();
 if ( isset($_GET['edit']) ) {
 	$form_title = __('Edit Dataset','projectmanager');
 	$dataset_id = $_GET['edit'];
 	$dataset = $projectmanager->getDataset( $dataset_id );
-	$cat_ids = $projectmanager->getSelectedCategoryIDs($dataset[0]);
+	$cat_ids = $projectmanager->getSelectedCategoryIDs($dataset);
 	$dataset_meta = $projectmanager->getDatasetMeta( $dataset_id );
 
-	$name = $dataset[0]->name;
-	$img_filename = $dataset[0]->image;
+	$name = $dataset->name;
+	$img_filename = $dataset->image;
 	$meta_data = array();
 	foreach ( $dataset_meta AS $meta )
 		$meta_data[$meta->form_field_id] = $meta->value;
 }  else {
 	$form_title = __('Add Dataset','projectmanager');
-	$dataset_id = ''; $cat_ids = array();
+	$dataset_id = ''; $cat_ids = array(); $img_filename = ''; $name = ''; $meta_data = array();
 }
 ?>
-<form name="post" id="post" action="edit.php?page=projectmanager/page/show-project.php&amp;id=<?php echo $project_id ?>" method="post" enctype="multipart/form-data">
+<form name="post" id="post" action="edit.php?page=projectmanager/page/show-project.php&amp;project_id=<?php echo $project_id ?>" method="post" enctype="multipart/form-data">
 	
 <?php wp_nonce_field( 'projectmanager_edit-dataset' ) ?>
 	
 <div class="wrap">
-	<?php $projectmanager->printBreadcrumb( $project_id, $form_title ) ?>
+	<?php $projectmanager->printBreadcrumb( $form_title ) ?>
 			
 	<h2><?php echo $form_title ?></h2>
 	
@@ -44,8 +42,7 @@ if ( isset($_GET['edit']) ) {
 		<th scope="row"><label for="projectmanager_image"><?php _e( 'Image', 'projectmanager' ) ?></label></th>
 		<td>
 			<?php if ( '' != $img_filename ) : ?>
-			<?php $img_url = $projectmanager->getImageUrl('tiny.'.$img_filename); ?>
-			<img src="<?php echo $img_url ?>" style="float: right; margin-right: 1em;" />
+			<img src="<?php echo $projectmanager->getImageUrl('tiny.'.$img_filename)?>" class="alignright" />
 			<?php endif; ?>
 			<input type="file" name="projectmanager_image" id="projectmanager_image" size="45"/><p><?php _e( 'Supported file types', 'projectmanager' ) ?>: <?php echo implode( ',',$projectmanager->getSupportedImageTypes() ); ?></p>
 			<?php if ( '' != $img_filename ) : ?>
@@ -72,24 +69,21 @@ if ( isset($_GET['edit']) ) {
 					<option value="">Tag</option>
 					<option value="">&#160;</option>
 					<?php for ( $day = 1; $day <= 30; $day++ ) : ?>
-						<?php $selected = ( $day == substr($meta_data[$form_field->id], 8, 2) ) ? ' selected="selected"' : ''; ?>
-						<option value="<?php echo $day ?>"<?php echo $selected ?>><?php echo $day ?></option>
+						<option value="<?php echo $day ?>"<?php if ( $day == substr($meta_data[$form_field->id], 8, 2) ) echo ' selected="selected"'; ?>><?php echo $day ?></option>
 					<?php endfor; ?>
 				</select>
 				<select size="1" name="form_field[<?php echo $form_field->id ?>][month]">
 					<option value="">Monat</option>
 					<option value="">&#160;</option>
 					<?php foreach ( $projectmanager->getMonths() AS $key => $month ) : ?>
-						<?php $selected = ( $key == substr($meta_data[$form_field->id], 5, 2) ) ? ' selected="selected"' : ''; ?>
-						<option value="<?php echo $key ?>"<?php echo $selected ?>><?php echo $month ?></option>
+						<option value="<?php echo $key ?>"<?php if ( $key == substr($meta_data[$form_field->id], 5, 2) ) echo ' selected="selected"'; ?>><?php echo $month ?></option>
 					<?php endforeach; ?>
 				</select>
 				<select size="1" name="form_field[<?php echo $form_field->id ?>][year]">
 					<option value="">Jahr</option>
 					<option value="">&#160;</option>
 					<?php for ( $year = date('Y')-50; $year <= date('Y')+10; $year++ ) : ?>
-						<?php $selected = ( $year == substr($meta_data[$form_field->id], 0, 4) ) ? ' selected="selected"' : ''; ?>
-						<option value="<?php echo $year ?>"<?php echo $selected ?>><?php echo $year ?></option>
+						<option value="<?php echo $year ?>"<?php if ( $year == substr($meta_data[$form_field->id], 0, 4) ) echo ' selected="selected"' ?>><?php echo $year ?></option>
 					<?php endfor; ?>
 				</select>
 				<?php endif; ?>
@@ -98,7 +92,7 @@ if ( isset($_GET['edit']) ) {
 		<?php endforeach; ?>
 	<?php endif; ?>
 	<?php if ( -1 != $options[$project_id]['category'] ) : ?>
-	<!-- groups selection form -->
+	<!-- category selection form -->
 	<tr valign="top">
 		<th scope="row"><label for="category"><?php echo __( 'Categories', 'projectmanager' ) ?></label></th>
 		<td>

@@ -4,8 +4,7 @@ if ( !current_user_can( 'manage_projects' ) ) :
 
 else :
 
-$project_id = $_GET['id'];
-$projectmanager->setSettings( $project_id );
+$project_id = $projectmanager->getProjectID();
 $options = get_option( 'projectmanager' );
 if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 	if ( 'dataset' == $_POST['updateProjectManager'] ) {
@@ -27,23 +26,23 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 			$projectmanager->delDataset( $dataset_id );
 	}
 }
-$project_title = $projectmanager->getProjectTitle( $project_id );
+$project_title = $projectmanager->getProjectTitle( );
 	
 if ( $projectmanager->isSearch() )
-	$datasets = $projectmanager->getSearchResults( $projectmanager->getSearchString(), $_POST['form_field'] );
+	$datasets = $projectmanager->getSearchResults( $projectmanager->getSearchString(), $projectmanager->getSearchFormFieldID() );
 else
-	$datasets = $projectmanager->getDataset( false, false, true );
-	
+	$datasets = $projectmanager->getDatasets( true );
+
 $num_datasets = ( $projectmanager->isSearch() ) ? count($datasets) : $projectmanager->getNumDatasets($project_id);
 ?>
 <div class="wrap">
-	<?php $projectmanager->printBreadcrumb( $project_id, $project_title, true ) ?>
+	<?php $projectmanager->printBreadcrumb( $project_title, true ) ?>
 	
 	<h2><?php echo $project_title ?></h2>
 	
 	<div id="projectmanager_navbar">
 	<?php $projectmanager->printSearchForm( $project_id, 'right' ); ?>
-	<?php echo $projectmanager->getGroupDropdown( $project_id, 'right' ) ?>
+	<?php $projectmanager->printCategoryDropdown( $project_id, 'right' ) ?>
 	<p>
 		<a href="edit.php?page=projectmanager/page/settings.php&amp;project_id=<?php echo $project_id ?>"><?php _e( 'Settings', 'projectmanager' ) ?></a> &middot;
 		<a href="edit.php?page=projectmanager/page/formfields.php&amp;project_id=<?php echo $project_id ?>"><?php _e( 'Form Fields', 'projectmanager' ) ?></a> &middot;
@@ -56,7 +55,7 @@ $num_datasets = ( $projectmanager->isSearch() ) ? count($datasets) : $projectman
 	<?php wp_nonce_field( 'projectmanager_delete-datasets' ) ?>
 	<input type="hidden" name="item" value="datasets" />
 	<div class="tablenav" style="margin-bottom: 0.1em;">
-		<p class="num_datasets"><?php printf(__('%d of %d Datasets', 'projectmanager'),$num_datasets, $projectmanager->getNumDatasets($project_id) ) ?></p>
+		<p class="num_datasets"><?php printf(__('%d of %d Datasets', 'projectmanager'),$num_datasets, $projectmanager->getNumDatasets($project_id, true) ) ?></p>
 		<input type="submit" name="deleteit" value="<?php _e( 'Delete','projectmanager' ) ?>" class="button-secondary" />
 	</div>
 	
@@ -77,9 +76,9 @@ $num_datasets = ( $projectmanager->isSearch() ) ? count($datasets) : $projectman
 			foreach ( $datasets AS $dataset ) :
 				$class = ( 'alternate' == $class ) ? '' : 'alternate';
 				if ( count($projectmanager->getSelectedCategoryIDs($dataset)) > 0 )
-					$groups = $projectmanager->getSelectedCategoryTitles( $projectmanager->getSelectedCategoryIDs($dataset) );
+					$categories = $projectmanager->getSelectedCategoryTitles( $projectmanager->getSelectedCategoryIDs($dataset) );
 				else
-					$groups = __( 'None', 'projectmanager' );
+					$categories = __( 'None', 'projectmanager' );
 			?>
 				<tr class="<?php echo $class ?>">
 					<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $dataset->id ?>" name="delete[<?php echo $dataset->id ?>]" /></th>
@@ -102,15 +101,14 @@ $num_datasets = ( $projectmanager->isSearch() ) ? count($datasets) : $projectman
 									<ul class="categorychecklist" id="categorychecklist<?php echo $dataset->id ?>">
 									<?php $projectmanager->categoryChecklist( $options[$project_id]['category'], $projectmanager->getSelectedCategoryIDs(&$dataset) ) ?>
 									</ul>
-									<?php //wp_dropdown_categories(array('hide_empty' => 0, 'name' => 'grp_id'.$dataset->id, 'orderby' => 'name', 'selected' => $dataset->grp_id, 'hierarchical' => true, 'child_of' => $options[$project_id]['category'], 'show_option_none' => __('None'))); ?>
 									<div style="text-align:center; margin-top: 1em;"><input type="button" value="<?php _e('Save') ?>" class="button-secondary" onclick="ProjectManager.ajaxSaveCategories(<?php echo $dataset->id; ?>);return false;" />&#160;<input type="button" value="<?php _e('Cancel') ?>" class="button" onclick="tb_remove();" /></div>
 								</form>
 							</div>
 						</div>
-						<span id="dataset_category_text<?php echo $dataset->id ?>"><?php echo $groups ?></span>&#160;<a class="thickbox" id="thickboxlink_category<?php echo $dataset->id ?>" href="#TB_inline?height=100&amp;width=250&amp;inlineId=groupchoosewrap<?php echo $dataset->id ?>" title="<?php printf(__('Categories of %s','projectmanager'),$dataset->name) ?>"><img src="<?php echo PROJECTMANAGER_URL ?>/images/edit.gif" border="0" alt="<?php _e('Edit') ?>" /></a>
+						<span id="dataset_category_text<?php echo $dataset->id ?>"><?php echo $categories ?></span>&#160;<a class="thickbox" id="thickboxlink_category<?php echo $dataset->id ?>" href="#TB_inline?height=100&amp;width=250&amp;inlineId=groupchoosewrap<?php echo $dataset->id ?>" title="<?php printf(__('Categories of %s','projectmanager'),$dataset->name) ?>"><img src="<?php echo PROJECTMANAGER_URL ?>/images/edit.gif" border="0" alt="<?php _e('Edit') ?>" /></a>
 					</td>
 					<?php endif; ?>
-					<?php $projectmanager->printDatasetMetaData( $dataset->id, 'td', false, $dataset->name ) ?>
+					<?php $projectmanager->printDatasetMetaData( $dataset, 'td', false ) ?>
 				</tr>
 			<?php endforeach ?>
 		<?php endif ?>

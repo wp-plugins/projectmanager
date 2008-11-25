@@ -1,11 +1,11 @@
 <?php
 
 /**
- * SACK response for showing group selection in TinyMCE button
+ * SACK response for showing category selection in TinyMCE button
  *
  * @since 1.2
  */
-function projectmanager_show_group_selection() {
+function projectmanager_show_category_selection() {
 	$options = get_option('projectmanager');
 	$el_id = $_POST['el_id'];
 	$project_id = intval($_POST['project_id']);
@@ -64,9 +64,8 @@ function projectmanager_save_categories() {
 	$dataset_id = intval($_POST['dataset_id']);
 	$new_cats = explode(",",substr($_POST['cat_ids'],0,-1));
 	
-	if ( $group != -1 ) {
-		$cat = get_category($new_group);
-		$cat_name = $cat->name;
+	if ( count($new_cats) > 0 ) {
+		$cat_name = $projectmanager->getSelectedCategoryTitles($new_cats);
 	} else
 		$cat_name = __('None', 'projectmanager');
 	
@@ -74,7 +73,7 @@ function projectmanager_save_categories() {
 
 	die( "ProjectManager.reInit();jQuery('span#dataset_category_text" . $dataset_id . "').fadeOut('fast', function() {
 		jQuery('a#thickboxlink_category" . $dataset_id . "').show();
-		jQuery('span#dataset_category_text" . $dataset_id . "').html('" . $projectmanager->getSelectedCategoryTitles($new_cats) . "').fadeIn('fast');
+		jQuery('span#dataset_category_text" . $dataset_id . "').html('" . $cat_name . "').fadeIn('fast');
 	});");
 }
 

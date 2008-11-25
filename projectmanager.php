@@ -11,7 +11,7 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * ID of selected project
+	 * ID of current project
 	 *
 	 * @var int
 	 */
@@ -19,11 +19,11 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * current selected group
+	 * selected category
 	 *
 	 * @var int
 	 */
-	var $group;
+	var $cat_id;
 		
 		
 	/**
@@ -43,12 +43,20 @@ class WP_ProjectManager
 		
 		
 	/**
-	 * Constructor of class
+	 * form fields
 	 *
-	 * @param none
+	 * @param array
+	 */
+	var $form_fields = false;
+	
+	
+	/**
+	 * __construct() - Initialize project settings
+	 *
+	 * @param int $project_id ID of selected project. false if none is selected
 	 * @return void
 	 */
-	function __construct()
+	function __construct( $project_id )
 	{
 		global $wpdb;
 			
@@ -64,37 +72,49 @@ class WP_ProjectManager
 		$this->plugin_path = WP_PLUGIN_DIR.'/projectmanager';
 		
 		//Save selected group. NULL if none is selected
-		$this->setGroup();
+		$this->setCatID();
+
+		if ( $project_id )
+			$this->initialize($project_id);
+		
+		return;
 	}
-	function WP_Manager()
+	/**
+	 * WP_ProjectManager() - Wrapper function to sustain downward compatibility to PHP 4.
+	 *
+	 * Wrapper function which calls constructor of class
+	 *
+	 * @param int $project_id
+	 * @return none
+	 */
+	function WP_ProjectManager( $project_id )
 	{
-		$this->__construct();
+		$this->__construct( $project_id );
 	}
 	
 	
 	/**
-	 * set project ID
+	 * init() - Initialize project settings
 	 *
 	 * @param int $project_id
 	 * @return void
 	 */
-	function setSettings( $project_id )
+	function initialize( $project_id )
 	{
-		$this->project_id = $project_id;
-
 		$options = get_option( 'projectmanager' );
-		$this->per_page = $options[$project_id]['per_page'];
+		$this->project_id = $project_id;
+		$this->per_page = $options[$this->project_id]['per_page'];
 
-		$this->pagination = new Pagination( $this->per_page, $this->getNumDatasets($project_id), array('show') );
+		$this->pagination = new Pagination( $this->per_page, $this->getNumDatasets($this->project_id), array('show') );
 	}
 	
 	
 	/**
-	* returns supported form field types
-	*
-	* @param none
-	* @return array
-	*/
+	 * getFormFieldTypes() - returns array of form field types
+	 *
+	 * @param none
+	 * @return array
+	 */
 	function getFormFieldTypes()
 	{
 		$form_field_types = array( 1 => __('Text', 'projectmanager'), 2 => __('Textfield', 'projectmanager'), 3 => __('E-Mail', 'projectmanager'), 4 => __('Date', 'projectmanager'), 5 => __('URL', 'projectmanager') );
@@ -103,7 +123,7 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * returns array of months in appropriate language depending on Wordpress locale
+	 * getMonths() - returns array of months in appropriate language depending on Wordpress locale
 	 *
 	 * @param none
 	 * @return array
@@ -121,7 +141,7 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * returns image directory
+	 * getImagePath() - returns image directory
 	 *
 	 * @param string | false $file
 	 * @return string
@@ -138,7 +158,7 @@ class WP_ProjectManager
 	/**
 	 * returns url of image directory
 	 *
-	 * @param string | false $file
+	 * @param string | false $file image file
 	 * @return string
 	 */
 	function getImageUrl( $file = false )
@@ -151,7 +171,7 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * gets project id
+	 * getProjectID() - gets project ID
 	 *
 	 * @param none
 	 * @return int
@@ -163,64 +183,64 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * gets current group
+ 	 * setCategory() - sets current category
+	 *
+	 * @param int $cat_id
+	 * @return void
+	 */
+	function setCatID( $cat_id = false )
+	{
+		if ( $cat_id )
+			$this->cat_id = $cat_id;
+		else
+			$this->cat_id = ( isset($_GET['cat_id']) && '' != $_GET['cat_id'] && 0 < $_GET['cat_id'] ) ? (int)$_GET['cat_id'] : null;
+		
+		return;
+	}
+	
+	
+	/**
+	 * getCat() - gets current category
 	 * 
 	 * @param none
-	 * @return int | false
+	 * @return int
 	 */
-	function getGroup()
+	function getCatID()
 	{
-		return $this->group;
+		return $this->cat_id;
 	}
 		
 	
 	/**
-	 * gets group title
+	 * getCatTitle() - gets group title
 	 *
-	 * @param int $grp_id
+	 * @param int $cat_id
 	 * @return string
 	 */
-	function getGroupTitle( $grp_id )
+	function getCatTitle( $cat_id )
 	{
-		$group = get_category($grp_id);
-		return $group->name;
+		$c = get_category($cat_id);
+		return $c->name;
 	}
 	
 	
 	/**
-	 * check if group is selected
+	 * isCategory() check if category is selected
 	 * 
 	 * @param none
 	 * @return boolean
 	 */
-	function isGroup()
+	function isCategory()
 	{
-		if ( null != $this->getGroup() )
+		if ( null != $this->getCatID() )
 			return true;
 		
 		return false;
 	}
 	
-	
+
 	/**
- 	 * sets current group
-	 *
-	 * @param int $group_id
-	 * @return void
-	 */
-	function setGroup( $grp_id = false )
-	{
-		if ( $grp_id )
-			$this->group = $grp_id;
-		else
-			$this->group = ( isset($_GET['grp_id']) && '' != $_GET['grp_id'] ) ? (int)$_GET['grp_id'] : null;
-		
-		return;
-	}
-		
-		
-	/**
-	 * check if search was performed
+	 * isSearch() - check if search was performed
 	 *
 	 * @param none
 	 * @return boolean
@@ -235,7 +255,7 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * returns search string
+	 * getSearchString() - returns search string
 	 *
 	 * @param none
 	 * @return string
@@ -250,7 +270,22 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * gets supported file types
+	 * getSearchFormFieldID() - gets form field ID of search request
+	 *
+	 * @param none
+	 * @return int
+	 */
+	function getSearchFormFieldID()
+	{
+		if ( $this->isSearch() )
+			return $_POST['form_field'];
+		
+		return 0;
+	}
+	
+	
+	/**
+	 * getSupportedImageTypes() - gets supported file types
 	 *
 	 * @param none
 	 * @return array
@@ -262,9 +297,9 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * checks if image type is supported
+	 * imageTypeisSupported() - checks if image type is supported
 	 *
-	 * @param string $filename
+	 * @param string $filename image file
 	 * @return boolean
 	 */
 	function imageTypeIsSupported( $filename )
@@ -277,9 +312,9 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * gets image type
+	 * getImageType() - gets image type of supplied image
 	 *
-	 * @param string $filename
+	 * @param string $filename image file
 	 * @return string
 	 */
 	function getImageType( $filename )
@@ -290,7 +325,7 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * gets object limit per page
+	 * getPerPage() - gets object limit per page
 	 *
 	 * @param none
 	 * @return int
@@ -302,12 +337,12 @@ class WP_ProjectManager
 		
 		
 	/**
-	 * sets number of objects per page
+	 * setPerPage() - sets number of objects per page
 	 *
 	 * @param int
 	 * @return void
 	 */
-	function setPerPage($per_page)
+	function setPerPage( $per_page )
 	{
 		$this->per_page = $per_page;
 		$this->pagination->setPerPage( $per_page );
@@ -317,21 +352,20 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * gets project title
+	 * getProjectTitle() - gets project title
 	 *
-	 * @param int $project_id
+	 * @param none
 	 * @return string
 	 */
-	function getProjectTitle( $project_id )
+	function getProjectTitle( )
 	{
-		$projects = $this->getProjects( $project_id );
-		$project_title = $projects[0]->title;
-		return $project_title;
+		$project = $this->getProject( $this->project_id );
+		return $project->title;
 	}
 	
 	
 	/**
-	 * get number of projects
+	 * getNumProjects() - get number of projects
 	 *
 	 * @param none
 	 * @return int
@@ -346,23 +380,35 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * gets projects from database
+	 * getProjects() - gets all projects from database
 	 *
 	 * @param int $project_id (optional)
 	 * @return array
 	 */
-	function getProjects( $project_id = false )
+	function getProjects()
 	{
 		global $wpdb;
 		
-		$search = ( $project_id ) ? " WHERE `id` = {$project_id}" : '';
-		$sql = "SELECT `title`, `id` FROM {$wpdb->projectmanager_projects} $search ORDER BY `id` ASC";
-		return $wpdb->get_results( $sql );
+		return $wpdb->get_results( "SELECT `title`, `id` FROM {$wpdb->projectmanager_projects} ORDER BY `id` ASC" );
 	}
 	
 	
 	/**
-	 * gets all widgedized projects
+	 * getProject() - gets one project
+	 *
+	 * @param int $project_id
+	 * @return array
+	 */
+	function getProject( $project_id )
+	{
+		global $wpdb;
+		$projects = $wpdb->get_results( "SELECT `title`, `id` FROM {$wpdb->projectmanager_projects} WHERE `id` = {$project_id} ORDER BY `id` ASC" );
+		return $projects[0];
+	}
+	
+	
+	/**
+	 * getWidgetProjects() - gets all widgedized projects
 	 *
 	 * @param none
 	 * @return array
@@ -383,7 +429,7 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * gets form fields for project
+	 * getFormFields() - gets form fields for project
 	 *
 	 * @param none
 	 * @return array
@@ -398,10 +444,10 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * gets checklist for groups. Adopted from wp-admin/includes/template.php
+	 * categoryChecklist() - gets checklist for groups. Adopted from wp-admin/includes/template.php
 	 *
-	 * @param int $descendants
-	 * @param array $selected cats
+	 * @param int $child_of parent category
+	 * @param array $selected cats array of selected category IDs
 	 */
 	function categoryChecklist( $child_of, $selected_cats )
 	{
@@ -429,14 +475,14 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * get selected categories for dataset
+	 * getSelectedCategoryIDs() - get selected categories for dataset
 	 *
 	 * @param object $dataset
 	 * @return array
 	 */
 	function getSelectedCategoryIDs( $dataset )
 	{
-		$cat_ids =  maybe_unserialize($dataset->cat_ids);
+		$cat_ids = maybe_unserialize($dataset->cat_ids);
 		if ( !is_array($cat_ids) )
 			$cat_ids = array($cat_ids);
 		return $cat_ids;
@@ -444,61 +490,73 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * get selected categories string
+	 * getSelectedCategoryTitles() - get selected categories string
 	 *
 	 * @param array $cat_ids
-	 *
 	 * @return string
 	 */
 	function getSelectedCategoryTitles( $cat_ids )
 	{
 		$categories = array();
 		foreach ( $cat_ids AS $cat_id )
-			$categories[] = $this->getGroupTitle($cat_id);
+			$categories[] = $this->getCatTitle($cat_id);
 
 		return implode(", ", $categories);
 	}
 	
 	
 	/**
-	 * gets datasets in a given group
+	 * getCategorySearchString() - gets datasets in a given group
 	 *
-	 * @param object $datasets
+	 * @param none
 	 * @return array
 	 */
-	function getSelectedDatasets( $project_id, $datasets = false )
+	function getCategorySearchString( )
 	{
-		if ( !$datasets ) $datasets = $this->getDataset( false, $project_id );
+		global $wpdb;
+		
+		$datasets = $wpdb->get_results( "SELECT `id`, `cat_ids` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id} ORDER BY `name` ASC" );
+								
+		if ( !is_array($datasets) ) $datasets = array($datasets);
+		
+		$sql = ' AND (';
 		$selected_datasets = array();
 		foreach ( $datasets AS $dataset )
-			if ( in_array($this->getGroup(), $this->getSelectedCategoryIDs($dataset)) )
-				array_push($selected_datasets, $dataset);
-				
-		return $selected_datasets;
+			if ( in_array($this->getCatID(), $this->getSelectedCategoryIDs($dataset)) )
+				$selected_datasets[] = '`id` = '.$dataset->id;
+		
+		$sql .= implode(' OR ', $selected_datasets);
+		$sql .= ')';
+		return $sql;
 	}
 	
 	
 	/**
-	 * gets number of datasets for specific project
+	 * getNumDatasets() - gets number of datasets for specific project
 	 *
-	 * @param int $project_id (optional)
+	 * @param int $project_id
 	 * @return int
 	 */
-	function getNumDatasets( $project_id )
+	function getNumDatasets( $project_id, $all = false )
 	{
 		global $wpdb;
-		
-		if ( $this->isGroup() )
-			$num_datasets = count($this->getSelectedDatasets( $project_id ));
-		else
-			$num_datasets = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$project_id}" );
+
+		$sql = "SELECT COUNT(ID) FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$project_id}";
+		if ( $all )
+			$num_datasets = $wpdb->get_var( $sql );
+		else {
+			if ( $this->isCategory() )
+				$sql .= $this->getCategorySearchString();
+			
+			$num_datasets = $wpdb->get_var( $sql );
+		}
 
 		return $num_datasets;
 	}
 		
-		
+	
 	/**
-	 * gets dataset
+	 * getDatasets() - gets all datasets for a project
 	 *
 	 * @param int $dataset_id
 	 * @param int $project_id
@@ -506,41 +564,40 @@ class WP_ProjectManager
 	 * @param string $order
 	 * @return array
 	 */
-	 function getDataset( $dataset_id = false, $project_id = false, $limit = false, $order = 'name ASC' )
+	 function getDatasets( $limit = false, $order = 'name ASC' )
 	{
 		global $wpdb;
 		
-		if ( $limit ) {
-			$page = $this->pagination->getPage();
-			// offset for MySQL query
-			$offset = ( $page - 1 ) * $this->per_page;
-		}
-		$project_id = ( $project_id ) ? $project_id : $this->project_id;
+		if ( $limit ) $offset = ( $this->pagination->getPage() - 1 ) * $this->per_page;
 
-		$sql = "SELECT `id`, `name`, `image`, `cat_ids` FROM {$wpdb->projectmanager_dataset}";
-	
-		if ( $dataset_id )
-			$sql .= " WHERE `id` = {$dataset_id}";
-		else
-			$sql .= " WHERE `project_id` = {$project_id}";
-			
-		$sql .= " ORDER BY $order";
-		$sql .= ( $limit ) ? " LIMIT ".$offset.",".$this->per_page.";" : ";";
-			
-		$all_datasets = $wpdb->get_results( $sql );
+		$sql = "SELECT `id`, `name`, `image`, `cat_ids` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id}";
 		
-		$datasets = array();
-		if ( $this->isGroup() )
-			$datasets = $this->getSelectedDatasets(false, $all_datasets);
-		else
-			$datasets = $all_datasets;
-
-		return $datasets;
+		if ( $this->isCategory() )
+			$sql .= $this->getCategorySearchString();
+		
+		$sql .=  " ORDER BY $order";
+		$sql .= ( $limit ) ? " LIMIT ".$offset.",".$this->per_page.";" : ";";				
+		
+		return $wpdb->get_results($sql);
+	}
+	
+	
+	/**
+	 * getDataset() - gets single dataset
+	 *
+	 * @param int $dataset_id
+	 * @return array
+	 */
+	function getDataset( $dataset_id )
+	{
+		global $wpdb;
+		$dataset = $wpdb->get_results( "SELECT `id`, `name`, `image`, `cat_ids` FROM {$wpdb->projectmanager_dataset} WHERE `id` = {$dataset_id}" );
+		return $dataset[0];
 	}
 		
 		
 	/**
-	 * gets meta data for dataset
+	 * getDatasetMeta() - gets meta data for dataset
 	 *
 	 * @param int $dataset_id
 	 * @return array
@@ -554,7 +611,7 @@ class WP_ProjectManager
 		
 	
 	/**
-	 * gets form field labels as table header
+	 * getTableHeader() - gets form field labels as table header
 	 *
 	 * @param none
 	 * @return string
@@ -577,17 +634,17 @@ class WP_ProjectManager
 	
 		 
 	/**
-	 * gets dataset meta data. Output types are list items or table columns
+	 * getDatasetMetaData() - gets dataset meta data. Output types are list items or table columns
 	 *
-	 * @param int $dataset_id
+	 * @param array $dataset
 	 * @param string $output td | li | dl (default 'li')
 	 * @param boolean $show_all
 	 * @return string
 	 */
-	function getDatasetMetaData( $dataset_id, $output = 'li', $show_all = false, $dataset_name = null )
+	function getDatasetMetaData( $dataset, $output = 'li', $show_all = false )
 	{
 		$out = '';
-		if ( $dataset_meta = $this->getDatasetMeta( $dataset_id ) ) {
+		if ( $dataset_meta = $this->getDatasetMeta( $dataset->id ) ) {
 			foreach ( $dataset_meta AS $meta ) {
 				/*
 				* Check some special field types
@@ -601,19 +658,19 @@ class WP_ProjectManager
 				$meta_value = htmlspecialchars( $meta->value );
 				
 				if ( 1 == $meta->type )
-					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset_id."'>".$meta_value."</span>";
+					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span>";
 				elseif ( 2 == $meta->type ) {
 					if ( strlen($meta_value) > 150 && !$show_all )
 						$meta_value = substr($meta_value, 0, 150)."...";
 					$meta_value = nl2br($meta_value);
 						
-					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset_id."'>".$meta_value."</span>";
+					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span>";
 				} elseif ( 3 == $meta->type )
-					$meta_value = "<a href='mailto:".$meta_value."'><span id='datafield".$meta->form_field_id."_".$dataset_id."'>".$meta_value."</span></a>";
+					$meta_value = "<a href='mailto:".$meta_value."'><span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span></a>";
 				elseif ( 4 == $meta->type )
-					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset_id."'>".mysql2date(get_option('date_format'), $meta_value )."</span>";
+					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".mysql2date(get_option('date_format'), $meta_value )."</span>";
 				elseif ( 5 == $meta->type )
-					$meta_value = "<a href='http://".$meta_value."' target='_blank' title='".$meta_value."'><span id='datafield".$meta->form_field_id."_".$dataset_id."'>".$meta_value."</span></a>";
+					$meta_value = "<a href='http://".$meta_value."' target='_blank' title='".$meta_value."'><span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span></a>";
 				
 				if ( 1 == $meta->show_on_startpage || $show_all ) {
 					if ( '' != $meta_value ) {
@@ -621,8 +678,8 @@ class WP_ProjectManager
 							$out .= "\n\t<dt class='projectmanager'>".$meta->label."</dt><dd>".$meta_value."</dd>";
 						} else {
 							$out .= "\n\t<".$output.">";
-							$out .= $this->getThickbox( $dataset_id, $meta->form_field_id, $meta->type, $meta->value );
-							$out .= "\n\t\t".$meta_value . $this->getThickboxLink($dataset_id, $meta->form_field_id, $meta->type, $meta->label." ".__('of','projectmanager')." ".$dataset_name);
+							$out .= $this->getThickbox( $dataset->id, $meta->form_field_id, $meta->type, $meta->value );
+							$out .= "\n\t\t".$meta_value . $this->getThickboxLink($dataset->id, $meta->form_field_id, $meta->type, $meta->label." ".__('of','projectmanager')." ".$dataset->name);
 							$out .= "\n\t</".$output.">";
 						}
 					} elseif ( 'td' == $output )
@@ -632,14 +689,14 @@ class WP_ProjectManager
 		}
 		return $out;
 	}
-	function printDatasetMetaData( $dataset_id, $output = 'li', $show_all = false, $dataset_name = null )
+	function printDatasetMetaData( $dataset, $output = 'li', $show_all = false )
 	{
-		echo $this->getDatasetMetaData( $dataset_id, $output, $show_all, $dataset_name );
+		echo $this->getDatasetMetaData( $dataset, $output, $show_all );
 	}
 		 
 		 
 	/**
-	 * get Thickbox Link for Ajax editing
+	 * getThickboxLink() - get Thickbox Link for Ajax editing
 	 *
 	 * @param ing $dataset_id
 	 * @param int $formfield_id
@@ -660,7 +717,7 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * get Ajax Thickbox
+	 * getThickbox() - get Ajax Thickbox
 	 *
 	 * @param int $dataset_id
 	 * @param int $formfield_id
@@ -713,7 +770,7 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * gets offset of dataset
+	 * getDatasetOffset() - gets offset of dataset
 	 *
 	 * @param int $dataset_id
 	 * @return int
@@ -721,22 +778,17 @@ class WP_ProjectManager
 	function getDatasetOffset( $dataset_id )
 	{
 		global $wpdb;
-			
-		$search = "";
-		
-		if ( $this->isGroup() ) {
-			$datasets = $wpdb->get_results( "SELECT `id` FROM {$wpdb->projectmanager_dataset} WHERE `id` < '".$dataset_id."' AND project_id = {$this->project_id}" );
-			$num_datasets = count($this->getSelectedDatasets( false, $datasets ));
-			//$search .= " AND `grp_id` = '".$this->group."'";
-		} else
-			$offset = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_dataset} WHERE `id` < '".$dataset_id."' AND project_id = {$this->project_id}" );
 
-		return $offset;
+		$sql = "SELECT `id` FROM {$wpdb->projectmanager_dataset} WHERE `id` < '".$dataset_id."' AND project_id = {$this->project_id}";
+		if ( $this->isCategory() )
+			$sql .= $this->getCategorySearchString();
+		
+		return $wpdb->get_var( $sql );
 	}
 	
 
 	/**
-	 * add new project
+	 * addProject() - add new project
 	 *
 	 * @param string $title
 	 * @return string
@@ -751,7 +803,7 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * edit project
+	 * editProject() - edit project
 	 *
 	 * @param string $title
 	 * @param int $project_id
@@ -766,7 +818,7 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * delete project
+	 * delProject() - delete project
 	 *
 	 * @param int  $project_id
 	 * @return void
@@ -775,7 +827,7 @@ class WP_ProjectManager
 	{
 		global $wpdb;
 		
-		foreach ( $this->getDataset() AS $dataset )
+		foreach ( $this->getDatasets() AS $dataset )
 			$this->delDataset( $dataset->id );
 		
 		$wpdb->query( "DELETE FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = {$project_id}" );
@@ -784,7 +836,7 @@ class WP_ProjectManager
 
 	
 	/**
-	 * add new dataset
+	 * addDataset() - add new dataset
 	 *
 	 * @param int $project_id
 	 * @param string $name
@@ -823,7 +875,7 @@ class WP_ProjectManager
 		
 		
 	/**
-	 * edit dataset
+	 * editDataset() - edit dataset
 	 *
 	 * @param int $project_id
 	 * @param string $name
@@ -877,7 +929,7 @@ class WP_ProjectManager
 		
 		
 	/**
-	 * delete dataset
+	 * delDataset() - delete dataset
 	 *
 	 * @param int $dataset_id
 	 * @return void;
@@ -899,7 +951,7 @@ class WP_ProjectManager
 		
 		
 	/**
-	 * delete image along with thumbnail from server
+	 * delImage() - delete image along with thumbnails from server
 	 *
 	 * @param string $image
 	 * @return void
@@ -914,15 +966,15 @@ class WP_ProjectManager
 		
 		
 	/**
-	 * check if datasets have details
+	 * hasDetails() - check if datasets have details
 	 * 
 	 * @param int $project_id
 	 * @return boolean
 	 */
-	function hasDetails( $project_id )
+	function hasDetails()
 	{
 		global $wpdb;
-		$num_form_fields = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = {$project_id} AND `show_on_startpage` = 0" );
+		$num_form_fields = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = {$this->project_id} AND `show_on_startpage` = 0" );
 			
 		if ( $num_form_fields > 0 )
 			return true;
@@ -932,7 +984,7 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * set image path in database and upload image to server
+	 * uploadImage() - set image path in database and upload image to server
 	 *
 	 * @param int  $dataset_id
 	 * @param string $img_name
@@ -954,26 +1006,18 @@ class WP_ProjectManager
 			* Delete old images from server and clean database entry
 			*/
 			if ( $img_size > 0 ) {
-				if ( $result = $wpdb->get_results( "SELECT `image` FROM {$wpdb->projectmanager_dataset} WHERE `id` = '".$dataset_id."'" ) ) {
-					if ( $result[0]->image != basename($img_name) AND $result[0]->image != '' ) {
-						$this->delImage($result[0]->image);
-						$wpdb->query("UPDATE {$wpdb->projectmanager_dataset} SET `image` = '' WHERE `id` = {$dataset_id}");
-					}
-				}
-			}
-	
-		
-			/*
-			* Upload Image to Server
-			*/
-			if ( $img_size > 0 ) {
-				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `image` = '%s' WHERE id = '%d'", basename($img_name), $dataset_id ) );
-	
+				/*
+				* Upload Image to Server
+				*/
 				$uploadfile = $uploaddir.'/'.basename($img_name);
 				if ( file_exists($uploadfile) && !$overwrite_image ) {
 					return __('File exists and is not uploaded.','projectmanager');
 				} else {
 					if ( move_uploaded_file($img_tmp_name, $uploadfile) ) {
+						if ( $dataset = $this->getDataset($dataset_id) )
+							if ( $dataset->image != '' ) $this->delImage($dataset->image);
+
+						$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `image` = '%s' WHERE id = '%d'", basename($img_name), $dataset_id ) );
 						$thumb = new Thumbnail($uploadfile);
 						
 						// Resize original file
@@ -1002,7 +1046,7 @@ class WP_ProjectManager
 		 
 	
 	/**
-	 * Set Form Fields
+	 * setFormFields() - save Form Fields
 	 *
 	 * @param int $project_id
 	 * @param array $form_name
@@ -1017,7 +1061,6 @@ class WP_ProjectManager
 	function setFormFields( $project_id, $form_name, $form_type, $form_show_on_startpage, $form_order, $new_form_name, $new_form_type, $new_form_show_on_startpage, $new_form_order )
 	{
 		global $wpdb;
-			
 			
 		if ( null != $form_name ) {
 			foreach ( $wpdb->get_results( "SELECT `id` FROM {$wpdb->projectmanager_projectmeta}" ) AS $form_field) {
@@ -1056,7 +1099,7 @@ class WP_ProjectManager
 				/*
 				* Populate default values for every dataset
 				*/
-				if ( $datasets = $this->getDataset() ) {
+				if ( $datasets = $this->getDatasets() ) {
 					foreach ( $datasets AS $dataset ) {
 						$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ( '%d', '%d', '' );", $form_id, $dataset->id ) );
 					}
@@ -1069,7 +1112,7 @@ class WP_ProjectManager
 		 
 		
 	/**
-	 * replace shortcodes with respective HTML in posts or pages
+	 * insert() - replace shortcodes with respective HTML in posts or pages
 	 *
 	 * @param string $content
 	 * @return string
@@ -1092,15 +1135,15 @@ class WP_ProjectManager
 			}
 		}
 		
-		if ( stristr( $content, '[prjctmngr_group' )) {
-			$search = "@\[prjctmngr_group_selection\s*=\s*(\w+),(|dropdown|list|),(|left|center|right|)\]@i";
+		if ( stristr( $content, '[prjctmngr_category' )) {
+			$search = "@\[prjctmngr_category_selection\s*=\s*(\w+),(|dropdown|list|),(|left|center|right|)\]@i";
 		
 			if ( preg_match_all($search, $content , $matches) ) {
 				if (is_array($matches)) {
 					foreach($matches[1] AS $key => $v0) {
 						$project_id = $v0;
 						$search = $matches[0][$key];
-						$replace = $this->getGroupSelection( $project_id, $matches[2][$key], $matches[3][$key] );
+						$replace = $this->getCategorySelection( $project_id, $matches[2][$key], $matches[3][$key] );
 				
 						$content = str_replace($search, $replace, $content);
 					}
@@ -1146,7 +1189,7 @@ class WP_ProjectManager
 	
 
 	/**
-	 * create search formular
+	 * getSearchForm() - create search formular
 	 *
 	 * @param string $style
 	 */
@@ -1154,7 +1197,7 @@ class WP_ProjectManager
 	{
 		$this->project_id = $project_id;
 		$search_string = ($this->isSearch()) ? $this->getSearchString() : '';
-		$form_field_id = isset( $_POST['form_field'] ) ? $_POST['form_field'] : 0;
+		$form_field_id = $this->getSearchFormFieldID();
 		
 		if ( !isset($_GET['show'])) {
 			$out = "</p>\n\n<div class='projectmanager_".$pos."'>\n<form class='projectmanager' action='' method='post'>";
@@ -1183,32 +1226,34 @@ class WP_ProjectManager
 		
 	
 	/**
-	 * get group selection
+	 * getCategorySelection() - get group selection
 	 *
 	 * @param int $project_id
 	 * @param string $type 'dropdown' | 'list'
 	 */
-	function getGroupSelection( $project_id, $type, $pos )
+	function getCategorySelection( $project_id, $type, $pos )
 	{
 		if ( 'dropdown' == $type )
-			return $this->getGroupDropdown($project_id,$pos);
+			return $this->getCategoryDropdown($project_id,$pos);
 		elseif ( 'list' == $type )
-			return $this->getGroupList($project_id,$pos);
+			return $this->getCategoryList($project_id,$pos);
 	}
 	
 	
 	/**
-	 * get group dropdown
+	 * getCategoryDropdown() - get group dropdown
 	 *
 	 * @param int $project_id
 	 * @return string
 	 */
-	function getGroupDropdown( $project_id, $pos )
+	function getCategoryDropdown( $project_id, $pos )
 	{
 		global $wpdb, $wp_query;
 		
+		$this->project_id = $project_id;
+		$options = get_option( 'projectmanager' );
 		if ( is_admin() ) {
-			$hidden = "\n<input type='hidden' name='page' value='".$_GET['page']."' />\n<input type='hidden' name='id' value='".$project_id."' />";
+			$hidden = "\n<input type='hidden' name='page' value='".$_GET['page']."' />\n<input type='hidden' name='project_id' value='".$this->project_id."' />";
 			$action = 'edit.php';
 		} else {
 			$page_obj = $wp_query->get_queried_object();
@@ -1217,14 +1262,11 @@ class WP_ProjectManager
 			$hidden = "\n<input type='hidden' name='page_id' value='".$page_ID."' />";
 			$action = get_permalink($page_ID);
 		}
-		
-		$options = get_option( 'projectmanager' );
-		
+
 		$out = "</p>";
 		if ( !isset($_GET['show'])) {
-			$selected = isset($_GET['grp_id']) ? $_GET['grp_id'] : null;
 			$out .= "\n\n<div class='projectmanager_".$pos."'>\n<form class='projectmanager' action='".$action."' method='get'>\n";
-			$out .= wp_dropdown_categories(array('echo' => 0, 'hide_empty' => 0, 'name' => 'grp_id', 'orderby' => 'name', 'selected' => $selected, 'hierarchical' => true, 'child_of' => $options[$project_id]['category'], 'show_option_all' => __('Groups', 'projectmanager'), 'show_option_none' => '&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;'));
+			$out .= wp_dropdown_categories(array('echo' => 0, 'hide_empty' => 0, 'name' => 'cat_id', 'orderby' => 'name', 'selected' => $this->getCatID(), 'hierarchical' => true, 'child_of' => $options[$this->project_id]['category'], 'show_option_all' => __('Groups', 'projectmanager'), 'show_option_none' => '&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;'));
 			$out .= $hidden;
 			$out .= "\n<input type='submit' value='".__( 'Go', 'projectmanager' )."' class='button' />";
 			$out .= "\n</form>\n</div>\n\n";
@@ -1233,23 +1275,28 @@ class WP_ProjectManager
 
 		return $out;
 	}
+	function printCategoryDropdown( $project_id, $pos )
+	{
+		echo $this->getCategoryDropdown( $project_id, $pos );
+	}
 	
 	
 	/**
-	 * get group list
+	 * getCategoryList() - get group list
 	 *
 	 * @param int $proeject_id
 	 * @return string
 	 */
-	function getGroupList( $project_id, $pos )
+	function getCategoryList( $project_id, $pos )
 	{
 		global $wpdb;
+		$this->project_id = $project_id;
 		$options = get_option( 'projectmanager' );
 		
 		$out = '</p>';
 		if ( !isset($_GET['show'])) {
 			$out = "\n<div class='projectmanager_".$pos."'>\n\t<ul>";
-			$out .= wp_list_categories(array('echo' => 0, 'title_li' => __('Groups', 'projectmanager'), 'child_of' => $options[$project_id]['category']));
+			$out .= wp_list_categories(array('echo' => 0, 'title_li' => __('Categories', 'projectmanager'), 'child_of' => $options[$this->project_id]['category']));
 			$out .= "\n\t</ul>\n</div>";
 		}
 		$out .= '<p>';
@@ -1259,36 +1306,46 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * get dataset list
+	 * getDatasetList() - get dataset list
+	 *
+	 * Function to display the datasets of a given project in a page or post as list.
+	 * The function is called via the filter `projectmanager_dataset_list` and can be modified or overwritten by
+	 *
+	 * remove_filter('projectmanager_dataset_list', array(&$projectmanager, 'getDatasetList'));
+	 * add_filter('projectmanager_dataset_list', 'my_function', 10, 4);
+	 *
+	 * function my_function( $out = '', $project_id, $output = 'table', $cat_id = false ) {
+	 *	// Do some stuff
+	 * }
 	 *
 	 * @param int $project_id
 	 * @param string $output
-	 * @param ing $grp_id
+	 * @param ing $cat_id
 	 * @return string
 	 */
-	function getDatasetList( $out = '', $project_id, $output = 'table', $grp_id = false )
+	function getDatasetList( $out = '', $project_id, $output = 'table', $cat_id = false )
 	{
-		$this->setSettings($project_id);
-		if ( $grp_id ) $this->setGroup($grp_id);
+		$this->initialize($project_id);
+		if ( $cat_id ) $this->setCatID($cat_id);
 	
 		if ( isset( $_GET['show'] ) ) {
-			$out .= apply_filters( 'projectmanager_single_view', $out, $project_id, $_GET['show'] );
+			$out .= apply_filters( 'projectmanager_single_view', $out, $this->project_id, $_GET['show'] );
 		} else {
 			if ( $this->isSearch() )
-				$datasets = $this->getSearchResults($this->getSearchString(), $_POST['form_field']);
+				$datasets = $this->getSearchResults($this->getSearchString(), $this->getSearchFormFieldID());
 			else
-				$datasets = $this->getDataset( null, $project_id, true  );
+				$datasets = $this->getDatasets( true  );
 			
 			$out .= "</p>";
 			if ( $datasets ) {
-				$num_datasets = ( $this->isSearch() ) ? count($datasets) : $this->getNumDatasets($project_id);
-				$num_total_datasets = $this->getNumDatasets($project_id);
+				$num_datasets = ( $this->isSearch() ) ? count($datasets) : $this->getNumDatasets($this->project_id);
+				$num_total_datasets = $this->getNumDatasets($this->project_id, true);
 				$out .= "\n<div id='projectmanager_datasets_header'>";
 				$out .= "\n\t<p>".sprintf(__('%d of %d Datasets', 'projectmanager'),$num_datasets, $num_total_datasets )."</p>";
 				if ( $this->isSearch() )
-					$out .= "<h3>".sprintf(__('Search: %d of %d', 'projectmanager'), $num_datasets, $this->getNumDatasets($project_id))."</h3>";
-				elseif ( $this->isGroup() && !$grp_id )
-					$out .= "<h3>".$this->getGroupTitle($this->getGroup())."</h3>";
+					$out .= "<h3>".sprintf(__('Search: %d of %d', 'projectmanager'), $num_datasets, $num_total_datasets)."</h3>";
+				elseif ( $this->isCategory() && !$grp_id )
+					$out .= "<h3>".$this->getCatTitle($this->getCatID())."</h3>";
 				$out .= "\n</div>";
 				
 				if ( 'table' == $output ) {
@@ -1302,7 +1359,7 @@ class WP_ProjectManager
 				
 				$dataset_output = ( 'table' == $output ) ? 'td' : 'li';
 				foreach ( $datasets AS $dataset ) {
-					$name = ($this->hasDetails($project_id)) ? '<a href="'.$this->pagination->createURL().'?grp_id='.$this->getGroup().'&amp;show='.$dataset->id.'">'.$dataset->name.'</a>' : $dataset->name;
+					$name = ($this->hasDetails()) ? '<a href="'.$this->pagination->createURL().'?cat_id='.$this->getCatID().'&amp;show='.$dataset->id.'">'.$dataset->name.'</a>' : $dataset->name;
 					
 					$class = ("alternate" == $class) ? '' : "alternate";
 					
@@ -1311,7 +1368,7 @@ class WP_ProjectManager
 					else
 						$out .= "\n\t<li>".$name."</li>";
 						
-					$out .= $this->getDatasetMetaData( $dataset->id, $dataset_output );
+					$out .= $this->getDatasetMetaData( $dataset, $dataset_output );
 					
 					if ( 'table' == $output )
 						$out .= "\n</tr>";
@@ -1329,27 +1386,37 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * get dataset as gallery
+	 * getGallery() - get dataset as gallery
+	 *
+	 * Function to display the datasets of a given project in a page or post as gallery.
+	 * The function is called via the filter `projectmanager_dataset_gallery` and can be modified or overwritten by
+	 *
+	 * remove_filter('projectmanager_dataset_gallery', array(&$projectmanager, 'getDatasetList'));
+	 * add_filter('projectmanager_dataset_gallery', 'my_function', 10, 4);
+	 *
+	 * function my_function( $out = '', $project_id, $num_cols, $cat_id = false ) {
+	 *	// Do some stuff
+	 * }
 	 *
 	 * @param int $project_id
 	 * @param int $num_cols
-	 * @param int $grp_id
+	 * @param int $cat_id
 	 * @return string
 	 */
-	function getGallery( $out = '', $project_id, $num_cols, $grp_id = false )
+	function getGallery( $out = '', $project_id, $num_cols, $cat_id = false )
 	{
 		$options = get_option( 'projectmanager' );
-		
-		$this->setSettings($project_id);
-		if ( $grp_id ) $this->setGroup($grp_id);
+		$this->initialize($project_id);
+				
+		if ( $cat_id ) $this->setCatID($cat_id);
 					
 		if ( isset( $_GET['show'] ) ) {
-			$out .= apply_filters( 'projectmanager_single_view', $out, $project_id, $_GET['show'] );
+			$out .= apply_filters( 'projectmanager_single_view', $out, $this->project_id, $_GET['show'] );
 		} else {
 			if ( $this->isSearch() )
 				$datasets = $this->getSearchResults($this->getSearchString(), $_POST['form_field']);
 			else
-				$datasets = $this->getDataset( null, $project_id, true );
+				$datasets = $this->getDatasets( true );
 			
 			$out .= "</p>";
 			if ( $datasets ) {
@@ -1357,11 +1424,11 @@ class WP_ProjectManager
 				
 				foreach ( $datasets AS $dataset ) {
 					$i++;
-					$before_name = '<a href="'.$this->pagination->createURL().'&amp;grp_id='.$this->getGroup().'&amp;show='.$dataset->id.'">';
+					$before_name = '<a href="'.$this->pagination->createURL().'&amp;cat_id='.$this->getCatID().'&amp;show='.$dataset->id.'">';
 					$after_name = '</a>';
 					
 					$out .= "\n\t<td style='padding: 5px; text-align: center;'>";
-					if ($options[$project_id]['show_image'] == 1 && '' != $dataset->image)
+					if ($options[$this->project_id]['show_image'] == 1 && '' != $dataset->image)
 						$out .= "\n\t\t".$before_name.'<img src="'.$this->getImageUrl('/thumb.'.$dataset->image).'" alt="'.$dataset->name.'" title="'.$dataset->name.'" />'.$after_name;
 					
 					$out .= "\n\t\t<p class='caption'>".$before_name.$dataset->name.$after_name."</p>";
@@ -1383,7 +1450,17 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * get details on dataset
+	 * getSingleView () - get details on dataset
+	 *
+ 	 * Function to display the single view of a dataset
+	 * The function is called via the filter `projectmanager_dataset_list` and can be modified or overwritten by
+	 *
+	 * remove_filter('projectmanager_single_view', array(&$projectmanager, 'getSingleView'));
+	 * add_filter('projectmanager_single_view', 'my_function', 10, 4);
+	 *
+	 * function my_function( $out = '', $project_id, $output = 'table', $cat_id = false ) {
+	 *	// Do some stuff
+	 * }
 	 *
 	 * @param int $dataset_id
 	 * @return string
@@ -1398,11 +1475,11 @@ class WP_ProjectManager
 		$out .= "\n<p class='return_to_overview'><a href='".$this->pagination->createURL()."'paging=".$page.">".__('Back to list', 'projectmanager')."</a></p>\n";
 		
 		if ( $dataset = $this->getDataset( $dataset_id ) ) {
-			$out .= "<fieldset class='dataset'><legend>".__( 'Details of', 'projectmanager' )." ".$dataset[0]->name."</legend>\n";
-			if ($options[$project_id]['show_image'] == 1 && '' != $dataset[0]->image)
-				$out .= "\t<img src='".$this->getImageUrl($dataset[0]->image)."' title='".$dataset[0]->name."' alt='".$dataset[0]->name."' style='float: right;' />\n";
+			$out .= "<fieldset class='dataset'><legend>".__( 'Details of', 'projectmanager' )." ".$dataset->name."</legend>\n";
+			if ($options[$this->project_id]['show_image'] == 1 && '' != $dataset->image)
+				$out .= "\t<img src='".$this->getImageUrl($dataset->image)."' title='".$dataset->name."' alt='".$dataset->name."' style='float: right;' />\n";
 				
-			$out .= "<dl>".$this->getDatasetMetaData( $dataset_id, 'dl', true )."\n</dl>\n";
+			$out .= "<dl>".$this->getDatasetMetaData( $dataset, 'dl', true )."\n</dl>\n";
 			$out .= "</fieldset>\n";
 		}
 		
@@ -1413,7 +1490,7 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * gets search results
+	 * getSearchResults() - gets search results
 	 *
 	 * @param string $search
 	 * @param int $meta_id
@@ -1441,7 +1518,7 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * Widget
+	 * widget() - display widget
 	 *
 	 * @param array $args
 	 */
@@ -1452,7 +1529,7 @@ class WP_ProjectManager
 		$options = get_option( 'projectmanager_widget' );
 		$widget_id = $args['widget_id'];
 		$project_id = $options[$widget_id];
-		$this->setSettings($project_id);
+		$this->initialize($project_id);
 		
 		$defaults = array(
 			'before_widget' => '<li id="projectmanager" class="widget '.get_class($this).'_'.__FUNCTION__.'">',
@@ -1465,14 +1542,13 @@ class WP_ProjectManager
 		$args = array_merge( $defaults, $args );
 		extract( $args );
 		
-			
 		$datasets = $wpdb->get_results( "SELECT `id`, `name` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$project_id} ORDER BY `id` DESC LIMIT 0,".$limit." " ); 
 			
 		echo $before_widget . $before_title . $widget_title . $after_title;
 		echo "<ul id='projectmanager_widget'>";
 		if ( $datasets ) {
 			foreach ( $datasets AS $dataset ) {
-				$name = ($this->hasDetails($project_id)) ? '<a href="'.get_permalink($options[$project_id]['page_id']).'&amp;show='.$dataset->id.'">'.$dataset->name.'</a>' : $dataset->name;
+				$name = ($this->hasDetails()) ? '<a href="'.get_permalink($options[$project_id]['page_id']).'&amp;show='.$dataset->id.'">'.$dataset->name.'</a>' : $dataset->name;
 			
 				echo "<li>".$name."</li>";
 			}
@@ -1483,7 +1559,7 @@ class WP_ProjectManager
 		 
 		 
 	/**
-	 * Widget Control
+	 * widgetControl() - Widget Control
 	 *
 	 * @param none
 	 */
@@ -1517,7 +1593,7 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * add TinyMCE Button
+	 * addTinyMCEButton() - add TinyMCE Button
 	 *
 	 * @param none
 	 * @return void
@@ -1553,20 +1629,20 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * print breadcrumb navigation
+	 * printBreadcrumb() - print breadcrumb navigation
 	 *
 	 * @param int $project_id
 	 * @param string $page_title
 	 * @param boolean $start
 	 */
-	function printBreadcrumb( $project_id, $page_title, $start=false )
+	function printBreadcrumb( $page_title, $start=false )
 	{
 		echo '<p class="projectmanager_breadcrumb">';
 		if ( !$this->single )
 			echo '<a href="edit.php?page=projectmanager/page/index.php">'.__( 'Projectmanager', 'projectmanager' ).'</a> &raquo; ';
 		
-		if ( $page_title != $this->getProjectTitle( $project_id ) )
-			echo '<a href="edit.php?page=projectmanager/page/show-project.php&amp;id='.$project_id.'">'.$this->getProjectTitle( $project_id ).'</a> &raquo; ';
+		if ( $page_title != $this->getProjectTitle( $this->project_id ) )
+			echo '<a href="edit.php?page=projectmanager/page/show-project.php&amp;project_id='.$this->project_id.'">'.$this->getProjectTitle( $this->project_id ).'</a> &raquo; ';
 		
 		if ( !$start || ($start && !$this->single) ) echo $page_title;
 		
@@ -1575,7 +1651,7 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * Add Code to Wordpress Header
+	 * addHeaderCode() - Add Code to Wordpress Header
 	 *
 	 * @param none
 	 */
@@ -1618,7 +1694,7 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * Initialize Widget
+	 * initWidget() - Initialize Widget
 	 *
 	 * @param none
 	 */
@@ -1632,15 +1708,14 @@ class WP_ProjectManager
 			
 		// Register Widgets
 		foreach ( $this->getWidgetProjects() AS $project ) {
-			$name = $project->title;
-			register_sidebar_widget( $name, array(&$this, 'widget') );
-			register_widget_control( $name, array(&$this, 'widgetControl'), 250, 100, array( 'project_id' => $project->id, 'widget_id' => sanitize_title($name) ) );
+			register_sidebar_widget( $project->title, array(&$this, 'widget') );
+			register_widget_control( $project->title, array(&$this, 'widgetControl'), 250, 100, array( 'project_id' => $project->id, 'widget_id' => sanitize_title($project->title) ) );
 		}
 	}
 		 
 		 
 	/**
-	 * Initialize Plugin
+	 * init() - Initialize Plugin
 	 *
 	 * @param none
 	 */
@@ -1732,7 +1807,7 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * adds admin menu
+	 * addAdminMenu() - adds admin menu
 	 *
 	 * @param none
 	 */
@@ -1745,7 +1820,7 @@ class WP_ProjectManager
 			$options = get_option( 'projectmanager' );
 			foreach( $projects AS $project ) {
 				if ( 1 == $options[$project->id]['navi_link'] ) {
-					$management_page = 'edit.php?page=projectmanager/page/show-project.php&id='.$project->id;
+					$management_page = 'edit.php?page=projectmanager/page/show-project.php&project_id='.$project->id;
 					add_management_page( $project->title, $project->title, 'manage_projects', $management_page );
 				}
 			}
@@ -1763,7 +1838,7 @@ class WP_ProjectManager
 
 
 	/**
-	 * uninstalls ProjectManager
+	 * uninstall() - uninstalls ProjectManager
 	 *
 	 * @param none
 	 * @return boolean
@@ -1780,15 +1855,17 @@ class WP_ProjectManager
 		delete_option( 'projectmanager' );
 		delete_option( 'projectmanager_widget' );
 
-		$plugin = basename(__FILE__, ".php") .'/plugin-hook.php';
-		require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-		if ( function_exists( "deactivate_plugins" ) )
-			deactivate_plugins( $plugin );
-		else {
-			$current = get_option('active_plugins');
-			array_splice($current, array_search( $plugin, $current), 1 ); // Array-fu!
-			update_option('active_plugins', $current);
-			do_action('deactivate_' . trim( $plugin ));
+		if ( !function_exists('register_uninstall_hook') ) {
+			$plugin = basename(__FILE__, ".php") .'/plugin-hook.php';
+			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+			if ( function_exists( "deactivate_plugins" ) )
+				deactivate_plugins( $plugin );
+			else {
+				$current = get_option('active_plugins');
+				array_splice($current, array_search( $plugin, $current), 1 ); // Array-fu!
+				update_option('active_plugins', $current);
+				do_action('deactivate_' . trim( $plugin ));
+			}
 		}
 	}
 }

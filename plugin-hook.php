@@ -39,7 +39,8 @@ include_once( 'projectmanager.php' );
 include_once( 'lib/pagination.inc.php' );
 include_once( 'lib/thumbnail.inc.php' );
 
-$projectmanager = new WP_ProjectManager();
+$project_id = isset($_GET['project_id']) ? (int)$_GET['project_id'] : false;
+$projectmanager = new WP_ProjectManager($project_id);
 
 include_once( 'functions.php' );
 
@@ -65,7 +66,7 @@ add_filter( 'projectmanager_single_view', array(&$projectmanager, 'getSingleView
 add_action( 'wp_ajax_projectmanager_save_name', 'projectmanager_save_name' );
 add_action( 'wp_ajax_projectmanager_save_categories', 'projectmanager_save_categories' );
 add_action( 'wp_ajax_projectmanager_save_form_field_data', 'projectmanager_save_form_field_data' );
-add_action( 'wp_ajax_projectmanager_show_group_selection', 'projectmanager_show_group_selection' );
+add_action( 'wp_ajax_projectmanager_show_category_selection', 'projectmanager_show_category_selection' );
 
 // Filters
 add_filter( 'the_content', array(&$projectmanager, 'insert') );

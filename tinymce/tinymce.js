@@ -1,17 +1,16 @@
 function addAttributes () {
-	document.getElementById('list_projects').setAttribute("onChange", "ProjectManagerAjaxShowGroupFormList('list_projects_groups_form', getSelectedValue('list_projects'))", 1);
-	
-	document.getElementById('gallery_projects').setAttribute("onChange", "ProjectManagerAjaxShowGroupFormList('gallery_projects_groups_form', getSelectedValue('gallery_projects'))", 1);
+	document.getElementById('list_projects').setAttribute("onChange", "ProjectManagerAjaxShowCategoryFormList('list_projects_category_form', getSelectedValue('list_projects'))", 1);
+	document.getElementById('gallery_projects').setAttribute("onChange", "ProjectManagerAjaxShowCategoryFormList('gallery_projects_category_form', getSelectedValue('gallery_projects'))", 1);
 }
 function getSelectedValue( el_id ) {
  	return document.getElementById(el_id).value;
 }
 
-function ProjectManagerAjaxShowGroupFormList( el_id, projectId ) {
+function ProjectManagerAjaxShowCategoryFormList( el_id, projectId ) {
 	var ajax = new sack(ProjectManagerAjaxL10n.requestUrl);
 	ajax.execute = 1;
 	ajax.method = 'POST';
-	ajax.setVar( "action", "projectmanager_show_group_selection" );
+	ajax.setVar( "action", "projectmanager_show_category_selection" );
 	ajax.setVar( "el_id", el_id );
 	ajax.setVar( "project_id", projectId );
 	ajax.onError = function() { alert('Ajax error on saving group'); };
@@ -50,14 +49,14 @@ function ProjectManagerInsertLink() {
 	
 	var list = document.getElementById('list_panel');
 	var gallery = document.getElementById('gallery_panel');
-	var groups = document.getElementById('groups_panel');
+	var categories = document.getElementById('categories_panel');
 	var searchform = document.getElementById('search_panel');
 	
 	// who is active ?
 	if (list.className.indexOf('current') != -1) {
 		var projectId = document.getElementById('list_projects').value;
 		var showtype = getCheckedValue(document.getElementsByName('list_showtype'));
-		var grpid = document.getElementById('list_projects_groups_form').value;
+		var grpid = document.getElementById('list_projects_category_form').value;
 		
 		if ( grpid == -1 )
 			var grpid = '';
@@ -71,7 +70,7 @@ function ProjectManagerInsertLink() {
 	if (gallery.className.indexOf('current') != -1) {
 		var projectId = document.getElementById('gallery_projects').value;
 		var numCols = document.getElementById('num_cols').value;
-		var grpid = document.getElementById('gallery_projects_groups_form').value;
+		var grpid = document.getElementById('gallery_projects_category_form').value;
 		
 		if ( grpid == -1 )
 			var grpid = '';
@@ -82,13 +81,13 @@ function ProjectManagerInsertLink() {
 			tinyMCEPopup.close();
 	}
 	
-	if (groups.className.indexOf('current') != -1) {
-		var projectId = document.getElementById('groups_projects').value;
-		var showtype = getCheckedValue(document.getElementsByName('groups_showtype'));
-		var pos = document.getElementById('align_groups').value;
+	if (categories.className.indexOf('current') != -1) {
+		var projectId = document.getElementById('categories_projects').value;
+		var showtype = getCheckedValue(document.getElementsByName('categories_showtype'));
+		var pos = document.getElementById('align_categories').value;
 		
 		if (projectId != 0)
-			tagtext = "[prjctmngr_group_selection=" + projectId + "," + showtype + "," + pos + "]";	
+			tagtext = "[prjctmngr_category_selection=" + projectId + "," + showtype + "," + pos + "]";	
 		else
 			tinyMCEPopup.close();
 	}
