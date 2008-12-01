@@ -1343,7 +1343,7 @@ class WP_ProjectManager
 				$num_datasets = ( $this->isSearch() ) ? count($datasets) : $this->getNumDatasets($this->project_id);
 				$num_total_datasets = $this->getNumDatasets($this->project_id, true);
 				$out .= "\n<div id='projectmanager_datasets_header'>";
-				$out .= "\n\t<p>".sprintf(__('%d of %d Datasets', 'projectmanager'),$num_datasets, $num_total_datasets )."</p>";
+				$out .= ( !$this->isSearch() ) ? "\n\t<p>".sprintf(__('%d of %d Datasets', 'projectmanager'),$num_datasets, $num_total_datasets )."</p>" : '';
 				if ( $this->isSearch() )
 					$out .= "<h3>".sprintf(__('Search: %d of %d', 'projectmanager'), $num_datasets, $num_total_datasets)."</h3>";
 				elseif ( $this->isCategory() && !$grp_id )
@@ -1508,11 +1508,11 @@ class WP_ProjectManager
 		if ( 0 == $option ) {
 			$datasets = $wpdb->get_results( "SELECT `id`, `name`, `cat_ids` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id} AND `name` REGEXP CONVERT( _utf8 '".$search."' USING latin1 ) ORDER BY `name` ASC" );
 		} elseif ( -1 == $option ) {
-			$categories = explode(" ", $search);
+			$categories = explode(",", $search);
 			$cat_ids = array();
 			foreach ( $categories AS $category ) {
 				$c = $wpdb->get_results( $wpdb->prepare ( "SELECT `term_id` FROM $wpdb->terms WHERE `name` = '%s'", trim($category) ) );
-				$cat_ids[] = $c[0]->term_id;
+				$cat_ids[] = $c[0]->term_id;;
 			}
 			$sql = "SELECT `id`, `name`, `image`, `cat_ids` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id}";
 				

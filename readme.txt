@@ -3,7 +3,7 @@ Contributors: Kolja Schleich
 Tags: datamanager
 Requires at least: 2.5
 Tested up to: 2.5
-Stable tag: 1.2.3
+Stable tag: 1.3
 
 This plugin can be used to manage any number of projects with recurrent datasets (e.g. portrait system, dvd collection)
 
@@ -16,12 +16,14 @@ This plugin is a datamanager for any recurrent datasets. It can be used to manag
 * add as many different projects as you want to
 * widget use for any project, controlled via admin panel
 * adding of form fields (text, textfield, e-mail, date, url) for each project independently
-* simple search of any form field
+* simple search of any form field and category names
 * usage of Wordpress Category System for grouping
 * various output formats (table, list, gallery)
 * Ajax enabled editing of datasets
 * simple display in frontend over shortcodes
 * easy adding of shortcodes via TinyMCE Button
+* change colorscheme for output tables
+
 
 **Usage**
 
@@ -52,6 +54,8 @@ Use
 
 to display the datasets as a gallery, with a picture if one is supplied. $cols is the number of columns. $group is same as above.
 
+Search by category names with comma separated list.
+
 
 == Installation ==
 
@@ -69,11 +73,26 @@ To install the plugin to the following steps
 5. Widget control panel
 6. Easy adding of shortcode tags via TinyMCE Button
 
+
+== Customization ==
+
+Since version 1.3 it is possible to customize frontend output via plugin hooks. See functions
+
+* getDatasetList
+* getGallery
+* getSingleView
+
+in projectmanager.php for details.
+
+
 == ChangeLog ==
 
-**Version 1.3**, *November--2008*
+**Version 1.3**, *December-01-2008*
 
-- implemented support for multiple categorization
+- support for multiple categorization
+- customization of dataset output via wordpress hooks
+- search for category names (comma separated list of cat names)
+- set colorschemes of tables
 
 **Version 1.2.3**, *November-24-2008*
 
