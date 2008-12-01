@@ -74,15 +74,4 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 	</form>
 </div>
 
-<?php if ( !function_exists('register_uninstall_hook') ) : ?>
-<!-- Uninstallation Form -->
-<div class="wrap">
-	<!-- Plugin Uninstallation -->
-	<h3 style='clear: both; padding-top: 1em;'><?php _e( 'Uninstall ProjectManager', 'projectmanager' ) ?></h3>
-	<form method="get" action="index.php">
-	<input type="hidden" name="projectmanager" value="uninstall" />
-	<p><input type="checkbox" name="delete_plugin" value="1" id="delete_plugin" /> <label for="delete_plugin"><?php _e( 'Yes I want to uninstall ProjectManager Plugin. All Data will be deleted!', 'projectmanager' ) ?></label> <input type="submit" value="<?php _e( 'Uninstall ProjectManager', 'projectmanager' ) ?> &raquo;" class="button" /></p>
-	</form>
-</div>
-<?php endif; ?>
 <?php endif; ?>

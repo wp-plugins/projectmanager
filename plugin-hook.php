@@ -48,7 +48,7 @@ include_once( 'functions.php' );
 // Load textdomain for translation
 load_plugin_textdomain( 'projectmanager', $path = PLUGINDIR.'/projectmanager/languages' );
 
-register_activation_hook(__FILE__, array(&$projectmanager, 'init') );
+register_activation_hook(__FILE__, array(&$projectmanager, 'activate') );
 
 // Actions
 //add_action( 'admin_head', 'ob_start');
@@ -56,7 +56,7 @@ register_activation_hook(__FILE__, array(&$projectmanager, 'init') );
 add_action( 'admin_head', array(&$projectmanager, 'addHeaderCode') );
 add_action( 'wp_head', array(&$projectmanager, 'addHeaderCode') );
 add_action( 'admin_menu', array(&$projectmanager, 'addAdminMenu') );
-add_action( 'widgets_init', array(&$projectmanager, 'initWidget') );
+add_action( 'widgets_init', array(&$projectmanager, 'activateWidget') );
 
 add_filter( 'projectmanager_dataset_list', array(&$projectmanager, 'getDatasetList'), 10, 4 );
 add_filter( 'projectmanager_dataset_gallery', array(&$projectmanager, 'getGallery'), 10, 4 );
