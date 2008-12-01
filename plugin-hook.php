@@ -46,7 +46,7 @@ include_once( 'functions.php' );
 
 
 // Load textdomain for translation
-load_plugin_textdomain( 'projectmanager', $path = PLUGINDIR.'/projectmanager/languages' );
+load_plugin_textdomain( 'projectmanager', false, 'projectmanager/languages' );
 
 register_activation_hook(__FILE__, array(&$projectmanager, 'activate') );
 
