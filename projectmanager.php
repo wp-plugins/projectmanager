@@ -1746,7 +1746,7 @@ class WP_ProjectManager
 		wp_nonce_field( 'projetmanager_manage-global-league-options' );
 		echo "\n<div class='wrap'>";
 		echo "\n\t<h2>".__( 'Projectmanager Global Settings', 'projectmanager' )."</h2>";
-		echo "\n\t<h3>".__( 'Color Scheme', 'leaguemanager' )."</h3>";
+		echo "\n\t<h3>".__( 'Color Scheme', 'projectmanager' )."</h3>";
 		echo "\n\t<table class='form-table'>";
 		echo "\n\t<tr valign='top'>";
 		echo "\n\t\t<th scope='row'><label for='color_headers'>".__( 'Table Headers', 'projectmanager' )."</label></th><td><input type='text' name='color_headers' id='color_headers' value='".$options['colors']['headers']."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[0].color_headers,\"pick_color_headers\"); return false;' name='pick_color_headers' id='pick_color_headers'>&#160;&#160;&#160;</a></td>";
