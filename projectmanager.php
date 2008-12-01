@@ -247,7 +247,7 @@ class WP_ProjectManager
 	 */
 	function isSearch()
 	{
-		if ( isset( $_POST['projectmanager_search'] ) )
+		if ( isset( $_POST['search_string'] ) )
 			return true;
 	
 		return false;
@@ -263,22 +263,22 @@ class WP_ProjectManager
 	function getSearchString()
 	{
 		if ( $this->isSearch() )
-			return $_POST['projectmanager_search'];
+			return $_POST['search_string'];
 		
 		return '';
 	}
 	
 	
 	/**
-	 * getSearchFormFieldID() - gets form field ID of search request
+	 * getSearchOption() - gets form field ID of search request
 	 *
 	 * @param none
 	 * @return int
 	 */
-	function getSearchFormFieldID()
+	function getSearchOption()
 	{
 		if ( $this->isSearch() )
-			return $_POST['form_field'];
+			return $_POST['search_option'];
 		
 		return 0;
 	}
@@ -576,7 +576,7 @@ class WP_ProjectManager
 			$sql .= $this->getCategorySearchString();
 		
 		$sql .=  " ORDER BY $order";
-		$sql .= ( $limit ) ? " LIMIT ".$offset.",".$this->per_page.";" : ";";				
+		$sql .= ( $limit ) ? " LIMIT ".$offset.",".$this->per_page.";" : ";";
 		
 		return $wpdb->get_results($sql);
 	}
@@ -1196,18 +1196,21 @@ class WP_ProjectManager
 	{
 		$this->project_id = $project_id;
 		$search_string = ($this->isSearch()) ? $this->getSearchString() : '';
-		$form_field_id = $this->getSearchFormFieldID();
+		$search_option = $this->getSearchOption();
 		
 		if ( !isset($_GET['show'])) {
 			$out = "</p>\n\n<div class='projectmanager_".$pos."'>\n<form class='projectmanager' action='' method='post'>";
-			$out .= "\n\t<input type='text' name='projectmanager_search' value='".$search_string."' />";
+			$out .= "\n\t<input type='text' name='search_string' value='".$search_string."' />";
 			if ( $form_fields = $this->getFormFields() ) {
-				$out .= "\n\t<select size='1' name='form_field'>";
-				$out .= "\n\t\t<option value='0'>".__( 'Name', 'projectmanager' )."</option>";
+				$out .= "\n\t<select size='1' name='search_option'>";
+				$selected[0] = ( 0 == $search_option ) ? " selected='selected'" : "";
+				$out .= "\n\t\t<option value='0'".$selected[0].">".__( 'Name', 'projectmanager' )."</option>";
 				foreach ( $form_fields AS $form_field ) {
-					$selected = ( $form_field_id == $form_field->id ) ? " selected='selected'" : "";
+					$selected = ( $search_option == $form_field->id ) ? " selected='selected'" : "";
 					$out .= "\n\t\t<option value='".$form_field->id."'".$selected.">".$form_field->label."</option>";
 				}
+				$selected[1] = ( -1 == $search_option ) ? " selected='selected'" : "";
+				$out .= "\n\t<option value='-1'".$selected[1].">".__( 'Categories', 'projectmanager' )."</option>";
 				$out .= "\n\t</select>";
 			} else
 				$out .= "\n\t<input type='hidden' name='form_field' value='0' />";
@@ -1265,7 +1268,7 @@ class WP_ProjectManager
 		$out = "</p>";
 		if ( !isset($_GET['show'])) {
 			$out .= "\n\n<div class='projectmanager_".$pos."'>\n<form class='projectmanager' action='".$action."' method='get'>\n";
-			$out .= wp_dropdown_categories(array('echo' => 0, 'hide_empty' => 0, 'name' => 'cat_id', 'orderby' => 'name', 'selected' => $this->getCatID(), 'hierarchical' => true, 'child_of' => $options[$this->project_id]['category'], 'show_option_all' => __('Groups', 'projectmanager'), 'show_option_none' => '&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;'));
+			$out .= wp_dropdown_categories(array('echo' => 0, 'hide_empty' => 0, 'name' => 'cat_id', 'orderby' => 'name', 'selected' => $this->getCatID(), 'hierarchical' => true, 'child_of' => $options[$this->project_id]['category'], 'show_option_all' => __('Categories', 'projectmanager'), 'show_option_none' => '&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;'));
 			$out .= $hidden;
 			$out .= "\n<input type='submit' value='".__( 'Go', 'projectmanager' )."' class='button' />";
 			$out .= "\n</form>\n</div>\n\n";
@@ -1331,7 +1334,7 @@ class WP_ProjectManager
 			$out = apply_filters( 'projectmanager_single_view', $out, $this->project_id, $_GET['show'] );
 		} else {
 			if ( $this->isSearch() )
-				$datasets = $this->getSearchResults($this->getSearchString(), $this->getSearchFormFieldID());
+				$datasets = $this->getSearchResults($this->getSearchString(), $this->getSearchOption());
 			else
 				$datasets = $this->getDatasets( true  );
 			
@@ -1340,7 +1343,7 @@ class WP_ProjectManager
 				$num_datasets = ( $this->isSearch() ) ? count($datasets) : $this->getNumDatasets($this->project_id);
 				$num_total_datasets = $this->getNumDatasets($this->project_id, true);
 				$out .= "\n<div id='projectmanager_datasets_header'>";
-				$out .= "\n\t<p>".sprintf(__('%d of %d Datasets', 'projectmanager'),$num_datasets, $num_total_datasets )."</p>";
+				$out .= ( !$this->isSearch() ) ? "\n\t<p>".sprintf(__('%d of %d Datasets', 'projectmanager'),$num_datasets, $num_total_datasets )."</p>" : '';
 				if ( $this->isSearch() )
 					$out .= "<h3>".sprintf(__('Search: %d of %d', 'projectmanager'), $num_datasets, $num_total_datasets)."</h3>";
 				elseif ( $this->isCategory() && !$grp_id )
@@ -1376,6 +1379,8 @@ class WP_ProjectManager
 				$out .= "\n</$output>\n";
 			
 				if ( !$this->isSearch() ) $out .= $this->pagination->get();
+			} else {
+				$out .= "<p class='error'>".__( 'Nothing found', 'projectmanager')."</p>";
 			}
 			$out .= "<p>";
 		}
@@ -1413,7 +1418,7 @@ class WP_ProjectManager
 			$out = apply_filters( 'projectmanager_single_view', $out, $this->project_id, $_GET['show'] );
 		} else {
 			if ( $this->isSearch() )
-				$datasets = $this->getSearchResults($this->getSearchString(), $_POST['form_field']);
+				$datasets = $this->getSearchResults($this->getSearchString(), $this->getSearchOption());
 			else
 				$datasets = $this->getDatasets( true );
 			
@@ -1440,6 +1445,8 @@ class WP_ProjectManager
 				$out .= "\n</tr>\n</table>\n\n";
 		
 				$out .= $this->pagination->get();
+			} else {
+				$out .= "<p class='error'>".__( 'Nothing found', 'projectmanager')."</p>";
 			}
 			$out .= "<p>";
 		}
@@ -1492,14 +1499,32 @@ class WP_ProjectManager
 	 * getSearchResults() - gets search results
 	 *
 	 * @param string $search
-	 * @param int $meta_id
+	 * @param int $option
 	 */
-	function getSearchResults( $search, $meta_id )
+	function getSearchResults( $search, $option )
 	{
 		global $wpdb;
 		
-		if ( 0 == $meta_id ) {
+		if ( 0 == $option ) {
 			$datasets = $wpdb->get_results( "SELECT `id`, `name`, `cat_ids` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id} AND `name` REGEXP CONVERT( _utf8 '".$search."' USING latin1 ) ORDER BY `name` ASC" );
+		} elseif ( -1 == $option ) {
+			$categories = explode(",", $search);
+			$cat_ids = array();
+			foreach ( $categories AS $category ) {
+				$c = $wpdb->get_results( $wpdb->prepare ( "SELECT `term_id` FROM $wpdb->terms WHERE `name` = '%s'", trim($category) ) );
+				$cat_ids[] = $c[0]->term_id;;
+			}
+			$sql = "SELECT `id`, `name`, `image`, `cat_ids` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id}";
+				
+			foreach ( $cat_ids AS $cat_id ) {
+				$this->setCatID($cat_id);
+				$sql .= $this->getCategorySearchString();
+			}
+			$this->cat_id = null;
+			
+			$sql .=  " ORDER BY `name` ASC;";
+
+			$datasets = $wpdb->get_results($sql);
 		} else {
 			$sql = "SELECT  t1.dataset_id AS id,
 					t2.name,
@@ -1656,13 +1681,20 @@ class WP_ProjectManager
 	 */
 	function addHeaderCode($show_all=false)
 	{
-		global $wp_version;
+		$options = get_option('projectmanager');
 		
 		echo "\n\n<!-- WP-ProjectManager START -->\n";
 		echo "<link rel='stylesheet' href='".$this->plugin_url."/style.css' type='text/css' />\n";
 		
+		// Table styles
+		echo "\n<style type='text/css'>";
+		echo "\n\ttable.projectmanager th { background-color: ".$options['colors']['headers']." }";
+		echo "\n\ttable.projectmanager tr { background-color: ".$options['colors']['rows'][1]." }";
+		echo "\n\ttable.projectmanager tr.alternate { background-color: ".$options['colors']['rows'][0]." }";
+		echo "\n</style>";
+	
 		if ( is_admin() AND ((isset( $_GET['page'] ) AND substr( $_GET['page'], 0, 14 ) == 'projectmanager') || $show_all )) {
-			wp_register_script( 'projectmanager', $this->plugin_url.'/js/functions.js', array( ), PROJECTMANAGER_VERSION );
+			wp_register_script( 'projectmanager', $this->plugin_url.'/js/functions.js', array( 'colorpicker' ), PROJECTMANAGER_VERSION );
 			wp_register_script( 'projectmanager_formfields', $this->plugin_url.'/js/formfields.js', array( 'projectmanager' ), PROJECTMANAGER_VERSION );
 			wp_register_script ('projectmanager_ajax', $this->plugin_url.'/js/ajax.js', array( 'sack', 'thickbox', 'projectmanager' ), PROJECTMANAGER_VERSION );
 		
@@ -1690,6 +1722,64 @@ class WP_ProjectManager
 	}
 		
 
+		/**
+	 * display global settings page (e.g. color scheme options)
+	 *
+	 * @param none
+	 * @return void
+	 */
+	function displayOptionsPage()
+	{
+		$options = get_option('projectmanager');
+		
+		if ( isset($_POST['updateProjectManager']) ) {
+			check_admin_referer('projetmanager_manage-global-league-options');
+			$options['colors']['headers'] = $_POST['color_headers'];
+			$options['colors']['rows'] = array( $_POST['color_rows_alt'], $_POST['color_rows'] );
+			
+			update_option( 'projectmanager', $options );
+			echo '<div id="message" class="updated fade"><p><strong>'.__( 'Settings saved', 'leaguemanager' ).'</strong></p></div>';
+		}
+		
+		
+		echo "\n<form action='' method='post'>";
+		wp_nonce_field( 'projetmanager_manage-global-league-options' );
+		echo "\n<div class='wrap'>";
+		echo "\n\t<h2>".__( 'Projectmanager Global Settings', 'projectmanager' )."</h2>";
+		echo "\n\t<h3>".__( 'Color Scheme', 'leaguemanager' )."</h3>";
+		echo "\n\t<table class='form-table'>";
+		echo "\n\t<tr valign='top'>";
+		echo "\n\t\t<th scope='row'><label for='color_headers'>".__( 'Table Headers', 'projectmanager' )."</label></th><td><input type='text' name='color_headers' id='color_headers' value='".$options['colors']['headers']."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[0].color_headers,\"pick_color_headers\"); return false;' name='pick_color_headers' id='pick_color_headers'>&#160;&#160;&#160;</a></td>";
+		echo "\n\t</tr>";
+		echo "\n\t<tr valign='top'>";
+		echo "\n\t<th scope='row'><label for='color_rows'>".__( 'Table Rows', 'projectmanager' )."</label></th>";
+		echo "\n\t\t<td>";
+		echo "\n\t\t\t<p class='table_rows'><input type='text' name='color_rows_alt' id='color_rows_alt' value='".$options['colors']['rows'][0]."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[0].color_rows_alt,\"pick_color_rows_alt\"); return false;' name='pick_color_rows_alt' id='pick_color_rows_alt'>&#160;&#160;&#160;</a></p>";
+		echo "\n\t\t\t<p class='table_rows'><input type='text' name='color_rows' id='color_rows' value='".$options['colors']['rows'][1]."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[0].color_rows,\"pick_color_rows\"); return false;' name='pick_color_rows' id='pick_color_rows'>&#160;&#160;&#160;</a></p>";
+		echo "\n\t\t</td>";
+		echo "\n\t</tr>";
+		echo "\n\t</table>";
+		echo "\n<input type='hidden' name='page_options' value='color_headers,color_rows,color_rows_alt' />";
+		echo "\n<p class='submit'><input type='submit' name='updateProjectManager' value='".__( 'Save Preferences', 'projectmanager' )." &raquo;' class='button' /></p>";
+		echo "\n</form>";
+	
+		echo "<script language='javascript'>
+			syncColor(\"pick_color_headers\", \"color_headers\", document.getElementById(\"color_headers\").value);
+			syncColor(\"pick_color_rows\", \"color_rows\", document.getElementById(\"color_rows\").value);
+			syncColor(\"pick_color_rows_alt\", \"color_rows_alt\", document.getElementById(\"color_rows_alt\").value);
+		</script>";
+		
+		if ( !function_exists('register_uninstall_hook') ) { ?>
+		<!-- Uninstallation Form -->
+		<div class="wrap">
+			<h3 style='clear: both; padding-top: 1em;'><?php _e( 'Uninstall ProjectManager', 'projectmanager' ) ?></h3>
+			<form method="get" action="index.php">
+				<input type="hidden" name="projectmanager" value="uninstall" />
+				<p><input type="checkbox" name="delete_plugin" value="1" id="delete_plugin" /> <label for="delete_plugin"><?php _e( 'Yes I want to uninstall ProjectManager Plugin. All Data will be deleted!', 'projectmanager' ) ?></label> <input type="submit" value="<?php _e( 'Uninstall ProjectManager', 'projectmanager' ) ?> &raquo;" class="button" /></p>
+			</form>
+		</div>
+		<?php }
+	}
 	
 	
 	/**
@@ -1697,7 +1787,7 @@ class WP_ProjectManager
 	 *
 	 * @param none
 	 */
-	function initWidget()
+	function activateWidget()
 	{
 		$options = get_option('projectmanager');
 			
@@ -1718,7 +1808,7 @@ class WP_ProjectManager
 	 *
 	 * @param none
 	 */
-	function init()
+	function activate()
 	{
 		global $wpdb;
 		include_once( ABSPATH.'/wp-admin/includes/upgrade.php' );
@@ -1832,7 +1922,9 @@ class WP_ProjectManager
 		}
 		
 		if ( ! $this->single )
-			add_management_page( __( 'Projects', 'projectmanager' ), __( 'Projects', 'projectmanager' ), 'manage_projects', basename( __FILE__, ".php" ).'/page/index.php' );
+		add_management_page( __( 'Projects', 'projectmanager' ), __( 'Projects', 'projectmanager' ), 'manage_projects', basename( __FILE__, ".php" ).'/page/index.php' );
+		
+		add_options_page( __( 'Projectmanager', 'projectmanager' ), __( 'Projectmanager', 'projectmanager' ), 'manage_projects', 'projectmanager', array( $this, 'displayOptionsPage' ) );
 	}
 
 

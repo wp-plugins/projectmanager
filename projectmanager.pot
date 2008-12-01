@@ -6,14 +6,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
-"POT-Creation-Date: 2008-11-25 21:08+0000\n"
+"POT-Creation-Date: 2008-12-01 14:27+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
-"Language-Team: \n"
+"Language-Team:\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #: functions.php:14 functions.php:70 page/settings.php:41
 #: page/show-project.php:81
@@ -32,8 +31,8 @@ msgstr ""
 msgid "Add Dataset"
 msgstr ""
 
-#: page/dataset.php:37 page/show-project.php:66 page/show-project.php:93
-#: projectmanager.php:1207 projectmanager.php:1353
+#: page/dataset.php:37 page/show-project.php:67 page/show-project.php:93
+#: projectmanager.php:1207 projectmanager.php:1355
 msgid "Name"
 msgstr ""
 
@@ -53,8 +52,8 @@ msgstr ""
 msgid "Delete current image"
 msgstr ""
 
-#: page/dataset.php:97 page/show-project.php:68 projectmanager.php:1299
-#: tinymce/window.php:47
+#: page/dataset.php:97 page/show-project.php:69 projectmanager.php:1213
+#: projectmanager.php:1271 projectmanager.php:1301 tinymce/window.php:47
 msgid "Categories"
 msgstr ""
 
@@ -78,7 +77,7 @@ msgstr ""
 msgid "Order"
 msgstr ""
 
-#: page/formfields.php:49 page/index.php:31 page/show-project.php:59
+#: page/formfields.php:49 page/index.php:31 page/show-project.php:60
 msgid "Delete"
 msgstr ""
 
@@ -94,8 +93,8 @@ msgstr ""
 msgid "Save Form Fields"
 msgstr ""
 
-#: page/index.php:24 page/index.php:33 projectmanager.php:1642
-#: tinymce/window.php:30
+#: page/index.php:24 page/index.php:33 projectmanager.php:1666
+#: projectmanager.php:1927 tinymce/window.php:30
 msgid "Projectmanager"
 msgstr ""
 
@@ -125,19 +124,11 @@ msgstr ""
 msgid "Add Project"
 msgstr ""
 
-#: page/index.php:66 page/settings.php:35 projectmanager.php:1580
+#: page/index.php:66 page/settings.php:35 projectmanager.php:1604
 msgid "Title"
 msgstr ""
 
-#: page/index.php:81 page/index.php:84
-msgid "Uninstall ProjectManager"
-msgstr ""
-
-#: page/index.php:84
-msgid "Yes I want to uninstall ProjectManager Plugin. All Data will be deleted!"
-msgstr ""
-
-#: page/settings.php:22
+#: page/settings.php:22 projectmanager.php:1741
 msgid "Settings saved"
 msgstr ""
 
@@ -193,29 +184,33 @@ msgstr ""
 msgid "Save Settings"
 msgstr ""
 
-#: page/show-project.php:58 projectmanager.php:1344
+#: page/show-project.php:59 projectmanager.php:1346
 #, php-format
 msgid "%d of %d Datasets"
 msgstr ""
 
 #: page/show-project.php:90 page/show-project.php:104 projectmanager.php:763
-#: projectmanager.php:1684
+#: projectmanager.php:1715
 msgid "Save"
 msgstr ""
 
 #: page/show-project.php:90 page/show-project.php:104 projectmanager.php:763
-#: projectmanager.php:1684 tinymce/window.php:186
+#: projectmanager.php:1715 tinymce/window.php:186
 msgid "Cancel"
 msgstr ""
 
 #: page/show-project.php:93 page/show-project.php:108 projectmanager.php:713
-#: projectmanager.php:1684
+#: projectmanager.php:1715
 msgid "Edit"
 msgstr ""
 
 #: page/show-project.php:108
 #, php-format
 msgid "Categories of %s"
+msgstr ""
+
+#: page/show-project.php:118 projectmanager.php:1383 projectmanager.php:1449
+msgid "Nothing found"
 msgstr ""
 
 #: projectmanager.php:120
@@ -274,56 +269,80 @@ msgstr ""
 msgid "Form Fields updated"
 msgstr ""
 
-#: projectmanager.php:1216
+#: projectmanager.php:1218
 msgid "Search"
 msgstr ""
 
-#: projectmanager.php:1269
-msgid "Groups"
-msgstr ""
-
-#: projectmanager.php:1271
+#: projectmanager.php:1273
 msgid "Go"
 msgstr ""
 
-#: projectmanager.php:1346
+#: projectmanager.php:1348
 #, php-format
 msgid "Search: %d of %d"
 msgstr ""
 
-#: projectmanager.php:1475
+#: projectmanager.php:1481
 msgid "Back to list"
 msgstr ""
 
-#: projectmanager.php:1478
+#: projectmanager.php:1484
 msgid "Details of"
 msgstr ""
 
-#: projectmanager.php:1581
+#: projectmanager.php:1605
 msgid "Number"
 msgstr ""
 
-#: projectmanager.php:1587
+#: projectmanager.php:1611
 msgid "Page"
 msgstr ""
 
-#: projectmanager.php:1684
+#: projectmanager.php:1715
 msgid "Post"
 msgstr ""
 
-#: projectmanager.php:1684
+#: projectmanager.php:1715
 msgid "Please wait..."
 msgstr ""
 
-#: projectmanager.php:1684
+#: projectmanager.php:1715
 msgid "Page Revisions"
 msgstr ""
 
-#: projectmanager.php:1684
+#: projectmanager.php:1715
 msgid "Insert time"
 msgstr ""
 
-#: projectmanager.php:1836
+#: projectmanager.php:1748
+msgid "Projectmanager Global Settings"
+msgstr ""
+
+#: projectmanager.php:1749
+msgid "Color Scheme"
+msgstr ""
+
+#: projectmanager.php:1752
+msgid "Table Headers"
+msgstr ""
+
+#: projectmanager.php:1755
+msgid "Table Rows"
+msgstr ""
+
+#: projectmanager.php:1763
+msgid "Save Preferences"
+msgstr ""
+
+#: projectmanager.php:1775 projectmanager.php:1778
+msgid "Uninstall ProjectManager"
+msgstr ""
+
+#: projectmanager.php:1778
+msgid "Yes I want to uninstall ProjectManager Plugin. All Data will be deleted!"
+msgstr ""
+
+#: projectmanager.php:1925
 msgid "Projects"
 msgstr ""
 
