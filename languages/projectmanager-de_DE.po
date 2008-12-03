@@ -456,4 +456,3 @@ msgstr "Rechts"
 #: tinymce/window.php:190
 msgid "Insert"
 msgstr "Einfügen"
-

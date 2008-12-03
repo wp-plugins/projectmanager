@@ -51,6 +51,22 @@ class WP_ProjectManager
 	
 	
 	/**
+	 * error handling
+	 *
+	 * @param boolean
+	 */
+	var $error = false;
+	
+	
+	/**
+	 * error message
+	 *
+	 * @param string
+	 */
+	var $message = '';
+	
+	
+	/**
 	 * __construct() - Initialize project settings
 	 *
 	 * @param int $project_id ID of selected project. false if none is selected
@@ -137,6 +153,29 @@ class WP_ProjectManager
 			$months[$month] = htmlentities( strftime( "%B", mktime( 0,0,0, $month, date("m"), date("Y") ) ) );
 		
 		return $months;
+	}
+	
+	
+	/**
+	 * return error message
+	 *
+	 * @param none
+	 */
+	function getErrorMessage()
+	{
+		if ($this->error)
+			return $this->message;
+	}
+	
+	
+	/**
+	 * print formatted error message
+	 *
+	 * @param none
+	 */
+	function printErrorMessage()
+	{
+		echo "\n<div class='error'><p>".$this->getErrorMessage()."</p></div>";
 	}
 	
 	
@@ -519,14 +558,13 @@ class WP_ProjectManager
 								
 		if ( !is_array($datasets) ) $datasets = array($datasets);
 		
-		$sql = ' AND (';
+		
 		$selected_datasets = array();
 		foreach ( $datasets AS $dataset )
 			if ( in_array($this->getCatID(), $this->getSelectedCategoryIDs($dataset)) )
 				$selected_datasets[] = '`id` = '.$dataset->id;
 		
-		$sql .= implode(' OR ', $selected_datasets);
-		$sql .= ')';
+		$sql = ' AND ('.implode(' OR ', $selected_datasets).')';
 		return $sql;
 	}
 	
@@ -864,11 +902,10 @@ class WP_ProjectManager
 			}
 		}
 			
-		/*
-		* Set Image if supplied
-		*/
-		if ( isset($_FILES['projectmanager_image']['name']) AND '' != $_FILES['projectmanager_image']['name'] )
-			$tail = $this->uploadImage( $dataset_id, $_FILES['projectmanager_image']['name'], $_FILES['projectmanager_image']['size'], $_FILES['projectmanager_image']['tmp_name'] );
+		if ( isset($_FILES['logo']) )
+			$this->uploadImage($team_id, $_FILES['logo']);
+			
+		if ( $this->error ) $this->printErrorMessage();
 		
 		return __( 'New dataset added to the database.', 'projectmanager' ).' '.$tail;
 	}
@@ -917,14 +954,12 @@ class WP_ProjectManager
 			$this->delImage( $image_file );
 		}
 			
-		/*
-		* Set Image if supplied
-		*/
-		if ( isset($_FILES['projectmanager_image']['name']) AND '' != $_FILES['projectmanager_image']['name'] )
-			$tail = $this->uploadImage($dataset_id, $_FILES['projectmanager_image']['name'], $_FILES['projectmanager_image']['size'], $_FILES['projectmanager_image']['tmp_name'], $overwrite_image);
+		if ( isset($_FILES['logo']) )
+			$this->uploadImage($dataset_id, $_FILES['logo'], $overwrite_image);
+		
+		if ( $this->error ) $this->printErrorMessage();
 			
-			
-		return __('Dataset updated.', 'projectmanager').' '.$tail;
+		return __('Dataset updated.', 'projectmanager');
 	}
 		
 		
@@ -987,63 +1022,65 @@ class WP_ProjectManager
 	 * uploadImage() - set image path in database and upload image to server
 	 *
 	 * @param int  $dataset_id
-	 * @param string $img_name
-	 * @param int $img_size
-	 * @param string $img_tmp_name
-	 * @param string $uploaddir
+	 * @param array $file
 	 * @param boolean $overwrite_image
 	 * @return void | string
 	 */
-	function uploadImage( $dataset_id, $img_name, $img_size, $img_tmp_name, $overwrite_image = false )
+	function uploadImage( $dataset_id, $file, $overwrite = false )
 	{
 		global $wpdb;
 		
-		if ( $this->ImageTypeIsSupported($img_name) ) {
-			$uploaddir = $this->getImagePath();
-			$options = get_option('projectmanager');
-				
-			/*
-			* Delete old images from server and clean database entry
-			*/
-			if ( $img_size > 0 ) {
-				/*
-				* Upload Image to Server
-				*/
-				$uploadfile = $uploaddir.'/'.basename($img_name);
-				if ( file_exists($uploadfile) && !$overwrite_image ) {
-					return __('File exists and is not uploaded.','projectmanager');
+		$this->error = false;
+		if ( $this->ImageTypeIsSupported($file['name']) ) {
+			if ( $file['size'] > 0 ) {
+				$options = get_option('projectmanager');
+				$new_file =  $this->getImagePath().'/'.basename($file['name']);
+				if ( file_exists($new_file) && !$overwrite ) {
+					$this->error = true;
+					$this->message = __('Logo exists and is not uploaded. Set the overwrite option if you want to replace it.','projectmanager');
 				} else {
-					if ( move_uploaded_file($img_tmp_name, $uploadfile) ) {
+					if ( move_uploaded_file($file['tmp_name'], $new_file) ) {
 						if ( $dataset = $this->getDataset($dataset_id) )
 							if ( $dataset->image != '' ) $this->delImage($dataset->image);
 
-						$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `image` = '%s' WHERE id = '%d'", basename($img_name), $dataset_id ) );
-						$thumb = new Thumbnail($uploadfile);
-						
-						// Resize original file
-						$normal_width = $options[$this->project_id]['medium_size']['width'];
-						$normal_height = $options[$this->project_id]['medium_size']['height'];
-						$thumb->resize( $normal_width, $normal_height );
-						$thumb->save($uploadfile);
-						
-						// Create normal Thumbnail
-						$thumb_width = $options[$this->project_id]['thumb_size']['width'];
-						$thumb_height = $options[$this->project_id]['thumb_size']['height'];
-						$thumb->resize( $thumb_width, $thumb_height );
-						$thumb->save($uploaddir.'/thumb.'.basename($img_name));
-									
-						// Create tiny Thumbnail
-						$thumb->resize(80,50);
-						$thumb->save($uploaddir.'/tiny.'.basename($img_name));
-					} else
-						return __('An upload error occured. Please try again.','projectmanager');
+						$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `image` = '%s' WHERE id = '%d'", basename($file['name']), $dataset_id ) );
+			
+						// Resize original file and create thumbnails
+						$dims = array( 'width' => $options[$this->project_id]['medium_size']['width'], 'height' => $options[$this->project_id]['medium_size']['height'] );
+						$this->createThumbnail( $new_file, $dims, $new_file );
+
+						$dims = array( 'width' => $thumb_width = $options[$this->project_id]['thumb_size']['width'], 'height' => $options[$this->project_id]['thumb_size']['height'] );
+						$this->createThumbnail( $new_file, $dims, $this->getImagePath().'/thumb.'.basename($file['name']) );
+
+						$dims = array( 'width' => 80, 'height' => 50 );
+						$this->createThumbnail( $new_file, $dims, $this->getImagePath().'/tiny.'.basename($file['name']) );
+					} else {
+						$this->error = true;
+						$this->message = sprintf( __('The uploaded file could not be moved to %s.' ), $this->getImagePath() );
+					}
 				}
 			}
 		} else {
-			return __('The file type is not supported. No Image was uploaded.','projectmanager');
+			$this->error = true;
+			$this->message = __('The file type is not supported.','projectmanager');
 		}
 	}
-		 
+	
+	
+	/**
+	 * create Thumbnail of Image
+	 *
+	 * @param string $image
+	 * @param array $dims
+	 * @param string $new_image
+	 */
+	function createThumbnail( $image, $dims, $new_image )
+	{
+		$thumb = new Thumbnail($image);
+		$thumb->resize( $dims['width'], $dims['heigth'] );
+		$thumb->save($new_image);
+	}
+	
 	
 	/**
 	 * setFormFields() - save Form Fields
@@ -1531,7 +1568,7 @@ class WP_ProjectManager
 					t2.cat_ids
 				FROM {$wpdb->projectmanager_datasetmeta} AS t1, {$wpdb->projectmanager_dataset} AS t2
 				WHERE t1.value REGEXP CONVERT( _utf8 '".$search."' USING latin1 )
-					AND t1.form_id = '".$meta_id."'
+					AND t1.form_id = '".$option."'
 					AND t1.dataset_id = t2.id
 				ORDER BY t1.dataset_id ASC";
 			$datasets = $wpdb->get_results( $sql );
@@ -1685,13 +1722,15 @@ class WP_ProjectManager
 		
 		echo "\n\n<!-- WP-ProjectManager START -->\n";
 		echo "<link rel='stylesheet' href='".$this->plugin_url."/style.css' type='text/css' />\n";
-		
-		// Table styles
-		echo "\n<style type='text/css'>";
-		echo "\n\ttable.projectmanager th { background-color: ".$options['colors']['headers']." }";
-		echo "\n\ttable.projectmanager tr { background-color: ".$options['colors']['rows'][1]." }";
-		echo "\n\ttable.projectmanager tr.alternate { background-color: ".$options['colors']['rows'][0]." }";
-		echo "\n</style>";
+
+		if ( !is_admin() ) {
+			// Table styles
+			echo "\n<style type='text/css'>";
+			echo "\n\ttable.projectmanager th { background-color: ".$options['colors']['headers']." }";
+			echo "\n\ttable.projectmanager tr { background-color: ".$options['colors']['rows'][1]." }";
+			echo "\n\ttable.projectmanager tr.alternate { background-color: ".$options['colors']['rows'][0]." }";
+			echo "\n</style>";
+		}
 	
 		if ( is_admin() AND ((isset( $_GET['page'] ) AND substr( $_GET['page'], 0, 14 ) == 'projectmanager') || $show_all )) {
 			wp_register_script( 'projectmanager', $this->plugin_url.'/js/functions.js', array( 'colorpicker' ), PROJECTMANAGER_VERSION );
@@ -1768,7 +1807,9 @@ class WP_ProjectManager
 			syncColor(\"pick_color_rows\", \"color_rows\", document.getElementById(\"color_rows\").value);
 			syncColor(\"pick_color_rows_alt\", \"color_rows_alt\", document.getElementById(\"color_rows_alt\").value);
 		</script>";
-		
+
+		echo "<p>".sprintf(__( "To add and manage projects, go to the <a href='%s'>Management Page</a>", 'projectmanager' ), get_option( 'siteurl' ).'/wp-admin/edit.php?page=projectmanager/page/index.php')."</p>";
+
 		if ( !function_exists('register_uninstall_hook') ) { ?>
 		<!-- Uninstallation Form -->
 		<div class="wrap">
@@ -1886,12 +1927,6 @@ class WP_ProjectManager
 		*/
 		if ( function_exists('register_sidebar_widget') )
 			add_option( 'projectmanager_widget', array(), 'ProjectManager Widget Options', 'yes' );
-		
-		/*
-		* Create directory for projects
-		*/
-		if ( !file_exists($this->getImagePath()) )
-			mkdir( $this->getImagePath() );
 	}
 	
 	

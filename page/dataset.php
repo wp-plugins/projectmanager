@@ -22,6 +22,9 @@ if ( isset($_GET['edit']) ) {
 	$form_title = __('Add Dataset','projectmanager');
 	$dataset_id = ''; $cat_ids = array(); $img_filename = ''; $name = ''; $meta_data = array();
 }
+
+if ( 1 == $options[$project_id]['show_image'] && !wp_mkdir_p( $projectmanager->getImagePath() ) )
+	echo "<div class='error'><p>".sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $projectmanager->getImagePath() )."</p></div>";
 ?>
 <form name="post" id="post" action="edit.php?page=projectmanager/page/show-project.php&amp;project_id=<?php echo $project_id ?>" method="post" enctype="multipart/form-data">
 	

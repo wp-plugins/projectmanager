@@ -54,23 +54,19 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 			</tbody>
 		</table>
 	</form>
-</div>
 
-<!-- Add New Project -->
-<div class="wrap">
-	<h2><?php _e( 'Add Project', 'projectmanager' ) ?></h2>
-	<form action="" method="post">
-	<?php wp_nonce_field( 'projectmanager_manage-projects' ) ?>	
-	<table class="form-table">
-	<tr valign="top">
-		<th scope="row"><label for="project_title"><?php _e( 'Title', 'projectmanager' ) ?></label></th><td><input type="text" name="project_title" id="project_title" value="" size="30" style="margin-bottom: 1em;" /></td>
-	</tr>
-	</table>
-		
-	<input type="hidden" name="project_id" value="" />
-	<input type="hidden" name="updateProjectManager" value="project" />
-		
-	<p class="submit"><input type="submit" value="<?php _e( 'Add Project', 'projectmanager' ) ?> &raquo;" class="button" /></p>
+	<!-- Add New Project -->
+	<form action="" method="post" style="margin-top: 3em;">
+		<h3><?php _e( 'Add Project', 'projectmanager' ) ?></h3>
+		<?php wp_nonce_field( 'projectmanager_manage-projects' ) ?>	
+		<table class="form-table">
+		<tr valign="top">
+			<th scope="row"><label for="project_title"><?php _e( 'Title', 'projectmanager' ) ?></label></th><td><input type="text" name="project_title" id="project_title" value="" size="30" style="margin-bottom: 1em;" /></td>
+		</tr>
+		</table>
+		<input type="hidden" name="project_id" value="" />
+		<input type="hidden" name="updateProjectManager" value="project" />
+		<p class="submit"><input type="submit" value="<?php _e( 'Add Project', 'projectmanager' ) ?> &raquo;" class="button" /></p>
 	</form>
 </div>
 

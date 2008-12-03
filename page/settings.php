@@ -21,6 +21,8 @@ if ( isset($_POST['saveSettings']) ) {
 	
 	echo '<div id="message" class="updated fade"><p><strong>'.__( 'Settings saved', 'projectmanager' ).'</strong></p></div>';
 }
+if ( 1 == $options[$project_id]['show_image'] && !wp_mkdir_p( $projectmanager->getImagePath() ) )
+	echo "<div class='error'><p>".sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $projectmanager->getImagePath() )."</p></div>";
 ?>
 
 <div class="wrap">

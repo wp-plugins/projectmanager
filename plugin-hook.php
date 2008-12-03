@@ -51,8 +51,6 @@ load_plugin_textdomain( 'projectmanager', false, 'projectmanager/languages' );
 register_activation_hook(__FILE__, array(&$projectmanager, 'activate') );
 
 // Actions
-//add_action( 'admin_head', 'ob_start');
-//add_action( 'admin_footer', 'ob_end_flush');
 add_action( 'admin_head', array(&$projectmanager, 'addHeaderCode') );
 add_action( 'wp_head', array(&$projectmanager, 'addHeaderCode') );
 add_action( 'admin_menu', array(&$projectmanager, 'addAdminMenu') );
