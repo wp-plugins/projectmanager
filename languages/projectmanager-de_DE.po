@@ -456,3 +456,7 @@ msgstr "Rechts"
 #: tinymce/window.php:190
 msgid "Insert"
 msgstr "Einfügen"
+
+#: projectmanager.php:1815
+msgid "To add and manage projects, go to the <a href='%s'>Management Page</a>"
+msgstr "Um Projekte hinzuzufügen und zu verwalten, gehe zur <a href='%s'>Verwaltungs Seite</a>"

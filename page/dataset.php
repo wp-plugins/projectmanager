@@ -104,7 +104,6 @@ if ( 1 == $options[$project_id]['show_image'] && !wp_mkdir_p( $projectmanager->g
 				<?php $projectmanager->categoryChecklist( $options[$project_id]['category'], $cat_ids ) ?>
 			</ul>
 			</div>
-			<?php //wp_dropdown_categories(array('hide_empty' => 0, 'name' => 'grp_id', 'orderby' => 'name', 'selected' => $grp_id, 'hierarchical' => true, 'child_of' => $options[$project_id]['category'], 'show_option_none' => __('None'))); ?>
 		</td>
 	</tr>
 	<?php endif; ?>

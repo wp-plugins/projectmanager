@@ -1371,7 +1371,7 @@ class WP_ProjectManager
 			$out = apply_filters( 'projectmanager_single_view', $out, $this->project_id, $_GET['show'] );
 		} else {
 			if ( $this->isSearch() )
-				$datasets = $this->getSearchResults($this->getSearchString(), $this->getSearchOption());
+				$datasets = $this->getSearchResults();
 			else
 				$datasets = $this->getDatasets( true  );
 			
@@ -1455,7 +1455,7 @@ class WP_ProjectManager
 			$out = apply_filters( 'projectmanager_single_view', $out, $this->project_id, $_GET['show'] );
 		} else {
 			if ( $this->isSearch() )
-				$datasets = $this->getSearchResults($this->getSearchString(), $this->getSearchOption());
+				$datasets = $this->getSearchResults();
 			else
 				$datasets = $this->getDatasets( true );
 			
@@ -1535,13 +1535,16 @@ class WP_ProjectManager
 	/**
 	 * getSearchResults() - gets search results
 	 *
-	 * @param string $search
-	 * @param int $option
+	 * @param none
+	 * @return array
 	 */
-	function getSearchResults( $search, $option )
+	function getSearchResults( )
 	{
 		global $wpdb;
 		
+		$search = $this->getSearchString();
+		$option = $this->getSearchOption();
+			
 		if ( 0 == $option ) {
 			$datasets = $wpdb->get_results( "SELECT `id`, `name`, `cat_ids` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id} AND `name` REGEXP CONVERT( _utf8 '".$search."' USING latin1 ) ORDER BY `name` ASC" );
 		} elseif ( -1 == $option ) {
@@ -1729,6 +1732,7 @@ class WP_ProjectManager
 			echo "\n\ttable.projectmanager th { background-color: ".$options['colors']['headers']." }";
 			echo "\n\ttable.projectmanager tr { background-color: ".$options['colors']['rows'][1]." }";
 			echo "\n\ttable.projectmanager tr.alternate { background-color: ".$options['colors']['rows'][0]." }";
+			echo "\n\tfieldset.dataset { border-color: ".$options['colors']['headers']." }";
 			echo "\n</style>";
 		}
 	
@@ -1976,7 +1980,7 @@ class WP_ProjectManager
 		$wpdb->query( "DROP TABLE {$wpdb->projectmanager_projects}" );
 		$wpdb->query( "DROP TABLE {$wpdb->projectmanager_projectmeta}" );
 		$wpdb->query( "DROP TABLE {$wpdb->projectmanager_dataset}" );
-		$wpdb->query(" DROP TABLE {$wpdb->projectmanager_datasetmeta}" );
+		$wpdb->query( "DROP TABLE {$wpdb->projectmanager_datasetmeta}" );
 
 		delete_option( 'projectmanager' );
 		delete_option( 'projectmanager_widget' );

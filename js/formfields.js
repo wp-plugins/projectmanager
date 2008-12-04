@@ -17,7 +17,7 @@ ProjectManager.addFormField = function() {
   document.getElementById(new_element_id).innerHTML = new_element_contents;
   return false;
 }
-  
+
 ProjectManager.removeNewFormField = function(id) {
   element_count = document.getElementById("projectmanager_form_fields").childNodes.length;
   if(element_count > 1) {
@@ -26,7 +26,7 @@ ProjectManager.removeNewFormField = function(id) {
   }
   return false;
 }
-  
+
 ProjectManager.removeFormField = function(id,form_id) {
   element_count = document.getElementById("projectmanager_form_fields").childNodes.length;
   if(element_count > 1) {

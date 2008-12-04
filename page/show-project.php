@@ -29,7 +29,7 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 $project_title = $projectmanager->getProjectTitle( );
 	
 if ( $projectmanager->isSearch() )
-	$datasets = $projectmanager->getSearchResults( $projectmanager->getSearchString(), $projectmanager->getSearchOption() );
+	$datasets = $projectmanager->getSearchResults();
 else
 	$datasets = $projectmanager->getDatasets( true );
 

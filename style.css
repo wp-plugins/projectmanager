@@ -63,7 +63,7 @@ table.projectmanager td img {
 
 fieldset.dataset {
 	font-size: 1em;
-	border: 1px solid #a6b7b1;
+	border: 1px solid;
 	padding: 1em;
 	}
 fieldset.dataset legend {
@@ -135,7 +135,7 @@ a.image_link {
 	}
 
 table#projectmanager_form_fields_table thead th {
-	background-color: #ffffff;
+	background-color: none;
 	}
 
 label.projectmanager-widget {
