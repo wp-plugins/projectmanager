@@ -133,7 +133,7 @@ class WP_ProjectManager
 	 */
 	function getFormFieldTypes()
 	{
-		$form_field_types = array( 1 => __('Text', 'projectmanager'), 2 => __('Textfield', 'projectmanager'), 3 => __('E-Mail', 'projectmanager'), 4 => __('Date', 'projectmanager'), 5 => __('URL', 'projectmanager') );
+		$form_field_types = array( 1 => __('Text', 'projectmanager'), 2 => __('Textfield', 'projectmanager'), 3 => __('E-Mail', 'projectmanager'), 4 => __('Date', 'projectmanager'), 5 => __('URL', 'projectmanager'), 6 => __('Selection', 'projectmanager'), 7 => __( 'Checkbox List', 'projectmanager'), 8 => __( 'Radio List', 'projectmanager') );
 		return $form_field_types;
 	}
 	
@@ -1738,8 +1738,8 @@ class WP_ProjectManager
 	
 		if ( is_admin() AND ((isset( $_GET['page'] ) AND substr( $_GET['page'], 0, 14 ) == 'projectmanager') || $show_all )) {
 			wp_register_script( 'projectmanager', $this->plugin_url.'/js/functions.js', array( 'colorpicker' ), PROJECTMANAGER_VERSION );
-			wp_register_script( 'projectmanager_formfields', $this->plugin_url.'/js/formfields.js', array( 'projectmanager' ), PROJECTMANAGER_VERSION );
-			wp_register_script ('projectmanager_ajax', $this->plugin_url.'/js/ajax.js', array( 'sack', 'thickbox', 'projectmanager' ), PROJECTMANAGER_VERSION );
+			wp_register_script( 'projectmanager_formfields', $this->plugin_url.'/js/formfields.js', array( 'projectmanager', 'thickbox' ), PROJECTMANAGER_VERSION );
+			wp_register_script ('projectmanager_ajax', $this->plugin_url.'/js/ajax.js', array( 'sack', 'projectmanager' ), PROJECTMANAGER_VERSION );
 		
 			wp_print_scripts( 'projectmanager_formfields' );
 			wp_print_scripts( 'projectmanager_ajax');
@@ -1964,9 +1964,27 @@ class WP_ProjectManager
 		add_management_page( __( 'Projects', 'projectmanager' ), __( 'Projects', 'projectmanager' ), 'manage_projects', basename( __FILE__, ".php" ).'/page/index.php' );
 		
 		add_options_page( __( 'Projectmanager', 'projectmanager' ), __( 'Projectmanager', 'projectmanager' ), 'manage_projects', 'projectmanager', array( $this, 'displayOptionsPage' ) );
+		
+		$plugin = 'projectmanager/plugin-hook.php';
+		add_filter( 'plugin_action_links_' . $plugin, array( &$this, 'pluginActions' ) );
 	}
 
 
+	/**
+	 * pluginActions() - display link to settings page in plugin table
+	 *
+	 * @param array $links array of action links
+	 * @return void
+	 */
+	public function pluginActions( $links )
+	{
+		$settings_link = '<a href="options-general.php?page=projectmanager">' . __('Settings') . '</a>';
+		array_unshift( $links, $settings_link );
+	
+		return $links;
+	}
+	
+	
 	/**
 	 * uninstall() - uninstalls ProjectManager
 	 *

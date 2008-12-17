@@ -65,6 +65,7 @@ add_action( 'wp_ajax_projectmanager_save_name', 'projectmanager_save_name' );
 add_action( 'wp_ajax_projectmanager_save_categories', 'projectmanager_save_categories' );
 add_action( 'wp_ajax_projectmanager_save_form_field_data', 'projectmanager_save_form_field_data' );
 add_action( 'wp_ajax_projectmanager_show_category_selection', 'projectmanager_show_category_selection' );
+add_action( 'wp_ajax_projectmanager_save_form_field_options', 'projectmanager_save_form_field_options' );
 
 // Filters
 add_filter( 'the_content', array(&$projectmanager, 'insert') );

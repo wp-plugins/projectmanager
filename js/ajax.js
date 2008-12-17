@@ -75,6 +75,18 @@ ProjectManager.dataFieldSpanFadeOut = function( dataset_id, formfield_id, newval
 	return true;
 }
 
+ProjectManager.ajaxSaveFormFieldOptions = function ( form_id ) {
+	var ajax = new sack(ProjectManagerAjaxL10n.requestUrl);
+	ajax.execute = 1;
+	ajax.method = 'POST';
+	ajax.setVar( "action", "projectmanager_save_form_field_options" );
+	ajax.setVar( "form_id", form_id );
+	ajax.setVar( "options", "" );
+	ajax.onError = function() { alert('Ajax error on saving group'); };
+	ajax.onCompletion = function() { ProjectManager.reInit(); };
+	ajax.runAJAX();
+}
+
 
 ProjectManager.reInit = function () {
 	tb_init('a.thickbox, area.thickbox, input.thickbox');

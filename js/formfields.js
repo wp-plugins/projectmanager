@@ -37,4 +37,12 @@ ProjectManager.removeFormField = function(id,form_id) {
 }
 
 
+ProjectManager.checkFormFieldType = function(form_id, value) {
+	// Check if selected form type is selection, checkbox, or radio
+	if ( value == 6 || value == 7 || value == 8 ) {
+		if ( document.getElementById("options_link"+form_id).style.display == 'none' ) {
+			document.getElementById("options_link"+form_id).style.display  = 'inline';
+		}
+	}
+}
 

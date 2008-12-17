@@ -1,6 +1,22 @@
 <?php
 
 /**
+ * SACK response for saving form field options
+ *
+ * @since 1.3
+ */
+function projectmanager_save_form_field_options() {
+	$options = get_option('projectmanager');
+	
+	$form_id = $_POST['form_id'];
+	$form_options = $_POST['options'];
+	
+	$options['form_field_options'][$form_id] = $form_options;
+	update_option('projectmanager');
+}
+
+
+/**
  * SACK response for showing category selection in TinyMCE button
  *
  * @since 1.2
