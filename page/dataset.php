@@ -17,7 +17,7 @@ if ( isset($_GET['edit']) ) {
 	$img_filename = $dataset->image;
 	$meta_data = array();
 	foreach ( $dataset_meta AS $meta )
-		$meta_data[$meta->form_field_id] = $meta->value;
+		$meta_data[$meta->form_field_id] = maybe_unserialize($meta->value);
 }  else {
 	$form_title = __('Add Dataset','projectmanager');
 	$dataset_id = ''; $cat_ids = array(); $img_filename = ''; $name = ''; $meta_data = array();
@@ -89,6 +89,9 @@ if ( 1 == $options[$project_id]['show_image'] && !wp_mkdir_p( $projectmanager->g
 						<option value="<?php echo $year ?>"<?php if ( $year == substr($meta_data[$form_field->id], 0, 4) ) echo ' selected="selected"' ?>><?php echo $year ?></option>
 					<?php endfor; ?>
 				</select>
+				<?php elseif ( 6 == $form_field->type ) : $projectmanager->printFormFieldDropDown($form_field->id, $meta_data[$form_field->id]); ?>
+				<?php elseif ( 7 == $form_field->type ) : $projectmanager->printFormFieldCheckboxList($form_field->id, $meta_data[$form_field->id]); ?>
+				<?php elseif ( 8 == $form_field->type ) : $projectmanager->printFormFieldRadioList($form_field->id, $meta_data[$form_field->id]); ?>
 				<?php endif; ?>
 			</td>
 		</tr>

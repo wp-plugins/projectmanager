@@ -9,7 +9,7 @@ function projectmanager_save_form_field_options() {
 	$options = get_option('projectmanager');
 	
 	$form_id = $_POST['form_id'];
-	$form_options = $_POST['options'];
+	$form_options = explode("\n", $_POST['options']);
 	
 	$options['form_field_options'][$form_id] = $form_options;
 	update_option('projectmanager');

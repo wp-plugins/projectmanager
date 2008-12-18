@@ -693,7 +693,7 @@ class WP_ProjectManager
 				* 4: Date
 				* 5: External URL
 				*/
-				$meta_value = htmlspecialchars( $meta->value );
+				$meta_value = htmlspecialchars( maybe_unserialize($meta->value) );
 				
 				if ( 1 == $meta->type )
 					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span>";
@@ -709,7 +709,9 @@ class WP_ProjectManager
 					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".mysql2date(get_option('date_format'), $meta_value )."</span>";
 				elseif ( 5 == $meta->type )
 					$meta_value = "<a href='http://".$meta_value."' target='_blank' title='".$meta_value."'><span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span></a>";
-				
+				elseif ( 6 == $meta->type || 7 == $meta->type || 8 == $meta->type )
+					$meta_value = $this->getSelectedFormFieldOptions( $meta->form_field_id, $meta_value );
+					
 				if ( 1 == $meta->show_on_startpage || $show_all ) {
 					if ( '' != $meta_value ) {
 						if ( 'dl' == $output ) {
@@ -887,8 +889,7 @@ class WP_ProjectManager
 		global $wpdb;
 		$this->project_id = $project_id;
 
-		$cat_ids = maybe_serialize($cat_ids);
-		$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_dataset} (name, cat_ids, project_id) VALUES ('%s', '%s', '%d')", $name, $cat_ids, $project_id ) );
+		$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_dataset} (name, cat_ids, project_id) VALUES ('%s', '%s', '%d')", $name, maybe_serialize($cat_ids), $project_id ) );
 		$dataset_id = $wpdb->insert_id;
 			
 		if ( $dataset_meta ) {
@@ -898,7 +899,7 @@ class WP_ProjectManager
 					if ( array_key_exists('day', $meta_value) && array_key_exists('month', $meta_value) && array_key_exists('year', $meta_value) )
 						$meta_value = $meta_value['year'].'-'.str_pad($meta_value['month'], 2, 0, STR_PAD_LEFT).'-'.str_pad($meta_value['day'], 2, 0, STR_PAD_LEFT);
 				}
-				$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ('%d', '%d', '%s')", $meta_id, $dataset_id, $meta_value ) );
+				$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ('%d', '%d', '%s')", $meta_id, $dataset_id, maybe_serialize($meta_value) ) );
 			}
 		}
 			
@@ -928,9 +929,8 @@ class WP_ProjectManager
 		global $wpdb;
 		$this->project_id = $project_id;
 
-		$cat_ids = maybe_serialize($cat_ids);
 		$tail = '';
-		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `name` = '%s', `cat_ids` = '%s' WHERE `id` = '%d'", $name, $cat_ids, $dataset_id ) );
+		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `name` = '%s', `cat_ids` = '%s' WHERE `id` = '%d'", $name, maybe_serialize($cat_ids), $dataset_id ) );
 			
 		if ( $dataset_meta ) {
 			foreach ( $dataset_meta AS $meta_id => $meta_value ) {
@@ -941,14 +941,14 @@ class WP_ProjectManager
 				}
 				
 				if ( 1 == $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_datasetmeta} WHERE `dataset_id` = '".$dataset_id."' AND `form_id` = '".$meta_id."'" ) )
-					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `value` = '%s' WHERE `dataset_id` = '%d' AND `form_id` = '%d'", $meta_value, $dataset_id, $meta_id ) );
+					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `value` = '%s' WHERE `dataset_id` = '%d' AND `form_id` = '%d'", maybe_serialize($meta_value), $dataset_id, $meta_id ) );
 				else
-					$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ( '%d', '%d', '%s' )", $meta_id, $dataset_id, $meta_value ) );
+					$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ( '%d', '%d', '%s' )", $meta_id, $dataset_id, maybe_serialize($meta_value) ) );
 			}
 		}
 			
 			
-		// Delete Image if options is checked
+		// Delete Image if option is checked
 		if ($del_image) {
 			$wpdb->query("UPDATE {$wpdb->projectmanager_dataset} SET `image` = '' WHERE `id` = {$dataset_id}");
 			$this->delImage( $image_file );
@@ -984,7 +984,135 @@ class WP_ProjectManager
 		return;
 	}
 		
+	
+	/**
+	 * display Form Field options as dropdown
+	 *
+	 * @param int $form_id
+	 * @param ing $selected
+	 * @param boolean $echo default true
+	 * @return string
+	 */
+	function printFormFieldDropDown( $form_id, $selected, $echo = true )
+	{
+		$options = get_option('projectmanager');
 		
+		$out = ''
+		if ( count($options['form_field_options'][$form_id]) > 1 ) {
+			$out .= "<select size='1' name='form_field[".$form_id."]' id='form_field_".$form_id."'>";
+			foreach ( $options['form_field_options'][$form_id] AS $id => $option_name ) {
+				if ( $id == $selected )
+					$out .= "<option value='".$id."' selected='selected'>".$option_name."</option>";
+				else
+					$out .= "<option value='".$id."'>".$option_name."</option>"; 
+			}
+			$out .= "</select>";
+		}
+		
+		if ( $echo )
+			echo $out;
+		else
+			return $out;
+	}
+	
+	
+	/**
+	 * display Form Field options as checkbox list
+	 *
+	 * @param int $form_id
+	 * @param array $selected
+	 * @param boolean $echo default true
+	 * @return string
+	 */
+	function printFormFieldCheckboxList( $form_id, $selected, $echo = true )
+	{
+		$options = get_option('projectmanager');
+		
+		$out = ''
+		if ( count($options['form_field_options'][$form_id]) > 1 ) {
+			$out .= "<ul class='checkboxlist'>";
+			foreach ( $options['form_field_options'][$form_id] AS $id => $option_name ) {
+				if ( in_array($id, $selected) )
+					$out .= "<li><input type='checkbox' name='form_field[".$form_id."]' checked='checked' value='".$id."'><label> ".$option_name."</label></li>";
+				else
+					$out .= "<li><input type='checkbox' name='form_field[".$form_id."]' value='".$id."'><label> ".$option_name."</label></li>";
+			}
+			$out .= "</ul>";
+		}
+		
+		if ( $echo )
+			echo $out;
+		else
+			return $out;
+	}
+	
+	/**
+	* display Form Field options as radio list
+	*
+	* @param int $form_id
+	* @param int $selected
+	* @param boolean $echo default true
+	* @return string
+	*/
+	function printFormFieldRadioList( $form_id, $selected, $echo = true )
+	{
+		$options = get_option('projectmanager');
+		
+		$out = ''
+		if ( count($options['form_field_options'][$form_id]) > 1 ) {
+			$out .= "<ul class='radiolist'>";
+			foreach ( $options['form_field_options'][$form_id] AS $id => $option_name ) {
+				if ( $id == $selected )
+					$out .= "<li><input type='radio' name='form_field[".$form_id."]' value='".$id."' checked='checked'><label> ".$option_name."</label></li>";
+				else
+					$out .= "<li><input type='radio' name='form_field[".$form_id."]' value='".$id."'><label> ".$option_name."</label></li>";
+			}
+			$out .= "</ul>";
+		}
+		
+		if ( $echo )
+			echo $out;
+		else
+			return $out;
+	}
+	
+	
+	/**
+	 * get Form Field Option Label
+	 *
+	 * @param int $form_id
+	 * @return int $label_id
+	 * @return string
+	 */
+	function getFormFieldOptionLabel( $form_id, $label_id )
+	{
+		$options = get_options('projectmanager');
+		return $options['form_field_options'][$form_id][$label_id];
+	}
+	
+	
+	/**
+	 * get selected Form Field Option Labels
+	 *
+	 * @param int $form_id
+	 * @param int $label_ids
+	 * @return string
+	 */
+	function getSelectedFormFieldOptions( $form_id, $label_ids )
+	{
+		$options = get_options('projectmanager');
+		if ( is_array($label_ids) ) {
+			$option_names = array();
+			foreach ( $label_ids AS $label_id )
+				$option_names[] = $this->getFormFieldOptionLabel( $form_id, $label_id);
+		
+			return implode(", ", $option_names);
+		} else {
+			return $this->getFormFieldOptionLabel( $form_id, $label_ids );
+		}
+	}
+	
+	
 	/**
 	 * delImage() - delete image along with thumbnails from server
 	 *
