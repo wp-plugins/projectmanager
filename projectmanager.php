@@ -1086,7 +1086,7 @@ class WP_ProjectManager
 	 */
 	function getFormFieldOptionLabel( $form_id, $label_id )
 	{
-		$options = get_options('projectmanager');
+		$options = get_option('projectmanager');
 		return $options['form_field_options'][$form_id][$label_id];
 	}
 	
@@ -1100,7 +1100,6 @@ class WP_ProjectManager
 	 */
 	function getSelectedFormFieldOptions( $form_id, $label_ids )
 	{
-		$options = get_options('projectmanager');
 		if ( is_array($label_ids) ) {
 			$option_names = array();
 			foreach ( $label_ids AS $label_id )
@@ -1230,6 +1229,10 @@ class WP_ProjectManager
 		if ( null != $form_name ) {
 			foreach ( $wpdb->get_results( "SELECT `id` FROM {$wpdb->projectmanager_projectmeta}" ) AS $form_field) {
 				if ( !array_key_exists( $form_field->id, $form_name ) ) {
+					$options = get_option('projectmanager');
+					unset($options['form_field_options'][$form_field->id]);
+					update_option('projectmanager');
+					
 					$wpdb->query( "DELETE FROM {$wpdb->projectmanager_projectmeta} WHERE `id` = {$form_field->id}" );
 					$wpdb->query( "DELETE FROM {$wpdb->projectmanager_datasetmeta} wHERE `form_id` = {$form_field->id}" );
 				}
