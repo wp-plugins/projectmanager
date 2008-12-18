@@ -5,7 +5,7 @@ ProjectManager.addFormField = function() {
   
   new_element_contents = "";
   new_element_contents += "<td><input type='text' name='new_form_name["+new_element_number+"]' value='' /></td>\n\r";
-  new_element_contents += "<td><select name='new_form_type["+new_element_number+"]' size='1'>"+PRJCTMNGR_HTML_FORM_FIELD_TYPES+"</select></td>\n\r"; 
+  new_element_contents += "<td><select onChange='ProjectManager.checkFormFieldType();' name='new_form_type["+new_element_number+"]' size='1'>"+PRJCTMNGR_HTML_FORM_FIELD_TYPES+"</select></td>\n\r"; 
   new_element_contents += "<td><input type='checkbox' name='new_show_on_startpage["+new_element_number+"]' value='1' /><td>\n\r";
   new_element_contents += "<td><input type='text' size='3' name='new_form_order["+new_element_number+"]' value='' /></td>\n\r";
   new_element_contents += "<td  style='text-align: center; width: 12px; vertical-align: middle;'><a class='image_link' href='#' onclick='return ProjectManager.removeNewFormField(\""+new_element_id+"\");'><img src='../wp-content/plugins/projectmanager/images/trash.gif' alt='Delete' title='' /></a></td>\n\r";
@@ -43,6 +43,8 @@ ProjectManager.checkFormFieldType = function(form_id, value) {
 		if ( document.getElementById("options_link"+form_id).style.display == 'none' ) {
 			document.getElementById("options_link"+form_id).style.display  = 'inline';
 		}
+	} else {
+		document.getElementById("options_link"+form_id).style.display  = 'none';
 	}
 }
 

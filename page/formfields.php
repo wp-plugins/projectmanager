@@ -10,6 +10,8 @@ if ( isset($_POST['saveFormFields']) ) {
      
 	echo '<div id="message" class="updated fade"><p><strong>'.$message.'</strong></p></div>';
 }
+$options = get_option('projectmanager');
+print_r($options);
 ?>
 <div class="wrap">
 	<?php $projectmanager->printBreadcrumb( __('Form Fields','projectmanager') ) ?>
@@ -45,7 +47,7 @@ if ( isset($_POST['saveFormFields']) ) {
 				</select>
 				
 				<div id="form_field_options_div<?php echo $form_field->id ?>" style="width: 150px; height: 80px; overflow: auto; display: none;">
-					<form><textarea cols="40" rows="10" id="form_field_options<?php echo $form_field->id ?>"><?php echo implode("\n", $options['form_field_options'][$form_field->id]) ?></textarea><div style="text-align:center; margin-top: 1em;"><input type="button" value="<?php _e('Save') ?>" class="button-secondary" onclick="ProjectManager.ajaxSaveFormFieldOptions(<?php echo $form_field->id; ?>);return false;" />&#160;<input type="button" value="<?php _e('Cancel') ?>" class="button" onclick="tb_remove();" /></div></form>
+					<form><textarea cols="40" rows="10" id="form_field_options<?php echo $form_field->id ?>"><?php if ($options['form_field_options'][$form_field->id] != '' ) echo implode("\n", $options['form_field_options'][$form_field->id]) ?></textarea><div style="text-align:center; margin-top: 1em;"><input type="button" value="<?php _e('Save') ?>" class="button-secondary" onclick="ProjectManager.ajaxSaveFormFieldOptions(<?php echo $form_field->id; ?>);return false;" />&#160;<input type="button" value="<?php _e('Cancel') ?>" class="button" onclick="tb_remove();" /></div></form>
 				</div>
 				<?php $display = ($form_field->type == 6 || $form_field->type == 7 || $form_field->type == 8) ? 'inline' : 'none' ?>
 				<span><a href='#TB_inline?width=150&heigth=100&inlineId=form_field_options_div<?php echo $form_field->id ?>' style="display: <?php echo $display ?>;" id="options_link<?php echo $form_field->id ?>" class="thickbox" title="<?php _e('Options','projectmanager') ?>">Options</a></span>

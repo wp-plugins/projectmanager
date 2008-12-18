@@ -179,10 +179,14 @@ div#projectmanager-category-adder {
 	}
 	
 ul.checkboxlist, ul.radiolist {
+	margin-left: 0;
+	padding-left: 0;
 	list-style-type: none;
 	list-style-image: none;
 }
 ul.checkboxlist li, ul.radiolist li {
+	margin-left: 0;
+	padding-left: 0;
 	list-style-type: none;
 	list-style-image: none;
 }

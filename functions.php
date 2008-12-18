@@ -12,7 +12,9 @@ function projectmanager_save_form_field_options() {
 	$form_options = explode("\n", $_POST['options']);
 	
 	$options['form_field_options'][$form_id] = $form_options;
-	update_option('projectmanager');
+	update_option('projectmanager', $options);
+	
+	die("ProjectManager.reInit(); jQuery('a#options_link" . $form_id . "').show();tb_remove();");
 }
 
 

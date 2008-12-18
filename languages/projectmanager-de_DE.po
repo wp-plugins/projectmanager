@@ -210,7 +210,7 @@ msgstr "Max. Höhe"
 
 #: page/settings.php:65
 msgid "Save Settings"
-msgstr "Einstesllungen speichern"
+msgstr "Einstellungen speichern"
 
 #: page/show-project.php:59
 #: projectmanager.php:1346

@@ -114,7 +114,7 @@ $num_datasets = ( $projectmanager->isSearch() ) ? count($datasets) : $projectman
 		</tbody>
 	</table>
 	</form>
-	<?php else : ?>
+	<?php elseif ( $projectmanager->getNumDatasets($project_id,true) > 0 )  : ?>
 		<div class="error" style="margin-top: 3em;"><p><?php _e( 'Nothing found', 'projectmanager') ?></p></div>
 	<?php endif ?>
 	
