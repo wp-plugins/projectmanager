@@ -1156,7 +1156,7 @@ class WP_ProjectManager
 				$new_file =  $this->getImagePath().'/'.basename($file['name']);
 				if ( file_exists($new_file) && !$overwrite ) {
 					$this->error = true;
-					$this->message = __('Logo exists and is not uploaded. Set the overwrite option if you want to replace it.','projectmanager');
+					$this->message = __('File exists and is not uploaded. Set the overwrite option if you want to replace it.','projectmanager');
 				} else {
 					if ( move_uploaded_file($file['tmp_name'], $new_file) ) {
 						if ( $dataset = $this->getDataset($dataset_id) )

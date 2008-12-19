@@ -46,7 +46,7 @@ if ( 1 == $options[$project_id]['show_image'] && !wp_mkdir_p( $projectmanager->g
 			<th scope="row"><label for="use_widget"><?php _e( 'Use Widget', 'projectmanager' ) ?></label></th><td><input type="checkbox" name="use_widget" id="use_widget"<?php if ( 1 == $options[$project_id]['use_widget']  ) echo ' checked="checked"'; ?> value="1" /></td>
 		</tr>
 		<tr valign="top">
-			<th scope="row"><label for="navi_link"><?php _e( 'Navi Link', 'projectmanager' ) ?></th><td><input type="checkbox" name="navi_link" id="navi_link" value="1"<?php if ( 1 == $options[$project_id]['navi_link']  ) echo ' checked="checked"'; ?> /><br /><?php _e( 'Set this option to add a direct link in the navigation panel. If there is only one project in the database, the link to the index page will be disabled.', 'projectmanager' ) ?></td>
+			<th scope="row"><label for="navi_link"><?php _e( 'Navi Link', 'projectmanager' ) ?></th><td><input type="checkbox" name="navi_link" id="navi_link" value="1"<?php if ( 1 == $options[$project_id]['navi_link']  ) echo ' checked="checked"'; ?> /><br /><?php _e( 'Set this option to add a direct link in the navigation panel. <br/> If there is only one project in the database, the link to the index page will be disabled.', 'projectmanager' ) ?></td>
 		</tr>
 		</table>
 		
