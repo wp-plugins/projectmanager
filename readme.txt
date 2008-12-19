@@ -1,9 +1,9 @@
 === ProjectManager ===
 Contributors: Kolja Schleich
-Tags: datamanager
+Tags: datamanager, CMS, Content Management System
 Requires at least: 2.5
-Tested up to: 2.5
-Stable tag: 1.3
+Tested up to: 2.7
+Stable tag: 1.4
 
 This plugin can be used to manage any number of projects with recurrent datasets (e.g. portrait system, dvd collection)
 
@@ -15,7 +15,7 @@ This plugin is a datamanager for any recurrent datasets. It can be used to manag
 
 * add as many different projects as you want to
 * widget use for any project, controlled via admin panel
-* adding of form fields (text, textfield, e-mail, date, url) for each project independently
+* adding of form fields (text, textfield, e-mail, date, url, selection, checkbox and radio list) for each project independently
 * simple search of any form field and category names
 * usage of Wordpress Category System for grouping
 * various output formats (table, list, gallery)
@@ -86,6 +86,11 @@ in projectmanager.php for details.
 
 
 == ChangeLog ==
+
+**Version 1.4**, *December-19-2008*
+
+- NEW: selection, checkbox list, radio list form field types
+- some code cleaning and fixes
 
 **Version 1.3**, *December-01-2008*
 

@@ -51,7 +51,7 @@ $num_datasets = ( $projectmanager->isSearch() ) ? count($datasets) : $projectman
 	</div>
 	
 	<?php if ( $datasets ) : ?>
-	<form id="dataset-filter" method="post" action="">
+	<form id="dataset-filter" method="post" action="" name="form">
 		
 	<?php wp_nonce_field( 'projectmanager_delete-datasets' ) ?>
 	<input type="hidden" name="item" value="datasets" />

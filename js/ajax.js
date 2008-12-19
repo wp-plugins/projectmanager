@@ -52,6 +52,14 @@ ProjectManager.ajaxSaveDataField = function( dataset_id, formfield_id, formfield
 		var month = document.getElementById('form_field_' + formfield_id + '_' + dataset_id + '_month').value;
 		var year = document.getElementById('form_field_' + formfield_id + '_' + dataset_id + '_year').value;
 		var newvalue = year+"-"+month+"-"+day;
+	} else if ( formfield_type == 7 ) {
+		var values = ProjectManager.getSelectedCheckboxValue(document.getElementsByName("form_field_"+formfield_id+"_"+dataset_id));
+		var newvalue = '';
+		for(var a=0;a<values.length;a++){
+			newvalue += values[a] + ",";
+		}
+	} else if ( formfield_type == 8 ) {
+		var newvalue = ProjectManager.getSelectedRadioValue(document.getElementsByName("form_field_"+formfield_id+"_"+dataset_id));
 	} else {
 		var newvalue = document.getElementById('form_field_' + formfield_id + '_' + dataset_id).value.split('\n').join('\\n');
 	}
@@ -76,6 +84,7 @@ ProjectManager.dataFieldSpanFadeOut = function( dataset_id, formfield_id, newval
 }
 
 ProjectManager.ajaxSaveFormFieldOptions = function ( form_id ) {
+	tb_remove();
 	jQuery("a#options_link" + form_id).fadeIn('fast', function() {
 		form_field_options = document.getElementById('form_field_options' + form_id).value;
 		var ajax = new sack(ProjectManagerAjaxL10n.requestUrl);
