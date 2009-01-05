@@ -22,4 +22,10 @@ if (version_compare($old_options['version'], '1.2.1', '<')) {
 if (version_compare($old_options['version'], '1.3', '<')) {
 	$wpdb->query( "ALTER TABLE {$wpdb->projectmanager_dataset} CHANGE `grp_id` `cat_ids` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL  ");
 }
+
+if (version_compare($old_options['version'], '1.5', '<')) {
+	$wpdb->query( "ALTER TABLE {$wpdb->projectmanager_dataset} ADD `user_id` int( 11 ) NOT NULL default '1'" );
+	$role = get_role('administrator');
+	$role->remove_cap('manage_projectmanager');
+}
 ?>

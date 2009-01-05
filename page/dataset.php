@@ -1,27 +1,42 @@
 <?php
 if ( !current_user_can( 'manage_projects' ) ) : 
 	echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
-	
 else :
-
 $options = get_option( 'projectmanager' );
 $project_id = $projectmanager->getProjectID();
+	
+$error = false;
 if ( isset($_GET['edit']) ) {
 	$form_title = __('Edit Dataset','projectmanager');
 	$dataset_id = $_GET['edit'];
 	$dataset = $projectmanager->getDataset( $dataset_id );
-	$cat_ids = $projectmanager->getSelectedCategoryIDs($dataset);
-	$dataset_meta = $projectmanager->getDatasetMeta( $dataset_id );
-
-	$name = $dataset->name;
-	$img_filename = $dataset->image;
-	$meta_data = array();
-	foreach ( $dataset_meta AS $meta )
-		$meta_data[$meta->form_field_id] = $meta->value;
+	
+	if ( $dataset->user_id == $current_user->ID || current_user_can( 'projectmanager_admin') ) {
+		$cat_ids = $projectmanager->getSelectedCategoryIDs($dataset);
+		$dataset_meta = $projectmanager->getDatasetMeta( $dataset_id );
+	
+		$name = $dataset->name;
+		$img_filename = $dataset->image;
+		$meta_data = array();
+		foreach ( $dataset_meta AS $meta )
+			$meta_data[$meta->form_field_id] = $meta->value;
+	} else {
+		$error = true;
+		$error_msg = __( "You don't have the permission to edit this dataset", 'projectmanager' );
+	}
 }  else {
+	// Throw Error if double entry of same user_id is detected and user is no admin
+	$num_datasets = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_dataset} WHERE `user_id` = {$current_user->ID}" );
+	if ( !current_user_can( 'projectmanager_admin') && $num_datasets != 0 ) {
+		$error = true;
+		$error_msg = __( 'An Entry of your user ID has been detected', 'projectmanager' );
+	}
+	
 	$form_title = __('Add Dataset','projectmanager');
 	$dataset_id = ''; $cat_ids = array(); $img_filename = ''; $name = ''; $meta_data = array();
 }
+
+if ( !$error ) {
 
 if ( 1 == $options[$project_id]['show_image'] && !wp_mkdir_p( $projectmanager->getImagePath() ) )
 	echo "<div class='error'><p>".sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $projectmanager->getImagePath() )."</p></div>";
@@ -100,7 +115,7 @@ if ( 1 == $options[$project_id]['show_image'] && !wp_mkdir_p( $projectmanager->g
 	<?php if ( -1 != $options[$project_id]['category'] ) : ?>
 	<!-- category selection form -->
 	<tr valign="top">
-		<th scope="row"><label for="category"><?php echo __( 'Categories', 'projectmanager' ) ?></label></th>
+		<th scope="row"><label for="category"><?php _e( 'Categories', 'projectmanager' ) ?></label></th>
 		<td>
 			<div id="projectmanager-category-adder">
 			<ul class="categorychecklist">
@@ -110,14 +125,25 @@ if ( 1 == $options[$project_id]['show_image'] && !wp_mkdir_p( $projectmanager->g
 		</td>
 	</tr>
 	<?php endif; ?>
+	<?php if ( isset($_GET['edit']) && current_user_can('projectmanager_admin') ) : ?>
+	<tr valign="top">
+		<th scope="row"><label for="owner"><?php _e( 'Owner', 'projectmanager' ) ?></label></th>
+		<td><?php wp_dropdown_users( array('selected' => $dataset->user_id, 'name' => 'owner') ) ?></td>
+	</tr>
+	<?php endif; ?>
 	</table>
 	
 	<input type="hidden" name="project_id" value="<?php echo $project_id ?>" />
 	<input type="hidden" name="dataset_id" value="<?php echo $dataset_id ?>" />
+	<input type="hidden" name="user_id" value="<?php echo $dataset->user_id ?>" />
 	<input type="hidden" name="updateProjectManager" value="dataset" />
 			
 	<p class="submit"><input type="submit" name="addportrait" value="<?php echo $form_title ?> &raquo;" class="button" /></p>
 </div>
 </form>
 
-<?php endif; ?>
+<?php } else {
+      echo '<div class="error"><p style="text-align: center;">'.$error_msg.'</p></div>';
+}
+
+endif; ?>
