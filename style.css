@@ -160,16 +160,10 @@ div.projectmanager_thickbox {
 div.projectmanager_thickbox input, div.projectmanager_thickbox textarea, div.projectmanager_thickbox select {
 	margin-top: 1em;
 	}
-
-
-ul.categorychecklist, ul.categorychecklist li {
-	text-align: left;
-	margin-left: 1em;
-	padding-left: 0;
+div.projectmanager_thickbox ul {
+	margin: 1em auto auto 1em;
 	}
-ul.categorychecklist, ul.categorychecklist li, ul.children, ul.children li {
-	list-style-type: none;
-	}
+	
 div#projectmanager-category-adder {
 	height: 180px;
 	background-color: #ffffff;
@@ -178,15 +172,21 @@ div#projectmanager-category-adder {
 	overflow: auto;
 	}
 	
-ul.checkboxlist, ul.radiolist {
+ul.checkboxlist, ul.radiolist, ul.categorychecklist, ul.children {
 	margin-left: 0;
 	padding-left: 0;
 	list-style-type: none;
 	list-style-image: none;
 }
-ul.checkboxlist li, ul.radiolist li {
-	margin-left: 0;
-	padding-left: 0;
+ul.checkboxlist li, ul.radiolist li, ul.categorychecklist li, ul.children li {
+	margin: 0;
+	padding: 7px 0;
+	text-align: left;
 	list-style-type: none;
 	list-style-image: none;
 }
+ul.checkboxlist li label, ul.checkboxlist li input, ul.radiolist li label, ul.radiolist li input,
+ul.categorychecklist li label, ul.categorychecklist li input, ul.children li label, ul.children li input {
+	margin: 0 3px;
+	padding: 0;
+	}

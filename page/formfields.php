@@ -1,5 +1,5 @@
 <?php
-if ( !current_user_can( 'manage_projects' ) ) : 
+if ( !current_user_can( 'projectmanager_admin' ) ) : 
      echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
 else :
 
@@ -11,7 +11,6 @@ if ( isset($_POST['saveFormFields']) ) {
 	echo '<div id="message" class="updated fade"><p><strong>'.$message.'</strong></p></div>';
 }
 $options = get_option('projectmanager');
-print_r($options);
 ?>
 <div class="wrap">
 	<?php $projectmanager->printBreadcrumb( __('Form Fields','projectmanager') ) ?>
@@ -37,8 +36,9 @@ print_r($options);
 		<?php foreach( $form_fields AS $form_field ) : ?>
 		<tr id="form_id_<?php echo $form_field->id ?>">
 			<td><input type="text" name="form_name[<?php echo $form_field->id ?>]" value="<?php echo $form_field->label ?>" /></td>
-			<td>
-				<select id="form_type_<?php echo $form_field->id ?>" name="form_type[<?php echo $form_field->id ?>]" size="1" onChange="ProjectManager.checkFormFieldType(<?php echo $form_field->id ?>, this.value);">
+			<td id="form_field_options_box<?php echo $form_field->id ?>">
+				<?php $form_field_options = is_array($options['form_field_options'][$form_field->id]) ? implode(', ', $options['form_field_options'][$form_field->id]) : ''; ?>
+				<select id="form_type_<?php echo $form_field->id ?>" name="form_type[<?php echo $form_field->id ?>]" size="1" onChange="ProjectManager.toggleOptions(<?php echo $form_field->id ?>, this.value, '<?php _e('Save') ?>', '<?php _e('Cancel') ?>', '<?php _e('Options','projectmanager') ?>', '<?php echo $form_field_options ?>' );">
 				<?php foreach( $projectmanager->getFormFieldTypes() AS $form_type_id => $form_type ) : 
 					$selected = ( $form_type_id == $form_field->type ) ? "selected='selected'" : '';
 				?>
@@ -46,11 +46,15 @@ print_r($options);
 				<?php endforeach; ?>
 				</select>
 				
-				<div id="form_field_options_div<?php echo $form_field->id ?>" style="width: 150px; height: 80px; overflow: auto; display: none;">
-					<form><textarea cols="40" rows="10" id="form_field_options<?php echo $form_field->id ?>"><?php if ($options['form_field_options'][$form_field->id] != '' ) echo implode("\n", $options['form_field_options'][$form_field->id]) ?></textarea><div style="text-align:center; margin-top: 1em;"><input type="button" value="<?php _e('Save') ?>" class="button-secondary" onclick="ProjectManager.ajaxSaveFormFieldOptions(<?php echo $form_field->id; ?>);return false;" />&#160;<input type="button" value="<?php _e('Cancel') ?>" class="button" onclick="tb_remove();" /></div></form>
+				<?php if ( $form_field->type == 6 || $form_field->type == 7 || $form_field->type == 8 ) : ?>
+				<!-- Thickbox Container and Link for Form Field Options -->
+				<div id="form_field_options_container<?php echo $form_field->id ?>" style="display: inline;">
+					<div id="form_field_options_div<?php echo $form_field->id ?>" style="width: 150px; height: 80px; overflow: auto; display: none;"><div class="projectmanager_thickbox">
+						<form><textarea cols="40" rows="10" id="form_field_options<?php echo $form_field->id ?>"><?php if ($options['form_field_options'][$form_field->id] != '' ) echo implode("\n", $options['form_field_options'][$form_field->id]) ?></textarea><div style="text-align:center; margin-top: 1em;"><input type="button" value="<?php _e('Save') ?>" class="button-secondary" onclick="ProjectManager.ajaxSaveFormFieldOptions(<?php echo $form_field->id; ?>);return false;" />&#160;<input type="button" value="<?php _e('Cancel') ?>" class="button" onclick="tb_remove();" /></div></form>
+					</div></div>
+					<span>&#160;<a href='#TB_inline?width=150&heigth=100&inlineId=form_field_options_div<?php echo $form_field->id ?>' style="display: inline;" id="options_link<?php echo $form_field->id ?>" class="thickbox" title="<?php _e('Options','projectmanager') ?>"><?php _e('Options','projectmanager') ?></a></span>
 				</div>
-				<?php $display = ($form_field->type == 6 || $form_field->type == 7 || $form_field->type == 8) ? 'inline' : 'none' ?>
-				<span><a href='#TB_inline?width=150&heigth=100&inlineId=form_field_options_div<?php echo $form_field->id ?>' style="display: <?php echo $display ?>;" id="options_link<?php echo $form_field->id ?>" class="thickbox" title="<?php _e('Options','projectmanager') ?>">Options</a></span>
+				<?php endif; ?>
 			</td>
 			<td><input type="checkbox" name="show_on_startpage[<?php echo $form_field->id ?>]"<?php echo ( 1 == $form_field->show_on_startpage ) ? ' checked="checked"' : '' ?> value="1" /></td>
 			<td><input type="text" size="2" name="form_order[<?php echo $form_field->id ?>]" value="<?php echo $form_field->order ?>" /></td>

@@ -119,7 +119,7 @@ class WP_ProjectManager
 	{
 		$options = get_option( 'projectmanager' );
 		$this->project_id = $project_id;
-		$this->per_page = $options[$this->project_id]['per_page'];
+		$this->per_page = isset($options[$this->project_id]['per_page']) ? $options[$this->project_id]['per_page'] : 20;
 
 		$this->pagination = new Pagination( $this->per_page, $this->getNumDatasets($this->project_id), array('show') );
 	}
@@ -455,11 +455,11 @@ class WP_ProjectManager
 	function getWidgetProjects()
 	{
 		global $wpdb;
-		$all_projects = $this->getProjects();
+		$projects = $this->getProjects();
 		$options = get_option( 'projectmanager' );
 		
 		$widget_projects = array();
-		foreach ( $all_projects AS $project ) {
+		foreach ( $projects AS $project ) {
 			if ( 1 == $options[$project->id]['use_widget'] )
 				$widget_projects[] = $project;
 		}
@@ -608,7 +608,7 @@ class WP_ProjectManager
 		
 		if ( $limit ) $offset = ( $this->pagination->getPage() - 1 ) * $this->per_page;
 
-		$sql = "SELECT `id`, `name`, `image`, `cat_ids` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id}";
+		$sql = "SELECT `id`, `name`, `image`, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id}";
 		
 		if ( $this->isCategory() )
 			$sql .= $this->getCategorySearchString();
@@ -629,7 +629,7 @@ class WP_ProjectManager
 	function getDataset( $dataset_id )
 	{
 		global $wpdb;
-		$dataset = $wpdb->get_results( "SELECT `id`, `name`, `image`, `cat_ids` FROM {$wpdb->projectmanager_dataset} WHERE `id` = {$dataset_id}" );
+		$dataset = $wpdb->get_results( "SELECT `id`, `name`, `image`, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} WHERE `id` = {$dataset_id}" );
 		return $dataset[0];
 	}
 		
@@ -694,10 +694,8 @@ class WP_ProjectManager
 				* 5: External URL
 				*/
 				if (is_string($meta->value)) $meta_value = htmlspecialchars( $meta->value );
-				$meta_value = maybe_unserialize($meta->value);
 				
-				
-				if ( 1 == $meta->type )
+				if ( 1 == $meta->type || 6 == $meta->type || 7 == $meta->type || 8 == $meta->type )
 					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span>";
 				elseif ( 2 == $meta->type ) {
 					if ( strlen($meta_value) > 150 && !$show_all )
@@ -711,8 +709,6 @@ class WP_ProjectManager
 					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".mysql2date(get_option('date_format'), $meta_value )."</span>";
 				elseif ( 5 == $meta->type )
 					$meta_value = "<a href='http://".$meta_value."' target='_blank' title='".$meta_value."'><span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span></a>";
-				elseif ( 6 == $meta->type || 7 == $meta->type || 8 == $meta->type )
-					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$this->getSelectedFormFieldOptions( $meta->form_field_id, $meta_value )."</span>";
 					
 				if ( 1 == $meta->show_on_startpage || $show_all ) {
 					if ( '' != $meta_value ) {
@@ -720,8 +716,8 @@ class WP_ProjectManager
 							$out .= "\n\t<dt class='projectmanager'>".$meta->label."</dt><dd>".$meta_value."</dd>";
 						} else {
 							$out .= "\n\t<".$output.">";
-							$out .= $this->getThickbox( $dataset->id, $meta->form_field_id, $meta->type, $meta->value );
-							$out .= "\n\t\t".$meta_value . $this->getThickboxLink($dataset->id, $meta->form_field_id, $meta->type, $meta->label." ".__('of','projectmanager')." ".$dataset->name);
+							$out .= $this->getThickbox( $dataset->id, $meta->form_field_id, $meta->type, maybe_unserialize($meta->value), $dataset->user_id );
+							$out .= "\n\t\t".$meta_value . $this->getThickboxLink($dataset->id, $meta->form_field_id, $meta->type, $meta->label." ".__('of','projectmanager')." ".$dataset->name, $dataset->user_id);
 							$out .= "\n\t</".$output.">";
 						}
 					} elseif ( 'td' == $output )
@@ -742,15 +738,20 @@ class WP_ProjectManager
 	 *
 	 * @param ing $dataset_id
 	 * @param int $formfield_id
+	 * @param int $formfield_type
+	 * @param string $title
+	 * @param int $dataset_owner
 	 * @return string
 	 */
-	function getThickboxLink( $dataset_id, $formfield_id,  $formfield_type, $title )
+	function getThickboxLink( $dataset_id, $formfield_id,  $formfield_type, $title, $dataset_owner )
 	{
+		global $current_user;
+		
 		$out = '';
-		if ( is_admin() && current_user_can( 'manage_projects' ) ) {
-			$dims = array('width' => '250', 'height' => '100');
+		if ( is_admin() && current_user_can( 'manage_projects' ) && ($dataset_owner == $current_user->ID || current_user_can( 'projectmanager_admin')) ) {
+			$dims = array('width' => '300', 'height' => '100');
 			if ( 2 == $formfield_type )
-				$dims = array('width' => '350', 'height' => '305');
+				$dims = array('width' => '400', 'height' => '305');
 						
 			$out .= "&#160;<a class='thickbox' id='thickboxlink".$formfield_id."_".$dataset_id."' href='#TB_inline?height=".$dims['height']."&width=".$dims['width']."&inlineId=datafieldwrap".$formfield_id."_".$dataset_id."' title='".$title."'><img src='".$this->plugin_url."/images/edit.gif' border='0' alt='".__('Edit')."' /></a>";
 		}
@@ -765,15 +766,18 @@ class WP_ProjectManager
 	 * @param int $formfield_id
 	 * @param int $formfield_type
 	 * @param string $value
+	 * @param int $dataset_owner
 	 * @return string
 	 */
-	function getThickbox( $dataset_id, $formfield_id, $formfield_type, $value )
+	function getThickbox( $dataset_id, $formfield_id, $formfield_type, $value, $dataset_owner )
 	{
+		global $current_user;
+		
 		$out = '';
-		if ( is_admin() && current_user_can( 'manage_projects' ) ) {
-			$dims = array('width' => '250px', 'height' => '80px');
+		if ( is_admin() && current_user_can( 'manage_projects' ) && ($dataset_owner == $current_user->ID || current_user_can( 'projectmanager_admin')) ) {
+			$dims = array('width' => '300px', 'height' => '80px');
 			if ( 2 == $formfield_type )
-				$dims = array('width' => '350px', 'height' => '250px');
+				$dims = array('width' => '400px', 'height' => '250px');
 			
 			$out .= "\n\t\t<div id='datafieldwrap".$formfield_id."_".$dataset_id."' style='width:".$dims['width'].";height:".$dims['height'].";overfow:auto;display:none;'>";
 			$out .= "\n\t\t<div id='datafieldbox".$formfield_id."_".$dataset_id."' class='projectmanager_thickbox'>";
@@ -802,6 +806,13 @@ class WP_ProjectManager
 				}
 				$out .= "\n\t\t\t</select>";
 			}
+			elseif ( 6 == $formfield_type )
+				$out .= $this->printFormFieldDropDown($formfield_id, $value, $dataset_id, "form_field_".$formfield_id."_".$dataset_id, false);
+			elseif ( 7 == $formfield_type )
+				$out .= $this->printFormFieldCheckboxList($formfield_id, $value, 0, "form_field_".$formfield_id."_".$dataset_id, false);
+			elseif ( 8 == $formfield_type )
+				$out .= $this->printFormFieldRadioList($formfield_id, $value, 0, "form_field_".$formfield_id."_".$dataset_id, false);
+	
 			$out .= "\n\t\t\t<div style='text-align:center; margin-top: 1em;'><input type='button' value='".__('Save')."' class='button-secondary' onclick='ProjectManager.ajaxSaveDataField(".$dataset_id.",".$formfield_id.",".$formfield_type.");return false;' />&#160;<input type='button' value='".__('Cancel')."' class='button' onclick='tb_remove();' /></div>";
 			$out .= "\n\t\t\t</form>";
 			$out .= "\n\t\t</div>";
@@ -888,37 +899,49 @@ class WP_ProjectManager
 	 */
 	function addDataset( $project_id, $name, $cat_ids, $dataset_meta = false )
 	{
-		global $wpdb;
+		global $wpdb, $current_user;
 		$this->project_id = $project_id;
 
-		$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_dataset} (name, cat_ids, project_id) VALUES ('%s', '%s', '%d')", $name, maybe_serialize($cat_ids), $project_id ) );
-		$dataset_id = $wpdb->insert_id;
-			
-		if ( $dataset_meta ) {
-			foreach ( $dataset_meta AS $meta_id => $meta_value ) {
-				if ( is_array($meta_value) ) {
-					// form field value is a date
-					if ( array_key_exists('day', $meta_value) && array_key_exists('month', $meta_value) && array_key_exists('year', $meta_value) )
-						$meta_value = $meta_value['year'].'-'.str_pad($meta_value['month'], 2, 0, STR_PAD_LEFT).'-'.str_pad($meta_value['day'], 2, 0, STR_PAD_LEFT);
-				}
-				$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ('%d', '%d', '%s')", $meta_id, $dataset_id, maybe_serialize($meta_value) ) );
-			}
-		}
+		$num_datasets = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_dataset} WHERE `user_id` = {$current_user->ID}" );
 		
-		if ($form_fields = $this->getFormFields()) {
-			foreach ( $form_fields AS $form_field ) {
-				if ( !array_key_exists($form_field->id, $dataset_meta) ) {
-					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `value` = '' WHERE `dataset_id` = '%d' AND `form_id` = '%d'", $dataset_id, $form_field->id ) );
+		if ( current_user_can( 'projectmanager_admin') || $num_datasets == 0 ) {
+			$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_dataset} (name, cat_ids, project_id, user_id) VALUES ('%s', '%s', '%d', '%d')", $name, maybe_serialize($cat_ids), $project_id, $current_user->ID ) );
+			$dataset_id = $wpdb->insert_id;
+				
+			if ( $dataset_meta ) {
+				foreach ( $dataset_meta AS $meta_id => $meta_value ) {
+					if ( is_array($meta_value) ) {
+						// form field value is a date
+						if ( array_key_exists('day', $meta_value) && array_key_exists('month', $meta_value) && array_key_exists('year', $meta_value) )
+							$meta_value = $meta_value['year'].'-'.str_pad($meta_value['month'], 2, 0, STR_PAD_LEFT).'-'.str_pad($meta_value['day'], 2, 0, STR_PAD_LEFT);
+						else
+							$meta_value = implode(",", $meta_value);
+					}
+					$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ('%d', '%d', '%s')", $meta_id, $dataset_id, $meta_value ) );
 				}
 			}
-		}
-		
-		if ( isset($_FILES['logo']) )
-			$this->uploadImage($team_id, $_FILES['logo']);
 			
-		if ( $this->error ) $this->printErrorMessage();
+			// Check for unsbumitted form data, e.g. checkbox list
+			if ($form_fields = $this->getFormFields()) {
+				foreach ( $form_fields AS $form_field ) {
+					if ( !array_key_exists($form_field->id, $dataset_meta) ) {
+						$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `value` = '' WHERE `dataset_id` = '%d' AND `form_id` = '%d'", $dataset_id, $form_field->id ) );
+					}
+				}
+			}
 		
-		return __( 'New dataset added to the database.', 'projectmanager' ).' '.$tail;
+			if ( isset($_FILES['logo']) )
+				$this->uploadImage($team_id, $_FILES['logo']);
+				
+			if ( $this->error ) $this->printErrorMessage();
+			
+			return __( 'New dataset added to the database.', 'projectmanager' ).' '.$tail;
+		} else {
+			$this->error = true;
+			$this->message = __( 'An Entry of your user ID has been detected', 'projectmanager' );
+			$this->printErrorMessage();
+			return false;
+		}
 	}
 		
 		
@@ -930,54 +953,70 @@ class WP_ProjectManager
 	 * @param array $cat_ids
 	 * @param int $dataset_id
 	 * @param array $dataset_meta
+	 * @param int $user_id
 	 * @param boolean $del_image
 	 * @param string $image_file
+	 * @param int|false $owner
 	 * @return string
 	 */
-	function editDataset( $project_id, $name, $cat_ids, $dataset_id, $dataset_meta = false, $del_image = false, $image_file = '', $overwrite_image = false )
+	function editDataset( $project_id, $name, $cat_ids, $dataset_id, $dataset_meta = false, $user_id, $del_image = false, $image_file = '', $overwrite_image = false, $owner = false )
 	{
-		global $wpdb;
+		global $wpdb, $current_user;
 		$this->project_id = $project_id;
 
-		$tail = '';
-		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `name` = '%s', `cat_ids` = '%s' WHERE `id` = '%d'", $name, maybe_serialize($cat_ids), $dataset_id ) );
-
-		if ( $dataset_meta ) {
-			foreach ( $dataset_meta AS $meta_id => $meta_value ) {
-				if ( is_array($meta_value) ) {
-					// form field value is a date
-					if ( array_key_exists('day', $meta_value) && array_key_exists('month', $meta_value) && array_key_exists('year', $meta_value) )
-						$meta_value = $meta_value['year'].'-'.str_pad($meta_value['month'], 2, 0, STR_PAD_LEFT).'-'.str_pad($meta_value['day'], 2, 0, STR_PAD_LEFT);
+		if ( $user_id == $current_user->ID || current_user_can( 'projectmanager_admin') ) {
+			$tail = '';
+			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `name` = '%s', `cat_ids` = '%s' WHERE `id` = '%d'", $name, maybe_serialize($cat_ids), $dataset_id ) );
+			
+			// Change Dataset owner if supplied
+			if ( $owner )
+				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `user_id` = '%d' WHERE `id` = '%d'", $owner, $dataset_id ) );
+			
+			
+			if ( $dataset_meta ) {
+				foreach ( $dataset_meta AS $meta_id => $meta_value ) {
+					if ( is_array($meta_value) ) {
+						// form field value is a date
+						if ( array_key_exists('day', $meta_value) && array_key_exists('month', $meta_value) && array_key_exists('year', $meta_value) )
+							$meta_value = $meta_value['year'].'-'.str_pad($meta_value['month'], 2, 0, STR_PAD_LEFT).'-'.str_pad($meta_value['day'], 2, 0, STR_PAD_LEFT);
+						else
+							$meta_value = implode(",", $meta_value);
+					}
+					if ( 1 == $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_datasetmeta} WHERE `dataset_id` = '".$dataset_id."' AND `form_id` = '".$meta_id."'" ) )
+						$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `value` = '%s' WHERE `dataset_id` = '%d' AND `form_id` = '%d'", $meta_value, $dataset_id, $meta_id ) );
+					else
+						$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ( '%d', '%d', '%s' )", $meta_id, $dataset_id, $meta_value ) );
 				}
+			}
+			
+			// Check for unsbumitted form data, e.g. checkbox lis
+			if ($form_fields = $this->getFormFields()) {
+				foreach ( $form_fields AS $form_field ) {
+					if ( !array_key_exists($form_field->id, $dataset_meta) ) {
+						$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `value` = '' WHERE `dataset_id` = '%d' AND `form_id` = '%d'", $dataset_id, $form_field->id ) );
+					}
+				}
+			}
+			
 				
-				if ( 1 == $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_datasetmeta} WHERE `dataset_id` = '".$dataset_id."' AND `form_id` = '".$meta_id."'" ) )
-					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `value` = '%s' WHERE `dataset_id` = '%d' AND `form_id` = '%d'", maybe_serialize($meta_value), $dataset_id, $meta_id ) );
-				else
-					$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ( '%d', '%d', '%s' )", $meta_id, $dataset_id, maybe_serialize($meta_value) ) );
+			// Delete Image if option is checked
+			if ($del_image) {
+				$wpdb->query("UPDATE {$wpdb->projectmanager_dataset} SET `image` = '' WHERE `id` = {$dataset_id}");
+				$this->delImage( $image_file );
 			}
-		}
-		
-		if ($form_fields = $this->getFormFields()) {
-			foreach ( $form_fields AS $form_field ) {
-				if ( !array_key_exists($form_field->id, $dataset_meta) ) {
-					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `value` = '' WHERE `dataset_id` = '%d' AND `form_id` = '%d'", $dataset_id, $form_field->id ) );
-				}
-			}
-		}
-		
+				
+			if ( isset($_FILES['logo']) )
+				$this->uploadImage($dataset_id, $_FILES['logo'], $overwrite_image);
 			
-		// Delete Image if option is checked
-		if ($del_image) {
-			$wpdb->query("UPDATE {$wpdb->projectmanager_dataset} SET `image` = '' WHERE `id` = {$dataset_id}");
-			$this->delImage( $image_file );
+			if ( $this->error ) $this->printErrorMessage();
+				
+			return __('Dataset updated.', 'projectmanager');
+		} else {
+			$this->error = true;
+			$this->message = __( "You don't have the permission to edit this dataset", "projectmanager" );
+			$this->printErrorMessage();
+			return false;
 		}
-			
-		if ( isset($_FILES['logo']) )
-			$this->uploadImage($dataset_id, $_FILES['logo'], $overwrite_image);
-		
-		if ( $this->error ) $this->printErrorMessage();
-			
-		return __('Dataset updated.', 'projectmanager');
 	}
 		
 		
@@ -1011,18 +1050,18 @@ class WP_ProjectManager
 	 * @param boolean $echo default true
 	 * @return string
 	 */
-	 function printFormFieldDropDown( $form_id, $selected, $echo = true )
+	 function printFormFieldDropDown( $form_id, $selected, $dataset_id, $name, $echo = true )
 	{
 		$options = get_option('projectmanager');
 		
 		$out = '';
 		if ( count($options['form_field_options'][$form_id]) > 1 ) {
-			$out .= "<select size='1' name='form_field[".$form_id."]' id='form_field_".$form_id."'>";
-			foreach ( $options['form_field_options'][$form_id] AS $id => $option_name ) {
-				if ( $id == $selected )
-					$out .= "<option value='".$id."' selected='selected'>".$option_name."</option>";
+			$out .= "<select size='1' name='".$name."' id='form_field_".$form_id."_".$dataset_id."'>";
+			foreach ( $options['form_field_options'][$form_id] AS $option_name ) {
+				if ( $option_name == $selected )
+					$out .= "<option value='".$option_name."' selected='selected'>".$option_name."</option>";
 				else
-					$out .= "<option value='".$id."'>".$option_name."</option>"; 
+					$out .= "<option value='".$option_name."'>".$option_name."</option>"; 
 			}
 			$out .= "</select>";
 		}
@@ -1042,19 +1081,19 @@ class WP_ProjectManager
 	 * @param boolean $echo default true
 	 * @return string
 	 */
-	function printFormFieldCheckboxList( $form_id, $selected=array(), $echo = true )
+	function printFormFieldCheckboxList( $form_id, $selected=array(), $dataset_id, $name, $echo = true )
 	{
 		$options = get_option('projectmanager');
 		
-		if ( !is_array($selected) ) $selected = array();
+		$selected = explode(',', $selected);
 		$out = '';
 		if ( count($options['form_field_options'][$form_id]) > 1 ) {
 			$out .= "<ul class='checkboxlist'>";
 			foreach ( $options['form_field_options'][$form_id] AS $id => $option_name ) {
-				if ( count($selected) > 0 && in_array($id, $selected) )
-					$out .= "<li><input type='checkbox' name='form_field[".$form_id."][]' checked='checked' value='".$id."'><label> ".$option_name."</label></li>";
+				if ( count($selected) > 0 && in_array($option_name, $selected) )
+					$out .= "<li><input type='checkbox' name='".$name."' checked='checked' value='".$option_name."' id='checkbox_".$form_id."_".$id."'><label for='checkbox_".$form_id."_".$id."'> ".$option_name."</label></li>";
 				else
-					$out .= "<li><input type='checkbox' name='form_field[".$form_id."][]' value='".$id."'><label> ".$option_name."</label></li>";
+					$out .= "<li><input type='checkbox' name='".$name."' value='".$option_name."' id='checkbox_".$form_id."_".$id."'><label for='checkbox_".$form_id."_".$id."'> ".$option_name."</label></li>";
 			}
 			$out .= "</ul>";
 		}
@@ -1073,7 +1112,7 @@ class WP_ProjectManager
 	* @param boolean $echo default true
 	* @return string
 	*/
-	function printFormFieldRadioList( $form_id, $selected, $echo = true )
+	function printFormFieldRadioList( $form_id, $selected, $dataset_id, $name, $echo = true )
 	{
 		$options = get_option('projectmanager');
 		
@@ -1081,10 +1120,10 @@ class WP_ProjectManager
 		if ( count($options['form_field_options'][$form_id]) > 1 ) {
 			$out .= "<ul class='radiolist'>";
 			foreach ( $options['form_field_options'][$form_id] AS $id => $option_name ) {
-				if ( $id == $selected )
-					$out .= "<li><input type='radio' name='form_field[".$form_id."]' value='".$id."' checked='checked'><label> ".$option_name."</label></li>";
+				if ( $option_name == $selected )
+					$out .= "<li><input type='radio' name='".$name."' value='".$option_name."' checked='checked'  id='radio_".$form_id."_".$id."'><label for='radio_".$form_id."_".$id."'> ".$option_name."</label></li>";
 				else
-					$out .= "<li><input type='radio' name='form_field[".$form_id."]' value='".$id."'><label> ".$option_name."</label></li>";
+					$out .= "<li><input type='radio' name='".$name."' value='".$option_name."' id='radio_".$form_id."_".$id."'><label for='radio_".$form_id."_".$id."'> ".$option_name."</label></li>";
 			}
 			$out .= "</ul>";
 		}
@@ -1094,42 +1133,7 @@ class WP_ProjectManager
 		else
 			return $out;
 	}
-	
-	
-	/**
-	 * get Form Field Option Label
-	 *
-	 * @param int $form_id
-	 * @return int $label_id
-	 * @return string
-	 */
-	function getFormFieldOptionLabel( $form_id, $label_id )
-	{
-		$options = get_option('projectmanager');
-		return $options['form_field_options'][$form_id][$label_id];
-	}
-	
-	
-	/**
-	 * get selected Form Field Option Labels
-	 *
-	 * @param int $form_id
-	 * @param int $label_ids
-	 * @return string
-	 */
-	function getSelectedFormFieldOptions( $form_id, $label_ids )
-	{
-		if ( is_array($label_ids) ) {
-			$option_names = array();
-			foreach ( $label_ids AS $label_id )
-				$option_names[] = $this->getFormFieldOptionLabel( $form_id, $label_id);
-		
-			return implode(", ", $option_names);
-		} else {
-			return $this->getFormFieldOptionLabel( $form_id, $label_ids );
-		}
-	}
-	
+
 	
 	/**
 	 * delImage() - delete image along with thumbnails from server
@@ -1183,7 +1187,7 @@ class WP_ProjectManager
 				$new_file =  $this->getImagePath().'/'.basename($file['name']);
 				if ( file_exists($new_file) && !$overwrite ) {
 					$this->error = true;
-					$this->message = __('Logo exists and is not uploaded. Set the overwrite option if you want to replace it.','projectmanager');
+					$this->message = __('File exists and is not uploaded. Set the overwrite option if you want to replace it.','projectmanager');
 				} else {
 					if ( move_uploaded_file($file['tmp_name'], $new_file) ) {
 						if ( $dataset = $this->getDataset($dataset_id) )
@@ -1244,13 +1248,12 @@ class WP_ProjectManager
 	function setFormFields( $project_id, $form_name, $form_type, $form_show_on_startpage, $form_order, $new_form_name, $new_form_type, $new_form_show_on_startpage, $new_form_order )
 	{
 		global $wpdb;
-			
+		
+		$options = get_option('projectmanager');
 		if ( null != $form_name ) {
 			foreach ( $wpdb->get_results( "SELECT `id` FROM {$wpdb->projectmanager_projectmeta}" ) AS $form_field) {
 				if ( !array_key_exists( $form_field->id, $form_name ) ) {
-					$options = get_option('projectmanager');
 					unset($options['form_field_options'][$form_field->id]);
-					update_option('projectmanager');
 					
 					$wpdb->query( "DELETE FROM {$wpdb->projectmanager_projectmeta} WHERE `id` = {$form_field->id}" );
 					$wpdb->query( "DELETE FROM {$wpdb->projectmanager_datasetmeta} wHERE `form_id` = {$form_field->id}" );
@@ -1268,21 +1271,27 @@ class WP_ProjectManager
 		}
 			
 		if ( null != $new_form_name ) {
-			foreach ($new_form_name AS $form_id => $form_label) {
-				$type = $new_form_type[$form_id];
-				$show_on_startpage = (isset($new_form_show_on_startpage[$form_id])) ? 1 : 0;
+			foreach ($new_form_name AS $tmp_form_id => $form_label) {
+				$type = $new_form_type[$tmp_form_id];
+				$show_on_startpage = (isset($new_form_show_on_startpage[$tmp_form_id])) ? 1 : 0;
 					
 				$max_order_sql = "SELECT MAX(`order`) AS `order` FROM {$wpdb->projectmanager_projectmeta};";
-				if ($new_form_order[$form_id] != '') {
-					$order = $new_form_order[$form_id];
+				if ($new_form_order[$tmp_form_id] != '') {
+					$order = $new_form_order[$tmp_form_id];
 				} else {
 					$max_order_sql = $wpdb->get_results($max_order_sql, ARRAY_A);
 					$order = $max_order_sql[0]['order'] +1;
 				}
-					
+				
 				$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_projectmeta} (`label`, `type`, `show_on_startpage`, `order`, `project_id`) VALUES ( '%s', '%d', '%d', '%d', '%d');", $form_label, $type, $show_on_startpage, $order, $project_id ) );
 				$form_id = mysql_insert_id();
 					
+				// Redirect form field options to correct $form_id if present
+				if ( isset($options['form_field_options'][$tmp_form_id]) ) {
+					$options['form_field_options'][$form_id] = $options['form_field_options'][$tmp_form_id];
+					unset($options['form_field_options'][$tmp_form_id]);
+				}
+				
 				/*
 				* Populate default values for every dataset
 				*/
@@ -1293,7 +1302,8 @@ class WP_ProjectManager
 				}
 			}
 		}
-			
+		
+		update_option('projectmanager', $options);
 		return __('Form Fields updated', 'projectmanager');
 	}
 		 
@@ -1887,9 +1897,9 @@ class WP_ProjectManager
 		}
 	
 		if ( is_admin() AND ((isset( $_GET['page'] ) AND substr( $_GET['page'], 0, 14 ) == 'projectmanager') || $show_all )) {
-			wp_register_script( 'projectmanager', $this->plugin_url.'/js/functions.js', array( 'colorpicker' ), PROJECTMANAGER_VERSION );
+			wp_register_script( 'projectmanager', $this->plugin_url.'/js/functions.js', array( 'colorpicker', 'sack' ), PROJECTMANAGER_VERSION );
 			wp_register_script( 'projectmanager_formfields', $this->plugin_url.'/js/formfields.js', array( 'projectmanager', 'thickbox' ), PROJECTMANAGER_VERSION );
-			wp_register_script ('projectmanager_ajax', $this->plugin_url.'/js/ajax.js', array( 'sack', 'projectmanager' ), PROJECTMANAGER_VERSION );
+			wp_register_script ('projectmanager_ajax', $this->plugin_url.'/js/ajax.js', array( 'projectmanager' ), PROJECTMANAGER_VERSION );
 		
 			wp_print_scripts( 'projectmanager_formfields' );
 			wp_print_scripts( 'projectmanager_ajax');
@@ -1905,7 +1915,7 @@ class WP_ProjectManager
 			?>
 			//<![CDATA[
 			ProjectManagerAjaxL10n = {
-				blogUrl: "<?php bloginfo( 'wpurl' ); ?>", pluginPath: "<?php echo $this->plugin_path; ?>", pluginUrl: "<?php echo $this->plugin_url; ?>", requestUrl: "<?php bloginfo( 'wpurl' ); ?>/wp-admin/admin-ajax.php", imgUrl: "<?php echo $this->plugin_url; ?>/images", Edit: "<?php _e("Edit"); ?>", Post: "<?php _e("Post"); ?>", Save: "<?php _e("Save"); ?>", Cancel: "<?php _e("Cancel"); ?>", pleaseWait: "<?php _e("Please wait..."); ?>", Revisions: "<?php _e("Page Revisions"); ?>", Time: "<?php _e("Insert time"); ?>"
+				blogUrl: "<?php bloginfo( 'wpurl' ); ?>", pluginPath: "<?php echo $this->plugin_path; ?>", pluginUrl: "<?php echo $this->plugin_url; ?>", requestUrl: "<?php bloginfo( 'wpurl' ); ?>/wp-admin/admin-ajax.php", imgUrl: "<?php echo $this->plugin_url; ?>/images", Edit: "<?php _e("Edit"); ?>", Post: "<?php _e("Post"); ?>", Save: "<?php _e("Save"); ?>", Cancel: "<?php _e("Cancel"); ?>", pleaseWait: "<?php _e("Please wait..."); ?>", Revisions: "<?php _e("Page Revisions"); ?>", Time: "<?php _e("Insert time"); ?>", Options: "<?php _e("Options", "projectmanager") ?>", Delete: "<?php _e('Delete', 'projectmanager') ?>"
 				   }
 			//]]>
 			<?php
@@ -1925,55 +1935,59 @@ class WP_ProjectManager
 	{
 		$options = get_option('projectmanager');
 		
-		if ( isset($_POST['updateProjectManager']) ) {
-			check_admin_referer('projetmanager_manage-global-league-options');
-			$options['colors']['headers'] = $_POST['color_headers'];
-			$options['colors']['rows'] = array( $_POST['color_rows_alt'], $_POST['color_rows'] );
+		if ( current_user_can( 'projectmanager_admin' ) ) {
+			if ( isset($_POST['updateProjectManager']) ) {
+				check_admin_referer('projetmanager_manage-global-league-options');
+				$options['colors']['headers'] = $_POST['color_headers'];
+				$options['colors']['rows'] = array( $_POST['color_rows_alt'], $_POST['color_rows'] );
+				
+				update_option( 'projectmanager', $options );
+				echo '<div id="message" class="updated fade"><p><strong>'.__( 'Settings saved', 'leaguemanager' ).'</strong></p></div>';
+			}
 			
-			update_option( 'projectmanager', $options );
-			echo '<div id="message" class="updated fade"><p><strong>'.__( 'Settings saved', 'leaguemanager' ).'</strong></p></div>';
-		}
+			
+			echo "\n<form action='' method='post'>";
+			wp_nonce_field( 'projetmanager_manage-global-league-options' );
+			echo "\n<div class='wrap'>";
+			echo "\n\t<h2>".__( 'Projectmanager Global Settings', 'projectmanager' )."</h2>";
+			echo "\n\t<h3>".__( 'Color Scheme', 'projectmanager' )."</h3>";
+			echo "\n\t<table class='form-table'>";
+			echo "\n\t<tr valign='top'>";
+			echo "\n\t\t<th scope='row'><label for='color_headers'>".__( 'Table Headers', 'projectmanager' )."</label></th><td><input type='text' name='color_headers' id='color_headers' value='".$options['colors']['headers']."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[0].color_headers,\"pick_color_headers\"); return false;' name='pick_color_headers' id='pick_color_headers'>&#160;&#160;&#160;</a></td>";
+			echo "\n\t</tr>";
+			echo "\n\t<tr valign='top'>";
+			echo "\n\t<th scope='row'><label for='color_rows'>".__( 'Table Rows', 'projectmanager' )."</label></th>";
+			echo "\n\t\t<td>";
+			echo "\n\t\t\t<p class='table_rows'><input type='text' name='color_rows_alt' id='color_rows_alt' value='".$options['colors']['rows'][0]."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[0].color_rows_alt,\"pick_color_rows_alt\"); return false;' name='pick_color_rows_alt' id='pick_color_rows_alt'>&#160;&#160;&#160;</a></p>";
+			echo "\n\t\t\t<p class='table_rows'><input type='text' name='color_rows' id='color_rows' value='".$options['colors']['rows'][1]."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[0].color_rows,\"pick_color_rows\"); return false;' name='pick_color_rows' id='pick_color_rows'>&#160;&#160;&#160;</a></p>";
+			echo "\n\t\t</td>";
+			echo "\n\t</tr>";
+			echo "\n\t</table>";
+			echo "\n<input type='hidden' name='page_options' value='color_headers,color_rows,color_rows_alt' />";
+			echo "\n<p class='submit'><input type='submit' name='updateProjectManager' value='".__( 'Save Preferences', 'projectmanager' )." &raquo;' class='button' /></p>";
+			echo "\n</form>";
 		
-		
-		echo "\n<form action='' method='post'>";
-		wp_nonce_field( 'projetmanager_manage-global-league-options' );
-		echo "\n<div class='wrap'>";
-		echo "\n\t<h2>".__( 'Projectmanager Global Settings', 'projectmanager' )."</h2>";
-		echo "\n\t<h3>".__( 'Color Scheme', 'projectmanager' )."</h3>";
-		echo "\n\t<table class='form-table'>";
-		echo "\n\t<tr valign='top'>";
-		echo "\n\t\t<th scope='row'><label for='color_headers'>".__( 'Table Headers', 'projectmanager' )."</label></th><td><input type='text' name='color_headers' id='color_headers' value='".$options['colors']['headers']."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[0].color_headers,\"pick_color_headers\"); return false;' name='pick_color_headers' id='pick_color_headers'>&#160;&#160;&#160;</a></td>";
-		echo "\n\t</tr>";
-		echo "\n\t<tr valign='top'>";
-		echo "\n\t<th scope='row'><label for='color_rows'>".__( 'Table Rows', 'projectmanager' )."</label></th>";
-		echo "\n\t\t<td>";
-		echo "\n\t\t\t<p class='table_rows'><input type='text' name='color_rows_alt' id='color_rows_alt' value='".$options['colors']['rows'][0]."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[0].color_rows_alt,\"pick_color_rows_alt\"); return false;' name='pick_color_rows_alt' id='pick_color_rows_alt'>&#160;&#160;&#160;</a></p>";
-		echo "\n\t\t\t<p class='table_rows'><input type='text' name='color_rows' id='color_rows' value='".$options['colors']['rows'][1]."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[0].color_rows,\"pick_color_rows\"); return false;' name='pick_color_rows' id='pick_color_rows'>&#160;&#160;&#160;</a></p>";
-		echo "\n\t\t</td>";
-		echo "\n\t</tr>";
-		echo "\n\t</table>";
-		echo "\n<input type='hidden' name='page_options' value='color_headers,color_rows,color_rows_alt' />";
-		echo "\n<p class='submit'><input type='submit' name='updateProjectManager' value='".__( 'Save Preferences', 'projectmanager' )." &raquo;' class='button' /></p>";
-		echo "\n</form>";
+			echo "<script language='javascript'>
+				syncColor(\"pick_color_headers\", \"color_headers\", document.getElementById(\"color_headers\").value);
+				syncColor(\"pick_color_rows\", \"color_rows\", document.getElementById(\"color_rows\").value);
+				syncColor(\"pick_color_rows_alt\", \"color_rows_alt\", document.getElementById(\"color_rows_alt\").value);
+			</script>";
 	
-		echo "<script language='javascript'>
-			syncColor(\"pick_color_headers\", \"color_headers\", document.getElementById(\"color_headers\").value);
-			syncColor(\"pick_color_rows\", \"color_rows\", document.getElementById(\"color_rows\").value);
-			syncColor(\"pick_color_rows_alt\", \"color_rows_alt\", document.getElementById(\"color_rows_alt\").value);
-		</script>";
-
-		echo "<p>".sprintf(__( "To add and manage projects, go to the <a href='%s'>Management Page</a>", 'projectmanager' ), get_option( 'siteurl' ).'/wp-admin/edit.php?page=projectmanager/page/index.php')."</p>";
-
-		if ( !function_exists('register_uninstall_hook') ) { ?>
-		<!-- Uninstallation Form -->
-		<div class="wrap">
-			<h3 style='clear: both; padding-top: 1em;'><?php _e( 'Uninstall ProjectManager', 'projectmanager' ) ?></h3>
-			<form method="get" action="index.php">
-				<input type="hidden" name="projectmanager" value="uninstall" />
-				<p><input type="checkbox" name="delete_plugin" value="1" id="delete_plugin" /> <label for="delete_plugin"><?php _e( 'Yes I want to uninstall ProjectManager Plugin. All Data will be deleted!', 'projectmanager' ) ?></label> <input type="submit" value="<?php _e( 'Uninstall ProjectManager', 'projectmanager' ) ?> &raquo;" class="button" /></p>
-			</form>
-		</div>
+			echo "<p>".sprintf(__( "To add and manage projects, go to the <a href='%s'>Management Page</a>", 'projectmanager' ), get_option( 'siteurl' ).'/wp-admin/edit.php?page=projectmanager/page/index.php')."</p>";
+	
+			if ( !function_exists('register_uninstall_hook') ) { ?>
+			<!-- Uninstallation Form -->
+			<div class="wrap">
+				<h3 style='clear: both; padding-top: 1em;'><?php _e( 'Uninstall ProjectManager', 'projectmanager' ) ?></h3>
+				<form method="get" action="index.php">
+					<input type="hidden" name="projectmanager" value="uninstall" />
+					<p><input type="checkbox" name="delete_plugin" value="1" id="delete_plugin" /> <label for="delete_plugin"><?php _e( 'Yes I want to uninstall ProjectManager Plugin. All Data will be deleted!', 'projectmanager' ) ?></label> <input type="submit" value="<?php _e( 'Uninstall ProjectManager', 'projectmanager' ) ?> &raquo;" class="button" /></p>
+				</form>
+			</div>
 		<?php }
+		} else {
+			echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
+		}
 	}
 	
 	
@@ -2049,6 +2063,7 @@ class WP_ProjectManager
 						`image` varchar( 50 ) NOT NULL default '' ,
 						`cat_ids` longtext NOT NULL ,
 						`project_id` int( 11 ) NOT NULL ,
+						`user_id` int( 11 ) NOT NULL default '1',
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->projectmanager_dataset, $create_dataset_sql );
 			
@@ -2070,7 +2085,7 @@ class WP_ProjectManager
 		* Add Capabilities
 		*/
 		$role = get_role('administrator');
-		$role->add_cap('manage_projectmanager');
+		$role->add_cap('projectmanager_admin');
 		$role->add_cap('manage_projects');
 		
 		$role = get_role('editor');
