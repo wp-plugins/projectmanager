@@ -3,7 +3,7 @@ Contributors: Kolja Schleich
 Tags: datamanager, CMS, Content Management System
 Requires at least: 2.5
 Tested up to: 2.7
-Stable tag: 1.4
+Stable tag: 1.5
 
 This plugin can be used to manage any number of projects with recurrent datasets (e.g. portrait system, dvd collection)
 
@@ -92,7 +92,7 @@ in projectmanager.php for details.
 
 == ChangeLog ==
 
-**Version 1.5**, *January--2009*
+**Version 1.5**, *January-05-2009*
 
 - NEW: coupled datasets to user id who entered them.
 
