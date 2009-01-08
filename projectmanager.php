@@ -1396,8 +1396,8 @@ class WP_ProjectManager
 		$search_option = $this->getSearchOption();
 		
 		if ( !isset($_GET['show'])) {
-			$out = "</p>\n\n<div class='projectmanager_".$pos."'>\n<form class='projectmanager' action='' method='post'>";
-			$out .= "\n\t<input type='text' name='search_string' value='".$search_string."' />";
+			$out = "</p>\n\n<div class='projectmanager_".$pos."'>\n<form action='' method='post'>";
+			$out .= "\n\t<input type='text' class='search-input' name='search_string' value='".$search_string."' />";
 			if ( $form_fields = $this->getFormFields() ) {
 				$out .= "\n\t<select size='1' name='search_option'>";
 				$selected[0] = ( 0 == $search_option ) ? " selected='selected'" : "";
@@ -1464,7 +1464,7 @@ class WP_ProjectManager
 
 		$out = "</p>";
 		if ( !isset($_GET['show']) && -1 != $options[$this->project_id]['category'] ) {
-			$out .= "\n\n<div class='projectmanager_".$pos."'>\n<form class='projectmanager' action='".$action."' method='get'>\n";
+			$out .= "\n\n<div class='projectmanager_".$pos."'>\n<form action='".$action."' method='get'>\n";
 			$out .= wp_dropdown_categories(array('echo' => 0, 'hide_empty' => 0, 'name' => 'cat_id', 'orderby' => 'name', 'selected' => $this->getCatID(), 'hierarchical' => true, 'child_of' => $options[$this->project_id]['category'], 'show_option_all' => __('Categories', 'projectmanager'), 'show_option_none' => '&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;'));
 			$out .= $hidden;
 			$out .= "\n<input type='submit' value='".__( 'Go', 'projectmanager' )."' class='button' />";
@@ -1801,14 +1801,14 @@ class WP_ProjectManager
 			update_option( 'projectmanager_widget', $options );
 		}
 			
-		echo '<p style="text-align: left;"><label for="widget_title" class="projectmanager-widget">'.__('Title', 'projectmanager').'</label><input type="text" name="widget_title['.$project_id.']" id="widget_title" value="'.$options[$project_id]['title'].'" /></p>';
-		echo '<p style="text-align: left;"><label for="limit" class="projectmanager-widget">'.__('Number', 'projectmanager').'</label><select style="margin-top: 0;" size="1" name="limit['.$project_id.']" id="limit">';
+		echo '<p style="text-align: left;"><label for="widget_title">'.__('Title', 'projectmanager').'</label><input class="widefat" type="text" name="widget_title['.$project_id.']" id="widget_title" value="'.$options[$project_id]['title'].'" /></p>';
+		echo '<p style="text-align: left;"><label for="limit">'.__('Number', 'projectmanager').'</label>&#160;<select style="margin-top: 0;" size="1" name="limit['.$project_id.']" id="limit">';
 		for ( $i = 1; $i <= 10; $i++ ) {
 			$selected = ( $options[$project_id]['limit'] == $i ) ? " selected='selected'" : '';
 			echo '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
 		}
 		echo '</select></p>';
-		echo '<p style="text-align: left;"><label for="page_id['.$project_id.']" class="projectmanager-widget">'.__('Page').'</label>';
+		echo '<p style="text-align: left;"><label for="page_id['.$project_id.']">'.__('Page','projectmanager').'</label>&#160;';
 		wp_dropdown_pages(array('name' => 'page_id['.$project_id.']', 'selected' => $options[$project_id]['page_id']));
 		echo '</p>';
 			
@@ -1975,6 +1975,7 @@ class WP_ProjectManager
 	
 			echo "<p>".sprintf(__( "To add and manage projects, go to the <a href='%s'>Management Page</a>", 'projectmanager' ), get_option( 'siteurl' ).'/wp-admin/edit.php?page=projectmanager/page/index.php')."</p>";
 	
+			/*
 			if ( !function_exists('register_uninstall_hook') ) { ?>
 			<!-- Uninstallation Form -->
 			<div class="wrap">
@@ -1984,7 +1985,7 @@ class WP_ProjectManager
 					<p><input type="checkbox" name="delete_plugin" value="1" id="delete_plugin" /> <label for="delete_plugin"><?php _e( 'Yes I want to uninstall ProjectManager Plugin. All Data will be deleted!', 'projectmanager' ) ?></label> <input type="submit" value="<?php _e( 'Uninstall ProjectManager', 'projectmanager' ) ?> &raquo;" class="button" /></p>
 				</form>
 			</div>
-		<?php }
+		<?php }*/
 		} else {
 			echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
 		}
@@ -2006,8 +2007,9 @@ class WP_ProjectManager
 			
 		// Register Widgets
 		foreach ( $this->getWidgetProjects() AS $project ) {
-			register_sidebar_widget( $project->title, array(&$this, 'widget') );
-			register_widget_control( $project->title, array(&$this, 'widgetControl'), 250, 100, array( 'project_id' => $project->id, 'widget_id' => sanitize_title($project->title) ) );
+			$widget_ops = array('classname' => 'widget_projectmanager', 'description' => $project->title );
+			wp_register_sidebar_widget( sanitize_title($project->title), $project->title, array(&$this, 'widget'), $widget_ops );
+			wp_register_widget_control( sanitize_title($project->title), $project->title, array(&$this, 'widgetControl'), array('width' => 250, 'height' => 100), array( 'project_id' => $project->id, 'widget_id' => sanitize_title($project->title) ) );
 		}
 	}
 		 
@@ -2168,6 +2170,7 @@ class WP_ProjectManager
 		delete_option( 'projectmanager' );
 		delete_option( 'projectmanager_widget' );
 
+		/*
 		if ( !function_exists('register_uninstall_hook') ) {
 			$plugin = basename(__FILE__, ".php") .'/plugin-hook.php';
 			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
@@ -2180,6 +2183,7 @@ class WP_ProjectManager
 				do_action('deactivate_' . trim( $plugin ));
 			}
 		}
+		*/
 	}
 }
 ?>
