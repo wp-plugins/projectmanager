@@ -37,7 +37,8 @@ define( 'PROJECTMANAGER_URL', WP_PLUGIN_URL.'/projectmanager' );
 
 include_once( 'projectmanager.php' );
 include_once( 'lib/pagination.inc.php' );
-include_once( 'lib/thumbnail.inc.php' );
+if (!class_exists('Thumbnail'))
+	include_once( 'lib/thumbnail.inc.php' );
 
 $project_id = isset($_GET['project_id']) ? (int)$_GET['project_id'] : false;
 $projectmanager = new WP_ProjectManager($project_id);

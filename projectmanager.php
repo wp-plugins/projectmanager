@@ -121,7 +121,22 @@ class WP_ProjectManager
 		$this->project_id = $project_id;
 		$this->per_page = isset($options[$this->project_id]['per_page']) ? $options[$this->project_id]['per_page'] : 20;
 
+		$this->num_items = $this->getNumDatasets($this->project_id);
+		$this->num_max_pages = ( 0 == $this->per_page ) ? 1 : ceil( $this->num_items/$this->per_page );
+
 		$this->pagination = new Pagination( $this->per_page, $this->getNumDatasets($this->project_id), array('show') );
+	}
+	
+	
+	/**
+	 * retrieve number of pages
+	 *
+	 * @param none
+	 * @return int
+	 */
+	function getNumPages()
+	{
+		return $this->num_max_pages;
 	}
 	
 	
@@ -1389,14 +1404,16 @@ class WP_ProjectManager
 	 *
 	 * @param string $style
 	 */
-	function getSearchForm( $project_id, $pos )
+	function getSearchForm( $project_id, $pos = '' )
 	{
 		$this->project_id = $project_id;
 		$search_string = ($this->isSearch()) ? $this->getSearchString() : '';
 		$search_option = $this->getSearchOption();
 		
+		$class = ( $pos != '' ) ? 'projectmanager_'.$pos : '';
+
 		if ( !isset($_GET['show'])) {
-			$out = "</p>\n\n<div class='projectmanager_".$pos."'>\n<form action='' method='post'>";
+			$out = "</p>\n\n<div class='".$class."'>\n<form action='' method='post'>";
 			$out .= "\n\t<input type='text' class='search-input' name='search_string' value='".$search_string."' />";
 			if ( $form_fields = $this->getFormFields() ) {
 				$out .= "\n\t<select size='1' name='search_option'>";
@@ -1418,7 +1435,7 @@ class WP_ProjectManager
 
 		return $out;
 	}
-	function printSearchForm( $project_id, $pos )
+	function printSearchForm( $project_id, $pos = '' )
 	{
 		echo $this->getSearchForm( $project_id, $pos );
 	}
@@ -1445,7 +1462,7 @@ class WP_ProjectManager
 	 * @param int $project_id
 	 * @return string
 	 */
-	function getCategoryDropdown( $project_id, $pos )
+	function getCategoryDropdown( $project_id, $pos = '' )
 	{
 		global $wpdb, $wp_query;
 		
@@ -1462,19 +1479,21 @@ class WP_ProjectManager
 			$action = get_permalink($page_ID);
 		}
 
+		$class = ($pos != '') ? 'projectmanager_'.$pos : '';
+		
 		$out = "</p>";
 		if ( !isset($_GET['show']) && -1 != $options[$this->project_id]['category'] ) {
-			$out .= "\n\n<div class='projectmanager_".$pos."'>\n<form action='".$action."' method='get'>\n";
-			$out .= wp_dropdown_categories(array('echo' => 0, 'hide_empty' => 0, 'name' => 'cat_id', 'orderby' => 'name', 'selected' => $this->getCatID(), 'hierarchical' => true, 'child_of' => $options[$this->project_id]['category'], 'show_option_all' => __('Categories', 'projectmanager'), 'show_option_none' => '&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;'));
+			$out .= "\n\n<div class='".$class."'>\n<form action='".$action."' method='get'>\n";
+			$out .= wp_dropdown_categories(array('echo' => 0, 'hide_empty' => 0, 'name' => 'cat_id', 'orderby' => 'name', 'selected' => $this->getCatID(), 'hierarchical' => true, 'child_of' => $options[$this->project_id]['category'], 'show_option_all' => __('View all categories')));
 			$out .= $hidden;
-			$out .= "\n<input type='submit' value='".__( 'Go', 'projectmanager' )."' class='button' />";
+			$out .= "\n<input type='submit' value='".__( 'Filter', 'projectmanager' )."' class='button' />";
 			$out .= "\n</form>\n</div>\n\n";
 		}
 		$out .= "<p>";
 
 		return $out;
 	}
-	function printCategoryDropdown( $project_id, $pos )
+	function printCategoryDropdown( $project_id, $pos = '' )
 	{
 		echo $this->getCategoryDropdown( $project_id, $pos );
 	}
@@ -1800,7 +1819,8 @@ class WP_ProjectManager
 				
 			update_option( 'projectmanager_widget', $options );
 		}
-			
+		
+		echo '<div id="projectmanager_widget_control">';
 		echo '<p style="text-align: left;"><label for="widget_title">'.__('Title', 'projectmanager').'</label><input class="widefat" type="text" name="widget_title['.$project_id.']" id="widget_title" value="'.$options[$project_id]['title'].'" /></p>';
 		echo '<p style="text-align: left;"><label for="limit">'.__('Number', 'projectmanager').'</label>&#160;<select style="margin-top: 0;" size="1" name="limit['.$project_id.']" id="limit">';
 		for ( $i = 1; $i <= 10; $i++ ) {
@@ -1808,11 +1828,10 @@ class WP_ProjectManager
 			echo '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
 		}
 		echo '</select></p>';
-		echo '<p style="text-align: left;"><label for="page_id['.$project_id.']">'.__('Page','projectmanager').'</label>&#160;';
-		wp_dropdown_pages(array('name' => 'page_id['.$project_id.']', 'selected' => $options[$project_id]['page_id']));
-		echo '</p>';
+		echo '<p style="text-align: left;"><label for="page_id['.$project_id.']">'.__('Page','projectmanager').'</label>&#160;'.wp_dropdown_pages(array('name' => 'page_id['.$project_id.']', 'selected' => $options[$project_id]['page_id'], 'echo' => 0)).'</p>';
 			
 		echo '<input type="hidden" name="projectmanager-submit" value="1" />';
+		echo '</div>';
 	}
 	
 	

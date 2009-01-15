@@ -122,6 +122,8 @@ div.tablenav p.num_datasets {
 	margin: 0;
 	padding: 0;
 	}
+div.tablenav form { display: inline; float: left; }
+div.tablenav select { display: inline; }
 
 p.info {
 	font-size: 0.8em;
@@ -189,4 +191,8 @@ ul.checkboxlist li label, ul.checkboxlist li input, ul.radiolist li label, ul.ra
 ul.categorychecklist li label, ul.categorychecklist li input, ul.children li label, ul.children li input {
 	margin: 0 3px;
 	padding: 0;
+	}
+div#projectmanager_widget_control select {
+	display: block;
+	width: auto;
 	}
