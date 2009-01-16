@@ -90,6 +90,9 @@ class WP_ProjectManager
 		//Save selected group. NULL if none is selected
 		$this->setCatID();
 
+		// Set page
+		$this->current_page = isset( $_GET['paged']) ? (int)$_GET['paged'] : 1;
+
 		if ( $project_id )
 			$this->initialize($project_id);
 		
@@ -122,9 +125,21 @@ class WP_ProjectManager
 		$this->per_page = isset($options[$this->project_id]['per_page']) ? $options[$this->project_id]['per_page'] : 20;
 
 		$this->num_items = $this->getNumDatasets($this->project_id);
-		$this->num_max_pages = ( 0 == $this->per_page ) ? 1 : ceil( $this->num_items/$this->per_page );
+		$this->num_max_pages = ( 0 == $this->per_page || $this->isSearch() ) ? 1 : ceil( $this->num_items/$this->per_page );
 
 		$this->pagination = new Pagination( $this->per_page, $this->getNumDatasets($this->project_id), array('show') );
+	}
+	
+	
+	/**
+	 * retrieve current page
+	 *
+	 * @param none
+	 * @return int
+	 */
+	function getCurrentPage()
+	{
+		return $this->current_page;
 	}
 	
 	
@@ -1593,8 +1608,17 @@ class WP_ProjectManager
 				}
 				
 				$out .= "\n</$output>\n";
-			
-				if ( !$this->isSearch() ) $out .= $this->pagination->get();
+					
+				$page_links = paginate_links( array(
+					'base' => add_query_arg( 'paged', '%#%' ),
+					'format' => '',
+					'prev_text' => __('&laquo;'),
+					'next_text' => __('&raquo;'),
+					'total' => $this->getNumPages(),
+					'current' => $this->getCurrentPage()
+				));
+				
+				if ( !$this->isSearch() ) $out .= "<p>".$page_links."</p>";//$this->pagination->get();
 			} else {
 				$out .= "<p class='error'>".__( 'Nothing found', 'projectmanager')."</p>";
 			}

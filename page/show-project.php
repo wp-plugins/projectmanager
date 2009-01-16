@@ -3,9 +3,6 @@ if ( !current_user_can( 'manage_projects' ) ) :
      echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
 
 else :
-if ( !isset( $_GET['paged'] ) )
-	$_GET['paged'] = 1;
-	
 $project_id = $projectmanager->getProjectID();
 $options = get_option( 'projectmanager' );
 if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
@@ -47,7 +44,7 @@ $page_links = paginate_links( array(
 	'prev_text' => __('&laquo;'),
 	'next_text' => __('&raquo;'),
 	'total' => $projectmanager->getNumPages(),
-	'current' => $_GET['paged']
+	'current' => $projectmanager->getCurrentPage()
 ));
 ?>
 <div class="wrap">
@@ -85,11 +82,11 @@ $page_links = paginate_links( array(
 			</form>
 		</div>
 		
-		<?php if ( $page_links && !$projectmanager->isSearch() ) : ?>
+		<?php if ( $page_links ) : ?>
 		<div class="tablenav-pages">
 			<?php $page_links_text = sprintf( '<span class="displaying-num">' . __( 'Displaying %s&#8211;%s of %s' ) . '</span>%s',
-			number_format_i18n( ( $_GET['paged'] - 1 ) * $projectmanager->getPerPage() + 1 ),
-			number_format_i18n( min( $_GET['paged'] * $projectmanager->getPerPage(), $num_datasets ) ),
+			number_format_i18n( ( $projectmanager->getCurrentPage() - 1 ) * $projectmanager->getPerPage() + 1 ),
+			number_format_i18n( min( $projectmanager->getCurrentPage() * $projectmanager->getPerPage(), $num_datasets ) ),
 			number_format_i18n( $num_datasets ),
 			$page_links
 			); echo $page_links_text; ?>
@@ -163,7 +160,7 @@ $page_links = paginate_links( array(
 		<div class="error" style="margin-top: 3em;"><p><?php _e( 'Nothing found', 'projectmanager') ?></p></div>
 	<?php endif ?>
 	<div class="tablenav">
-		<?php if ( $page_links && !$projectmanager->isSearch() ) echo "<div class='tablenav-pages'>$page_links_text</div>"; ?>
+		<?php if ( $page_links ) echo "<div class='tablenav-pages'>$page_links_text</div>"; ?>
 	</div>
 </div>
 <?php endif; ?>

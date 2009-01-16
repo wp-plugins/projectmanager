@@ -69,7 +69,7 @@ class Pagination
 	*/
 	function __construct( $per_page, $num_items, $get_unset=false )
 	{
-		$this->page = isset( $_GET['paging']) ? (int)$_GET['paging'] : 1;
+		$this->page = isset( $_GET['paged']) ? (int)$_GET['paged'] : 1;
 		$this->setPerPage( $per_page );
 		$this->setNumItems( $num_items );
 		
