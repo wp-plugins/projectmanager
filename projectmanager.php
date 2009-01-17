@@ -35,11 +35,12 @@ class WP_ProjectManager
 		
 		
 	/**
+	 * @deprecated
 	 * pagination object
 	 *
 	 * @var object
 	 */
-	var $pagination;
+	//var $pagination;
 		
 		
 	/**
@@ -127,12 +128,12 @@ class WP_ProjectManager
 		$this->num_items = $this->getNumDatasets($this->project_id);
 		$this->num_max_pages = ( 0 == $this->per_page || $this->isSearch() ) ? 1 : ceil( $this->num_items/$this->per_page );
 
-		$this->pagination = new Pagination( $this->per_page, $this->getNumDatasets($this->project_id), array('show') );
+	//	$this->pagination = new Pagination( $this->per_page, $this->getNumDatasets($this->project_id), array('show') );
 	}
 	
 	
 	/**
-	 * retrieve current page
+	 * getCurrentPage() - retrieve current page
 	 *
 	 * @param none
 	 * @return int
@@ -144,7 +145,7 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * retrieve number of pages
+	 * getNumPages() - retrieve number of pages
 	 *
 	 * @param none
 	 * @return int
@@ -152,6 +153,75 @@ class WP_ProjectManager
 	function getNumPages()
 	{
 		return $this->num_max_pages;
+	}
+
+	
+	/**
+	 * getPerPage() - gets object limit per page
+	 *
+	 * @param none
+	 * @return int
+	 */
+	function getPerPage()
+	{
+		return $this->per_page;
+	}
+		
+		
+	/**
+	 * setPerPage() - sets number of objects per page
+	 *
+	 * @param int
+	 * @return void
+	 */
+	function setPerPage( $per_page )
+	{
+		$this->per_page = $per_page;
+		$this->pagination->setPerPage( $per_page );
+		
+		return;
+	}
+	
+	
+	/**
+	 * getPageLinks() - display pagination
+	 *
+	 * @param none
+	 * @return string
+	 */
+	function getPageLinks()
+	{
+		$page_links = paginate_links( array(
+			'base' => add_query_arg( 'paged', '%#%' ),
+			'format' => '',
+			'prev_text' => '&#9668;',
+			'next_text' => '&#9658;',
+			'total' => $this->getNumPages(),
+			'current' => $this->getCurrentPage()
+		));
+		return $page_links;
+	}
+	
+	
+	/**
+	* createURL() - creates url for links in pagination
+	*
+	* @param none
+	* @return string
+	*/
+	function createURL()
+	{
+		// create url for links
+		$get = $_GET;
+		unset( $get['show'] );
+			
+		$url = '?';
+		foreach ( $get as $key => $value )
+			$url .= "$key=".urlencode( $value )."&";
+
+		$url = substr($url,0,-1);
+		$out = htmlspecialchars( $url );
+		return $out;
 	}
 	
 	
@@ -187,7 +257,7 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * return error message
+	 * getErrorMessage() - return error message
 	 *
 	 * @param none
 	 */
@@ -199,7 +269,7 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * print formatted error message
+	 * printErrorMessage() - print formatted error message
 	 *
 	 * @param none
 	 */
@@ -225,7 +295,7 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * returns url of image directory
+	 * getImageUrl() - returns url of image directory
 	 *
 	 * @param string | false $file image file
 	 * @return string
@@ -286,8 +356,9 @@ class WP_ProjectManager
 	 * @param int $cat_id
 	 * @return string
 	 */
-	function getCatTitle( $cat_id )
+	function getCatTitle( $cat_id = false )
 	{
+		if ( !$cat_id ) $cat_id = $this->getCatID();
 		$c = get_category($cat_id);
 		return $c->name;
 	}
@@ -333,7 +404,7 @@ class WP_ProjectManager
 	{
 		if ( $this->isSearch() )
 			return $_POST['search_string'];
-		
+
 		return '';
 	}
 	
@@ -390,33 +461,6 @@ class WP_ProjectManager
 	{
 		$file_info = pathinfo($filename);
 		return strtolower($file_info['extension']);
-	}
-	
-	
-	/**
-	 * getPerPage() - gets object limit per page
-	 *
-	 * @param none
-	 * @return int
-	 */
-	function getPerPage()
-	{
-		return $this->per_page;
-	}
-		
-		
-	/**
-	 * setPerPage() - sets number of objects per page
-	 *
-	 * @param int
-	 * @return void
-	 */
-	function setPerPage( $per_page )
-	{
-		$this->per_page = $per_page;
-		$this->pagination->setPerPage( $per_page );
-		
-		return;
 	}
 	
 	
@@ -611,15 +655,15 @@ class WP_ProjectManager
 
 		$sql = "SELECT COUNT(ID) FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$project_id}";
 		if ( $all )
-			$num_datasets = $wpdb->get_var( $sql );
+			return $wpdb->get_var( $sql );
+		elseif ( $this->isSearch() )
+			return count($this->datasets);
 		else {
 			if ( $this->isCategory() )
 				$sql .= $this->getCategorySearchString();
 			
-			$num_datasets = $wpdb->get_var( $sql );
+			return $wpdb->get_var( $sql );
 		}
-
-		return $num_datasets;
 	}
 		
 	
@@ -636,7 +680,7 @@ class WP_ProjectManager
 	{
 		global $wpdb;
 		
-		if ( $limit ) $offset = ( $this->pagination->getPage() - 1 ) * $this->per_page;
+		if ( $limit ) $offset = ( $this->getCurrentPage() - 1 ) * $this->per_page;
 
 		$sql = "SELECT `id`, `name`, `image`, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id}";
 		
@@ -722,6 +766,9 @@ class WP_ProjectManager
 				* 3: E-Mail
 				* 4: Date
 				* 5: External URL
+				* 6: Dropdown
+				* 7: Checkbox List
+				* 8: Radio List
 				*/
 				if (is_string($meta->value)) $meta_value = htmlspecialchars( $meta->value );
 				
@@ -743,7 +790,7 @@ class WP_ProjectManager
 				if ( 1 == $meta->show_on_startpage || $show_all ) {
 					if ( '' != $meta_value ) {
 						if ( 'dl' == $output ) {
-							$out .= "\n\t<dt class='projectmanager'>".$meta->label."</dt><dd>".$meta_value."</dd>";
+							$out .= "\n\t<dt>".$meta->label."</dt><dd>".$meta_value."</dd>";
 						} else {
 							$out .= "\n\t<".$output.">";
 							$out .= $this->getThickbox( $dataset->id, $meta->form_field_id, $meta->type, maybe_unserialize($meta->value), $dataset->user_id );
@@ -781,9 +828,11 @@ class WP_ProjectManager
 		if ( is_admin() && current_user_can( 'manage_projects' ) && ($dataset_owner == $current_user->ID || current_user_can( 'projectmanager_admin')) ) {
 			$dims = array('width' => '300', 'height' => '100');
 			if ( 2 == $formfield_type )
-				$dims = array('width' => '400', 'height' => '305');
+				$dims = array('width' => '400', 'height' => '400');
+			if ( 7 == $formfield_type || 8 == $formfield_type )
+				$dims = array('width' => '300', 'height' => '300');
 						
-			$out .= "&#160;<a class='thickbox' id='thickboxlink".$formfield_id."_".$dataset_id."' href='#TB_inline?height=".$dims['height']."&width=".$dims['width']."&inlineId=datafieldwrap".$formfield_id."_".$dataset_id."' title='".$title."'><img src='".$this->plugin_url."/images/edit.gif' border='0' alt='".__('Edit')."' /></a>";
+			$out .= "&#160;<a class='thickbox' id='thickboxlink".$formfield_id."_".$dataset_id."' href='#TB_inline&height=".$dims['height']."&width=".$dims['width']."&inlineId=datafieldwrap".$formfield_id."_".$dataset_id."' title='".$title."'><img src='".$this->plugin_url."/images/edit.gif' border='0' alt='".__('Edit')."' /></a>";
 		}
 		return $out;
 	}
@@ -805,11 +854,8 @@ class WP_ProjectManager
 		
 		$out = '';
 		if ( is_admin() && current_user_can( 'manage_projects' ) && ($dataset_owner == $current_user->ID || current_user_can( 'projectmanager_admin')) ) {
-			$dims = array('width' => '300px', 'height' => '80px');
-			if ( 2 == $formfield_type )
-				$dims = array('width' => '400px', 'height' => '250px');
 			
-			$out .= "\n\t\t<div id='datafieldwrap".$formfield_id."_".$dataset_id."' style='width:".$dims['width'].";height:".$dims['height'].";overfow:auto;display:none;'>";
+			$out .= "\n\t\t<div id='datafieldwrap".$formfield_id."_".$dataset_id."' style='overfow:auto;display:none;'>";
 			$out .= "\n\t\t<div id='datafieldbox".$formfield_id."_".$dataset_id."' class='projectmanager_thickbox'>";
 			$out .= "\n\t\t\t<form>";
 			if ( 1 == $formfield_type || 3 == $formfield_type || 5 == $formfield_type )
@@ -960,8 +1006,8 @@ class WP_ProjectManager
 				}
 			}
 		
-			if ( isset($_FILES['logo']) )
-				$this->uploadImage($team_id, $_FILES['logo']);
+			if ( isset($_FILES['projectmanager_image']) )
+				$this->uploadImage($team_id, $_FILES['projectmanager_image']);
 				
 			if ( $this->error ) $this->printErrorMessage();
 			
@@ -1035,8 +1081,8 @@ class WP_ProjectManager
 				$this->delImage( $image_file );
 			}
 				
-			if ( isset($_FILES['logo']) )
-				$this->uploadImage($dataset_id, $_FILES['logo'], $overwrite_image);
+			if ( isset($_FILES['projectmanager_image']) )
+				$this->uploadImage($dataset_id, $_FILES['projectmanager_image'], $overwrite_image);
 			
 			if ( $this->error ) $this->printErrorMessage();
 				
@@ -1347,14 +1393,14 @@ class WP_ProjectManager
 	function insert( $content )
 	{
 		if ( stristr( $content, '[prjctmngr_search' )) {
-			$search = "@\[prjctmngr_search_form\s*=\s*(\w+),(|right|center|left|)\]@i";
+			$search = "@\[prjctmngr_search_form\s*=\s*(\w+),(|right|center|left|),(|extend|compact|)\]@i";
 	
 			if ( preg_match_all($search, $content , $matches) ) {
 				if (is_array($matches)) {
 					foreach($matches[1] AS $key => $v0) {
 						$project_id = $v0;
 						$search = $matches[0][$key];
-						$replace = $this->getSearchForm( $project_id, $matches[2][$key] );
+						$replace = $this->getSearchForm( $project_id, $matches[2][$key], $matches[3][$key] );
 			
 						$content = str_replace($search, $replace, $content);
 					}
@@ -1419,28 +1465,29 @@ class WP_ProjectManager
 	 *
 	 * @param string $style
 	 */
-	function getSearchForm( $project_id, $pos = '' )
+	function getSearchForm( $project_id, $pos = '', $display )
 	{
 		$this->project_id = $project_id;
-		$search_string = ($this->isSearch()) ? $this->getSearchString() : '';
 		$search_option = $this->getSearchOption();
 		
-		$class = ( $pos != '' ) ? 'projectmanager_'.$pos : '';
+		$class = ( $pos != '' ) ? 'align'.$pos : '';
 
 		if ( !isset($_GET['show'])) {
-			$out = "</p>\n\n<div class='".$class."'>\n<form action='' method='post'>";
-			$out .= "\n\t<input type='text' class='search-input' name='search_string' value='".$search_string."' />";
-			if ( $form_fields = $this->getFormFields() ) {
-				$out .= "\n\t<select size='1' name='search_option'>";
-				$selected[0] = ( 0 == $search_option ) ? " selected='selected'" : "";
-				$out .= "\n\t\t<option value='0'".$selected[0].">".__( 'Name', 'projectmanager' )."</option>";
-				foreach ( $form_fields AS $form_field ) {
-					$selected = ( $search_option == $form_field->id ) ? " selected='selected'" : "";
-					$out .= "\n\t\t<option value='".$form_field->id."'".$selected.">".$form_field->label."</option>";
+			$out = "</p>\n\n<div class='".$class." projectmanager'>\n<form class='search-form' action='' method='post'>";
+			$out .= "\n\t<input type='text' class='search-input' name='search_string' value='".$this->getSearchString()."' />";
+			if ( $display == 'extend' ) {
+				if ( $form_fields = $this->getFormFields()) {
+					$out .= "\n\t<select size='1' name='search_option'>";
+					$selected[0] = ( 0 == $search_option ) ? " selected='selected'" : "";
+					$out .= "\n\t\t<option value='0'".$selected[0].">".__( 'Name', 'projectmanager' )."</option>";
+					foreach ( $form_fields AS $form_field ) {
+						$selected = ( $search_option == $form_field->id ) ? " selected='selected'" : "";
+						$out .= "\n\t\t<option value='".$form_field->id."'".$selected.">".$form_field->label."</option>";
+					}
+					$selected[1] = ( -1 == $search_option ) ? " selected='selected'" : "";
+					$out .= "\n\t<option value='-1'".$selected[1].">".__( 'Categories', 'projectmanager' )."</option>";
+					$out .= "\n\t</select>";
 				}
-				$selected[1] = ( -1 == $search_option ) ? " selected='selected'" : "";
-				$out .= "\n\t<option value='-1'".$selected[1].">".__( 'Categories', 'projectmanager' )."</option>";
-				$out .= "\n\t</select>";
 			} else
 				$out .= "\n\t<input type='hidden' name='form_field' value='0' />";
 				
@@ -1494,11 +1541,11 @@ class WP_ProjectManager
 			$action = get_permalink($page_ID);
 		}
 
-		$class = ($pos != '') ? 'projectmanager_'.$pos : '';
+		$class = ($pos != '') ? 'align'.$pos : '';
 		
 		$out = "</p>";
 		if ( !isset($_GET['show']) && -1 != $options[$this->project_id]['category'] ) {
-			$out .= "\n\n<div class='".$class."'>\n<form action='".$action."' method='get'>\n";
+			$out .= "\n\n<div class='".$class." projectmanager'>\n<form action='".$action."' method='get'>\n";
 			$out .= wp_dropdown_categories(array('echo' => 0, 'hide_empty' => 0, 'name' => 'cat_id', 'orderby' => 'name', 'selected' => $this->getCatID(), 'hierarchical' => true, 'child_of' => $options[$this->project_id]['category'], 'show_option_all' => __('View all categories')));
 			$out .= $hidden;
 			$out .= "\n<input type='submit' value='".__( 'Filter', 'projectmanager' )."' class='button' />";
@@ -1528,7 +1575,7 @@ class WP_ProjectManager
 		
 		$out = '</p>';
 		if ( !isset($_GET['show'])) {
-			$out = "\n<div class='projectmanager_".$pos."'>\n\t<ul>";
+			$out = "\n<div class='align".$pos."'>\n\t<ul>";
 			$out .= wp_list_categories(array('echo' => 0, 'title_li' => __('Categories', 'projectmanager'), 'child_of' => $options[$this->project_id]['category']));
 			$out .= "\n\t</ul>\n</div>";
 		}
@@ -1571,13 +1618,12 @@ class WP_ProjectManager
 			
 			$out = "</p>";
 			if ( $datasets ) {
-				$num_datasets = ( $this->isSearch() ) ? count($datasets) : $this->getNumDatasets($this->project_id);
 				$num_total_datasets = $this->getNumDatasets($this->project_id, true);
 				$out .= "\n<div id='projectmanager_datasets_header'>";
-				$out .= ( !$this->isSearch() ) ? "\n\t<p>".sprintf(__('%d of %d Datasets', 'projectmanager'),$num_datasets, $num_total_datasets )."</p>" : '';
+				$out .= ( !$this->isSearch() ) ? "\n\t<p>".sprintf(__('%d of %d Datasets', 'projectmanager'), $this->getNumDatasets($this->project_id), $num_total_datasets )."</p>" : '';
 				if ( $this->isSearch() )
-					$out .= "<h3>".sprintf(__('Search: %d of %d', 'projectmanager'), $num_datasets, $num_total_datasets)."</h3>";
-				elseif ( $this->isCategory() && !$grp_id )
+					$out .= "<h3>".sprintf(__('Search: %d of %d', 'projectmanager'),  $this->getNumDatasets($this->project_id), $num_total_datasets)."</h3>";
+				elseif ( $this->isCategory() )
 					$out .= "<h3>".$this->getCatTitle($this->getCatID())."</h3>";
 				$out .= "\n</div>";
 				
@@ -1590,35 +1636,20 @@ class WP_ProjectManager
 					$out .= "\n<".$output." class='projectmanager'>";
 				}
 				
-				$dataset_output = ( 'table' == $output ) ? 'td' : 'li';
 				foreach ( $datasets AS $dataset ) {
-					$name = ($this->hasDetails()) ? '<a href="'.$this->pagination->createURL().'?cat_id='.$this->getCatID().'&amp;show='.$dataset->id.'">'.$dataset->name.'</a>' : $dataset->name;
+					$name = ($this->hasDetails()) ? '<a href="'.$this->createURL().'&amp;show='.$dataset->id.'">'.$dataset->name.'</a>' : $dataset->name;
 					
 					$class = ("alternate" == $class) ? '' : "alternate";
 					
 					if ( 'table' == $output )
-						$out .= "\n<tr class='".$class."'><td>".$name."</td>";
+						$out .= "\n<tr class='".$class."'><td>".$name."</td>".$this->getDatasetMetaData( $dataset, 'td' )."</tr>";
 					else
-						$out .= "\n\t<li>".$name."</li>";
-						
-					$out .= $this->getDatasetMetaData( $dataset, $dataset_output );
-					
-					if ( 'table' == $output )
-						$out .= "\n</tr>";
+						$out .= "\n\t<li>".$name."<ul>".$this->getDatasetMetaData( $dataset, 'li' )."</ul></li>";
 				}
 				
 				$out .= "\n</$output>\n";
-					
-				$page_links = paginate_links( array(
-					'base' => add_query_arg( 'paged', '%#%' ),
-					'format' => '',
-					'prev_text' => __('&laquo;'),
-					'next_text' => __('&raquo;'),
-					'total' => $this->getNumPages(),
-					'current' => $this->getCurrentPage()
-				));
 				
-				if ( !$this->isSearch() ) $out .= "<p>".$page_links."</p>";//$this->pagination->get();
+				if ( !$this->isSearch() ) $out .= "<p>".$this->getPageLinks()."</p>";
 			} else {
 				$out .= "<p class='error'>".__( 'Nothing found', 'projectmanager')."</p>";
 			}
@@ -1664,27 +1695,28 @@ class WP_ProjectManager
 			
 			$out = "</p>";
 			if ( $datasets ) {
-				$out .= "\n\n<table class='projectmanager' summary='' title=''>\n<tr>";
+				$out .= "\n\n<div class='dataset_gallery'>\n<div class='gallery-row'>";
 				
 				foreach ( $datasets AS $dataset ) {
 					$i++;
-					$before_name = '<a href="'.$this->pagination->createURL().'&amp;cat_id='.$this->getCatID().'&amp;show='.$dataset->id.'">';
+					$before_name = '<a href="'.$this->createURL().'&amp;show='.$dataset->id.'">';
 					$after_name = '</a>';
 					
-					$out .= "\n\t<td style='padding: 5px; text-align: center;'>";
+					$width = floor(100/$num_cols);
+					$out .= "\n\t<div class='gallery-item' style='width: ".$width."%;'>";
 					if ($options[$this->project_id]['show_image'] == 1 && '' != $dataset->image)
 						$out .= "\n\t\t".$before_name.'<img src="'.$this->getImageUrl('/thumb.'.$dataset->image).'" alt="'.$dataset->name.'" title="'.$dataset->name.'" />'.$after_name;
 					
 					$out .= "\n\t\t<p class='caption'>".$before_name.$dataset->name.$after_name."</p>";
-					$out .= "\n\t</td>";
+					$out .= "\n\t</div>";
 				
 					if ( ( ( 0 == $i % $num_cols)) && ( $i < count($datasets) ) )
-						$out .= "\n</tr>\n<tr>";
+						$out .= "\n</div>\n<div class='gallery-row'>";
 				}
 				
-				$out .= "\n</tr>\n</table>\n\n";
+				$out .= "\n</div>\n</div><br style='clear: both;' />\n\n";
 		
-				$out .= $this->pagination->get();
+				if ( !$this->isSearch() ) $out .= "<p class='page-numbers'>".$this->getPageLinks()."</p>";
 			} else {
 				$out .= "<p class='error'>".__( 'Nothing found', 'projectmanager')."</p>";
 			}
@@ -1718,12 +1750,12 @@ class WP_ProjectManager
 		$options = get_option( 'projectmanager' );
 	
 		$out = "</p>";
-		$out .= "\n<p class='return_to_overview'><a href='".$this->pagination->createURL()."'paging=".$page.">".__('Back to list', 'projectmanager')."</a></p>\n";
+		$out .= "\n<p><a href='".$this->createURL()."'&amp;paged=".$page.">".__('Back to list', 'projectmanager')."</a></p>\n";
 		
 		if ( $dataset = $this->getDataset( $dataset_id ) ) {
 			$out .= "<fieldset class='dataset'><legend>".__( 'Details of', 'projectmanager' )." ".$dataset->name."</legend>\n";
 			if ($options[$this->project_id]['show_image'] == 1 && '' != $dataset->image)
-				$out .= "\t<img src='".$this->getImageUrl($dataset->image)."' title='".$dataset->name."' alt='".$dataset->name."' style='float: right;' />\n";
+				$out .= "\t<div class='image'><img src='".$this->getImageUrl($dataset->image)."' title='".$dataset->name."' alt='".$dataset->name."' /></div>\n";
 				
 			$out .= "<dl>".$this->getDatasetMetaData( $dataset, 'dl', true )."\n</dl>\n";
 			$out .= "</fieldset>\n";
@@ -1780,6 +1812,7 @@ class WP_ProjectManager
 			$datasets = $wpdb->get_results( $sql );
 		}
 		
+		$this->datasets = $datasets;
 		return $datasets;
 	}
 	
@@ -1795,7 +1828,7 @@ class WP_ProjectManager
 		
 		$options = get_option( 'projectmanager_widget' );
 		$widget_id = $args['widget_id'];
-		$project_id = $options[$widget_id];
+		$project_id = $options[$widget_id]['project_id'];
 		$this->initialize($project_id);
 		
 		$defaults = array(
@@ -1803,24 +1836,37 @@ class WP_ProjectManager
 			'after_widget' => '</li>',
 			'before_title' => '<h2 class="widgettitle">',
 			'after_title' => '</h2>',
-			'widget_title' => $options[$project_id]['title'],
-			'limit' => $options[$project_id]['limit'],
+			'widget_title' => $options[$widget_id]['title'],
+			'limit' => $options[$widget_id]['limit'],
+			'slideshow' => ( 1 == $options[$widget_id]['slideshow']['show'] ) ? true : false,
 		);
 		$args = array_merge( $defaults, $args );
 		extract( $args );
 		
-		$datasets = $wpdb->get_results( "SELECT `id`, `name` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$project_id} ORDER BY `id` DESC LIMIT 0,".$limit." " ); 
-			
+		
+		$limit = ( 0 != $limit ) ? "LIMIT 0,".$limit : '';
+		$datasets = $wpdb->get_results( "SELECT `id`, `name`, `image` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$project_id} ORDER BY `id` DESC ".$limit." " ); 
+
 		echo $before_widget . $before_title . $widget_title . $after_title;
-		echo "<ul id='projectmanager_widget'>";
+		if ( $slideshow )
+			echo '<div id="projectmanager_slideshow_'.$project_id.'" class="projectmanager_slideshow">';
+		else
+			echo "<ul class='projectmanager_widget'>";
+				
 		if ( $datasets ) {
 			foreach ( $datasets AS $dataset ) {
-				$name = ($this->hasDetails()) ? '<a href="'.get_permalink($options[$project_id]['page_id']).'&amp;show='.$dataset->id.'">'.$dataset->name.'</a>' : $dataset->name;
-			
-				echo "<li>".$name."</li>";
+				$name = ($this->hasDetails()) ? '<a href="'.$get_permalink($options[$widget_id]['page_id']).'&amp;show='.$dataset->id.'"><img src="'.$this->getImageUrl('/thumb.'.$dataset->image).'" alt="'.$dataset->name.'" title="'.$dataset->name.'" /></a>' : '<img src="'.$this->getImageUrl('/thumb.'.$dataset->image).'" alt="'.$dataset->name.'" title="'.$dataset->name.'" />';
+				
+				if ( $slideshow )
+					echo $name;
+				else
+					echo "<li>".$name."</li>";
 			}
 		}
-		echo "</ul>";
+		if ( $slideshow )
+			echo "</div>";
+		else
+			echo "</ul>";
 		echo $after_widget;
 	}
 		 
@@ -1836,26 +1882,79 @@ class WP_ProjectManager
 		$options = get_option( 'projectmanager_widget' );
 		
 		if ($_POST['projectmanager-submit']) {
-			$options[$widget_id] = $project_id;
-			$options[$project_id]['title'] = $_POST['widget_title'][$project_id];
-			$options[$project_id]['limit'] = $_POST['limit'][$project_id];
-			$options[$project_id]['page_id'] = $_POST['page_id'][$project_id];
+			$options[$widget_id]['project_id'] = $project_id;
+			$options[$widget_id]['title'] = $_POST['widget_title'][$project_id];
+			$options[$widget_id]['limit'] = $_POST['limit'][$project_id];
+			$options[$widget_id]['page_id'] = $_POST['page_id'][$project_id];
+			$options[$widget_id]['slideshow'] = array('show' => $_POST['projectmanager_slideshow'][$project_id], 'width' => $_POST['projectmanager_slideshow_width'][$project_id], 'height' => $_POST['projectmanager_slideshow_height'][$project_id], 'time' => $_POST['projectmanager_slideshow_time'][$project_id], 'fade' => $_POST['projectmanager_slideshow_fade'][$project_id], 'random' => $_POST['projectmanager_slideshow_order'][$project_id]);
 				
 			update_option( 'projectmanager_widget', $options );
 		}
 		
-		echo '<div id="projectmanager_widget_control">';
-		echo '<p style="text-align: left;"><label for="widget_title">'.__('Title', 'projectmanager').'</label><input class="widefat" type="text" name="widget_title['.$project_id.']" id="widget_title" value="'.$options[$project_id]['title'].'" /></p>';
-		echo '<p style="text-align: left;"><label for="limit">'.__('Number', 'projectmanager').'</label>&#160;<select style="margin-top: 0;" size="1" name="limit['.$project_id.']" id="limit">';
+		echo '<div class="projectmanager_widget_control">';
+		echo '<p><label for="widget_title">'.__('Title', 'projectmanager').'</label><input class="widefat" type="text" name="widget_title['.$project_id.']" id="widget_title" value="'.$options[$widget_id]['title'].'" /></p>';
+		echo '<p><label for="limit">'.__('Anzeige', 'projectmanager').'</label>&#160;<select style="margin-top: 0;" size="1" name="limit['.$project_id.']" id="limit">';
+		$selected['show_all'] = ( $options[$widget_id]['limit'] == 0 ) ? " selected='selected'" : '';
+		echo '<option value="0"'.$selected['show_all'].'>'.__('All','projectmanager').'</option>';
 		for ( $i = 1; $i <= 10; $i++ ) {
-			$selected = ( $options[$project_id]['limit'] == $i ) ? " selected='selected'" : '';
+		        $selected = ( $options[$widget_id]['limit'] == $i ) ? " selected='selected'" : '';
 			echo '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
 		}
 		echo '</select></p>';
-		echo '<p style="text-align: left;"><label for="page_id['.$project_id.']">'.__('Page','projectmanager').'</label>&#160;'.wp_dropdown_pages(array('name' => 'page_id['.$project_id.']', 'selected' => $options[$project_id]['page_id'], 'echo' => 0)).'</p>';
-			
+		echo '<p><label for="page_id['.$project_id.']">'.__('Page','projectmanager').'</label>&#160;'.wp_dropdown_pages(array('name' => 'page_id['.$project_id.']', 'selected' => $options[$widget_id]['page_id'], 'echo' => 0)).'</p>';
+		echo '<fieldset class="slideshow_control"><legend>'.__('Slideshow','projectmanager').'</legend>';
+		$checked = ($options[$widget_id]['slideshow']['show'] == 1) ? ' checked="checked"' : '';
+		echo '<p><input type="checkbox" name="projectmanager_slideshow['.$project_id.']" id="projectmanager_slideshow" value="1"'.$checked.' style="margin-left: 0.5em;" />&#160;<label for="projectmanager_slideshow" class="right">'.__( 'Use Slideshow', 'projectmanager' ).'</label></p>';
+		echo '<p><label for="projectmanager_slideshow_width">'.__( 'Width', 'projectmanager' ).'</label><input type="text" size="3" name="projectmanager_slideshow_width['.$project_id.']" id="projectmanager_slideshow_width" value="'.$options[$widget_id]['slideshow']['width'].'" class="widefat" style="display: inline; clear: none; width: auto;" /> px</p>';
+		echo '<p><label for="projectmanager_slideshow_height">'.__( 'Height', 'projectmanager' ).'</label><input type="text" size="3" name="projectmanager_slideshow_height['.$project_id.']" id="projectmanager_slideshow_height" value="'.$options[$widget_id]['slideshow']['height'].'" class="widefat" style="display: inline; clear: none; width: auto;" /> px</p>';
+		echo '<p><label for="projectmanager_slideshow_time">'.__( 'Time', 'projectmanager' ).'</label><input type="text" name="projectmanager_slideshow_time['.$project_id.']" id="projectmanager_slideshow_time" size="1" value="'.$options[$widget_id]['slideshow']['time'].'" class="widefat" style="display: inline; clear: none; width: auto;" /> '.__( 'seconds','projectmanager').'</p>';
+		echo '<p><label for="projectmanager_slideshow_fade">'.__( 'Fade Effect', 'projectmanager' ).'</label>'.$this->getSlideshowFadeEffects($options[$widget_id]['slideshow']['fade'], $project_id).'</p>';
+		echo '<p><label for="projectmanager_slideshow_order">'.__('Order','projectmanager').'</label>'.$this->getSlideshowOrder($options[$widget_id]['slideshow']['random'], $project_id).'</p>';
+		echo '</fieldset>';
+	
 		echo '<input type="hidden" name="projectmanager-submit" value="1" />';
 		echo '</div>';
+	}
+	
+	
+	/**
+	* fadeEffects() - dropdown list
+	*
+	* @param string $selected
+	* @param int $project_id
+	* @return string
+	*/
+	function getSlideshowFadeEffects( $selected, $project_id )
+	{
+		$effects = array(__('Fade','projectmanager') => 'fade', __('Zoom Fade','projectmanager') => 'zoomFade', __('Scroll Up','projectmanager') => 'scrollUp', __('Scroll Left','projectmanager') => 'scrollLeft', __('Scroll Right','projectmanager') => 'scrollRight', __('Scroll Down','projectmanager') => 'scrollDown', __( 'Zoom','projectmanager') => 'zoom', __('Grow X','projectmanager') => 'growX', __('Grow Y','projectmanager') => 'growY', __('Zoom BR','projectmanager') => 'zoomBR', __('Zoom TL','projectmanager') => 'zoomTL', __('Random','projectmanager') => 'random');
+		
+		$out = '<select size="1" name="projectmanager_slideshow_fade['.$project_id.']" id="projectmanager_slideshow_fade">';
+		foreach ( $effects AS $name => $effect ) {
+			$checked =  ( $selected == $effect ) ? " selected='selected'" : '';
+			$out .= '<option value="'.$effect.'"'.$checked.'>'.$name.'</option>';
+		}
+		$out .= '</select>';
+		return $out;
+	}
+	
+	
+	/**
+	 * order() - dropdown list of Order possibilites
+	 *
+	 * @param string $selected
+	 * @param int $project_id
+	 * @return string
+	 */
+	function getSlideshowOrder( $selected, $project_id )
+	{
+		$order = array(__('Ordered','projectmanager') => 'false', __('Random','projectmanager') => 'true');
+		$out = '<select size="1" name="projectmanager_slideshow_order['.$project_id.']" id="projectmanager_slideshow_order">';
+		foreach ( $order AS $name => $value ) {
+			$checked =  ( $selected == $value ) ? " selected='selected'" : '';
+			$out .= '<option value="'.$value.'"'.$checked.'>'.$name.'</option>';
+		}
+		$out .= '</select>';
+		return $out;
 	}
 	
 	
@@ -1904,16 +2003,19 @@ class WP_ProjectManager
 	 */
 	function printBreadcrumb( $page_title, $start=false )
 	{
-		echo '<p class="projectmanager_breadcrumb">';
-		if ( !$this->single )
-			echo '<a href="edit.php?page=projectmanager/page/index.php">'.__( 'Projectmanager', 'projectmanager' ).'</a> &raquo; ';
-		
-		if ( $page_title != $this->getProjectTitle( $this->project_id ) )
-			echo '<a href="edit.php?page=projectmanager/page/show-project.php&amp;project_id='.$this->project_id.'">'.$this->getProjectTitle( $this->project_id ).'</a> &raquo; ';
-		
-		if ( !$start || ($start && !$this->single) ) echo $page_title;
-		
-		echo '</p>';
+		$options = get_option('projectmanager');
+		if ( 1 != $options[$this->project_id]['navi_link'] ) {
+			echo '<p class="projectmanager_breadcrumb">';
+			if ( !$this->single )
+				echo '<a href="edit.php?page=projectmanager/page/index.php">'.__( 'Projectmanager', 'projectmanager' ).'</a> &raquo; ';
+			
+			if ( $page_title != $this->getProjectTitle( $this->project_id ) )
+				echo '<a href="edit.php?page=projectmanager/page/show-project.php&amp;project_id='.$this->project_id.'">'.$this->getProjectTitle( $this->project_id ).'</a> &raquo; ';
+			
+			if ( !$start || ($start && !$this->single) ) echo $page_title;
+			
+			echo '</p>';
+		}
 	}
 	
 	
@@ -1925,6 +2027,7 @@ class WP_ProjectManager
 	function addHeaderCode($show_all=false)
 	{
 		$options = get_option('projectmanager');
+		$options['widget'] = get_option( 'projectmanager_widget' );
 		
 		echo "\n\n<!-- WP-ProjectManager START -->\n";
 		echo "<link rel='stylesheet' href='".$this->plugin_url."/style.css' type='text/css' />\n";
@@ -1937,6 +2040,33 @@ class WP_ProjectManager
 			echo "\n\ttable.projectmanager tr.alternate { background-color: ".$options['colors']['rows'][0]." }";
 			echo "\n\tfieldset.dataset { border-color: ".$options['colors']['headers']." }";
 			echo "\n</style>";
+			wp_register_script( 'jquery_slideshow', $this->plugin_url.'/js/jquery.aslideshow.js', array('jquery'), '0.5.3' );
+			wp_print_scripts( 'jquery_slideshow' );
+		
+			foreach ( $options['widget'] AS $widget_id => $opts ) {
+				if ($opts['slideshow']['show'] == 1) {
+			?>
+			<script type='text/javascript'>
+			//<![CDATA[
+				   jQuery(document).ready(function(){
+				   jQuery('#projectmanager_slideshow_<?php echo $opts['project_id'] ?>').slideshow({
+				   width: <?php echo $opts['slideshow']['width'] ?>,
+				   height:<?php echo $opts['slideshow']['height']; ?>,
+				   time: <?php echo $opts['slideshow']['time']*1000; ?>,
+				   title:false,
+				   panel:false,
+				   loop:true,
+				   play:true,
+				   imgresize:true,
+				   playframe: false,
+				   effect: '<?php echo $opts['slideshow']['fade'] ?>',
+				   random: <?php echo $opts['slideshow']['random'] ?>,
+				   });
+				   });
+			   //]]>
+			</script>
+			<?php
+			}}
 		}
 	
 		if ( is_admin() AND ((isset( $_GET['page'] ) AND substr( $_GET['page'], 0, 14 ) == 'projectmanager') || $show_all )) {
@@ -1974,7 +2104,7 @@ class WP_ProjectManager
 	 * @param none
 	 * @return void
 	 */
-	function displayOptionsPage()
+	function displayOptionsPage($include=false)
 	{
 		$options = get_option('projectmanager');
 		
@@ -1989,20 +2119,20 @@ class WP_ProjectManager
 			}
 			
 			
-			echo "\n<form action='' method='post'>";
+			echo "\n<form action='' method='post' name='colors'>";
 			wp_nonce_field( 'projetmanager_manage-global-league-options' );
 			echo "\n<div class='wrap'>";
-			echo "\n\t<h2>".__( 'Projectmanager Global Settings', 'projectmanager' )."</h2>";
+			echo "\n\t<h2>".__( 'Global Settings', 'projectmanager' )."</h2>";
 			echo "\n\t<h3>".__( 'Color Scheme', 'projectmanager' )."</h3>";
 			echo "\n\t<table class='form-table'>";
 			echo "\n\t<tr valign='top'>";
-			echo "\n\t\t<th scope='row'><label for='color_headers'>".__( 'Table Headers', 'projectmanager' )."</label></th><td><input type='text' name='color_headers' id='color_headers' value='".$options['colors']['headers']."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[0].color_headers,\"pick_color_headers\"); return false;' name='pick_color_headers' id='pick_color_headers'>&#160;&#160;&#160;</a></td>";
+			echo "\n\t\t<th scope='row'><label for='color_headers'>".__( 'Table Headers', 'projectmanager' )."</label></th><td><input type='text' name='color_headers' id='color_headers' value='".$options['colors']['headers']."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[\"colors\"].color_headers,\"pick_color_headers\"); return false;' name='pick_color_headers' id='pick_color_headers'>&#160;&#160;&#160;</a></td>";
 			echo "\n\t</tr>";
 			echo "\n\t<tr valign='top'>";
 			echo "\n\t<th scope='row'><label for='color_rows'>".__( 'Table Rows', 'projectmanager' )."</label></th>";
 			echo "\n\t\t<td>";
-			echo "\n\t\t\t<p class='table_rows'><input type='text' name='color_rows_alt' id='color_rows_alt' value='".$options['colors']['rows'][0]."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[0].color_rows_alt,\"pick_color_rows_alt\"); return false;' name='pick_color_rows_alt' id='pick_color_rows_alt'>&#160;&#160;&#160;</a></p>";
-			echo "\n\t\t\t<p class='table_rows'><input type='text' name='color_rows' id='color_rows' value='".$options['colors']['rows'][1]."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[0].color_rows,\"pick_color_rows\"); return false;' name='pick_color_rows' id='pick_color_rows'>&#160;&#160;&#160;</a></p>";
+			echo "\n\t\t\t<p class='table_rows'><input type='text' name='color_rows_alt' id='color_rows_alt' value='".$options['colors']['rows'][0]."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[\"colors\"].color_rows_alt,\"pick_color_rows_alt\"); return false;' name='pick_color_rows_alt' id='pick_color_rows_alt'>&#160;&#160;&#160;</a></p>";
+			echo "\n\t\t\t<p class='table_rows'><input type='text' name='color_rows' id='color_rows' value='".$options['colors']['rows'][1]."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[\"colors\"].color_rows,\"pick_color_rows\"); return false;' name='pick_color_rows' id='pick_color_rows'>&#160;&#160;&#160;</a></p>";
 			echo "\n\t\t</td>";
 			echo "\n\t</tr>";
 			echo "\n\t</table>";
@@ -2016,20 +2146,9 @@ class WP_ProjectManager
 				syncColor(\"pick_color_rows_alt\", \"color_rows_alt\", document.getElementById(\"color_rows_alt\").value);
 			</script>";
 	
-			echo "<p>".sprintf(__( "To add and manage projects, go to the <a href='%s'>Management Page</a>", 'projectmanager' ), get_option( 'siteurl' ).'/wp-admin/edit.php?page=projectmanager/page/index.php')."</p>";
+		//	echo "<p>".sprintf(__( "To add and manage projects, go to the <a href='%s'>Management Page</a>", 'projectmanager' ), get_option( 'siteurl' ).'/wp-admin/edit.php?page=projectmanager/page/index.php')."</p>";
 	
-			/*
-			if ( !function_exists('register_uninstall_hook') ) { ?>
-			<!-- Uninstallation Form -->
-			<div class="wrap">
-				<h3 style='clear: both; padding-top: 1em;'><?php _e( 'Uninstall ProjectManager', 'projectmanager' ) ?></h3>
-				<form method="get" action="index.php">
-					<input type="hidden" name="projectmanager" value="uninstall" />
-					<p><input type="checkbox" name="delete_plugin" value="1" id="delete_plugin" /> <label for="delete_plugin"><?php _e( 'Yes I want to uninstall ProjectManager Plugin. All Data will be deleted!', 'projectmanager' ) ?></label> <input type="submit" value="<?php _e( 'Uninstall ProjectManager', 'projectmanager' ) ?> &raquo;" class="button" /></p>
-				</form>
-			</div>
-		<?php }*/
-		} else {
+		} elseif(!$include) {
 			echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
 		}
 	}
@@ -2153,33 +2272,57 @@ class WP_ProjectManager
 	{
 		global $wpdb;
 		
-		$this->single = false;
 		if ( $projects = $this->getProjects() ) {
 			$options = get_option( 'projectmanager' );
 			foreach( $projects AS $project ) {
 				if ( 1 == $options[$project->id]['navi_link'] ) {
-					$management_page = 'edit.php?page=projectmanager/page/show-project.php&project_id='.$project->id;
-					add_management_page( $project->title, $project->title, 'manage_projects', $management_page );
-				}
-			}
-			foreach ( $projects AS $project ) {
-				if ( 1 == $options[$project->id]['navi_link'] && $this->getNumProjects() == 1) {
-					$this->single = true;
-					break;
+					$page = 'admin.php?page=projectmanager/page/show-project.php&project_id='.$project->id;
+					add_menu_page( $project->title, $project->title, 'manage_projects', $page, '', $this->plugin_url.'/images/menu.png' );
+					add_submenu_page($page, __('Overview', 'projectmanager'), __('Overview','projectmanager'),'manage_projects', $page,'');
+					add_submenu_page($page, __( 'Add Dataset', 'projectmanager' ), __( 'Add Dataset', 'projectmanager' ), 'manage_projects', 'admin.php?page=projectmanager/page/dataset.php&project_id='.$project->id);
+					add_submenu_page($page, __( 'Form Fields', 'projectmanager' ), __( 'Form Fields', 'projectmanager' ), 'manage_projects', 'admin.php?page=projectmanager/page/formfields.php&project_id='.$project->id);
+					add_submenu_page($page, __( 'Settings', 'projectmanager' ), __( 'Settings', 'projectmanager' ), 'manage_projects', 'admin.php?page=projectmanager/page/settings.php&project_id='.$project->id);
+					add_submenu_page($page, __('Categories' ), __('Categories' ), 'manage_projects', 'categories.php');
 				}
 			}
 		}
 		
-		if ( ! $this->single )
-		add_management_page( __( 'Projects', 'projectmanager' ), __( 'Projects', 'projectmanager' ), 'manage_projects', basename( __FILE__, ".php" ).'/page/index.php' );
+		if ( ! $this->isSingle() ) {
+			//add_management_page( __( 'Projects', 'projectmanager' ), __( 'Projects', 'projectmanager' ), 'manage_projects', basename( __FILE__, ".php" ).'/page/index.php' );
+			$page = basename(__FILE__,".php").'/page/index.php';
+			add_menu_page(__('Projects', 'projectmanager'), __('Projects', 'projectmanager'), 'manage_projects', $page,'', $this->plugin_url.'/images/menu.png');
+			add_submenu_page($page, __('Overview', 'projectmanager'), __('Overview','projectmanager'),'manage_projects', $page,'');
+			add_submenu_page($page, __( 'Settings'), __('Settings'), 'manage_projects', 'projectmanager', array( &$this, 'displayOptionsPage') );
+		}
 		
-		add_options_page( __( 'Projectmanager', 'projectmanager' ), __( 'Projectmanager', 'projectmanager' ), 'manage_projects', 'projectmanager', array( $this, 'displayOptionsPage' ) );
+//		add_options_page( __( 'Projectmanager', 'projectmanager' ), __( 'Projectmanager', 'projectmanager' ), 'manage_projects', 'projectmanager', array( $this, 'displayOptionsPage' ) );
 		
 		$plugin = 'projectmanager/plugin-hook.php';
 		add_filter( 'plugin_action_links_' . $plugin, array( &$this, 'pluginActions' ) );
 	}
 
 
+	/**
+	 * check if there is only a single project
+	 *
+	 * @param none
+	 * @return boolean
+	 */
+	function isSingle()
+	{
+		$options = get_option( 'projectmanager' );
+		$this->single = false;
+		$projects = $this->getProjects();
+		foreach ( $projects AS $project ) {
+			if ( 1 == $options[$project->id]['navi_link'] && $this->getNumProjects() == 1) {
+				$this->single = true;
+				break;
+			}
+		}
+		return $this->single;
+	}
+	
+	
 	/**
 	 * pluginActions() - display link to settings page in plugin table
 	 *
@@ -2212,21 +2355,6 @@ class WP_ProjectManager
 
 		delete_option( 'projectmanager' );
 		delete_option( 'projectmanager_widget' );
-
-		/*
-		if ( !function_exists('register_uninstall_hook') ) {
-			$plugin = basename(__FILE__, ".php") .'/plugin-hook.php';
-			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-			if ( function_exists( "deactivate_plugins" ) )
-				deactivate_plugins( $plugin );
-			else {
-				$current = get_option('active_plugins');
-				array_splice($current, array_search( $plugin, $current), 1 ); // Array-fu!
-				update_option('active_plugins', $current);
-				do_action('deactivate_' . trim( $plugin ));
-			}
-		}
-		*/
 	}
 }
 ?>

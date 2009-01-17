@@ -92,6 +92,13 @@ in projectmanager.php for details.
 
 == ChangeLog ==
 
+**Version 1.6**, *January-17-2009*
+
+- NEW: implemented Slideshow Widget
+- usability enhancements
+- code cleaning
+- style enhancements
+
 **Version 1.5**, *January-05-2009*
 
 - NEW: coupled datasets to user id who entered them.

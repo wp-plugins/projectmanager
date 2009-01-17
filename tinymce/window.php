@@ -1,7 +1,6 @@
 <?php
 
-//$root = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
-$root = '/var/www/wordpress';
+$root = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
 
 if (file_exists($root.'/wp-load.php')) {
 	// WP 2.6
@@ -174,6 +173,15 @@ $options = get_option('projectmanager');
 				<option value="left"><?php _e( 'Left' ) ?></option>
 				<option value="center"><?php _e( 'Center' ) ?></option>
 				<option value="right"><?php _e( 'Right' ) ?></option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" valign="top"><label for="display_search"><?php _e( 'Display', 'projectmanager' ) ?></label></td>
+		<td>
+			<select size="1" name="display_search" id="display_search">
+				<option value="extend"><?php _e( 'Extend', 'projectmanager' ) ?></option>
+				<option value="compact"><?php _e( 'Compact', 'projectmanager' ) ?></option>
 			</select>
 		</td>
 	</tr>

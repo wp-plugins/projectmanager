@@ -20,7 +20,7 @@ $options = get_option('projectmanager');
 	<form method="post" action="edit.php?page=projectmanager/page/formfields.php&amp;project_id=<?php echo $project_id ?>">
 		
 	<?php wp_nonce_field( 'projectmanager_manage-formfields' ) ?>
-	<table id="projectmanager_form_fields_table" class="form-table">
+	<table class="widefat">
 	<thead>
 	<tr>
 		<th scope="col"><?php _e( 'Label', 'projectmanager' ) ?></th>
@@ -30,11 +30,21 @@ $options = get_option('projectmanager');
 		<th scope="col">&#160;</th>
 	</tr>
 	</thead>
-	<tbody id="projectmanager_form_fields">
+	<tfoot>
+	<tr>
+		<th scope="col"><?php _e( 'Label', 'projectmanager' ) ?></th>
+		<th scope="col"><?php _e( 'Type', 'projectmanager' ) ?></th>
+		<th scope="col"><?php _e( 'Show on startpage', 'projectmanager' ) ?></th>
+		<th scope="col"><?php _e( 'Order', 'projectmanager' ) ?></th>
+		<th scope="col">&#160;</th>
+	</tr>
+	</tfoot>
+	
+	<tbody id="projectmanager_form_fields" class="form-table">
 	<?php $form_fields = $projectmanager->getFormFields() ?>
 	<?php if ( $form_fields ) : ?>
-		<?php foreach( $form_fields AS $form_field ) : ?>
-		<tr id="form_id_<?php echo $form_field->id ?>">
+		<?php foreach( $form_fields AS $form_field ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
+		<tr id="form_id_<?php echo $form_field->id ?>" class="<?php echo $class ?>">
 			<td><input type="text" name="form_name[<?php echo $form_field->id ?>]" value="<?php echo $form_field->label ?>" /></td>
 			<td id="form_field_options_box<?php echo $form_field->id ?>">
 				<?php $form_field_options = is_array($options['form_field_options'][$form_field->id]) ? implode(', ', $options['form_field_options'][$form_field->id]) : ''; ?>

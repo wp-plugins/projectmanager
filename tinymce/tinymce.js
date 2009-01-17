@@ -95,9 +95,9 @@ function ProjectManagerInsertLink() {
 	if (searchform.className.indexOf('current') != -1) {
 		var projectId = document.getElementById('search_projects').value;
 		var pos = document.getElementById('align_search').value;
-		
+		var display = document.getElementById('display_search').value;
 		if (projectId != 0)
-			tagtext = "[prjctmngr_search_form=" + projectId + "," + pos + "]";
+			tagtext = "[prjctmngr_search_form=" + projectId + "," + pos + "," + display + "]";
 		else
 			tinyMCEPopup.close();
 	}
