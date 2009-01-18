@@ -791,6 +791,8 @@ class WP_ProjectManager
 					if ( '' != $meta_value ) {
 						if ( 'dl' == $output ) {
 							$out .= "\n\t<dt>".$meta->label."</dt><dd>".$meta_value."</dd>";
+						} elseif ( 'li' == $output ) {
+							$out .= "\n\t<".$output."><span class='dataset_label'>".$meta->label."</span>:&#160;".$meta_value."</".$output.">";
 						} else {
 							$out .= "\n\t<".$output.">";
 							$out .= $this->getThickbox( $dataset->id, $meta->form_field_id, $meta->type, maybe_unserialize($meta->value), $dataset->user_id );
@@ -1649,7 +1651,7 @@ class WP_ProjectManager
 				
 				$out .= "\n</$output>\n";
 				
-				if ( !$this->isSearch() ) $out .= "<p>".$this->getPageLinks()."</p>";
+				if ( !$this->isSearch() ) $out .= "<p class='page-numbers'>".$this->getPageLinks()."</p>";
 			} else {
 				$out .= "<p class='error'>".__( 'Nothing found', 'projectmanager')."</p>";
 			}
@@ -1893,7 +1895,7 @@ class WP_ProjectManager
 		
 		echo '<div class="projectmanager_widget_control">';
 		echo '<p><label for="widget_title">'.__('Title', 'projectmanager').'</label><input class="widefat" type="text" name="widget_title['.$project_id.']" id="widget_title" value="'.$options[$widget_id]['title'].'" /></p>';
-		echo '<p><label for="limit">'.__('Anzeige', 'projectmanager').'</label>&#160;<select style="margin-top: 0;" size="1" name="limit['.$project_id.']" id="limit">';
+		echo '<p><label for="limit">'.__('Display', 'projectmanager').'</label>&#160;<select style="margin-top: 0;" size="1" name="limit['.$project_id.']" id="limit">';
 		$selected['show_all'] = ( $options[$widget_id]['limit'] == 0 ) ? " selected='selected'" : '';
 		echo '<option value="0"'.$selected['show_all'].'>'.__('All','projectmanager').'</option>';
 		for ( $i = 1; $i <= 10; $i++ ) {
@@ -2294,8 +2296,6 @@ class WP_ProjectManager
 			add_submenu_page($page, __('Overview', 'projectmanager'), __('Overview','projectmanager'),'manage_projects', $page,'');
 			add_submenu_page($page, __( 'Settings'), __('Settings'), 'manage_projects', 'projectmanager', array( &$this, 'displayOptionsPage') );
 		}
-		
-//		add_options_page( __( 'Projectmanager', 'projectmanager' ), __( 'Projectmanager', 'projectmanager' ), 'manage_projects', 'projectmanager', array( $this, 'displayOptionsPage' ) );
 		
 		$plugin = 'projectmanager/plugin-hook.php';
 		add_filter( 'plugin_action_links_' . $plugin, array( &$this, 'pluginActions' ) );
