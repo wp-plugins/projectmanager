@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
-"POT-Creation-Date: 2008-12-19 13:16+0000\n"
+"POT-Creation-Date: 2009-01-17 15:02+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team:\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: functions.php:32 functions.php:88 page/settings.php:43
-#: page/show-project.php:81
+#: page/show-project.php:129
 msgid "None"
 msgstr ""
 
@@ -27,124 +27,141 @@ msgstr ""
 msgid "Edit Dataset"
 msgstr ""
 
-#: page/dataset.php:22 page/index.php:50 page/show-project.php:49
+#: page/dataset.php:25 projectmanager.php:1092
+msgid "You don't have the permission to edit this dataset"
+msgstr ""
+
+#: page/dataset.php:32 projectmanager.php:1017
+msgid "An Entry of your user ID has been detected"
+msgstr ""
+
+#: page/dataset.php:35 page/index.php:71 page/show-project.php:64
+#: projectmanager.php:2282
 msgid "Add Dataset"
 msgstr ""
 
-#: page/dataset.php:40 page/show-project.php:67 page/show-project.php:93
-#: projectmanager.php:1373 projectmanager.php:1521
+#: page/dataset.php:56 page/show-project.php:48 page/show-project.php:104
+#: page/show-project.php:114 page/show-project.php:142 projectmanager.php:1482
+#: projectmanager.php:1632
 msgid "Name"
 msgstr ""
 
-#: page/dataset.php:45
+#: page/dataset.php:61
 msgid "Image"
 msgstr ""
 
-#: page/dataset.php:50
+#: page/dataset.php:66
 msgid "Supported file types"
 msgstr ""
 
-#: page/dataset.php:52
+#: page/dataset.php:68
 msgid "Overwrite existing image"
 msgstr ""
 
-#: page/dataset.php:54
+#: page/dataset.php:70
 msgid "Delete current image"
 msgstr ""
 
-#: page/dataset.php:103 page/show-project.php:69 projectmanager.php:1379
-#: projectmanager.php:1437 projectmanager.php:1467 tinymce/window.php:47
+#: page/dataset.php:119 page/show-project.php:53 page/show-project.php:65
+#: page/show-project.php:106 page/show-project.php:116 projectmanager.php:1488
+#: projectmanager.php:1579 projectmanager.php:2285 tinymce/window.php:47
 msgid "Categories"
 msgstr ""
 
-#: page/formfields.php:16 page/formfields.php:18 page/show-project.php:48
+#: page/dataset.php:131
+msgid "Owner"
+msgstr ""
+
+#: page/formfields.php:16 page/formfields.php:18 page/show-project.php:63
+#: projectmanager.php:2283
 msgid "Form Fields"
 msgstr ""
 
-#: page/formfields.php:26
+#: page/formfields.php:26 page/formfields.php:35
 msgid "Label"
 msgstr ""
 
-#: page/formfields.php:27
+#: page/formfields.php:27 page/formfields.php:36
 msgid "Type"
 msgstr ""
 
-#: page/formfields.php:28
+#: page/formfields.php:28 page/formfields.php:37
 msgid "Show on startpage"
 msgstr ""
 
-#: page/formfields.php:29
+#: page/formfields.php:29 page/formfields.php:38 projectmanager.php:1912
 msgid "Order"
 msgstr ""
 
-#: page/formfields.php:41 page/formfields.php:53 page/show-project.php:90
-#: page/show-project.php:104 projectmanager.php:808 projectmanager.php:1887
+#: page/formfields.php:51 page/formfields.php:63 page/show-project.php:139
+#: page/show-project.php:157 projectmanager.php:892 projectmanager.php:2091
 msgid "Save"
 msgstr ""
 
-#: page/formfields.php:41 page/formfields.php:53 page/show-project.php:90
-#: page/show-project.php:104 projectmanager.php:808 projectmanager.php:1887
-#: tinymce/window.php:186
+#: page/formfields.php:51 page/formfields.php:63 page/show-project.php:139
+#: page/show-project.php:157 projectmanager.php:892 projectmanager.php:2091
+#: tinymce/window.php:195
 msgid "Cancel"
 msgstr ""
 
-#: page/formfields.php:41 page/formfields.php:55 projectmanager.php:1887
+#: page/formfields.php:51 page/formfields.php:65 projectmanager.php:2091
 msgid "Options"
 msgstr ""
 
-#: page/formfields.php:61 page/index.php:31 page/show-project.php:60
-#: projectmanager.php:1887
+#: page/formfields.php:71 page/index.php:37 page/show-project.php:77
+#: projectmanager.php:2091
 msgid "Delete"
 msgstr ""
 
-#: page/formfields.php:61
+#: page/formfields.php:71
 msgid "Delete formfield"
 msgstr ""
 
-#: page/formfields.php:67
+#: page/formfields.php:77
 msgid "Add new formfield"
 msgstr ""
 
-#: page/formfields.php:71
+#: page/formfields.php:81
 msgid "Save Form Fields"
 msgstr ""
 
-#: page/index.php:24 page/index.php:33 projectmanager.php:1835
-#: projectmanager.php:2095 tinymce/window.php:30
+#: page/index.php:24 page/index.php:43 projectmanager.php:2010
+#: tinymce/window.php:30
 msgid "Projectmanager"
 msgstr ""
 
-#: page/index.php:37
+#: page/index.php:47 page/index.php:56
 msgid "ID"
 msgstr ""
 
-#: page/index.php:38 tinymce/window.php:57 tinymce/window.php:88
-#: tinymce/window.php:117 tinymce/window.php:155
+#: page/index.php:48 page/index.php:57 tinymce/window.php:57
+#: tinymce/window.php:88 tinymce/window.php:117 tinymce/window.php:155
 msgid "Project"
 msgstr ""
 
-#: page/index.php:39
-msgid "Number of Datasets"
+#: page/index.php:49 page/index.php:58
+msgid "Datasets"
 msgstr ""
 
-#: page/index.php:40
+#: page/index.php:50 page/index.php:59
 msgid "Action"
 msgstr ""
 
-#: page/index.php:50 page/settings.php:29 page/settings.php:34
-#: page/show-project.php:47 projectmanager.php:2110
+#: page/index.php:71 page/settings.php:29 page/settings.php:34
+#: page/show-project.php:62 projectmanager.php:2284 projectmanager.php:2295
+#: projectmanager.php:2334
 msgid "Settings"
 msgstr ""
 
-#: page/index.php:60 page/index.php:69
+#: page/index.php:88 page/index.php:96
 msgid "Add Project"
 msgstr ""
 
-#: page/index.php:64 page/settings.php:37 projectmanager.php:1773
+#: page/index.php:92 page/settings.php:37 projectmanager.php:1895
 msgid "Title"
 msgstr ""
 
-#: page/settings.php:22 projectmanager.php:1913
+#: page/settings.php:22 projectmanager.php:2118
 msgid "Settings saved"
 msgstr ""
 
@@ -161,7 +178,8 @@ msgid "Navi Link"
 msgstr ""
 
 #: page/settings.php:49
-msgid "Set this option to add a direct link in the navigation panel. <br/> If there is only one project in the database, the link to the index page will be disabled."
+msgid "Set this option to add a direct link in the navigation panel. <br/> If there is only one project in the database, the link to the index page will be "
+"disabled."
 msgstr ""
 
 #: page/settings.php:53
@@ -176,11 +194,11 @@ msgstr ""
 msgid "Thumbnail size"
 msgstr ""
 
-#: page/settings.php:59
+#: page/settings.php:59 projectmanager.php:1908
 msgid "Width"
 msgstr ""
 
-#: page/settings.php:59
+#: page/settings.php:59 projectmanager.php:1909
 msgid "Height"
 msgstr ""
 
@@ -200,173 +218,242 @@ msgstr ""
 msgid "Save Settings"
 msgstr ""
 
-#: page/show-project.php:59 projectmanager.php:1512
-#, php-format
-msgid "%d of %d Datasets"
+#: page/show-project.php:58 projectmanager.php:1494
+msgid "Search"
 msgstr ""
 
-#: page/show-project.php:93 page/show-project.php:108 projectmanager.php:751
-#: projectmanager.php:1887
+#: page/show-project.php:90
+#, php-format
+msgid "Displaying %s&#8211;%s of %s"
+msgstr ""
+
+#: page/show-project.php:142 page/show-project.php:161 projectmanager.php:835
+#: projectmanager.php:2091
 msgid "Edit"
 msgstr ""
 
-#: page/show-project.php:108
+#: page/show-project.php:161
 #, php-format
 msgid "Categories of %s"
 msgstr ""
 
-#: page/show-project.php:118 projectmanager.php:1549 projectmanager.php:1615
+#: page/show-project.php:174 projectmanager.php:1654 projectmanager.php:1721
 msgid "Nothing found"
 msgstr ""
 
-#: projectmanager.php:136
+#: projectmanager.php:236
 msgid "Text"
 msgstr ""
 
-#: projectmanager.php:136
+#: projectmanager.php:236
 msgid "Textfield"
 msgstr ""
 
-#: projectmanager.php:136
+#: projectmanager.php:236
 msgid "E-Mail"
 msgstr ""
 
-#: projectmanager.php:136
+#: projectmanager.php:236
 msgid "Date"
 msgstr ""
 
-#: projectmanager.php:136
+#: projectmanager.php:236
 msgid "URL"
 msgstr ""
 
-#: projectmanager.php:136
+#: projectmanager.php:236
 msgid "Selection"
 msgstr ""
 
-#: projectmanager.php:136
+#: projectmanager.php:236
 msgid "Checkbox List"
 msgstr ""
 
-#: projectmanager.php:136
+#: projectmanager.php:236
 msgid "Radio List"
 msgstr ""
 
-#: projectmanager.php:720
+#: projectmanager.php:797
 msgid "of"
 msgstr ""
 
-#: projectmanager.php:846
+#: projectmanager.php:930
 msgid "Project added"
 msgstr ""
 
-#: projectmanager.php:861
+#: projectmanager.php:945
 msgid "Project updated"
 msgstr ""
 
-#: projectmanager.php:927
+#: projectmanager.php:1014
 msgid "New dataset added to the database."
 msgstr ""
 
-#: projectmanager.php:988
+#: projectmanager.php:1089
 msgid "Dataset updated."
 msgstr ""
 
-#: projectmanager.php:1159
-msgid "Logo exists and is not uploaded. Set the overwrite option if you want to replace it."
+#: projectmanager.php:1266
+msgid "File exists and is not uploaded. Set the overwrite option if you want to "
+"replace it."
 msgstr ""
 
-#: projectmanager.php:1178
+#: projectmanager.php:1285
 #, php-format
 msgid "The uploaded file could not be moved to %s."
 msgstr ""
 
-#: projectmanager.php:1184
+#: projectmanager.php:1291
 msgid "The file type is not supported."
 msgstr ""
 
-#: projectmanager.php:1276
+#: projectmanager.php:1383
 msgid "Form Fields updated"
 msgstr ""
 
-#: projectmanager.php:1384
-msgid "Search"
+#: projectmanager.php:1623
+#, php-format
+msgid "%d of %d Datasets"
 msgstr ""
 
-#: projectmanager.php:1439
-msgid "Go"
-msgstr ""
-
-#: projectmanager.php:1514
+#: projectmanager.php:1625
 #, php-format
 msgid "Search: %d of %d"
 msgstr ""
 
-#: projectmanager.php:1647
+#: projectmanager.php:1753
 msgid "Back to list"
 msgstr ""
 
-#: projectmanager.php:1650
+#: projectmanager.php:1756
 msgid "Details of"
 msgstr ""
 
-#: projectmanager.php:1774
-msgid "Number"
+#: projectmanager.php:1896
+msgid "Display"
 msgstr ""
 
-#: projectmanager.php:1780
+#: projectmanager.php:1898
+msgid "All"
+msgstr ""
+
+#: projectmanager.php:1904
 msgid "Page"
 msgstr ""
 
-#: projectmanager.php:1887
+#: projectmanager.php:1905
+msgid "Slideshow"
+msgstr ""
+
+#: projectmanager.php:1907
+msgid "Use Slideshow"
+msgstr ""
+
+#: projectmanager.php:1910
+msgid "Time"
+msgstr ""
+
+#: projectmanager.php:1910
+msgid "seconds"
+msgstr ""
+
+#: projectmanager.php:1911
+msgid "Fade Effect"
+msgstr ""
+
+#: projectmanager.php:1929
+msgid "Fade"
+msgstr ""
+
+#: projectmanager.php:1929
+msgid "Zoom Fade"
+msgstr ""
+
+#: projectmanager.php:1929
+msgid "Scroll Up"
+msgstr ""
+
+#: projectmanager.php:1929
+msgid "Scroll Left"
+msgstr ""
+
+#: projectmanager.php:1929
+msgid "Scroll Right"
+msgstr ""
+
+#: projectmanager.php:1929
+msgid "Scroll Down"
+msgstr ""
+
+#: projectmanager.php:1929
+msgid "Zoom"
+msgstr ""
+
+#: projectmanager.php:1929
+msgid "Grow X"
+msgstr ""
+
+#: projectmanager.php:1929
+msgid "Grow Y"
+msgstr ""
+
+#: projectmanager.php:1929
+msgid "Zoom BR"
+msgstr ""
+
+#: projectmanager.php:1929
+msgid "Zoom TL"
+msgstr ""
+
+#: projectmanager.php:1929 projectmanager.php:1950
+msgid "Random"
+msgstr ""
+
+#: projectmanager.php:1950
+msgid "Ordered"
+msgstr ""
+
+#: projectmanager.php:2091
 msgid "Post"
 msgstr ""
 
-#: projectmanager.php:1887
+#: projectmanager.php:2091
 msgid "Please wait..."
 msgstr ""
 
-#: projectmanager.php:1887
+#: projectmanager.php:2091
 msgid "Page Revisions"
 msgstr ""
 
-#: projectmanager.php:1887
+#: projectmanager.php:2091
 msgid "Insert time"
 msgstr ""
 
-#: projectmanager.php:1920
-msgid "Projectmanager Global Settings"
+#: projectmanager.php:2125
+msgid "Global Settings"
 msgstr ""
 
-#: projectmanager.php:1921
+#: projectmanager.php:2126
 msgid "Color Scheme"
 msgstr ""
 
-#: projectmanager.php:1924
+#: projectmanager.php:2129
 msgid "Table Headers"
 msgstr ""
 
-#: projectmanager.php:1927
+#: projectmanager.php:2132
 msgid "Table Rows"
 msgstr ""
 
-#: projectmanager.php:1935
+#: projectmanager.php:2140
 msgid "Save Preferences"
 msgstr ""
 
-#: projectmanager.php:1944
-#, php-format
-msgid "To add and manage projects, go to the <a href='%s'>Management Page</a>"
+#: projectmanager.php:2281 projectmanager.php:2294
+msgid "Overview"
 msgstr ""
 
-#: projectmanager.php:1949 projectmanager.php:1952
-msgid "Uninstall ProjectManager"
-msgstr ""
-
-#: projectmanager.php:1952
-msgid "Yes I want to uninstall ProjectManager Plugin. All Data will be deleted!"
-msgstr ""
-
-#: projectmanager.php:2093
+#: projectmanager.php:2293
 msgid "Projects"
 msgstr ""
 
@@ -431,6 +518,14 @@ msgstr ""
 msgid "Right"
 msgstr ""
 
-#: tinymce/window.php:190
+#: tinymce/window.php:183
+msgid "Extend"
+msgstr ""
+
+#: tinymce/window.php:184
+msgid "Compact"
+msgstr ""
+
+#: tinymce/window.php:199
 msgid "Insert"
 msgstr ""
