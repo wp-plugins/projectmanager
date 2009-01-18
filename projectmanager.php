@@ -1857,7 +1857,7 @@ class WP_ProjectManager
 				
 		if ( $datasets ) {
 			foreach ( $datasets AS $dataset ) {
-				$name = ($this->hasDetails()) ? '<a href="'.$get_permalink($options[$widget_id]['page_id']).'&amp;show='.$dataset->id.'"><img src="'.$this->getImageUrl('/thumb.'.$dataset->image).'" alt="'.$dataset->name.'" title="'.$dataset->name.'" /></a>' : '<img src="'.$this->getImageUrl('/thumb.'.$dataset->image).'" alt="'.$dataset->name.'" title="'.$dataset->name.'" />';
+				$name = ($this->hasDetails()) ? '<a href="'.get_permalink($options[$widget_id]['page_id']).'&amp;show='.$dataset->id.'"><img src="'.$this->getImageUrl('/thumb.'.$dataset->image).'" alt="'.$dataset->name.'" title="'.$dataset->name.'" /></a>' : '<img src="'.$this->getImageUrl('/thumb.'.$dataset->image).'" alt="'.$dataset->name.'" title="'.$dataset->name.'" />';
 				
 				if ( $slideshow )
 					echo $name;
