@@ -91,9 +91,6 @@ class WP_ProjectManager
 		//Save selected group. NULL if none is selected
 		$this->setCatID();
 
-		// Set page
-		$this->current_page = isset( $_GET['paged']) ? (int)$_GET['paged'] : 1;
-
 		if ( $project_id )
 			$this->initialize($project_id);
 		
@@ -140,6 +137,14 @@ class WP_ProjectManager
 	 */
 	function getCurrentPage()
 	{
+		global $wp;
+		if (isset($wp->query_vars['paged']))
+			$this->current_page = max(1, intval($wp->query_vars['paged']));
+		elseif (isset($_GET['paged']))
+			$this->current_page = (int)$_GET['paged'];
+		else
+			$this->current_page = 1;
+
 		return $this->current_page;
 	}
 	
@@ -709,6 +714,24 @@ class WP_ProjectManager
 		
 		
 	/**
+	 * getDatasetPage() - determine page dataset is on
+	 *
+	 * @param int $dataset_id
+	 * @return int
+	 */
+	function getDatasetPage( $dataset_id )
+	{
+		$datasets = $this->getDatasets();
+		$offsets = array();
+		foreach ( $datasets AS $o => $d ) {
+			$offsets[$d->id] = $o;
+		}
+		$number = $offsets[$dataset_id] +1;
+		return ceil($number/$this->getPerPage());
+	}
+	
+	
+	/**
 	 * getDatasetMeta() - gets meta data for dataset
 	 *
 	 * @param int $dataset_id
@@ -897,24 +920,6 @@ class WP_ProjectManager
 			$out .= "\n\t\t</div>";
 		}
 		return $out;
-	}
-	
-	
-	/**
-	 * getDatasetOffset() - gets offset of dataset
-	 *
-	 * @param int $dataset_id
-	 * @return int
-	 */
-	function getDatasetOffset( $dataset_id )
-	{
-		global $wpdb;
-
-		$sql = "SELECT `id` FROM {$wpdb->projectmanager_dataset} WHERE `id` < '".$dataset_id."' AND project_id = {$this->project_id}";
-		if ( $this->isCategory() )
-			$sql .= $this->getCategorySearchString();
-		
-		return $wpdb->get_var( $sql );
 	}
 	
 
@@ -1639,7 +1644,10 @@ class WP_ProjectManager
 				}
 				
 				foreach ( $datasets AS $dataset ) {
-					$name = ($this->hasDetails()) ? '<a href="'.$this->createURL().'&amp;show='.$dataset->id.'">'.$dataset->name.'</a>' : $dataset->name;
+					$url = get_permalink();
+					$url = add_query_arg('show', $dataset->id, $url);
+					$url = ($this->isCategory()) ? add_query_arg('cat_id', $this->getCatID(), $url) : $url;
+					$name = ($this->hasDetails()) ? '<a href="'.$url.'">'.$dataset->name.'</a>' : $dataset->name;
 					
 					$class = ("alternate" == $class) ? '' : "alternate";
 					
@@ -1701,7 +1709,11 @@ class WP_ProjectManager
 				
 				foreach ( $datasets AS $dataset ) {
 					$i++;
-					$before_name = '<a href="'.$this->createURL().'&amp;show='.$dataset->id.'">';
+					$url = get_permalink();
+					$url = add_query_arg('show', $dataset->id, $url);
+					$url = ($this->isCategory()) ? add_query_arg('cat_id', $this->getCatID(), $url) : $url;
+								
+					$before_name = '<a href="'.$url.'">';
 					$after_name = '</a>';
 					
 					$width = floor(100/$num_cols);
@@ -1747,12 +1759,13 @@ class WP_ProjectManager
 	 */
 	function getSingleView( $out, $project_id, $dataset_id )
 	{
-		$offset = $this->getDatasetOffset( $dataset_id ) + 1;
-		$page = ceil($offset/$this->getPerPage());
 		$options = get_option( 'projectmanager' );
-	
+		$url = get_permalink();
+		$url = add_query_arg('paged', $this->getDatasetPage($dataset_id), $url);
+		$url = ($this->isCategory()) ? add_query_arg('cat_id', $this->getCatID(), $url) : $url;
+					
 		$out = "</p>";
-		$out .= "\n<p><a href='".$this->createURL()."'&amp;paged=".$page.">".__('Back to list', 'projectmanager')."</a></p>\n";
+		$out .= "\n<p><a href='".$url."'>".__('Back to list', 'projectmanager')."</a></p>\n";
 		
 		if ( $dataset = $this->getDataset( $dataset_id ) ) {
 			$out .= "<fieldset class='dataset'><legend>".__( 'Details of', 'projectmanager' )." ".$dataset->name."</legend>\n";
@@ -1856,12 +1869,15 @@ class WP_ProjectManager
 			echo "<ul class='projectmanager_widget'>";
 				
 		if ( $datasets ) {
+			$url = get_permalink($options[$widget_id]['page_id']);
 			foreach ( $datasets AS $dataset ) {
-				$name = ($this->hasDetails()) ? '<a href="'.$get_permalink($options[$widget_id]['page_id']).'&amp;show='.$dataset->id.'"><img src="'.$this->getImageUrl('/thumb.'.$dataset->image).'" alt="'.$dataset->name.'" title="'.$dataset->name.'" /></a>' : '<img src="'.$this->getImageUrl('/thumb.'.$dataset->image).'" alt="'.$dataset->name.'" title="'.$dataset->name.'" />';
+				$url = add_query_arg('show', $dataset->id, $url);
+				$name = ($this->hasDetails()) ? '<a href="'.$url.'"><img src="'.$this->getImageUrl($dataset->image).'" alt="'.$dataset->name.'" title="'.$dataset->name.'" /></a>' : '<img src="'.$this->getImageUrl($dataset->image).'" alt="'.$dataset->name.'" title="'.$dataset->name.'" />';
 				
-				if ( $slideshow )
-					echo $name;
-				else
+				if ( $slideshow ) {
+					if ( $dataset->image != '' )
+						echo $name;
+				} else
 					echo "<li>".$name."</li>";
 			}
 		}
