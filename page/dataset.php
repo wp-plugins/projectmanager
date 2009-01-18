@@ -38,6 +38,7 @@ if ( isset($_GET['edit']) ) {
 
 if ( !$error ) {
 
+// Try to create image directory
 if ( 1 == $options[$project_id]['show_image'] && !wp_mkdir_p( $projectmanager->getImagePath() ) )
 	echo "<div class='error'><p>".sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $projectmanager->getImagePath() )."</p></div>";
 ?>
@@ -64,9 +65,9 @@ if ( 1 == $options[$project_id]['show_image'] && !wp_mkdir_p( $projectmanager->g
 			<?php endif; ?>
 			<input type="file" name="projectmanager_image" id="projectmanager_image" size="45"/><p><?php _e( 'Supported file types', 'projectmanager' ) ?>: <?php echo implode( ',',$projectmanager->getSupportedImageTypes() ); ?></p>
 			<?php if ( '' != $img_filename ) : ?>
-			<p style="float: left;"><label for="overwrite_image"><?php _e( 'Overwrite existing image', 'projectmanager' ) ?></label><input type="checkbox" id="overwrite_image" name="overwrite_image" value="1" style="margin-left: 1em;" /></p>
+			<p class="alignleft"><label for="overwrite_image"><?php _e( 'Overwrite existing image', 'projectmanager' ) ?></label><input type="checkbox" id="overwrite_image" name="overwrite_image" value="1" style="margin-left: 1em;" /></p>
 			<input type="hidden" name="image_file" value="<?php echo $img_filename ?>" />
-			<p style="float: right;"><label for="del_old_image"><?php _e( 'Delete current image', 'projectmanager' ) ?></label><input type="checkbox" id="del_old_image" name="del_old_image" value="1" style="margin-left: 1em;" /></p>
+			<p class="alignright"><label for="del_old_image"><?php _e( 'Delete current image', 'projectmanager' ) ?></label><input type="checkbox" id="del_old_image" name="del_old_image" value="1" style="margin-left: 1em;" /></p>
 			<?php endif; ?>
 		</td>
 	</tr>

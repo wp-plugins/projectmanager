@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
 "POT-Creation-Date: 2008-12-19 13:16+0000\n"
-"PO-Revision-Date: 2009-01-05 19:24+0100\n"
+"PO-Revision-Date: 2009-01-18 10:02+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -30,9 +30,20 @@ msgstr "Kategorie"
 msgid "Edit Dataset"
 msgstr "Datensatz bearbeiten"
 
-#: page/dataset.php:22
-#: page/index.php:50
-#: page/show-project.php:49
+#: page/dataset.php:25
+#: projectmanager.php:1092
+msgid "You don't have the permission to edit this dataset"
+msgstr "Du hast nicht die nötigen Rechte diesen Datensatz zu bearbeiten"
+
+#: page/dataset.php:32
+#: projectmanager.php:1017
+msgid "An Entry of your user ID has been detected"
+msgstr "Ein Eintrag mit deiner Benutzer ID wurde bereits gefunden"
+
+#: page/dataset.php:35
+#: page/index.php:71
+#: page/show-project.php:64
+#: projectmanager.php:2282
 msgid "Add Dataset"
 msgstr "Datensatz hinzufügen"
 
@@ -68,6 +79,10 @@ msgstr "Lösche aktuelles Bild"
 #: tinymce/window.php:47
 msgid "Categories"
 msgstr "Kategorien"
+
+#: page/dataset.php:131
+msgid "Owner"
+msgstr "Besitzer"
 
 #: page/formfields.php:16
 #: page/formfields.php:18
@@ -156,8 +171,8 @@ msgid "Project"
 msgstr "Projekt"
 
 #: page/index.php:39
-msgid "Number of Datasets"
-msgstr "Anzahl Datensätze"
+msgid "Datasets"
+msgstr "Datensätze"
 
 #: page/index.php:40
 msgid "Action"
@@ -245,6 +260,11 @@ msgstr "Einstellungen speichern"
 msgid "%d of %d Datasets"
 msgstr "%d von %d Datensätze"
 
+#: page/show-project.php:90
+#, php-format
+msgid "Displaying %s&#8211;%s of %s"
+msgstr "Angezeigt %s&#8211;%s von %s"
+
 #: page/show-project.php:93
 #: page/show-project.php:108
 #: projectmanager.php:751
@@ -331,10 +351,6 @@ msgstr "Formularfelder aktualisiert"
 msgid "Search"
 msgstr "Suchen"
 
-#: projectmanager.php:1439
-msgid "Go"
-msgstr "Los"
-
 #: projectmanager.php:1514
 #, php-format
 msgid "Search: %d of %d"
@@ -348,13 +364,95 @@ msgstr "Zurück zur Liste"
 msgid "Details of"
 msgstr "Details von"
 
-#: projectmanager.php:1774
-msgid "Number"
-msgstr "Anzahl"
+#: projectmanager.php:1896
+msgid "Display"
+msgstr "Anzeige"
+
+#: projectmanager.php:1898
+msgid "All"
+msgstr "Alle"
 
 #: projectmanager.php:1780
 msgid "Page"
 msgstr "Seite"
+
+#: projectmanager.php:1905
+msgid "Slideshow"
+msgstr "Slideshow"
+
+#: projectmanager.php:1907
+msgid "Use Slideshow"
+msgstr "Slideshow verwenden"
+
+#: projectmanager.php:1910
+msgid "Time"
+msgstr "Zeit"
+
+#: projectmanager.php:1910
+msgid "seconds"
+msgstr "Sekunden"
+
+#: projectmanager.php:1911
+msgid "Fade Effect"
+msgstr "Übergang"
+
+#: projectmanager.php:1929
+msgid "Fade"
+msgstr "Fade"
+
+#: projectmanager.php:1929
+msgid "Zoom Fade"
+msgstr "Zoom Fade"
+
+#: projectmanager.php:1929
+msgid "Scroll Up"
+msgstr "Hoch rollen"
+
+#: projectmanager.php:1929
+msgid "Scroll Left"
+msgstr "Links rollen"
+
+#: projectmanager.php:1929
+msgid "Scroll Right"
+msgstr "Rechts rollen"
+
+#: projectmanager.php:1929
+msgid "Scroll Down"
+msgstr "Runter rollen"
+
+#: projectmanager.php:1929
+msgid "Zoom"
+msgstr "Zoom"
+
+#: projectmanager.php:1929
+msgid "Grow X"
+msgstr "Wachsen X"
+
+#: projectmanager.php:1929
+msgid "Grow Y"
+msgstr "Wachsen Y"
+
+#: projectmanager.php:1929
+msgid "Zoom BR"
+msgstr "Zoom UL"
+
+#: projectmanager.php:1929
+msgid "Zoom TL"
+msgstr "Zoom OL"
+
+#: projectmanager.php:1929
+#: projectmanager.php:1950
+msgid "Random"
+msgstr "Zufällig"
+
+#: projectmanager.php:1950
+msgid "Ordered"
+msgstr "Geordnet"
+
+#: projectmanager.php:2281
+#: projectmanager.php:2294
+msgid "Overview"
+msgstr "Übersicht"
 
 #: projectmanager.php:1887
 msgid "Post"
@@ -373,8 +471,8 @@ msgid "Insert time"
 msgstr "Einfügungszeit"
 
 #: projectmanager.php:1920
-msgid "Projectmanager Global Settings"
-msgstr "Projektmanager Globale Einstellungen"
+msgid "Global Settings"
+msgstr "Globale Einstellungen"
 
 #: projectmanager.php:1921
 msgid "Color Scheme"
@@ -391,20 +489,6 @@ msgstr "Tabelle Zeilen"
 #: projectmanager.php:1935
 msgid "Save Preferences"
 msgstr "Einstellungen speichern"
-
-#: projectmanager.php:1944
-#, php-format
-msgid "To add and manage projects, go to the <a href='%s'>Management Page</a>"
-msgstr "Um Projekte hinzuzufügen und zu verwalten, gehe zur <a href='%s'>Verwaltungs Seite</a>"
-
-#: projectmanager.php:1949
-#: projectmanager.php:1952
-msgid "Uninstall ProjectManager"
-msgstr "ProjectManager Deinstallieren"
-
-#: projectmanager.php:1952
-msgid "Yes I want to uninstall ProjectManager Plugin. All Data will be deleted!"
-msgstr "Ja, ich möchte das ProjektManager Plugin deinstallieren. Alle Daten werden gelöscht!"
 
 #: projectmanager.php:2093
 msgid "Projects"
@@ -482,12 +566,11 @@ msgstr "Rechts"
 msgid "Insert"
 msgstr "Einfügen"
 
-msgid "An Entry of your user ID has been detected"
-msgstr "Es wurde ein Datensatz mit deiner Benutzer ID gefunden"
+#: tinymce/window.php:183
+msgid "Extend"
+msgstr "Voll"
 
-msgid "You don't have the permission to edit this dataset"
-msgstr "Du hast nicht die nötigen Rechte diesen Datensatz zu bearbeiten"
-
-msgid "Owner"
-msgstr "Eigentümer"
+#: tinymce/window.php:184
+msgid "Compact"
+msgstr "Kompakt"
 

@@ -176,6 +176,15 @@ $options = get_option('projectmanager');
 			</select>
 		</td>
 	</tr>
+	<tr>
+		<td nowrap="nowrap" valign="top"><label for="display_search"><?php _e( 'Display', 'projectmanager' ) ?></label></td>
+		<td>
+			<select size="1" name="display_search" id="display_search">
+				<option value="extend"><?php _e( 'Extend', 'projectmanager' ) ?></option>
+				<option value="compact"><?php _e( 'Compact', 'projectmanager' ) ?></option>
+			</select>
+		</td>
+	</tr>
 	</table>
 	</div>
 	

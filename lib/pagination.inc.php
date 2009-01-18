@@ -69,7 +69,7 @@ class Pagination
 	*/
 	function __construct( $per_page, $num_items, $get_unset=false )
 	{
-		$this->page = isset( $_GET['paging']) ? (int)$_GET['paging'] : 1;
+		$this->page = isset( $_GET['paged']) ? (int)$_GET['paged'] : 1;
 		$this->setPerPage( $per_page );
 		$this->setNumItems( $num_items );
 		
@@ -160,7 +160,7 @@ class Pagination
 	{
 		$page = $this->page;
 	
-		$out = "\n\n<p class='pagination'>";
+		$out = '<div class="tablenav-pages">';
 		
 		// determine number of pages
 		$num_pages = ( 0 == $this->per_page ) ? 1 : ceil( $this->num_items/$this->per_page );
@@ -176,15 +176,15 @@ class Pagination
 			$break = false;
 			while ( 1 ) {
 				if( $i == $page )
-					$out .= '<span class="current">'.$i.'</span>';
+					$out .= '<span class="page-numbers current">'.$i.'</span>';
 				else
-					$out .= ' <span><a href="'.$this->createURL().'paging='.$i.'">'.$i.'</a></span> ';
+					$out .= '<a class="page-numbers" href="'.$this->createURL().'paging='.$i.'">'.$i.'</a>';
 					
 				if ( $break )
 					break;
 	
-				if ( $num_pages > 10 ) {
-					$i += ( $i != $page ? ceil( abs( $page - $i )/4 ) : 1 );
+				if ( $num_pages > 5 ) {
+					$i += ( $i != $page ? ceil( abs( $page - $i )/2 ) : 1 );
 					if ( $i >= $num_pages ) {
 						$i = $num_pages;
 						$break = true;
@@ -203,7 +203,7 @@ class Pagination
 				$out .= '<a href="'.$this->createURL().'paging='.($page+1).'">&gt;&gt;</a>';
 		}
 	
-		return $out .= "</p>\n\n";
+		return $out .= "</div>";
 	}
 }
 }

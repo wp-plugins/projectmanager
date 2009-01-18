@@ -67,5 +67,6 @@ if ( 1 == $options[$project_id]['show_image'] && !wp_mkdir_p( $projectmanager->g
 		<p class="submit"><input type="submit" name="saveSettings" value="<?php _e( 'Save Settings', 'projectmanager' ) ?> &raquo;" class="button" /></p>
 	</form> 
 </div>
+<?php if ( $projectmanager->isSingle() ) $projectmanager->displayOptionsPage(true); ?>
 
 <?php endif; ?>
