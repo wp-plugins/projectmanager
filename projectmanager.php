@@ -2345,7 +2345,7 @@ class WP_ProjectManager
 	 * @param array $links array of action links
 	 * @return void
 	 */
-	public function pluginActions( $links )
+	function pluginActions( $links )
 	{
 		$settings_link = '<a href="admin.php?page=projectmanager">' . __('Settings') . '</a>';
 		array_unshift( $links, $settings_link );

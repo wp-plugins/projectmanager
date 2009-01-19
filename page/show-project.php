@@ -82,7 +82,7 @@ else
 			<?php wp_dropdown_categories(array('echo' => 1, 'hide_empty' => 0, 'name' => 'cat_id', 'orderby' => 'name', 'selected' => $projectmanager->getCatID(), 'hierarchical' => true, 'child_of' => $options[$project_id]['category'], 'show_option_all' => __('View all categories'))); ?>
 			<input type='hidden' name='page' value='<?php echo $_GET['page'] ?>' />
 			<input type='hidden' name='project_id' value='<?php echo $project_id ?>' />
-			<input type='submit' value='<?php _e( 'Filter', 'projectmanager' ) ?>' class='button' />
+			<input type='submit' value='<?php _e( 'Filter' ) ?>' class='button' />
 		</div>
 		
 		<?php if ( $projectmanager->getPageLinks() ) : ?>
