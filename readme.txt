@@ -1,9 +1,10 @@
 === ProjectManager ===
 Contributors: Kolja Schleich
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2329191
 Tags: datamanager, CMS, Content Management System
 Requires at least: 2.5
 Tested up to: 2.7
-Stable tag: 1.6
+Stable tag: 1.6.1
 
 This plugin can be used to manage any number of projects with recurrent datasets (e.g. portrait system, dvd collection)
 
@@ -91,6 +92,10 @@ in projectmanager.php for details.
 
 
 == ChangeLog ==
+
+**Version 1.6.1**, *January-18-2009*
+
+- fixed structure to be compatible with pretty permalinks
 
 **Version 1.6**, *January-18-2009*
 
