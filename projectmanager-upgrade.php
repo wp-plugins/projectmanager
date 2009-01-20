@@ -28,4 +28,26 @@ if (version_compare($old_options['version'], '1.5', '<')) {
 	$role = get_role('administrator');
 	$role->remove_cap('manage_projectmanager');
 }
+
+if (version_compare($old_options['version'], '1.6.2', '<')) {
+	/**
+	 * Copy Logos to new image directory and delete old one
+	 */
+	$dir_src = WP_CONTENT_DIR.'/projects';
+	$dir_handle = opendir($dir_src);
+	if ( wp_mkdir_p( $this->getImagePath() ) ) {
+		while( $file = readdir($dir_handle) ) {
+			if( $file!="." && $file!=".." ) {
+				if ( copy ($dir_src."/".$file, $this->getImagePath()."/".$file) )
+					unlink($dir_src."/".$file);
+			}
+		}
+		
+		
+	}
+	@rmdir($dir_src);
+	closedir($dir_handle);
+	
+}
+
 ?>

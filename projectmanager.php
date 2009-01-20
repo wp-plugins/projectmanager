@@ -207,29 +207,7 @@ class WP_ProjectManager
 		return $page_links;
 	}
 	
-	
-	/**
-	* createURL() - creates url for links in pagination
-	*
-	* @param none
-	* @return string
-	*/
-	function createURL()
-	{
-		// create url for links
-		$get = $_GET;
-		unset( $get['show'] );
-			
-		$url = '?';
-		foreach ( $get as $key => $value )
-			$url .= "$key=".urlencode( $value )."&";
 
-		$url = substr($url,0,-1);
-		$out = htmlspecialchars( $url );
-		return $out;
-	}
-	
-	
 	/**
 	 * getFormFieldTypes() - returns array of form field types
 	 *
@@ -293,9 +271,9 @@ class WP_ProjectManager
 	function getImagePath( $file = false )
 	{
 		if ( $file )
-			return WP_CONTENT_DIR.'/projects/'.$file;
+			return WP_CONTENT_DIR.'/uploads/projects/'.$file;
 		else
-			return WP_CONTENT_DIR.'/projects';
+			return WP_CONTENT_DIR.'/uploads/projects';
 	}
 	
 	
@@ -308,9 +286,9 @@ class WP_ProjectManager
 	function getImageUrl( $file = false )
 	{
 		if ( $file )
-			return WP_CONTENT_URL.'/projects/'.$file;
+			return WP_CONTENT_URL.'/uploads/projects/'.$file;
 		else
-			return WP_CONTENT_URL.'/projects';
+			return WP_CONTENT_URL.'/uploads/projects';
 	}
 	
 	
@@ -1013,7 +991,7 @@ class WP_ProjectManager
 				}
 			}
 		
-			if ( isset($_FILES['projectmanager_image']) )
+			if ( isset($_FILES['projectmanager_image']) && $_FILES['projectmanager_image']['name'] != ''  )
 				$this->uploadImage($team_id, $_FILES['projectmanager_image']);
 				
 			if ( $this->error ) $this->printErrorMessage();
@@ -1088,7 +1066,7 @@ class WP_ProjectManager
 				$this->delImage( $image_file );
 			}
 				
-			if ( isset($_FILES['projectmanager_image']) )
+			if ( isset($_FILES['projectmanager_image']) && $_FILES['projectmanager_image']['name'] != '' )
 				$this->uploadImage($dataset_id, $_FILES['projectmanager_image'], $overwrite_image);
 			
 			if ( $this->error ) $this->printErrorMessage();
@@ -2075,7 +2053,6 @@ class WP_ProjectManager
 				   panel:false,
 				   loop:true,
 				   play:true,
-				   imgresize:true,
 				   playframe: false,
 				   effect: '<?php echo $opts['slideshow']['fade'] ?>',
 				   random: <?php echo $opts['slideshow']['random'] ?>,
@@ -2214,7 +2191,6 @@ class WP_ProjectManager
 			$options['version'] = PROJECTMANAGER_VERSION;
 			update_option( 'projectmanager', $options );
 		}
-		
 		$charset_collate = '';
 		if ( $wpdb->supports_collation() ) {
 			if ( ! empty($wpdb->charset) )
@@ -2306,7 +2282,6 @@ class WP_ProjectManager
 		}
 		
 		if ( ! $this->isSingle() ) {
-			//add_management_page( __( 'Projects', 'projectmanager' ), __( 'Projects', 'projectmanager' ), 'manage_projects', basename( __FILE__, ".php" ).'/page/index.php' );
 			$page = basename(__FILE__,".php").'/page/index.php';
 			add_menu_page(__('Projects', 'projectmanager'), __('Projects', 'projectmanager'), 'manage_projects', $page,'', $this->plugin_url.'/images/menu.png');
 			add_submenu_page($page, __('Overview', 'projectmanager'), __('Overview','projectmanager'),'manage_projects', $page,'');
