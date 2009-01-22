@@ -36,7 +36,6 @@ define( 'PROJECTMANAGER_VERSION', '1.6.2' );
 define( 'PROJECTMANAGER_URL', WP_PLUGIN_URL.'/projectmanager' );
 
 include_once( 'projectmanager.php' );
-include_once( 'lib/pagination.inc.php' );
 if (!class_exists('Thumbnail'))
 	include_once( 'lib/thumbnail.inc.php' );
 
@@ -83,4 +82,7 @@ if ( function_exists('register_uninstall_hook') )
 if ( !function_exists('register_uninstall_hook') )
 	if ( isset( $_GET['projectmanager']) AND 'uninstall' ==  $_GET['projectmanager'] AND ( isset($_GET['delete_plugin']) AND 1 == $_GET['delete_plugin'] ) )
 		$leaguemanager->uninstall();
+
+if ( isset($_POST['projectmanager_export']) )
+	$projectmanager->exportDatasets($_POST['project_id']);
 ?>

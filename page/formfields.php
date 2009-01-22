@@ -27,6 +27,7 @@ $options = get_option('projectmanager');
 		<th scope="col"><?php _e( 'Type', 'projectmanager' ) ?></th>
 		<th scope="col"><?php _e( 'Show on startpage', 'projectmanager' ) ?></th>
 		<th scope="col"><?php _e( 'Order', 'projectmanager' ) ?></th>
+		<th scope="sol"><?php _e( 'Order By', 'projectmanager' ) ?></th>
 		<th scope="col">&#160;</th>
 	</tr>
 	</thead>

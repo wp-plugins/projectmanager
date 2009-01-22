@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
 "POT-Creation-Date: 2008-12-19 13:16+0000\n"
-"PO-Revision-Date: 2009-01-18 10:02+0100\n"
+"PO-Revision-Date: 2009-01-22 22:52+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -573,4 +573,43 @@ msgstr "Voll"
 #: tinymce/window.php:184
 msgid "Compact"
 msgstr "Kompakt"
+
+msgid "Sort Datasets by"
+msgstr "Datensätze sortieren nach"
+
+msgid "Formfields"
+msgstr "Formularfelder"
+
+msgid "Order By"
+msgstr "Sortieren"
+
+msgid "File"
+msgstr "Datei"
+
+msgid "Delimiter"
+msgstr "Trennzeichen"
+
+msgid "For tab delimited files use TAB as delimiter"
+msgstr "Für Tabulator getrennte Dateien, verwende TAB als Trennzeichen"
+
+msgid "Column Assignment"
+msgstr "Spaltenzuordnung"
+
+msgid "All FormFields need to be assigned, also if some contain no data"
+msgstr "Alle Formularfelder müssen zugeordnet werden, auch wenn manche keine Daten enthalten"
+
+msgid "Column %d"
+msgstr "Spalte %d"
+
+msgid "%d Datasets successfully imported"
+msgstr "%d Datensätze erfolgreich importiert"
+
+msgid "The file is not readable"
+msgstr "Die Datei ist nicht lesbar"
+
+msgid "The uploaded file seems to be empty"
+msgstr "Die hochgeladene Datei scheint leer zu sein"
+
+msgid "Import/Export"
+msgstr "Import/Export"
 

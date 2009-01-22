@@ -48,7 +48,7 @@ if (version_compare($old_options['version'], '1.6.2', '<')) {
 }
 
 if (version_compare($old_options['version'], '1.7', '<')) {
-	$wpdb->query( "ALTER TABLE{$wpdb->projectmanager_projectmeta} ADD `order_by` tinyint( 1 ) NOT NULL default '0' AFTER `order`" );
+	$wpdb->query( "ALTER TABLE {$wpdb->projectmanager_projectmeta} ADD `order_by` tinyint( 1 ) NOT NULL default '0' AFTER `order`" );
 }
 
 ?>

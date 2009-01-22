@@ -5,7 +5,7 @@ if ( !current_user_can( 'manage_projects' ) ) :
 else :
 $project_id = $projectmanager->getProjectID();
 $options = get_option( 'projectmanager' );
-if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
+if ( isset($_POST['updateProjectManager']) AND !isset($_POST['doaction']) ) {
 	if ( 'dataset' == $_POST['updateProjectManager'] ) {
 		check_admin_referer( 'projectmanager_edit-dataset' );
 		if ( '' == $_POST['dataset_id'] ) {
@@ -24,8 +24,6 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 		foreach ( $_POST['dataset'] AS $dataset_id )
 			$projectmanager->delDataset( $dataset_id );
 	}
-} elseif ( isset($_POST['cat_id']) ) {
-	$projectmanager->setCatID($_POST['cat_id']);
 }
 
 $project_title = $projectmanager->getProjectTitle();
@@ -64,7 +62,7 @@ else
 		<li><a href="edit.php?page=projectmanager/page/dataset.php&amp;project_id=<?php echo $project_id ?>"><?php _e( 'Add Dataset', 'projectmanager' ) ?></a></li> |
 		<li><a href="categories.php"><?php _e( 'Categories' ) ?></a></li> |
 		<?php if ( current_user_can( 'projectmanager_admin' ) ) : ?>
-		<li><a href="admin.php?page=projectmanager/page/import.php&amp;project_id=<?php echo $project_id ?>"><?php _e('Import') ?></a></li>
+		<li><a href="admin.php?page=projectmanager/page/import.php&amp;project_id=<?php echo $project_id ?>"><?php _e('Import/Export', 'projectmanager') ?></a></li>
 		<?php endif; ?>
 	</ul>
 	
@@ -81,11 +79,13 @@ else
 			</select>
 			<input type="submit" value="<?php _e('Apply'); ?>" name="doaction" id="doaction" class="button-secondary action" />
 			
+			<?php if ( -1 != $options[$project_id]['category'] ) : ?>
 			<!-- Category Filter -->
 			<?php wp_dropdown_categories(array('echo' => 1, 'hide_empty' => 0, 'name' => 'cat_id', 'orderby' => 'name', 'selected' => $projectmanager->getCatID(), 'hierarchical' => true, 'child_of' => $options[$project_id]['category'], 'show_option_all' => __('View all categories'))); ?>
 			<input type='hidden' name='page' value='<?php echo $_GET['page'] ?>' />
 			<input type='hidden' name='project_id' value='<?php echo $project_id ?>' />
 			<input type='submit' value='<?php _e( 'Filter' ) ?>' class='button' />
+			<?php endif; ?>
 		</div>
 		
 		<?php if ( $projectmanager->getPageLinks() ) : ?>

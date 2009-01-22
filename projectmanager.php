@@ -329,9 +329,13 @@ class WP_ProjectManager
 	{
 		if ( $cat_id )
 			$this->cat_id = $cat_id;
+		elseif ( isset($_GET['cat_id']) )
+			$this->cat_id = (int)$_GET['cat_id'];
+		elseif ( isset($_POST['cat_id']) )
+			$this->cat_id = (int)$_POST['cat_id'];
 		else
-			$this->cat_id = ( isset($_GET['cat_id']) && '' != $_GET['cat_id'] && 0 < $_GET['cat_id'] ) ? (int)$_GET['cat_id'] : null;
-		
+			$this->cat_id = null;
+			
 		return;
 	}
 	
@@ -564,7 +568,7 @@ class WP_ProjectManager
 	{
 		global $wpdb;
 	
-		$num_form_fields = $wpdb->get_var = "SELECT COUNT(ID) FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = {$this->project_id}";
+		$num_form_fields = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = {$this->project_id}" );
 		return $num_form_fields;
 	}
 	
@@ -623,6 +627,8 @@ class WP_ProjectManager
 	 */
 	function getSelectedCategoryTitles( $cat_ids )
 	{
+		if ( !is_array($cat_ids) ) $cat_ids = array();
+		
 		$categories = array();
 		foreach ( $cat_ids AS $cat_id )
 			$categories[] = $this->getCatTitle($cat_id);
@@ -664,7 +670,7 @@ class WP_ProjectManager
 	 */
 	function datasetOrderOptions( $selected )
 	{
-		$options = array( 'id' => __('By ID', 'projectmanager'), 'name' => __('By Name','projectmanager'), 'formfields' => __('By Formfields', 'projectmanager') );
+		$options = array( 'id' => __('ID', 'projectmanager'), 'name' => __('Name','projectmanager'), 'formfields' => __('Formfields', 'projectmanager') );
 		
 		foreach ( $options AS $option => $title ) {
 			$select = ( $selected == $option ) ? ' selected="selected"' : '';
@@ -691,7 +697,7 @@ class WP_ProjectManager
 		else {
 			if ( $this->isCategory() )
 				$sql .= $this->getCategorySearchString();
-			
+
 			return $wpdb->get_var( $sql );
 		}
 	}
@@ -712,8 +718,10 @@ class WP_ProjectManager
 		$options = get_option('projectmanager');
 		
 		// Set ordering
-		if ( $options[$this->project_id]['dataset_order'] != 'formfields' )
-			$orderby = $options[$this->project_id]['dataset_order'].' ASC';
+		if ( !isset($options[$this->project_id]['dataset_orderby']) || $options[$this->project_id]['dataset_orderby'] == '' )
+			$orderby = 'name ASC';
+		elseif ( $options[$this->project_id]['dataset_orderby'] != 'formfields' )
+			$orderby = $options[$this->project_id]['dataset_orderby'].' ASC';
 		else
 			$orderby = 'name ASC';
 			
@@ -729,7 +737,7 @@ class WP_ProjectManager
 		
 		$datasets = $wpdb->get_results($sql);
 		
-		if ( $options[$this->project_id]['dataset_order'] == 'formfields' )
+		if ( $options[$this->project_id]['dataset_orderby'] == 'formfields' )
 			$datasets = $this->orderDatasetsByFormFields($datasets);
 			
 		return $datasets;
@@ -1117,7 +1125,7 @@ class WP_ProjectManager
 				if ($handle) {
 					if ( "TAB" == $delimiter ) $delimiter = "\t"; // correct tabular delimiter
 					
-					$i = 1; // initialize dataset counter
+					$i = 0; // initialize dataset counter
 					while (!feof($handle)) {
 						$buffer = fgets($handle, 4096);
 						$line = explode($delimiter, $buffer);
@@ -1126,26 +1134,57 @@ class WP_ProjectManager
 						foreach ( $cols AS $col => $form_field_id ) {
 							$meta[$form_field_id] = $line[$col];
 						}
-						//$this->addDataset($project_id, $name, array(), $meta);
+						$this->addDataset($project_id, $name, array(), $meta);
 						$i++;
-						echo $buffer; // for first testings
 					}
 					fclose($handle);
 					
 					return sprintf(__( '%d Datasets successfully imported', 'projectmanager' ), $i);
-				} else
+				} else {
 					$this->error = true;
 					$this->message = __('The file is not readable', 'projectmanager');
 				}
-				@unlink($new_file); // remove file from server after import is done
 			} else {
 				$this->error = true;
 				$this->message = sprintf( __('The uploaded file could not be moved to %s.' ), $this->getImagePath() );
 			}
+			@unlink($new_file); // remove file from server after import is done
 		} else {
 			$this->error = true;
 			$this->message = __('The uploaded file seems to be empty', 'projectmanager');
 		}
+	}
+	
+	
+	/**
+	 * exportDatasets() - export datasets to CSV
+	 *
+	 * @param int $project_id
+	 * @return file
+	 */
+	function exportDatasets( $project_id )
+	{
+		$this->project_id = $project_id;
+		$filename = $this->getProjectTitle()."_".date("Y-m-d").".csv";
+		/*
+		* Generate Header
+		*/
+		$contents = "Name\tCategories";
+		foreach ( $this->getFormFields() AS $form_field )
+			$contents .= "\t".$form_field->label;
+		
+		foreach ( $this->getDatasets() AS $dataset ) {
+			$contents .= "\n".$dataset->name."\t".$this->getSelectedCategoryTitles(maybe_unserialize($dataset->cat_ids));
+
+			foreach ( $this->getDatasetMeta( $dataset->id ) AS $meta ) {
+				$contents .= "\t".$meta->value;
+			}
+		}
+		
+		header('Content-Type: text/csv');
+    		header('Content-Disposition: inline; filename="'.$filename.'"');
+		echo $contents;
+		exit();
 	}
 	
 	
@@ -1514,12 +1553,13 @@ class WP_ProjectManager
 		
 		$options = get_option('projectmanager');
 		if ( null != $form_name ) {
-			foreach ( $wpdb->get_results( "SELECT `id` FROM {$wpdb->projectmanager_projectmeta}" ) AS $form_field) {
+			foreach ( $wpdb->get_results( "SELECT `id`, `project_id` FROM {$wpdb->projectmanager_projectmeta}" ) AS $form_field) {
 				if ( !array_key_exists( $form_field->id, $form_name ) ) {
 					unset($options['form_field_options'][$form_field->id]);
 					
-					$wpdb->query( "DELETE FROM {$wpdb->projectmanager_projectmeta} WHERE `id` = {$form_field->id}" );
-					$wpdb->query( "DELETE FROM {$wpdb->projectmanager_datasetmeta} wHERE `form_id` = {$form_field->id}" );
+					$wpdb->query( "DELETE FROM {$wpdb->projectmanager_projectmeta} WHERE `id` = {$form_field->id} AND `project_id` = {$project_id}"  );
+					if ( $project_id == $form_field->project_id )
+						$wpdb->query( "DELETE FROM {$wpdb->projectmanager_datasetmeta} wHERE `form_id` = {$form_field->id}" );
 				}
 			}
 				
@@ -2209,8 +2249,8 @@ class WP_ProjectManager
 			if ( !$this->single )
 				echo '<a href="edit.php?page=projectmanager/page/index.php">'.__( 'Projectmanager', 'projectmanager' ).'</a> &raquo; ';
 			
-			if ( $page_title != $this->getProjectTitle( $this->project_id ) )
-				echo '<a href="edit.php?page=projectmanager/page/show-project.php&amp;project_id='.$this->project_id.'">'.$this->getProjectTitle( $this->project_id ).'</a> &raquo; ';
+			if ( $page_title != $this->getProjectTitle() )
+				echo '<a href="edit.php?page=projectmanager/page/show-project.php&amp;project_id='.$this->project_id.'">'.$this->getProjectTitle().'</a> &raquo; ';
 			
 			if ( !$start || ($start && !$this->single) ) echo $page_title;
 			
@@ -2482,7 +2522,7 @@ class WP_ProjectManager
 					add_submenu_page($page, __( 'Form Fields', 'projectmanager' ), __( 'Form Fields', 'projectmanager' ), 'manage_projects', 'admin.php?page=projectmanager/page/formfields.php&project_id='.$project->id);
 					add_submenu_page($page, __( 'Settings', 'projectmanager' ), __( 'Settings', 'projectmanager' ), 'manage_projects', 'admin.php?page=projectmanager/page/settings.php&project_id='.$project->id);
 					add_submenu_page($page, __('Categories'), __('Categories'), 'manage_projects', 'categories.php');
-					add_submenu_page($page, __('Import'), __('Import'), 'projectmanager_admin', 'admin.php?page=projectmanager/page/import.php&project_id='.$project->id);
+					add_submenu_page($page, __('Import/Export', 'projectmanager'), __('Import/Export', 'projectmanager'), 'projectmanager_admin', 'admin.php?page=projectmanager/page/import.php&project_id='.$project->id);
 				}
 			}
 		}

@@ -15,8 +15,9 @@ if ( isset($_POST['import']) ) {
 }
 ?>
 
-<div class="wrap" style="margin-bottom: 1em;">
-	<h2><?php printf(__( '%s Import', 'projectmanager' ), $projectmanager->getProjectTitle()) ?></h2>
+<div class="wrap">
+	<?php $projectmanager->printBreadcrumb( __('Import/Export', 'projectmanager') ) ?>
+	<h2><?php _e( 'Import' ) ?></h2>
 	
 	<form action="" method="post" enctype="multipart/form-data">
 	<?php wp_nonce_field( 'projectmanager_import-datasets' ) ?>
@@ -24,9 +25,10 @@ if ( isset($_POST['import']) ) {
 	
 	<table class="form-table">
 	<tr valign="top">
-		<th scope="row"><label for="projectmanger_import"><?php _e('File','projectmanager') ?></label></th><td><input type="file" name="projectmanger_import" id="projectmanger_import" size="45"/></td>
+		<th scope="row"><label for="projectmanger_import"><?php _e('File','projectmanager') ?></label></th><td><input type="file" name="projectmanger_import" id="projectmanger_import" size="40"/></td>
+	</tr>
 	<tr valign="top">
-		<th scope="row"><label for="delimiter"><?php _e('Delimiter','projectmanager') ?></label></th><input type="text" name="delimiter" id="delimiter" value=";" /><p><?php _e('For tab delimited files use TAB as delimiter', 'projectmanager') ?></td>
+		<th scope="row"><label for="delimiter"><?php _e('Delimiter','projectmanager') ?></label></th><td><input type="text" name="delimiter" id="delimiter" value=";" size="3" /><p><?php _e('For tab delimited files use TAB as delimiter', 'projectmanager') ?></td>
 	</tr>
 	</table>
 	<h3><?php _e( 'Column Assignment', 'projectmanager' ) ?></h3>
@@ -35,7 +37,7 @@ if ( isset($_POST['import']) ) {
 	<tr valign="top">
 		<th scope="row"><?php printf(__( 'Column %d', 'projectmanager'), 1 ) ?></th><td><?php _e( 'Name', 'projectmanager' ) ?></td>
 	</tr>
-	<?php for ( $i = 1; $i <= $projectmanager->getNumFormFields() ) : ?>
+	<?php for ( $i = 1; $i <= $projectmanager->getNumFormFields(); $i++ ) : ?>
 	<tr valign="top">
 		<th scope="row"><label for="col_<?php echo $i ?>"><?php printf(__( 'Column %d', 'projectmanager'), ($i+1)) ?></label></th>
 		<td>
@@ -49,7 +51,15 @@ if ( isset($_POST['import']) ) {
 	<?php endfor; ?>
 	</table>
 	
-	<p class="submit"><input type="submit" name="import" value="<?php _e('Import Datasets','projectmanger') ?> &raquo;" class="button" /></p>
+	<p class="submit"><input type="submit" name="import" value="<?php _e('Import') ?> &raquo;" class="button" /></p>
+	</form>
+</div>
+
+<div class="wrap">
+	<h2><?php _e( 'Export') ?></h2>
+	<form action="" method="post">
+		<input type="hidden" name="project_id" value="<?php echo $project_id ?>" />
+		<p class="submit"><input type="submit" name="projectmanager_export" value="<?php _e('Export') ?> &raquo;" class="button" /></p>
 	</form>
 </div>
 <?php endif; ?>
