@@ -33,16 +33,7 @@ class WP_ProjectManager
 	 */
 	var $per_page;
 		
-		
-	/**
-	 * @deprecated
-	 * pagination object
-	 *
-	 * @var object
-	 */
-	//var $pagination;
-		
-		
+	
 	/**
 	 * form fields
 	 *
@@ -124,8 +115,6 @@ class WP_ProjectManager
 
 		$this->num_items = $this->getNumDatasets($this->project_id);
 		$this->num_max_pages = ( 0 == $this->per_page || $this->isSearch() ) ? 1 : ceil( $this->num_items/$this->per_page );
-
-	//	$this->pagination = new Pagination( $this->per_page, $this->getNumDatasets($this->project_id), array('show') );
 	}
 	
 	
@@ -240,6 +229,18 @@ class WP_ProjectManager
 	
 	
 	/**
+	 * error() - check if an error occured
+	 *
+	 * @param none
+	 * @return boolean
+	 */
+	function error()
+	{
+		return $this->error;
+	}
+	
+	
+	/**
 	 * getErrorMessage() - return error message
 	 *
 	 * @param none
@@ -259,6 +260,20 @@ class WP_ProjectManager
 	function printErrorMessage()
 	{
 		echo "\n<div class='error'><p>".$this->getErrorMessage()."</p></div>";
+	}
+	
+	
+	/**
+	 * printMessage() - print formatted success or error message
+	 *
+	 * @param none
+	 */
+	function printMessage()
+	{
+		if ( $this->error )
+			echo "\n<div class='error'><p>".$this->message."</p></div>";
+		else
+			echo "\n<div id='message' class='updated fade'><p><strong>".$this->message."</strong></p></div>";
 	}
 	
 	
@@ -536,6 +551,21 @@ class WP_ProjectManager
 	
 		$sql = "SELECT `label`, `type`, `order`, `order_by`, `show_on_startpage`, `id` FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = {$this->project_id} ORDER BY `order` ASC;";
 		return $wpdb->get_results( $sql );
+	}
+	
+	
+	/**
+	* getNumFormFields() - gets number of form fields for a specific project
+	*
+	* @param none
+	* @return int
+	*/
+	function getNumFormFields( )
+	{
+		global $wpdb;
+	
+		$num_form_fields = $wpdb->get_var = "SELECT COUNT(ID) FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = {$this->project_id}";
+		return $num_form_fields;
 	}
 	
 	
@@ -1065,6 +1095,59 @@ class WP_ProjectManager
 		$wpdb->query( "DELETE FROM {$wpdb->projectmanager_projects} WHERE `id` = {$project_id}" );
 	}
 
+	
+	/**
+	 * importDatasets() - import datasets from CSV file
+	 *
+	 * @param int $project_id
+	 * @param array $file CSV file
+	 * @param string $delimiter
+	 * @param array $cols column assignments
+	 * @return string
+	 */
+	function importDatasets( $project_id, $file, $delimiter, $cols )
+	{
+		if ( $file['size'] > 0 ) {
+			/*
+			* Upload CSV file to image directory, temporarily
+			*/
+			$new_file =  $this->getImagePath().'/'.basename($file['name']);
+			if ( move_uploaded_file($file['tmp_name'], $new_file) ) {
+				$handle = @fopen($new_file, "r");
+				if ($handle) {
+					if ( "TAB" == $delimiter ) $delimiter = "\t"; // correct tabular delimiter
+					
+					$i = 1; // initialize dataset counter
+					while (!feof($handle)) {
+						$buffer = fgets($handle, 4096);
+						$line = explode($delimiter, $buffer);
+						$name = $line[0];
+						// assign column values to form fields
+						foreach ( $cols AS $col => $form_field_id ) {
+							$meta[$form_field_id] = $line[$col];
+						}
+						//$this->addDataset($project_id, $name, array(), $meta);
+						$i++;
+						echo $buffer; // for first testings
+					}
+					fclose($handle);
+					
+					return sprintf(__( '%d Datasets successfully imported', 'projectmanager' ), $i);
+				} else
+					$this->error = true;
+					$this->message = __('The file is not readable', 'projectmanager');
+				}
+				@unlink($new_file); // remove file from server after import is done
+			} else {
+				$this->error = true;
+				$this->message = sprintf( __('The uploaded file could not be moved to %s.' ), $this->getImagePath() );
+			}
+		} else {
+			$this->error = true;
+			$this->message = __('The uploaded file seems to be empty', 'projectmanager');
+		}
+	}
+	
 	
 	/**
 	 * addDataset() - add new dataset
@@ -2398,7 +2481,8 @@ class WP_ProjectManager
 					add_submenu_page($page, __( 'Add Dataset', 'projectmanager' ), __( 'Add Dataset', 'projectmanager' ), 'manage_projects', 'admin.php?page=projectmanager/page/dataset.php&project_id='.$project->id);
 					add_submenu_page($page, __( 'Form Fields', 'projectmanager' ), __( 'Form Fields', 'projectmanager' ), 'manage_projects', 'admin.php?page=projectmanager/page/formfields.php&project_id='.$project->id);
 					add_submenu_page($page, __( 'Settings', 'projectmanager' ), __( 'Settings', 'projectmanager' ), 'manage_projects', 'admin.php?page=projectmanager/page/settings.php&project_id='.$project->id);
-					add_submenu_page($page, __('Categories' ), __('Categories' ), 'manage_projects', 'categories.php');
+					add_submenu_page($page, __('Categories'), __('Categories'), 'manage_projects', 'categories.php');
+					add_submenu_page($page, __('Import'), __('Import'), 'projectmanager_admin', 'admin.php?page=projectmanager/page/import.php&project_id='.$project->id);
 				}
 			}
 		}

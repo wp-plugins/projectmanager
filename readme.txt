@@ -10,7 +10,7 @@ This plugin can be used to manage any number of projects with recurrent datasets
 
 == Description ==
 
-This plugin is a datamanager for any recurrent datasets. It can be used to manage and list a DVD collection,to to present portraits (e.g. athlets of a team) or anything you can think of. Below is a least of features
+This plugin is a datamanager for any recurrent datasets. It can be used to manage and list a DVD collection, to to present portraits (e.g. athlets of a team), simple tabular calendar or anything you can think of. Below is a least of features
 
 **Features**
 
@@ -25,6 +25,8 @@ This plugin is a datamanager for any recurrent datasets. It can be used to manag
 * easy adding of shortcodes via TinyMCE Button
 * change colorscheme for output tables
 * coupling of dataset entries to user ID (since Version 1.5).
+* dataset sorting by form fields (since Version 1.7)
+* import of datasets from CSV file (since 1.7)
 
 After adding a project, check out the settings and form field pages first. The frontend display of datasets is controlled via shortcodes, see the Usage section for details.
 
@@ -92,6 +94,11 @@ in projectmanager.php for details.
 
 
 == ChangeLog ==
+
+**Version 1.7**, *January--2009*
+
+- NEW: sorting of datasets by form fields
+- NEW: import of datasets from CSV file
 
 **Version 1.6.2**, *January-21-2009*
 

@@ -62,7 +62,10 @@ else
 		<li><a href="edit.php?page=projectmanager/page/settings.php&amp;project_id=<?php echo $project_id ?>"><?php _e( 'Settings', 'projectmanager' ) ?></a></li> |
 		<li><a href="edit.php?page=projectmanager/page/formfields.php&amp;project_id=<?php echo $project_id ?>"><?php _e( 'Form Fields', 'projectmanager' ) ?></a></li> |
 		<li><a href="edit.php?page=projectmanager/page/dataset.php&amp;project_id=<?php echo $project_id ?>"><?php _e( 'Add Dataset', 'projectmanager' ) ?></a></li> |
-		<li><a href="categories.php"><?php _e( 'Categories' ) ?></a></li>
+		<li><a href="categories.php"><?php _e( 'Categories' ) ?></a></li> |
+		<?php if ( current_user_can( 'projectmanager_admin' ) ) : ?>
+		<li><a href="admin.php?page=projectmanager/page/import.php&amp;project_id=<?php echo $project_id ?>"><?php _e('Import') ?></a></li>
+		<?php endif; ?>
 	</ul>
 	
 	<?php if ( $datasets ) : ?>
