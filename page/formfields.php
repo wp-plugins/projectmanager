@@ -6,7 +6,7 @@ else :
 $project_id = $projectmanager->getProjectID();
 if ( isset($_POST['saveFormFields']) ) {
 	check_admin_referer('projectmanager_manage-formfields');
-	$message = $projectmanager->setFormFields( $_POST['project_id'], $_POST['form_name'], $_POST['form_type'], $_POST['show_on_startpage'], $_POST['form_order'], $_POST['new_form_name'], $_POST['new_form_type'], $_POST['new_show_on_startpage'], $_POST['new_form_order'] );
+	$message = $projectmanager->setFormFields( $_POST['project_id'], $_POST['form_name'], $_POST['form_type'], $_POST['show_on_startpage'], $_POST['form_order'], $_POST['order_by'], $_POST['new_form_name'], $_POST['new_form_type'], $_POST['new_show_on_startpage'], $_POST['new_form_order'], $_POST['new_order_by'] );
      
 	echo '<div id="message" class="updated fade"><p><strong>'.$message.'</strong></p></div>';
 }
@@ -36,6 +36,7 @@ $options = get_option('projectmanager');
 		<th scope="col"><?php _e( 'Type', 'projectmanager' ) ?></th>
 		<th scope="col"><?php _e( 'Show on startpage', 'projectmanager' ) ?></th>
 		<th scope="col"><?php _e( 'Order', 'projectmanager' ) ?></th>
+		<th scope="sol"><?php _e( 'Order By', 'projectmanager' ) ?></th>
 		<th scope="col">&#160;</th>
 	</tr>
 	</tfoot>
@@ -68,6 +69,7 @@ $options = get_option('projectmanager');
 			</td>
 			<td><input type="checkbox" name="show_on_startpage[<?php echo $form_field->id ?>]"<?php echo ( 1 == $form_field->show_on_startpage ) ? ' checked="checked"' : '' ?> value="1" /></td>
 			<td><input type="text" size="2" name="form_order[<?php echo $form_field->id ?>]" value="<?php echo $form_field->order ?>" /></td>
+			<td><input type="checkbox" name="order_by[<?php echo $form_field->id ?>]" value="1"<?php echo ( 1 == $form_field->order_by ) ? ' checked="checked"' : '' ?> /></td>
 			<td style="text-align: center; width: 12px; vertical-align: middle;"><a class="image_link" href="#" onclick='return ProjectManager.removeFormField("form_id_<?php echo $form_field->id ?>", <?php echo $form_field->id ?>);'><img src="../wp-content/plugins/projectmanager/images/trash.gif" alt="<?php _e( 'Delete', 'projectmanager' ) ?>" title="<?php _e( 'Delete formfield', 'projectmanager' ) ?>" /></a>
 		</tr>
 		<?php endforeach; ?>

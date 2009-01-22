@@ -1,9 +1,6 @@
 <?php
 $old_options = get_option( 'projectmanager' );
 
-/*
-* Upgrade to Version 2.4
-*/
 if (version_compare($old_options['version'], '1.2.1', '<')) {
 	$charset_collate = '';
 	if ( $wpdb->supports_collation() ) {
@@ -30,7 +27,7 @@ if (version_compare($old_options['version'], '1.5', '<')) {
 }
 
 if (version_compare($old_options['version'], '1.6.2', '<')) {
-	/**
+	/*
 	 * Copy Logos to new image directory and delete old one
 	 */
 	$dir_src = WP_CONTENT_DIR.'/projects';
@@ -48,6 +45,10 @@ if (version_compare($old_options['version'], '1.6.2', '<')) {
 	@rmdir($dir_src);
 	closedir($dir_handle);
 	
+}
+
+if (version_compare($old_options['version'], '1.7', '<')) {
+	$wpdb->query( "ALTER TABLE{$wpdb->projectmanager_projectmeta} ADD `order_by` tinyint( 1 ) NOT NULL default '0' AFTER `order`" );
 }
 
 ?>

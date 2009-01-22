@@ -10,6 +10,7 @@ if ( isset($_POST['saveSettings']) ) {
 	$options = get_option( 'projectmanager' );
 	$options[$_POST['project_id']]['per_page'] = $_POST['per_page'];
 	$options[$_POST['project_id']]['category'] = $_POST['category'];
+	$options[$project_id]['dataset_orderby'] = $_POST['dataset_orderby'];
 	$options[$_POST['project_id']]['show_image'] = isset( $_POST['show_image']) ? 1 : 0;
 	$options[$_POST['project_id']]['use_widget'] = isset( $_POST['use_widget'] ) ? 1 : 0;
 	$options[$_POST['project_id']]['thumb_size'] = array( "width" => $_POST['thumb_width'], "height" => $_POST['thumb_height'] );
@@ -40,7 +41,10 @@ if ( 1 == $options[$project_id]['show_image'] && !wp_mkdir_p( $projectmanager->g
 			<th scope="row"><label for="per_page"><?php _e( 'Datasets per page', 'projectmanager' ) ?></label></th><td><input type="text" name="per_page" id="per_page" size="2" value="<?php echo $options[$project_id]['per_page'] ?>" /></td>
 		</tr>
 		<tr valign="top">
-			<th scope="row"><label for="category"><?php _e( 'Category', 'projectmanager' ) ?></label><td><?php wp_dropdown_categories(array('hide_empty' => 0, 'name' => 'category', 'orderby' => 'name', 'selected' => $options[$project_id]['category'], 'hierarchical' => true, 'show_option_none' => __('None'))); ?></td>
+			<th scope="row"><label for="category"><?php _e( 'Category', 'projectmanager' ) ?></label></th><td><?php wp_dropdown_categories(array('hide_empty' => 0, 'name' => 'category', 'orderby' => 'name', 'selected' => $options[$project_id]['category'], 'hierarchical' => true, 'show_option_none' => __('None'))); ?></td>
+		</tr>
+		<tr valign="top">
+			<th scope="row"><label for="dataset_orderby"><?php _e( 'Dataset Sorting', 'projectmanager' ) ?></label></th><td><select size="1" name="dataset_orderby" id="dataset_orderby"><?php $projectmanager->datasetOrderOptions($options[$project_id]['dataset_orderby']) ?></select></td>
 		</tr>
 		<tr valign="top">
 			<th scope="row"><label for="use_widget"><?php _e( 'Use Widget', 'projectmanager' ) ?></label></th><td><input type="checkbox" name="use_widget" id="use_widget"<?php if ( 1 == $options[$project_id]['use_widget']  ) echo ' checked="checked"'; ?> value="1" /></td>

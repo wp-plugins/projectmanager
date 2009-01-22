@@ -534,7 +534,7 @@ class WP_ProjectManager
 	{
 		global $wpdb;
 	
-		$sql = "SELECT `label`, `type`, `order`, `show_on_startpage`, `id` FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = {$this->project_id} ORDER BY `order` ASC;";
+		$sql = "SELECT `label`, `type`, `order`, `order_by`, `show_on_startpage`, `id` FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = {$this->project_id} ORDER BY `order` ASC;";
 		return $wpdb->get_results( $sql );
 	}
 	
@@ -627,6 +627,23 @@ class WP_ProjectManager
 	
 	
 	/**
+	 * get possible sorting options for datasets
+	 *
+	 * @param string $selected
+	 * @return string
+	 */
+	function datasetOrderOptions( $selected )
+	{
+		$options = array( 'id' => __('By ID', 'projectmanager'), 'name' => __('By Name','projectmanager'), 'formfields' => __('By Formfields', 'projectmanager') );
+		
+		foreach ( $options AS $option => $title ) {
+			$select = ( $selected == $option ) ? ' selected="selected"' : '';
+			echo '<option value="'.$option.'"'.$select.'>'.$title.'</option>';
+		}
+	}
+	
+	
+	/**
 	 * getNumDatasets() - gets number of datasets for specific project
 	 *
 	 * @param int $project_id
@@ -659,10 +676,17 @@ class WP_ProjectManager
 	 * @param string $order
 	 * @return array
 	 */
-	 function getDatasets( $limit = false, $order = 'name ASC' )
+	 function getDatasets( $limit = false )
 	{
 		global $wpdb;
+		$options = get_option('projectmanager');
 		
+		// Set ordering
+		if ( $options[$this->project_id]['dataset_order'] != 'formfields' )
+			$orderby = $options[$this->project_id]['dataset_order'].' ASC';
+		else
+			$orderby = 'name ASC';
+			
 		if ( $limit ) $offset = ( $this->getCurrentPage() - 1 ) * $this->per_page;
 
 		$sql = "SELECT `id`, `name`, `image`, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id}";
@@ -670,10 +694,15 @@ class WP_ProjectManager
 		if ( $this->isCategory() )
 			$sql .= $this->getCategorySearchString();
 		
-		$sql .=  " ORDER BY $order";
+		$sql .=  " ORDER BY $orderby";
 		$sql .= ( $limit ) ? " LIMIT ".$offset.",".$this->per_page.";" : ";";
 		
-		return $wpdb->get_results($sql);
+		$datasets = $wpdb->get_results($sql);
+		
+		if ( $options[$this->project_id]['dataset_order'] == 'formfields' )
+			$datasets = $this->orderDatasetsByFormFields($datasets);
+			
+		return $datasets;
 	}
 	
 	
@@ -691,6 +720,94 @@ class WP_ProjectManager
 	}
 		
 		
+	/**
+	 * orderDatasetsByFormFields() - order datasets by chosen form fields
+	 *
+	 * @param array $datasets
+	 * @return array
+	 */
+	function orderDatasetsByFormFields( $datasets )
+	{
+		global $wpdb;
+	
+		/*
+		* Generate array of parameters to sort datasets by
+		*/
+		$to_sort = array();
+		foreach ( $this->getFormFields( ) AS $form_field )
+			if ( 1 == $form_field->order_by )
+				array_push( $to_sort, $form_field->id );
+		
+		/*
+		* Only process datasets if there is anything to do
+		*/
+		if ( $to_sort ) {
+			/*
+			* Generate array of dataset data to sort and indexed array of unsorted datasets
+			*/
+			$i = 0;
+			$datasets_new = array();
+			$dataset_meta = array();
+			foreach ( $datasets AS $dataset ) {
+				foreach ( $this->getDatasetMeta( $dataset->id ) AS $meta ) {
+					$meta_value = $meta->value;
+					$dataset_meta[$i][$meta->form_field_id] = $meta_value;
+				}
+				$dataset_meta[$i]['dataset_id'] = $dataset->id;
+				
+				$i++;
+				
+				$datasets_new[$dataset->id] = $dataset;
+			}
+				
+			/*
+			*  Generate order arrays
+			*/
+			foreach ( $dataset_meta AS $key => $row ) {
+				$i=0;
+				foreach ( $to_sort AS $form_field_id ) {
+					$order[$i][$key] = $row[$form_field_id];
+					$i++;
+				}
+			}
+			
+			/*
+			* Create array of arguments for array_multisort
+			*/
+			$func_args = array();
+			foreach ( $order AS $key => $order_array ) {
+				array_push( $func_args, $order_array );
+				array_push( $func_args, SORT_ASC );
+			}
+			
+			/*
+			* sort datasets with array_multisort
+			*/
+			$eval = 'array_multisort(';
+			for ( $i = 0; $i < count($func_args); $i++ )
+				$eval .= "\$func_args[$i],";
+			
+			$eval .= "\$dataset_meta);";
+			eval($eval);
+				
+			/*
+			* Create sorted array of datasets
+			*/
+			$datasets_ordered = array();
+			$x = 0;
+			foreach ( $dataset_meta AS $key => $row ) {
+				$datasets_ordered[$x] = $datasets_new[$row['dataset_id']];
+				$x++;
+			}
+				
+			return $datasets_ordered;
+		}
+		
+		// simply return unsorted datasets
+		return $datasets;
+	}
+	
+	
 	/**
 	 * getDatasetPage() - determine page dataset is on
 	 *
@@ -1300,13 +1417,15 @@ class WP_ProjectManager
 	 * @param array $form_name
 	 * @param array $form_type
 	 * @param array $form_order
+	 * @param array $form_order_by
 	 * @param array $new_form_name
 	 * @param array $new_form_type
 	 * @param array $new_form_order
+	 * @param array $new_form_order_by
 	 *
 	 * @return string
 	 */
-	function setFormFields( $project_id, $form_name, $form_type, $form_show_on_startpage, $form_order, $new_form_name, $new_form_type, $new_form_show_on_startpage, $new_form_order )
+	function setFormFields( $project_id, $form_name, $form_type, $form_show_on_startpage, $form_order, $form_order_by, $new_form_name, $new_form_type, $new_form_show_on_startpage, $new_form_order, $new_form_order_by )
 	{
 		global $wpdb;
 		
@@ -1324,9 +1443,10 @@ class WP_ProjectManager
 			foreach ( $form_name AS $form_id => $form_label ) {
 				$type = $form_type[$form_id];
 				$order = $form_order[$form_id];
-				$show_on_startpage = (isset($form_show_on_startpage[$form_id])) ? 1 : 0;
+				$order_by = isset($form_order_by[$form_id]) ? 1 : 0;
+				$show_on_startpage = isset($form_show_on_startpage[$form_id]) ? 1 : 0;
 					
-				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projectmeta} SET `label` = '%s', `type` = '%d', `show_on_startpage` = '%d', `order` = '%d' WHERE `id` = '%d' LIMIT 1 ;", $form_label, $type, $show_on_startpage, $order, $form_id ) );
+				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projectmeta} SET `label` = '%s', `type` = '%d', `show_on_startpage` = '%d', `order` = '%d', `order_by` = '%d' WHERE `id` = '%d' LIMIT 1 ;", $form_label, $type, $show_on_startpage, $order, $order_by, $form_id ) );
 				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `form_id` = '%d' WHERE `form_id` = '%d'", $form_id, $form_id ) );
 			}
 		}
@@ -1334,6 +1454,7 @@ class WP_ProjectManager
 		if ( null != $new_form_name ) {
 			foreach ($new_form_name AS $tmp_form_id => $form_label) {
 				$type = $new_form_type[$tmp_form_id];
+				$order_by = isset($new_form_order_by[$tmp_form_id]) ? 1 : 0;
 				$show_on_startpage = (isset($new_form_show_on_startpage[$tmp_form_id])) ? 1 : 0;
 					
 				$max_order_sql = "SELECT MAX(`order`) AS `order` FROM {$wpdb->projectmanager_projectmeta};";
@@ -1344,7 +1465,7 @@ class WP_ProjectManager
 					$order = $max_order_sql[0]['order'] +1;
 				}
 				
-				$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_projectmeta} (`label`, `type`, `show_on_startpage`, `order`, `project_id`) VALUES ( '%s', '%d', '%d', '%d', '%d');", $form_label, $type, $show_on_startpage, $order, $project_id ) );
+				$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_projectmeta} (`label`, `type`, `show_on_startpage`, `order`, `order_by`, `project_id`) VALUES ( '%s', '%d', '%d', '%d', '%d', '%d');", $form_label, $type, $show_on_startpage, $order, $order_by, $project_id ) );
 				$form_id = mysql_insert_id();
 					
 				// Redirect form field options to correct $form_id if present
@@ -2210,6 +2331,7 @@ class WP_ProjectManager
 						`type` int( 11 ) NOT NULL ,
 						`label` varchar( 100 ) NOT NULL default '' ,
 						`order` int( 10 ) NOT NULL ,
+						`order_by` tinyint( 1 ) NOT NULL default '0',
 						`show_on_startpage` tinyint( 1 ) NOT NULL ,
 						`project_id` int( 11 ) NOT NULL ,
 						PRIMARY KEY ( `id` )) $charset_collate";
