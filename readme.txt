@@ -26,7 +26,7 @@ This plugin is a datamanager for any recurrent datasets. It can be used to manag
 * change colorscheme for output tables
 * coupling of dataset entries to user ID (since Version 1.5).
 * dataset sorting by form fields (since Version 1.7)
-* import of datasets from CSV file (since 1.7)
+* import and export of datasets from/to CSV file (since 1.7)
 
 After adding a project, check out the settings and form field pages first. The frontend display of datasets is controlled via shortcodes, see the Usage section for details.
 
@@ -99,6 +99,7 @@ in projectmanager.php for details.
 
 - NEW: sorting of datasets by form fields
 - NEW: import of datasets from CSV file
+- fixed bug in form field saving
 
 **Version 1.6.2**, *January-21-2009*
 
