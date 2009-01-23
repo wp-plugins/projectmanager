@@ -32,7 +32,7 @@ if ( !defined( 'WP_CONTENT_DIR' ) )
 if ( !defined( 'WP_PLUGIN_DIR' ) )
 	define( 'WP_PLUGIN_DIR', WP_CONTENT_DIR . '/plugins' );
 	
-define( 'PROJECTMANAGER_VERSION', '1.6.2' );
+define( 'PROJECTMANAGER_VERSION', '1.7' );
 define( 'PROJECTMANAGER_URL', WP_PLUGIN_URL.'/projectmanager' );
 
 include_once( 'projectmanager.php' );
