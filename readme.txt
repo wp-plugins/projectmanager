@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: datamanager, CMS, Content Management System
 Requires at least: 2.5
 Tested up to: 2.7
-Stable tag: 1.6.2
+Stable tag: 1.7
 
 This plugin can be used to manage any number of projects with recurrent datasets (e.g. portrait system, dvd collection)
 
@@ -78,13 +78,13 @@ to display the datasets as a gallery, with a picture if one is supplied. $cols i
 
 Search by category names with comma separated list.
 
-= Couping of dataset entries to user ID =
+= Coupling of dataset entries to user ID =
 
 Since Version 1.5 the dataset entries are linked to the user ID who entered it. Users with capability "Manage Projects" can only add one dataset and also edit their dataset only. Those users with capability "Projectmanager Admin" have full access to ProjectManager. They can add as many datasets they like, edit every dataset, change owner of a dataset, edit FormFields and edit Settings as well as Color Scheme. By default Blog Administrators have this access. Editors only get the "Manage Projects" Permission. Use [Role Manager](http://www.im-web-gefunden.de/wordpress-plugins/role-manager/) Plugin to fine control permissions. Thus ProjectManager can now also be used as extended profile for users.
 
 = Customization =
 
-Since version 1.3 it is possible to customize frontend output via plugin hooks. See functions
+Since version 1.3 it is possible to customize frontend output via function hooks. See functions
 
 * getDatasetList
 * getGallery
@@ -95,10 +95,10 @@ in projectmanager.php for details.
 
 == ChangeLog ==
 
-**Version 1.7**, *January--2009*
+**Version 1.7**, *January-23-2009*
 
 - NEW: sorting of datasets by form fields
-- NEW: import of datasets from CSV file
+- NEW: import/export of datasets from/to CSV file
 - fixed bug in form field saving
 
 **Version 1.6.2**, *January-21-2009*
