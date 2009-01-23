@@ -801,6 +801,7 @@ class WP_ProjectManager
 			/*
 			*  Generate order arrays
 			*/
+			$order = array();
 			foreach ( $dataset_meta AS $key => $row ) {
 				$i=0;
 				foreach ( $to_sort AS $form_field_id ) {
@@ -1134,8 +1135,10 @@ class WP_ProjectManager
 						foreach ( $cols AS $col => $form_field_id ) {
 							$meta[$form_field_id] = $line[$col];
 						}
-						$this->addDataset($project_id, $name, array(), $meta);
-						$i++;
+						if ( $name != '' ) {
+							$this->addDataset($project_id, $name, array(), $meta);
+							$i++;
+						}
 					}
 					fclose($handle);
 					

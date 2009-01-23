@@ -57,6 +57,9 @@ function ProjectManagerInsertLink() {
 		var projectId = document.getElementById('list_projects').value;
 		var showtype = getCheckedValue(document.getElementsByName('list_showtype'));
 		var grpid = document.getElementById('list_projects_category_form').value;
+		if ( grpid == 'undefined' ) {
+			grpid = '';
+		}
 		
 		if ( grpid == -1 )
 			var grpid = '';
