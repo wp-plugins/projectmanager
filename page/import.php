@@ -32,7 +32,8 @@ if ( isset($_POST['import']) ) {
 	</tr>
 	</table>
 	<h3><?php _e( 'Column Assignment', 'projectmanager' ) ?></h3>
-	<p><?php _e('All FormFields need to be assigned, also if some contain no data', 'projectmanager') ?></p>
+	<p><?php _e('All FormFields need to be assigned, also if some contain no data.', 'projectmanager') ?></p>
+	<p><?php _e('Dates must have the format <strong>YYYY-MM-DD</strong>.', 'projectmanager') ?></p>
 	<table class="form-table">
 	<tr valign="top">
 		<th scope="row"><?php printf(__( 'Column %d', 'projectmanager'), 1 ) ?></th><td><?php _e( 'Name', 'projectmanager' ) ?></td>
