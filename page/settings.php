@@ -5,6 +5,7 @@ else :
 
 $options = get_option( 'projectmanager' );
 $project_id = $projectmanager->getProjectID();
+$projectmanager->getProject($project_id);
 if ( isset($_POST['saveSettings']) ) {
 	check_admin_referer('projectmanager_manage-settings');
 	$options = get_option( 'projectmanager' );
@@ -20,7 +21,8 @@ if ( isset($_POST['saveSettings']) ) {
 	$projectmanager->editProject( $_POST['project_title'], $_POST['project_id'] );
 	update_option( 'projectmanager', $options );
 	
-	echo '<div id="message" class="updated fade"><p><strong>'.__( 'Settings saved', 'projectmanager' ).'</strong></p></div>';
+	$projectmanager->setMessage(__( 'Settings saved', 'projectmanager' ));
+	$projectmanager->printMessage();
 }
 if ( 1 == $options[$project_id]['show_image'] && !wp_mkdir_p( $projectmanager->getImagePath() ) )
 	echo "<div class='error'><p>".sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $projectmanager->getImagePath() )."</p></div>";

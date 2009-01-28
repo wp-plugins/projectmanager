@@ -9,15 +9,15 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['doaction']) ) {
 	if ( 'dataset' == $_POST['updateProjectManager'] ) {
 		check_admin_referer( 'projectmanager_edit-dataset' );
 		if ( '' == $_POST['dataset_id'] ) {
-			$message = $projectmanager->addDataset( $_POST['project_id'], $_POST['name'], $_POST['post_category'], $_POST['form_field'] );
+			$projectmanager->addDataset( $_POST['project_id'], $_POST['name'], $_POST['post_category'], $_POST['form_field'] );
 		} else {
 			$dataset_owner = isset($_POST['owner']) ? $_POST['owner'] : false;
 			$del_image = isset( $_POST['del_old_image'] ) ? true : false;
 			$overwrite_image = isset( $_POST['overwrite_image'] ) ? true: false;
-			$message = $projectmanager->editDataset( $_POST['project_id'], $_POST['name'], $_POST['post_category'], $_POST['dataset_id'], $_POST['form_field'], $_POST['user_id'], $del_image, $_POST['image_file'], $overwrite_image, $dataset_owner );
+			$projectmanager->editDataset( $_POST['project_id'], $_POST['name'], $_POST['post_category'], $_POST['dataset_id'], $_POST['form_field'], $_POST['user_id'], $del_image, $_POST['image_file'], $overwrite_image, $dataset_owner );
 		}
 	}
-	if ( $message ) echo '<div id="message" class="updated fade"><p><strong>'.$message.'</strong></p></div>';
+	$projectmanager->printMessage();
 }  elseif ( isset($_POST['doaction']) && isset($_POST['action']) ) {
 	check_admin_referer('projectmanager_dataset-bulk');
 	if ( 'delete' == $_POST['action'] ) {

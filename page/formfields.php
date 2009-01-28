@@ -6,9 +6,9 @@ else :
 $project_id = $projectmanager->getProjectID();
 if ( isset($_POST['saveFormFields']) ) {
 	check_admin_referer('projectmanager_manage-formfields');
-	$message = $projectmanager->setFormFields( $_POST['project_id'], $_POST['form_name'], $_POST['form_type'], $_POST['show_on_startpage'], $_POST['form_order'], $_POST['order_by'], $_POST['new_form_name'], $_POST['new_form_type'], $_POST['new_show_on_startpage'], $_POST['new_form_order'], $_POST['new_order_by'] );
+	$projectmanager->setFormFields( $_POST['project_id'], $_POST['form_name'], $_POST['form_type'], $_POST['show_on_startpage'], $_POST['form_order'], $_POST['order_by'], $_POST['new_form_name'], $_POST['new_form_type'], $_POST['new_show_on_startpage'], $_POST['new_form_order'], $_POST['new_order_by'] );
      
-	echo '<div id="message" class="updated fade"><p><strong>'.$message.'</strong></p></div>';
+	$projectmanager->printMessage();
 }
 $options = get_option('projectmanager');
 ?>

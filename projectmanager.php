@@ -227,14 +227,16 @@ class WP_ProjectManager
 	 * @param int $index 0: orderby, 1: order
 	 * @return string
 	 */
-	function getDatasetOrder( $index )
+	function getDatasetOrder( $index = false )
 	{
-		if ( $index == 0 )
-			return $this->orderby;
-		elseif ( $index == 1 )
-			return $this->order;
-		else
+		if ( !$index )
 			return $this->orderby." ".$this->order;
+		else {
+			if ( $index == 'orderby' )
+				return $this->orderby;
+			elseif ( $index == 'order' )
+				return $this->order;
+		}
 	}
 	
 	
@@ -314,6 +316,19 @@ class WP_ProjectManager
 	function printErrorMessage()
 	{
 		echo "\n<div class='error'><p>".$this->getErrorMessage()."</p></div>";
+	}
+	
+	
+	/**
+	 * setMessage() - set a message
+	 *
+	 * @param string $message
+	 * @param string $type default 'success'
+	 * @return none
+	 */
+	function setMessage( $message, $type = 'success' )
+	{
+		$this->message[$type] = $message;
 	}
 	
 	
@@ -772,12 +787,12 @@ class WP_ProjectManager
 		$options = get_option('projectmanager');
 		
 		// Set ordering
-		$form_field_id = false;
+		$formfield_id = false;
 		if ( isset($_GET['orderby']) && isset($_GET['order']) ) {
 			$orderby = explode('_', $_GET['orderby']);
-			$this->orderby = $orderby[0];
-			$this->order = $_GET['order'];
-			$form_field_id = $orderby[1];
+			$this->orderby = ( $_GET['orderby'] != '' ) ? $_GET['orderby'] : 'name';
+			$this->order = ( $_GET['order'] != '' ) ? $_GET['order'] : 'ASC';
+			$formfield_id = $orderby[1];
 		} elseif ( !isset($options[$this->project_id]['dataset_orderby']) || $options[$this->project_id]['dataset_orderby'] == '' ) {
 			$this->orderby = 'name';
 			$this->order = 'ASC';
@@ -788,6 +803,8 @@ class WP_ProjectManager
 			$this->orderby = 'name';
 			$this->order = 'ASC';
 		}
+		$sql_order = ( $this->getDatasetOrder('orderby') != 'name' && $this->getDatasetOrder('orderby') != 'id' ) ? 'name '.$this->order : $this->getDatasetOrder();
+		
 		if ( $limit ) $offset = ( $this->getCurrentPage() - 1 ) * $this->per_page;
 
 		$sql = "SELECT `id`, `name`, `image`, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id}";
@@ -795,14 +812,14 @@ class WP_ProjectManager
 		if ( $this->isCategory() )
 			$sql .= $this->getCategorySearchString();
 		
-		$sql .=  " ORDER BY ".$this->getDatasetOrder();
+		$sql .=  " ORDER BY ".$sql_order;
 		$sql .= ( $limit ) ? " LIMIT ".$offset.",".$this->per_page.";" : ";";
 		
 		$datasets = $wpdb->get_results($sql);
 		
-		if ( $options[$this->project_id]['dataset_orderby'] == 'formfields' )
-			$datasets = $this->orderDatasetsByFormFields($datasets, $form_field_id);
-			
+		if ( $options[$this->project_id]['dataset_orderby'] == 'formfields' || $formfield_id )
+			$datasets = $this->orderDatasetsByFormFields($datasets, $formfield_id);
+		
 		return $datasets;
 	}
 	
@@ -883,8 +900,9 @@ class WP_ProjectManager
 			*/
 			$func_args = array();
 			foreach ( $order AS $key => $order_array ) {
+				$sort = ( $this->order = 'ASC' ) ? SORT_ASC : SORT_DESC;
 				array_push( $func_args, $order_array );
-				array_push( $func_args, SORT_ASC );
+				array_push( $func_args, $sort );
 			}
 			
 			/*
@@ -1013,7 +1031,7 @@ class WP_ProjectManager
 					$meta_value = "<a class='projectmanager_url' href='http://".$meta_value."' target='_blank' title='".$meta_value."'><span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span></a>";
 					
 				if ( 1 == $meta->show_on_startpage || $show_all ) {
-					if ( '' != $meta_value ) {
+					if ( $meta->value != '' ) {
 						if ( 'dl' == $output ) {
 							$out .= "\n\t<dt>".$meta->label."</dt><dd>".$meta_value."</dd>";
 						} elseif ( 'li' == $output ) {
@@ -1024,8 +1042,9 @@ class WP_ProjectManager
 							$out .= "\n\t\t".$meta_value . $this->getThickboxLink($dataset->id, $meta->form_field_id, $meta->type, $meta->label." ".__('of','projectmanager')." ".$dataset->name, $dataset->user_id);
 							$out .= "\n\t</".$output.">";
 						}
-					} elseif ( 'td' == $output )
+					} elseif ( 'td' == $output ) {
 						$out .= "\n\t<".$output.">&#160;</".$output.">";
+					}
 				}
 			}
 		}
@@ -1697,6 +1716,7 @@ class WP_ProjectManager
 			}
 		}
 		
+		/*
 		if ( stristr( $content, '[prjctmngr_category' )) {
 			$search = "@\[prjctmngr_category_selection\s*=\s*(\w+),(|dropdown|list|),(|left|center|right|)\]@i";
 		
@@ -1728,7 +1748,7 @@ class WP_ProjectManager
 				}
 			}
 		}
-		
+		*/
 		if ( stristr( $content, '[dataset_list' )) {
 			$search = "@\[dataset_list\s*=\s*(\w+),(|\d+),(|table|ul|ol|)\]@i";
 		
@@ -1817,6 +1837,7 @@ class WP_ProjectManager
 	 * @param int $project_id
 	 * @param string $type 'dropdown' | 'list'
 	 */
+	 /*
 	function getCategorySelection( $project_id, $type, $pos )
 	{
 		if ( 'dropdown' == $type )
@@ -1824,7 +1845,7 @@ class WP_ProjectManager
 		elseif ( 'list' == $type )
 			return $this->getCategoryList($project_id,$pos);
 	}
-	
+	*/
 	
 	/**
 	 * getCategoryDropdown() - get group dropdown
@@ -1833,6 +1854,7 @@ class WP_ProjectManager
 	 * @param strin $pos
 	 * @return string
 	 */
+	 /*
 	function getCategoryDropdown( $project_id, $pos = '' )
 	{
 		global $wpdb, $wp_query;
@@ -1847,18 +1869,14 @@ class WP_ProjectManager
 			$page_ID = $page_obj->ID;
 		
 			$hidden = "\n<input type='hidden' name='page_id' value='".$page_ID."' />";
-			$action = get_permalink($page_ID);
+			$action = ;
 		}
 
 		$class = ($pos != '') ? 'align'.$pos : '';
 		
 		$out = "</p>";
 		if ( !isset($_GET['show']) && -1 != $options[$this->project_id]['category'] ) {
-			$out .= "\n\n<div class='".$class." projectmanager'>\n<form action='".$action."' method='get'>\n";
-			$out .= wp_dropdown_categories(array('echo' => 0, 'hide_empty' => 0, 'name' => 'cat_id', 'orderby' => 'name', 'selected' => $this->getCatID(), 'hierarchical' => true, 'child_of' => $options[$this->project_id]['category'], 'show_option_all' => __('View all categories')));
-			$out .= $hidden;
-			$out .= "\n<input type='submit' value='".__( 'Filter', 'projectmanager' )."' class='button' />";
-			$out .= "\n</form>\n</div>\n\n";
+			$out .= "\n\n<div class='".$class." projectmanager'>\n\n</div>\n\n";
 		}
 		$out .= "<p>";
 
@@ -1868,7 +1886,7 @@ class WP_ProjectManager
 	{
 		echo $this->getCategoryDropdown( $project_id, $pos );
 	}
-	
+	*/
 	
 	/**
 	 * getCategoryList() - get group list
@@ -1877,7 +1895,7 @@ class WP_ProjectManager
 	 * @param string $pos
 	 * @return string
 	 */
-	function getCategoryList( $project_id, $pos )
+	/*function getCategoryList( $project_id, $pos )
 	{
 		global $wpdb;
 		$this->project_id = $project_id;
@@ -1892,40 +1910,55 @@ class WP_ProjectManager
 		$out .= '<p>';
 		
 		return $out;
-	}
+	}*/
 	
 	
 	/**
-	 * getOrderBySelection() - get dropdown list of possible options to order datasets
+	 * getDisplaySelections() - get dropdown selections
 	 *
-	 * @param int $project_id
-	 * @param string $pos
+	 * Function to show display selection possbilities, namely Category selection and ordering of datasets
+	 * The function is called via the filter projectmanager_display_selections and can be modified or overwritten by
+	 *
+	 * remove_filter('projectmanager_display_selections', array(&$projectmanager, 'getDisplaySelections'));
+	 * add_filter('projectmanager_display_selections', 'my_function', 10);
+	 *
+	 * function my_function( ) {
+	 *	// Do some stuff
+	 * }
+	 * @param none
 	 * @return string
 	 */
-	function getOrderSelection( $project_id, $pos )
+	function getDisplaySelections()
 	{
 		global $wp_query;
+		$options = get_option( 'projectmanager' );
 		
-		$this->project_id = $project_id;
 		$page_obj = $wp_query->get_queried_object();
 		$page_ID = $page_obj->ID;
-			
-		$out = '</p>';
-		$out .= "\n<div class='align".$pos."'>";
-		$out .= "\n<form method='get' action='".get_permalink($page_ID)."'><input type='hidden' name='page_id' value='".$page_ID."' />";
-		$out .= "\n\t<select size='1' name='orderby'>";
-		$out .= "\n\t\t<option value='name'>".__('Name','projectmanager')."</option><option value='id'>".__('ID','projectmanager')."</option>";
-		foreach ( $this->getFormFields() AS $form_field ) {
-			$out .= "\n\t\t<option value='formfields_".$form_field->id."'>".$form_field->label."</option>";
+		
+		$orderby = array( '' => __('Order By', 'projectmanager'), 'name' => __('Name','projectmanager'), 'id' => __('ID','projectmanager') );
+		foreach ( $this->getFormFields() AS $form_field )
+			$orderby['formfields_'.$form_field->id] = $form_field->label;
+		
+		$order = array( '' => __('Order','projectmanager'), 'ASC' => __('Ascending','projectmanager'), 'DESC' => __('Descending','projectmanager') );
+				
+		$out = "<div class='projectmanager_tablenav'><form action='".get_permalink($page_ID)."' method='get'><input type='hidden' name='page_id' value='".$page_ID."' />\n";
+		if ( -1 != $options[$this->project_id]['category'] )
+			$out .= wp_dropdown_categories(array('echo' => 0, 'hide_empty' => 0, 'name' => 'cat_id', 'orderby' => 'name', 'selected' => $this->getCatID(), 'hierarchical' => true, 'child_of' => $options[$this->project_id]['category'], 'show_option_all' => __('View all categories')));
+		$out .= "<select size='1' name='orderby'>";
+		foreach ( $orderby AS $key => $value ) {
+			$selected = ($this->getDatasetOrder('orderby') == $key) ? ' selected="selected"' : '';
+			$out .= "<option value='".$key."'".$selected.">".$value."</option>";
+		}		
+		$out .= "</select>";
+		$out .= "<select size='1' name='order'>";
+		foreach ( $order AS $key => $value ) {
+			$selected = ($this->getDatasetOrder('order') == $key) ? ' selected="selected"' : '';
+			$out .= "\n\t\t<option value='".$key."'".$selected.">".$value."</option>";
 		}
-		$out .= "\n\t</select>";
-		$out .= "\n\t<select size='1' name='order'>">;
-		$out .= "\n\t</select>";
-		$out .= "\n\t<input type='submit' value='".__('Go', 'projectmanager')."' />";
-		$out .= "\n</form>";
-		$out .= "\n</div>";
-		$out .= '<p>';
-	
+		$out .= "</select>";
+		$out .= "<input type='submit' value='".__( 'Apply' )."' class='button' /></form></div>";
+
 		return $out;
 	}
 	
@@ -1950,6 +1983,7 @@ class WP_ProjectManager
 	 */
 	function getDatasetList( $out, $project_id, $output = 'table', $cat_id = false )
 	{
+		global $wp_query;
 		$this->initialize($project_id);
 		if ( $cat_id ) $this->setCatID($cat_id);
 	
@@ -1959,19 +1993,19 @@ class WP_ProjectManager
 			if ( $this->isSearch() )
 				$datasets = $this->getSearchResults();
 			else
-				$datasets = $this->getDatasets( true  );
+				$datasets = $this->getDatasets( true );
 			
 			$out = "</p>";
+			
+			$num_total_datasets = $this->getNumDatasets($this->project_id, true);
+			if ( $this->isSearch() )
+				$out .= "<h3 style='clear:both;'>".sprintf(__('Search: %d of %d', 'projectmanager'),  $this->getNumDatasets($this->project_id), $num_total_datasets)."</h3>";
+			elseif ( $this->isCategory() )
+				$out .= "<h3 style='clear:both;'>".$this->getCatTitle($this->getCatID())."</h3>";
+			
+			$out .= apply_filters( 'projectmanager_display_selections', $out );
+	
 			if ( $datasets ) {
-				$num_total_datasets = $this->getNumDatasets($this->project_id, true);
-				$out .= "\n<div id='projectmanager_datasets_header'>";
-				$out .= ( !$this->isSearch() ) ? "\n\t<p>".sprintf(__('%d of %d Datasets', 'projectmanager'), $this->getNumDatasets($this->project_id), $num_total_datasets )."</p>" : '';
-				if ( $this->isSearch() )
-					$out .= "<h3>".sprintf(__('Search: %d of %d', 'projectmanager'),  $this->getNumDatasets($this->project_id), $num_total_datasets)."</h3>";
-				elseif ( $this->isCategory() )
-					$out .= "<h3>".$this->getCatTitle($this->getCatID())."</h3>";
-				$out .= "\n</div>";
-				
 				if ( 'table' == $output ) {
 					$out .= "\n<table class='projectmanager'>\n<tr>\n";
 					$out .= "\t<th scope='col'>".__( 'Name', 'projectmanager' )."</th>";
@@ -2042,6 +2076,8 @@ class WP_ProjectManager
 				$datasets = $this->getDatasets( true );
 			
 			$out = "</p>";
+		
+			$out .= apply_filters( 'projectmanager_display_selections', $out );
 			if ( $datasets ) {
 				$out .= "\n\n<div class='dataset_gallery'>\n<div class='gallery-row'>";
 				

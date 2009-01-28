@@ -7,11 +7,11 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 	if ( 'project' == $_POST['updateProjectManager'] ) {
 		check_admin_referer('projectmanager_manage-projects');
 		if ( '' == $_POST['project_id'] )
-			$message = $projectmanager->addProject( $_POST['project_title'] );
+			$projectmanager->addProject( $_POST['project_title'] );
 		else
-			$message = $projectmanager->editProject( $_POST['project_title'], $_POST['project_id'] );
+			$projectmanager->editProject( $_POST['project_title'], $_POST['project_id'] );
 	}
-	echo '<div id="message" class="updated fade"><p><strong>'.$message.'</strong></p></div>';
+	$projectmanager->printMessage();
 }  elseif ( isset($_POST['doaction']) && isset($_POST['action']) ) {
 		check_admin_referer('projectmanager_projects-bulk');
 		if ( 'delete' == $_POST['action'] ) {

@@ -6,12 +6,8 @@ else :
 $project_id = $projectmanager->getProjectID();
      
 if ( isset($_POST['import']) ) {
-	$message = $projectmanager->importDatasets( $project_id, $_FILES['projectmanger_import'], $_POST['delimiter'], $_POST['cols'] );
-     
-     	if ( $projectmanager->error() )
-     		$projectmanager->printErrorMessage();
-     	else
-		echo '<div id="message" class="updated fade"><p><strong>'.$message.'</strong></p></div>';
+	$projectmanager->importDatasets( $project_id, $_FILES['projectmanger_import'], $_POST['delimiter'], $_POST['cols'] );
+     	$projectmanager->printMessage();
 }
 ?>
 

@@ -111,7 +111,7 @@ $options = get_option('projectmanager');
 	</div>
 	
 	<!-- categories panel -->
-	<div id="categories_panel" class="panel">
+	<!--<div id="categories_panel" class="panel">
 	<table style="border: 0;" cellpadding="5">
 	<tr>
 		<td><label for="categories_projects"><?php _e("Project", 'projectmanager'); ?></label></td>
@@ -146,7 +146,7 @@ $options = get_option('projectmanager');
 		</td>
 	</tr>
 	</table>
-	</div>
+	</div>-->
 	
 	<!-- search panel -->
 	<div id="search_panel" class="panel">

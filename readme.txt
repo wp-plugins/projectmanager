@@ -95,6 +95,10 @@ in projectmanager.php for details.
 
 == ChangeLog ==
 
+**Version 1.8**, *January--2009*
+
+- dataset ordering selection in frontend
+
 **Version 1.7**, *January-23-2009*
 
 - NEW: sorting of datasets by form fields

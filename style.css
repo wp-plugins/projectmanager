@@ -4,22 +4,10 @@
 div.projectmanager { margin-bottom: 1em; }
 
 /* Header above simple Output */
-div#projectmanager_datasets_header {
-	clear: both;
-	padding: 1em 0 0 0;
-	margin: 0;
-	}
-div#projectmanager_datasets_header p {
-	float: right;
-	margin: 0;
-	padding: 0;
-	}
-div#projectmanager_datasets_header h3 {
-	clear: none;
+div.projectmanager_tablenav {
 	float: left;
-	margin: 0;
-	padding: 0;
-	}
+	clear: both;
+}
 
 /* Simple Table Output */
 table.projectmanager {
@@ -46,6 +34,7 @@ table.projectmanager td img {
 /* Gallery Output */
 .dataset_gallery {
 	clear: both;
+	padding-top: 1em;
 }
 .dataset_gallery .gallery-row {
 	clear: both;
