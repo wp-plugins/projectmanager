@@ -19,6 +19,14 @@ class WP_ProjectManager
 	
 	
 	/**
+	 * current project object
+	 *
+	 * @var object
+	 */
+	var $project;
+	
+	
+	/**
 	 * selected category
 	 *
 	 * @var int
@@ -56,6 +64,22 @@ class WP_ProjectManager
 	 * @param string
 	 */
 	var $message = '';
+	
+	
+	/**
+	 * order of datasets
+	 *
+	 * @var string
+	 */
+	var $order = 'ASC';
+	
+	
+	/**
+	 * datafield datasets are ordered by
+	 *
+	 * @var string
+	 */
+	var $orderby = 'name';
 	
 	
 	/**
@@ -198,6 +222,36 @@ class WP_ProjectManager
 	
 
 	/**
+	 * getDatasetOrder() - get dataset order
+	 *
+	 * @param int $index 0: orderby, 1: order
+	 * @return string
+	 */
+	function getDatasetOrder( $index )
+	{
+		if ( $index == 0 )
+			return $this->orderby;
+		elseif ( $index == 1 )
+			return $this->order;
+		else
+			return $this->orderby." ".$this->order;
+	}
+	
+	
+	/**
+	 * setDatasetOrder() - set dataset order
+	 *
+	 * @param string $orderby
+	 * @param string $order
+	 */
+	function setDatasetOrder( $orderby, $order = 'ASC' )
+	{
+		$this->orderby = $orderby;
+		$this->order = $order;
+	}
+	
+	
+	/**
 	 * getFormFieldTypes() - returns array of form field types
 	 *
 	 * @param none
@@ -241,7 +295,7 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * getErrorMessage() - return error message
+	 * deprecated - getErrorMessage() - return error message
 	 *
 	 * @param none
 	 */
@@ -253,7 +307,7 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * printErrorMessage() - print formatted error message
+	 * deprecated - printErrorMessage() - print formatted error message
 	 *
 	 * @param none
 	 */
@@ -271,9 +325,9 @@ class WP_ProjectManager
 	function printMessage()
 	{
 		if ( $this->error )
-			echo "\n<div class='error'><p>".$this->message."</p></div>";
+			echo "<div class='error'><p>".$this->message['error']."</p></div>";
 		else
-			echo "\n<div id='message' class='updated fade'><p><strong>".$this->message."</strong></p></div>";
+			echo "<div id='message' class='updated fade'><p><strong>".$this->message['success']."</strong></p></div>";
 	}
 	
 	
@@ -320,7 +374,7 @@ class WP_ProjectManager
 	
 	
 	/**
- 	 * setCategory() - sets current category
+ 	 * setCatID() - sets current category
 	 *
 	 * @param int $cat_id
 	 * @return void
@@ -341,7 +395,7 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * getCat() - gets current category
+	 * getCatID() - gets current category
 	 * 
 	 * @param none
 	 * @return int
@@ -474,8 +528,8 @@ class WP_ProjectManager
 	 */
 	function getProjectTitle( )
 	{
-		$project = $this->getProject( $this->project_id );
-		return $project->title;
+	//	$project = $this->getProject( $this->project_id );
+		return $this->project->title;
 	}
 	
 	
@@ -503,7 +557,6 @@ class WP_ProjectManager
 	function getProjects()
 	{
 		global $wpdb;
-		
 		return $wpdb->get_results( "SELECT `title`, `id` FROM {$wpdb->projectmanager_projects} ORDER BY `id` ASC" );
 	}
 	
@@ -518,6 +571,7 @@ class WP_ProjectManager
 	{
 		global $wpdb;
 		$projects = $wpdb->get_results( "SELECT `title`, `id` FROM {$wpdb->projectmanager_projects} WHERE `id` = {$project_id} ORDER BY `id` ASC" );
+		$this->project = $projects[0];
 		return $projects[0];
 	}
 	
@@ -718,13 +772,22 @@ class WP_ProjectManager
 		$options = get_option('projectmanager');
 		
 		// Set ordering
-		if ( !isset($options[$this->project_id]['dataset_orderby']) || $options[$this->project_id]['dataset_orderby'] == '' )
-			$orderby = 'name ASC';
-		elseif ( $options[$this->project_id]['dataset_orderby'] != 'formfields' )
-			$orderby = $options[$this->project_id]['dataset_orderby'].' ASC';
-		else
-			$orderby = 'name ASC';
-			
+		$form_field_id = false;
+		if ( isset($_GET['orderby']) && isset($_GET['order']) ) {
+			$orderby = explode('_', $_GET['orderby']);
+			$this->orderby = $orderby[0];
+			$this->order = $_GET['order'];
+			$form_field_id = $orderby[1];
+		} elseif ( !isset($options[$this->project_id]['dataset_orderby']) || $options[$this->project_id]['dataset_orderby'] == '' ) {
+			$this->orderby = 'name';
+			$this->order = 'ASC';
+		} elseif ( $options[$this->project_id]['dataset_orderby'] != 'formfields' ) {
+			$this->orderby = $options[$this->project_id]['dataset_orderby'];
+			$this->order = 'ASC';
+		} else {
+			$this->orderby = 'name';
+			$this->order = 'ASC';
+		}
 		if ( $limit ) $offset = ( $this->getCurrentPage() - 1 ) * $this->per_page;
 
 		$sql = "SELECT `id`, `name`, `image`, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id}";
@@ -732,13 +795,13 @@ class WP_ProjectManager
 		if ( $this->isCategory() )
 			$sql .= $this->getCategorySearchString();
 		
-		$sql .=  " ORDER BY $orderby";
+		$sql .=  " ORDER BY ".$this->getDatasetOrder();
 		$sql .= ( $limit ) ? " LIMIT ".$offset.",".$this->per_page.";" : ";";
 		
 		$datasets = $wpdb->get_results($sql);
 		
 		if ( $options[$this->project_id]['dataset_orderby'] == 'formfields' )
-			$datasets = $this->orderDatasetsByFormFields($datasets);
+			$datasets = $this->orderDatasetsByFormFields($datasets, $form_field_id);
 			
 		return $datasets;
 	}
@@ -762,9 +825,10 @@ class WP_ProjectManager
 	 * orderDatasetsByFormFields() - order datasets by chosen form fields
 	 *
 	 * @param array $datasets
+	 * @param int|false $form_field_id
 	 * @return array
 	 */
-	function orderDatasetsByFormFields( $datasets )
+	function orderDatasetsByFormFields( $datasets, $form_field_id = false )
 	{
 		global $wpdb;
 	
@@ -772,9 +836,13 @@ class WP_ProjectManager
 		* Generate array of parameters to sort datasets by
 		*/
 		$to_sort = array();
-		foreach ( $this->getFormFields( ) AS $form_field )
-			if ( 1 == $form_field->order_by )
-				array_push( $to_sort, $form_field->id );
+		if ( !$form_field_id ) {
+			foreach ( $this->getFormFields( ) AS $form_field )
+				if ( 1 == $form_field->order_by )
+					$to_sort[] = $form_field->id;
+		} else {
+			$to_sort[] = $form_field_id;
+		}
 		
 		/*
 		* Only process datasets if there is anything to do
@@ -860,7 +928,7 @@ class WP_ProjectManager
 		foreach ( $datasets AS $o => $d ) {
 			$offsets[$d->id] = $o;
 		}
-		$number = $offsets[$dataset_id] +1;
+		$number = $offsets[$dataset_id] + 1;
 		return ceil($number/$this->getPerPage());
 	}
 	
@@ -927,7 +995,7 @@ class WP_ProjectManager
 				* 7: Checkbox List
 				* 8: Radio List
 				*/
-				if (is_string($meta->value)) $meta_value = htmlspecialchars( $meta->value );
+				$meta_value = (is_string($meta->value)) ? htmlspecialchars( $meta->value ) : $meta->value;
 				
 				if ( 1 == $meta->type || 6 == $meta->type || 7 == $meta->type || 8 == $meta->type )
 					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span>";
@@ -937,12 +1005,12 @@ class WP_ProjectManager
 					$meta_value = nl2br($meta_value);
 						
 					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span>";
-				} elseif ( 3 == $meta->type )
-					$meta_value = "<a href='mailto:".$meta_value."'><span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span></a>";
+				} elseif ( 3 == $meta->type && $meta_value != '')
+					$meta_value = "<a href='mailto:".$meta_value."' class='projectmanager_email'><span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span></a>";
 				elseif ( 4 == $meta->type )
 					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".mysql2date(get_option('date_format'), $meta_value )."</span>";
-				elseif ( 5 == $meta->type )
-					$meta_value = "<a href='http://".$meta_value."' target='_blank' title='".$meta_value."'><span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span></a>";
+				elseif ( 5 == $meta->type && $meta_value != '')
+					$meta_value = "<a class='projectmanager_url' href='http://".$meta_value."' target='_blank' title='".$meta_value."'><span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span></a>";
 					
 				if ( 1 == $meta->show_on_startpage || $show_all ) {
 					if ( '' != $meta_value ) {
@@ -1068,7 +1136,7 @@ class WP_ProjectManager
 		global $wpdb;
 	
 		$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_projects} (title) VALUES ('%s')", $title ) );
-		return __('Project added','projectmanager');
+		$this->message['success'] = __('Project added','projectmanager');
 	}
 	
 	
@@ -1083,7 +1151,7 @@ class WP_ProjectManager
 	{
 		global $wpdb;
 		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projects} SET `title` = '%s' WHERE `id` = '%d'", $title, $project_id ) );
-		return __('Project updated','projectmanager');
+		$this->message['success'] = __('Project updated','projectmanager');
 	}
 	
 	
@@ -1142,19 +1210,19 @@ class WP_ProjectManager
 					}
 					fclose($handle);
 					
-					return sprintf(__( '%d Datasets successfully imported', 'projectmanager' ), $i);
+					$this->message['success'] = sprintf(__( '%d Datasets successfully imported', 'projectmanager' ), $i);
 				} else {
 					$this->error = true;
-					$this->message = __('The file is not readable', 'projectmanager');
+					$this->message['error'] = __('The file is not readable', 'projectmanager');
 				}
 			} else {
 				$this->error = true;
-				$this->message = sprintf( __('The uploaded file could not be moved to %s.' ), $this->getImagePath() );
+				$this->message['error'] = sprintf( __('The uploaded file could not be moved to %s.' ), $this->getImagePath() );
 			}
 			@unlink($new_file); // remove file from server after import is done
 		} else {
 			$this->error = true;
-			$this->message = __('The uploaded file seems to be empty', 'projectmanager');
+			$this->message['error'] = __('The uploaded file seems to be empty', 'projectmanager');
 		}
 	}
 	
@@ -1236,14 +1304,10 @@ class WP_ProjectManager
 			if ( isset($_FILES['projectmanager_image']) && $_FILES['projectmanager_image']['name'] != ''  )
 				$this->uploadImage($team_id, $_FILES['projectmanager_image']);
 				
-			if ( $this->error ) $this->printErrorMessage();
-			
-			return __( 'New dataset added to the database.', 'projectmanager' ).' '.$tail;
+			$this->message['success'] = __( 'New dataset added to the database.', 'projectmanager' ).' '.$tail;
 		} else {
 			$this->error = true;
-			$this->message = __( 'An Entry of your user ID has been detected', 'projectmanager' );
-			$this->printErrorMessage();
-			return false;
+			$this->message['error'] = __( 'An Entry of your user ID has been detected', 'projectmanager' );
 		}
 	}
 		
@@ -1311,14 +1375,10 @@ class WP_ProjectManager
 			if ( isset($_FILES['projectmanager_image']) && $_FILES['projectmanager_image']['name'] != '' )
 				$this->uploadImage($dataset_id, $_FILES['projectmanager_image'], $overwrite_image);
 			
-			if ( $this->error ) $this->printErrorMessage();
-				
-			return __('Dataset updated.', 'projectmanager');
+			$this->message['success'] = __('Dataset updated.', 'projectmanager');
 		} else {
 			$this->error = true;
-			$this->message = __( "You don't have the permission to edit this dataset", "projectmanager" );
-			$this->printErrorMessage();
-			return false;
+			$this->message['error'] = __( "You don't have the permission to edit this dataset", "projectmanager" );
 		}
 	}
 		
@@ -1339,9 +1399,6 @@ class WP_ProjectManager
 		$this->delImage( $img );
 		$wpdb->query("DELETE FROM {$wpdb->projectmanager_datasetmeta} WHERE `dataset_id` = {$dataset_id}");
 		$wpdb->query("DELETE FROM {$wpdb->projectmanager_dataset} WHERE `id` = {$dataset_id}");
-		
-			
-		return;
 	}
 		
 	
@@ -1490,7 +1547,7 @@ class WP_ProjectManager
 				$new_file =  $this->getImagePath().'/'.basename($file['name']);
 				if ( file_exists($new_file) && !$overwrite ) {
 					$this->error = true;
-					$this->message = __('File exists and is not uploaded. Set the overwrite option if you want to replace it.','projectmanager');
+					$this->message['error'] = __('File exists and is not uploaded. Set the overwrite option if you want to replace it.','projectmanager');
 				} else {
 					if ( move_uploaded_file($file['tmp_name'], $new_file) ) {
 						if ( $dataset = $this->getDataset($dataset_id) )
@@ -1509,19 +1566,19 @@ class WP_ProjectManager
 						$this->createThumbnail( $new_file, $dims, $this->getImagePath().'/tiny.'.basename($file['name']) );
 					} else {
 						$this->error = true;
-						$this->message = sprintf( __('The uploaded file could not be moved to %s.' ), $this->getImagePath() );
+						$this->message['error'] = sprintf( __('The uploaded file could not be moved to %s.' ), $this->getImagePath() );
 					}
 				}
 			}
 		} else {
 			$this->error = true;
-			$this->message = __('The file type is not supported.','projectmanager');
+			$this->message['error'] = __('The file type is not supported.','projectmanager');
 		}
 	}
 	
 	
 	/**
-	 * create Thumbnail of Image
+	 * createThumbnail() - create Thumbnail of Image
 	 *
 	 * @param string $image
 	 * @param array $dims
@@ -1612,7 +1669,7 @@ class WP_ProjectManager
 		}
 		
 		update_option('projectmanager', $options);
-		return __('Form Fields updated', 'projectmanager');
+		$this->message['success'] = __('Form Fields updated', 'projectmanager');
 	}
 		 
 		
@@ -1649,6 +1706,22 @@ class WP_ProjectManager
 						$project_id = $v0;
 						$search = $matches[0][$key];
 						$replace = $this->getCategorySelection( $project_id, $matches[2][$key], $matches[3][$key] );
+				
+						$content = str_replace($search, $replace, $content);
+					}
+				}
+			}
+		}
+		
+		if ( stristr( $content, '[prjctmngr_order' )) {
+			$search = "@\[prjctmngr_order_selection\s*=\s*(\w+),(|left|center|right|)\]@i";
+		
+			if ( preg_match_all($search, $content , $matches) ) {
+				if (is_array($matches)) {
+					foreach($matches[1] AS $key => $v0) {
+						$project_id = $v0;
+						$search = $matches[0][$key];
+						$replace = $this->getOrderSelection( $project_id, $matches[2][$key] );
 				
 						$content = str_replace($search, $replace, $content);
 					}
@@ -1695,7 +1768,10 @@ class WP_ProjectManager
 	/**
 	 * getSearchForm() - create search formular
 	 *
-	 * @param string $style
+	 * @param int $project_id
+	 * @param string $pos
+	 * @param string display compact|extend
+	 * @return string
 	 */
 	function getSearchForm( $project_id, $pos = '', $display )
 	{
@@ -1754,6 +1830,7 @@ class WP_ProjectManager
 	 * getCategoryDropdown() - get group dropdown
 	 *
 	 * @param int $project_id
+	 * @param strin $pos
 	 * @return string
 	 */
 	function getCategoryDropdown( $project_id, $pos = '' )
@@ -1796,7 +1873,8 @@ class WP_ProjectManager
 	/**
 	 * getCategoryList() - get group list
 	 *
-	 * @param int $proeject_id
+	 * @param int $project_id
+	 * @param string $pos
 	 * @return string
 	 */
 	function getCategoryList( $project_id, $pos )
@@ -1813,6 +1891,41 @@ class WP_ProjectManager
 		}
 		$out .= '<p>';
 		
+		return $out;
+	}
+	
+	
+	/**
+	 * getOrderBySelection() - get dropdown list of possible options to order datasets
+	 *
+	 * @param int $project_id
+	 * @param string $pos
+	 * @return string
+	 */
+	function getOrderSelection( $project_id, $pos )
+	{
+		global $wp_query;
+		
+		$this->project_id = $project_id;
+		$page_obj = $wp_query->get_queried_object();
+		$page_ID = $page_obj->ID;
+			
+		$out = '</p>';
+		$out .= "\n<div class='align".$pos."'>";
+		$out .= "\n<form method='get' action='".get_permalink($page_ID)."'><input type='hidden' name='page_id' value='".$page_ID."' />";
+		$out .= "\n\t<select size='1' name='orderby'>";
+		$out .= "\n\t\t<option value='name'>".__('Name','projectmanager')."</option><option value='id'>".__('ID','projectmanager')."</option>";
+		foreach ( $this->getFormFields() AS $form_field ) {
+			$out .= "\n\t\t<option value='formfields_".$form_field->id."'>".$form_field->label."</option>";
+		}
+		$out .= "\n\t</select>";
+		$out .= "\n\t<select size='1' name='order'>">;
+		$out .= "\n\t</select>";
+		$out .= "\n\t<input type='submit' value='".__('Go', 'projectmanager')."' />";
+		$out .= "\n</form>";
+		$out .= "\n</div>";
+		$out .= '<p>';
+	
 		return $out;
 	}
 	
