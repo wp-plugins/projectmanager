@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
 "POT-Creation-Date: 2008-12-19 13:16+0000\n"
-"PO-Revision-Date: 2009-01-28 21:08+0100\n"
+"PO-Revision-Date: 2009-01-31 18:47+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -621,4 +621,10 @@ msgstr "Aufsteigend"
 
 msgid "Descending"
 msgstr "Absteigend"
+
+msgid "Hook into Profile"
+msgstr "In Profil einbinden"
+
+msgid "Only one project can be hooked into the profile!"
+msgstr "Nur ein Projekt kann in das Profil eingebunden werden!"
 

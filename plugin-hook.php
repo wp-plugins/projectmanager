@@ -54,6 +54,8 @@ add_action( 'admin_head', array(&$projectmanager, 'addHeaderCode') );
 add_action( 'wp_head', array(&$projectmanager, 'addHeaderCode') );
 add_action( 'admin_menu', array(&$projectmanager, 'addAdminMenu') );
 add_action( 'widgets_init', array(&$projectmanager, 'activateWidget') );
+add_action( 'show_user_profile', array(&$projectmanager, 'profileHook') );
+add_action( 'profile_update', array(&$projectmanager, 'updateProfile') );
 
 add_filter( 'projectmanager_dataset_list', array(&$projectmanager, 'getDatasetList'), 10, 4 );
 add_filter( 'projectmanager_dataset_gallery', array(&$projectmanager, 'getGallery'), 10, 4 );

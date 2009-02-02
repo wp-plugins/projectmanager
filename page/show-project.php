@@ -4,6 +4,8 @@ if ( !current_user_can( 'manage_projects' ) ) :
 
 else :
 $project_id = $projectmanager->getProjectID();
+$projectmanager->getProject($project_id);
+
 $options = get_option( 'projectmanager' );
 if ( isset($_POST['updateProjectManager']) AND !isset($_POST['doaction']) ) {
 	if ( 'dataset' == $_POST['updateProjectManager'] ) {
@@ -27,11 +29,19 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['doaction']) ) {
 }
 
 $project_title = $projectmanager->getProjectTitle();
+
+$orderby = array( '' => __('Order By', 'projectmanager'), 'name' => __('Name','projectmanager'), 'id' => __('ID','projectmanager') );
+foreach ( $projectmanager->getFormFields() AS $form_field )
+	$orderby['formfields_'.$form_field->id] = $form_field->label;
 	
+$order = array( '' => __('Order','projectmanager'), 'ASC' => __('Ascending','projectmanager'), 'DESC' => __('Descending','projectmanager') );
+     
 if ( $projectmanager->isSearch() )
 	$datasets = $projectmanager->getSearchResults();
 else
 	$datasets = $projectmanager->getDatasets( true );
+     
+$options = $options['project_options'][$project_id];
 ?>
 <div class="wrap">
 	<?php $projectmanager->printBreadcrumb( $project_title, true ) ?>
@@ -79,13 +89,24 @@ else
 			</select>
 			<input type="submit" value="<?php _e('Apply'); ?>" name="doaction" id="doaction" class="button-secondary action" />
 			
-			<?php if ( -1 != $options[$project_id]['category'] ) : ?>
+			<?php if ( -1 != $options['category'] ) : ?>
 			<!-- Category Filter -->
-			<?php wp_dropdown_categories(array('echo' => 1, 'hide_empty' => 0, 'name' => 'cat_id', 'orderby' => 'name', 'selected' => $projectmanager->getCatID(), 'hierarchical' => true, 'child_of' => $options[$project_id]['category'], 'show_option_all' => __('View all categories'))); ?>
+			<?php wp_dropdown_categories(array('echo' => 1, 'hide_empty' => 0, 'name' => 'cat_id', 'orderby' => 'name', 'selected' => $projectmanager->getCatID(), 'hierarchical' => true, 'child_of' => $options['category'], 'show_option_all' => __('View all categories'))); ?>
 			<input type='hidden' name='page' value='<?php echo $_GET['page'] ?>' />
 			<input type='hidden' name='project_id' value='<?php echo $project_id ?>' />
-			<input type='submit' value='<?php _e( 'Filter' ) ?>' class='button' />
 			<?php endif; ?>
+			<select size='1' name='orderby'>
+			<?php foreach ( $orderby AS $key => $value ) : ?>
+				<?php $selected = ($_REQUEST['orderby'] == $key) ? ' selected="selected"' : ''; ?>
+				<option value='<?php echo $key ?>' <?php echo $selected ?>><?php echo $value ?></option>
+			<?php endforeach ?>
+			</select>
+			<select size='1' name='order'>
+			<?php foreach ( $order AS $key => $value ) : ?>
+				<option value='<?php echo $key ?>' <?php if ($_REQUEST['order'] == $key) echo ' selected="selected"' ?>><?php echo $value ?></option>
+			<?php endforeach; ?>
+			</select>
+			<input type='submit' value='<?php _e( 'Apply' ) ?>' class='button' />
 		</div>
 		
 		<?php if ( $projectmanager->getPageLinks() ) : ?>
@@ -105,7 +126,7 @@ else
 		<tr>
 			<th scope="col" class="check-column"><input type="checkbox" onclick="ProjectManager.checkAll(document.getElementById('dataset-filter'));" /></th>
 			<th scope="col"><?php _e( 'Name', 'projectmanager' ) ?></th>
-			<?php if ( -1 != $options[$project_id]['category'] ) : ?>
+			<?php if ( -1 != $options['category'] ) : ?>
 			<th scope="col"><?php _e( 'Categories', 'projectmanager' ) ?></th>
 			<?php endif; ?>
 			<?php $projectmanager->printTableHeader() ?>
@@ -115,7 +136,7 @@ else
 		<tr>
 			<th scope="col" class="check-column"><input type="checkbox" onclick="ProjectManager.checkAll(document.getElementById('dataset-filter'));" /></th>
 			<th scope="col"><?php _e( 'Name', 'projectmanager' ) ?></th>
-			<?php if ( -1 != $options[$project_id]['category'] ) : ?>
+			<?php if ( -1 != $options['category'] ) : ?>
 			<th scope="col"><?php _e( 'Categories', 'projectmanager' ) ?></th>
 			<?php endif; ?>
 			<?php $projectmanager->printTableHeader() ?>
@@ -147,7 +168,7 @@ else
 						<span><?php echo $dataset->name ?></span>
 					<?php endif; ?>
 				</td>
-				<?php if ( -1 != $options[$project_id]['category'] ) : ?>
+				<?php if ( -1 != $options['category'] ) : ?>
 				<td>
 					<?php if ( $dataset->user_id == $current_user->ID || current_user_can( 'projectmanager_admin') ) : ?>
 					<!-- Popup Window for Ajax group editing -->
@@ -155,7 +176,7 @@ else
 						<div id="groupchoose<?php echo $dataset->id; ?>" class='projectmanager_thickbox'>
 							<form>
 								<ul class="categorychecklist" id="categorychecklist<?php echo $dataset->id ?>">
-								<?php $projectmanager->categoryChecklist( $options[$project_id]['category'], $projectmanager->getSelectedCategoryIDs($dataset) ) ?>
+								<?php $projectmanager->categoryChecklist( $options['category'], $projectmanager->getSelectedCategoryIDs($dataset) ) ?>
 								</ul>
 								<div style="text-align:center; margin-top: 1em;"><input type="button" value="<?php _e('Save') ?>" class="button-secondary" onclick="ProjectManager.ajaxSaveCategories(<?php echo $dataset->id; ?>);return false;" />&#160;<input type="button" value="<?php _e('Cancel') ?>" class="button" onclick="tb_remove();" /></div>
 							</form>

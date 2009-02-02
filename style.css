@@ -8,6 +8,9 @@ div.projectmanager_tablenav {
 	float: left;
 	clear: both;
 }
+div.projectmanager_tablenav select {
+	margin-right: 0.5em;
+	}
 
 /* Simple Table Output */
 table.projectmanager {
