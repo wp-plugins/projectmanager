@@ -4,9 +4,8 @@
 else :
 
 $project_id = $projectmanager->getProjectID();
-     
 if ( isset($_POST['import']) ) {
-	$projectmanager->importDatasets( $project_id, $_FILES['projectmanger_import'], $_POST['delimiter'], $_POST['cols'] );
+	$projectmanager->importDatasets( $project_id, $_FILES['projectmanager_import'], $_POST['delimiter'], $_POST['cols'] );
      	$projectmanager->printMessage();
 }
 ?>
@@ -21,7 +20,7 @@ if ( isset($_POST['import']) ) {
 	
 	<table class="form-table">
 	<tr valign="top">
-		<th scope="row"><label for="projectmanger_import"><?php _e('File','projectmanager') ?></label></th><td><input type="file" name="projectmanger_import" id="projectmanger_import" size="40"/></td>
+		<th scope="row"><label for="projectmanager_import"><?php _e('File','projectmanager') ?></label></th><td><input type="file" name="projectmanager_import" id="projectmanager_import" size="40"/></td>
 	</tr>
 	<tr valign="top">
 		<th scope="row"><label for="delimiter"><?php _e('Delimiter','projectmanager') ?></label></th><td><input type="text" name="delimiter" id="delimiter" value=";" size="3" /><p><?php _e('For tab delimited files use TAB as delimiter', 'projectmanager') ?></td>

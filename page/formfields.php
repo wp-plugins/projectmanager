@@ -18,8 +18,9 @@ $options = get_option('projectmanager');
 	<h2><?php _e( 'Form Fields', 'projectmanager' ) ?></h2>
 	
 	<form method="post" action="edit.php?page=projectmanager/page/formfields.php&amp;project_id=<?php echo $project_id ?>">
-		
+	<input type="hidden" name="project_id" value="<?php echo $project_id ?>" />
 	<?php wp_nonce_field( 'projectmanager_manage-formfields' ) ?>
+	
 	<table class="widefat">
 	<thead>
 	<tr>
@@ -78,9 +79,6 @@ $options = get_option('projectmanager');
 	</tbody>
 	</table>
 	<p><a href='#' onclick='return ProjectManager.addFormField();'><?php _e( 'Add new formfield', 'projectmanager' ) ?></a></p>
-	
-	<input type="hidden" name="project_id" value="<?php echo $project_id ?>" />
-	
 	<p class="submit"><input type="submit" name="saveFormFields" value="<?php _e( 'Save Form Fields', 'projectmanager' ) ?> &raquo;" class="button" /></p>
 	</form>
 </div> 

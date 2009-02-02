@@ -87,7 +87,7 @@ function ProjectManagerInsertLink() {
 			tinyMCEPopup.close();
 	}
 	
-	/*if (categories.className.indexOf('current') != -1) {
+	if (categories.className.indexOf('current') != -1) {
 		var projectId = document.getElementById('categories_projects').value;
 		var showtype = getCheckedValue(document.getElementsByName('categories_showtype'));
 		var pos = document.getElementById('align_categories').value;
@@ -96,7 +96,7 @@ function ProjectManagerInsertLink() {
 			tagtext = "[prjctmngr_category_selection=" + projectId + "," + showtype + "," + pos + "]";	
 		else
 			tinyMCEPopup.close();
-	}*/
+	}
 	
 	if (searchform.className.indexOf('current') != -1) {
 		var projectId = document.getElementById('search_projects').value;

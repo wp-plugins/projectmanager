@@ -707,7 +707,6 @@ class WP_ProjectManager
 								
 		if ( !is_array($datasets) ) $datasets = array($datasets);
 		
-		
 		$selected_datasets = array();
 		foreach ( $datasets AS $dataset )
 			if ( in_array($this->getCatID(), $this->getSelectedCategoryIDs($dataset)) )
@@ -1553,7 +1552,7 @@ class WP_ProjectManager
 						$dims = array( 'width' => $options['medium_size']['width'], 'height' => $options['medium_size']['height'] );
 						$this->createThumbnail( $new_file, $dims, $new_file );
 
-						$dims = array( 'width' => $thumb_width = $options['thumb_size']['width'], 'height' => $options['thumb_size']['height'] );
+						$dims = array( 'width' => $options['thumb_size']['width'], 'height' => $options['thumb_size']['height'] );
 						$this->createThumbnail( $new_file, $dims, $this->getImagePath().'/thumb.'.basename($file['name']) );
 
 						$dims = array( 'width' => 80, 'height' => 50 );
@@ -1649,7 +1648,6 @@ class WP_ProjectManager
 		if ( '' == $_POST['dataset_id'] ) {
 			$this->addDataset( $_POST['project_id'], $_POST['display_name'], $_POST['post_category'], $_POST['form_field'] );
 		} else {
-			$dataset_owner = isset($_POST['owner']) ? $_POST['owner'] : false;
 			$del_image = isset( $_POST['del_old_image'] ) ? true : false;
 			$overwrite_image = isset( $_POST['overwrite_image'] ) ? true: false;
 			$this->editDataset( $_POST['project_id'], $_POST['display_name'], $_POST['post_category'], $_POST['dataset_id'], $_POST['form_field'], $user_id, $del_image, $_POST['image_file'], $overwrite_image );
@@ -1779,23 +1777,21 @@ class WP_ProjectManager
 			}
 		}
 		
-		/*
-		if ( stristr( $content, '[prjctmngr_display' )) {
-			$search = "@\[prjctmngr_order_selection\s*=\s*(\w+),(|left|center|right|)\]@i";
+		if ( stristr( $content, '[prjctmngr_tablenav' )) {
+			$search = "@\[prjctmngr_tablenav\s*=\s*(\w+)\]@i";
 		
 			if ( preg_match_all($search, $content , $matches) ) {
 				if (is_array($matches)) {
 					foreach($matches[1] AS $key => $v0) {
 						$project_id = $v0;
 						$search = $matches[0][$key];
-						$replace = $this->getOrderSelection( $project_id, $matches[2][$key] );
+						$replace = $this->getTablenav( $project_id );
 				
 						$content = str_replace($search, $replace, $content);
 					}
 				}
 			}
 		}
-		*/
 
 		if ( stristr( $content, '[dataset_list' )) {
 			$search = "@\[dataset_list\s*=\s*(\w+),(|\d+),(|table|ul|ol|)\]@i";
@@ -1954,7 +1950,7 @@ class WP_ProjectManager
 	
 	
 	/**
-	 * getDisplaySelections() - get dropdown selections
+	 * getTablenav() - get dropdown selections
 	 *
 	 * Function to show display selection possbilities, namely Category selection and ordering of datasets
 	 * The function is called via the filter projectmanager_display_selections and can be modified or overwritten by
@@ -1968,7 +1964,7 @@ class WP_ProjectManager
 	 * @param none
 	 * @return string
 	 */
-	function getDisplaySelections()
+	function getTablenav()
 	{
 		global $wp_query;
 		$options = get_option( 'projectmanager' );
@@ -2044,7 +2040,7 @@ class WP_ProjectManager
 			elseif ( $this->isCategory() )
 				$out .= "<h3 style='clear:both;'>".$this->getCatTitle($this->getCatID())."</h3>";
 			
-			$out .= apply_filters( 'projectmanager_display_selections', $out );
+			$out .= apply_filters( 'projectmanager_tablenav', $out );
 	
 			if ( $datasets ) {
 				if ( 'table' == $output ) {
@@ -2119,7 +2115,7 @@ class WP_ProjectManager
 			
 			$out = "</p>";
 		
-			$out .= apply_filters( 'projectmanager_display_selections', $out );
+			$out .= apply_filters( 'projectmanager_tablenav', $out );
 			if ( $datasets ) {
 				$out .= "\n\n<div class='dataset_gallery'>\n<div class='gallery-row'>";
 				
@@ -2533,7 +2529,7 @@ class WP_ProjectManager
 	}
 		
 
-		/**
+	/**
 	 * display global settings page (e.g. color scheme options)
 	 *
 	 * @param none
@@ -2550,39 +2546,10 @@ class WP_ProjectManager
 				$options['colors']['rows'] = array( $_POST['color_rows_alt'], $_POST['color_rows'] );
 				
 				update_option( 'projectmanager', $options );
-				echo '<div id="message" class="updated fade"><p><strong>'.__( 'Settings saved', 'leaguemanager' ).'</strong></p></div>';
+				$this->setMessage(__( 'Settings saved', 'leaguemanager' ));
+				$this->printMessage();
 			}
-			
-			
-			echo "\n<form action='' method='post' name='colors'>";
-			wp_nonce_field( 'projetmanager_manage-global-league-options' );
-			echo "\n<div class='wrap'>";
-			echo "\n\t<h2>".__( 'Global Settings', 'projectmanager' )."</h2>";
-			echo "\n\t<h3>".__( 'Color Scheme', 'projectmanager' )."</h3>";
-			echo "\n\t<table class='form-table'>";
-			echo "\n\t<tr valign='top'>";
-			echo "\n\t\t<th scope='row'><label for='color_headers'>".__( 'Table Headers', 'projectmanager' )."</label></th><td><input type='text' name='color_headers' id='color_headers' value='".$options['colors']['headers']."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[\"colors\"].color_headers,\"pick_color_headers\"); return false;' name='pick_color_headers' id='pick_color_headers'>&#160;&#160;&#160;</a></td>";
-			echo "\n\t</tr>";
-			echo "\n\t<tr valign='top'>";
-			echo "\n\t<th scope='row'><label for='color_rows'>".__( 'Table Rows', 'projectmanager' )."</label></th>";
-			echo "\n\t\t<td>";
-			echo "\n\t\t\t<p class='table_rows'><input type='text' name='color_rows_alt' id='color_rows_alt' value='".$options['colors']['rows'][0]."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[\"colors\"].color_rows_alt,\"pick_color_rows_alt\"); return false;' name='pick_color_rows_alt' id='pick_color_rows_alt'>&#160;&#160;&#160;</a></p>";
-			echo "\n\t\t\t<p class='table_rows'><input type='text' name='color_rows' id='color_rows' value='".$options['colors']['rows'][1]."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[\"colors\"].color_rows,\"pick_color_rows\"); return false;' name='pick_color_rows' id='pick_color_rows'>&#160;&#160;&#160;</a></p>";
-			echo "\n\t\t</td>";
-			echo "\n\t</tr>";
-			echo "\n\t</table>";
-			echo "\n<input type='hidden' name='page_options' value='color_headers,color_rows,color_rows_alt' />";
-			echo "\n<p class='submit'><input type='submit' name='updateProjectManager' value='".__( 'Save Preferences', 'projectmanager' )." &raquo;' class='button' /></p>";
-			echo "\n</form>";
-		
-			echo "<script language='javascript'>
-				syncColor(\"pick_color_headers\", \"color_headers\", document.getElementById(\"color_headers\").value);
-				syncColor(\"pick_color_rows\", \"color_rows\", document.getElementById(\"color_rows\").value);
-				syncColor(\"pick_color_rows_alt\", \"color_rows_alt\", document.getElementById(\"color_rows_alt\").value);
-			</script>";
-	
-		//	echo "<p>".sprintf(__( "To add and manage projects, go to the <a href='%s'>Management Page</a>", 'projectmanager' ), get_option( 'siteurl' ).'/wp-admin/edit.php?page=projectmanager/page/index.php')."</p>";
-	
+			include( 'settings-global.php' );	
 		} elseif(!$include) {
 			echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
 		}
@@ -2630,7 +2597,7 @@ class WP_ProjectManager
 			update_option( 'projectmanager', $options );
 		}
 		$charset_collate = '';
-		if ( $wpdb->supports_collation() ) {
+		if ( $wpdb->supports_collation() ) {editDataset
 			if ( ! empty($wpdb->charset) )
 				$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
 			if ( ! empty($wpdb->collate) )

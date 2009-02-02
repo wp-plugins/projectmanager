@@ -85,9 +85,9 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 		<form action="" method="post" style="margin-top: 3em;">
 			<input type="hidden" name="project_id" value="" />
 			<input type="hidden" name="updateProjectManager" value="project" />
-			<h3><?php _e( 'Add Project', 'projectmanager' ) ?></h3>
-			<?php wp_nonce_field( 'projectmanager_manage-projects' ) ?>	
+			<?php wp_nonce_field( 'projectmanager_manage-projects' ) ?>
 			
+			<h3><?php _e( 'Add Project', 'projectmanager' ) ?></h3>
 			<div class="form-field form-required">
 				<label for="project_title"><?php _e( 'Title', 'projectmanager' ) ?></label>
 				<input type="text" name="project_title" id="project_title" value="" size="30" style="margin-bottom: 1em;" />

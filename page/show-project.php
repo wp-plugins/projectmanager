@@ -27,15 +27,12 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['doaction']) ) {
 			$projectmanager->delDataset( $dataset_id );
 	}
 }
-
-$project_title = $projectmanager->getProjectTitle();
-
 $orderby = array( '' => __('Order By', 'projectmanager'), 'name' => __('Name','projectmanager'), 'id' => __('ID','projectmanager') );
 foreach ( $projectmanager->getFormFields() AS $form_field )
 	$orderby['formfields_'.$form_field->id] = $form_field->label;
 	
 $order = array( '' => __('Order','projectmanager'), 'ASC' => __('Ascending','projectmanager'), 'DESC' => __('Descending','projectmanager') );
-     
+
 if ( $projectmanager->isSearch() )
 	$datasets = $projectmanager->getSearchResults();
 else
@@ -44,9 +41,9 @@ else
 $options = $options['project_options'][$project_id];
 ?>
 <div class="wrap">
-	<?php $projectmanager->printBreadcrumb( $project_title, true ) ?>
+	<?php $projectmanager->printBreadcrumb( $projectmanager->getProjectTitle(), true ) ?>
 	
-	<h2><?php echo $project_title ?> <?php if ($projectmanager->isCategory()) echo " &#8211; ".$projectmanager->getCatTitle() ?></h2>
+	<h2><?php echo $projectmanager->getProjectTitle() ?> <?php if ($projectmanager->isCategory()) echo " &#8211; ".$projectmanager->getCatTitle() ?></h2>
 	
 	<form class='search-form' action='' method='post' style="float: right; margin-left: 1em;">
 		<input type='text' class='search-input' name='search_string' value='<?php $projectmanager->getSearchString() ?>' />

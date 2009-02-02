@@ -60,7 +60,7 @@ add_action( 'profile_update', array(&$projectmanager, 'updateProfile') );
 add_filter( 'projectmanager_dataset_list', array(&$projectmanager, 'getDatasetList'), 10, 4 );
 add_filter( 'projectmanager_dataset_gallery', array(&$projectmanager, 'getGallery'), 10, 4 );
 add_filter( 'projectmanager_single_view', array(&$projectmanager, 'getSingleView'), 10, 3 );
-add_filter( 'projectmanager_display_selections', array(&$projectmanager, 'getDisplaySelections'), 10 );
+add_filter( 'projectmanager_tablenav', array(&$projectmanager, 'getTablenav'), 10 );
 
 // Ajax Actions
 add_action( 'wp_ajax_projectmanager_save_name', 'projectmanager_save_name' );

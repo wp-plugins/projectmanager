@@ -75,7 +75,7 @@
 		</td>
 	</tr>
 	<?php endif; ?>
-	<?php if ( isset($_GET['edit']) && current_user_can('projectmanager_admin') ) : ?>
+	<?php if ( isset($_GET['edit']) && current_user_can('projectmanager_admin') && !$is_profile_page ) : ?>
 	<tr valign="top">
 		<th scope="row"><label for="owner"><?php _e( 'Owner', 'projectmanager' ) ?></label></th>
 		<td><?php wp_dropdown_users( array('selected' => $dataset->user_id, 'name' => 'owner') ) ?></td>
