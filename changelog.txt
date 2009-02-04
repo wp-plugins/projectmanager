@@ -1,0 +1,53 @@
+ProjectManager Plugin
+by Kolja Schleich <kolja.schleich@googlemail.com>
+
+V1.8 - February, 2009
+- NEW: dataset ordering selection in frontend
+- NEW: hook one project into profile
+
+V1.7 - January 23, 2009
+- NEW: sorting of datasets by form fields
+- NEW: import/export of datasets from/to CSV file
+- BUGFIX: form field saving
+
+V1.6.2 - January 21, 2009
+- CHANGED: moved image directory to wp-content/uploads
+
+V1.6.1 - January 18, 2009
+- BUGFIX: pretty permalinks
+
+V1.6 - January 18, 2009
+- NEW: Slideshow Widget
+- CHANGED: usability enhancements
+
+V1.5 - January 5, 2009
+- NEW: coupled datasets to user id who entered them.
+
+V1.4 - December 19, 2008
+- NEW: selection, checkbox list, radio list form field types
+
+V1.3 - December 1, 2008
+- NEW: support for multiple categorization
+- NEW: customization of dataset output via wordpress hooks
+- NEW: search for category names (comma separated list of cat names)
+- NEW: set colorschemes of tables
+
+V1.2.3 - November 24, 2008
+- NEW: option to add direct link to project in navigation panel
+- BUGFIX: adding of new project failed
+
+V1.2.2 - November 23, 2008
+- BUGFIX: upgrade bug
+
+V1.2.1 - November 23, 2008
+- BUGFIX: database collation
+
+V1.2 - November 22, 2008
+- NEW: Ajax editing of datasets
+- NEW: display of specific group only
+
+V1.1 - November 21, 2008
+- NEW: full control of display via shortcodes
+- NEW: TinyMCE Button for better usability
+- CHANGED: major restructuring of plugin
+

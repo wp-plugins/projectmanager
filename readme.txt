@@ -24,9 +24,10 @@ This plugin is a datamanager for any recurrent datasets. It can be used to manag
 * simple display in frontend over shortcodes
 * easy adding of shortcodes via TinyMCE Button
 * change colorscheme for output tables
-* coupling of dataset entries to user ID (since Version 1.5).
-* dataset sorting by form fields (since Version 1.7)
-* import and export of datasets from/to CSV file (since 1.7)
+* coupling of dataset entries to user ID
+* dataset sorting by form fields
+* import and export of datasets from/to CSV file
+* hook one project into user profile
 
 After adding a project, check out the settings and form field pages first. The frontend display of datasets is controlled via shortcodes, see the Usage section for details.
 
@@ -91,72 +92,3 @@ Since version 1.3 it is possible to customize frontend output via function hooks
 * getSingleView
 
 in projectmanager.php for details.
-
-
-== ChangeLog ==
-
-**Version 1.8**, *January--2009*
-
-- dataset ordering selection in frontend
-
-**Version 1.7**, *January-23-2009*
-
-- NEW: sorting of datasets by form fields
-- NEW: import/export of datasets from/to CSV file
-- fixed bug in form field saving
-
-**Version 1.6.2**, *January-21-2009*
-
-- moved image directory to wp-content/uploads
-
-**Version 1.6.1**, *January-18-2009*
-
-- fixed structure to be compatible with pretty permalinks
-
-**Version 1.6**, *January-18-2009*
-
-- NEW: implemented Slideshow Widget
-- usability enhancements
-- code cleaning
-- style enhancements
-
-**Version 1.5**, *January-05-2009*
-
-- NEW: coupled datasets to user id who entered them.
-
-**Version 1.4**, *December-19-2008*
-
-- NEW: selection, checkbox list, radio list form field types
-- some code cleaning and fixes
-
-**Version 1.3**, *December-01-2008*
-
-- support for multiple categorization
-- customization of dataset output via wordpress hooks
-- search for category names (comma separated list of cat names)
-- set colorschemes of tables
-
-**Version 1.2.3**, *November-24-2008*
-
-- option to add direct link to project in navigation panel
-- fixed bug in project creation
-
-**Version 1.2.2**, *November-23-2008*
-
-- fixed upgrade bug
-
-**Version 1.2.1**, *November-23-2008*
-
-- fixed database collation
-
-**Version 1.2**, *November-22-2008*
-
-- Ajax editing of datasets
-- display of specific group only
-- some other minor new features
-
-**Version 1.1**, *November-21-2008*
-
-- major restructuring of plugin
-- full control of display via shortcodes
-- added TinyMCE Button for better usability
