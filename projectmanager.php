@@ -2597,7 +2597,7 @@ class WP_ProjectManager
 			update_option( 'projectmanager', $options );
 		}
 		$charset_collate = '';
-		if ( $wpdb->supports_collation() ) {editDataset
+		if ( $wpdb->supports_collation() ) {
 			if ( ! empty($wpdb->charset) )
 				$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
 			if ( ! empty($wpdb->collate) )
@@ -2677,7 +2677,7 @@ class WP_ProjectManager
 			foreach( $projects AS $project ) {
 				if ( 1 == $options['project_options'][$project->id]['navi_link'] ) {
 					$page = 'admin.php?page=projectmanager/page/show-project.php&project_id='.$project->id;
-					add_menu_page( $project->title, $project->title, 'manage_projects', $page, '', $this->plugin_url.'/images/menu.png' );
+					add_menu_page( $project->title, $project->title, 'manage_projects', $page, '', $this->plugin_url.'/admin/icons/databases.png' );
 					add_submenu_page($page, __('Overview', 'projectmanager'), __('Overview','projectmanager'),'manage_projects', $page,'');
 					add_submenu_page($page, __( 'Add Dataset', 'projectmanager' ), __( 'Add Dataset', 'projectmanager' ), 'manage_projects', 'admin.php?page=projectmanager/page/dataset.php&project_id='.$project->id);
 					add_submenu_page($page, __( 'Form Fields', 'projectmanager' ), __( 'Form Fields', 'projectmanager' ), 'manage_projects', 'admin.php?page=projectmanager/page/formfields.php&project_id='.$project->id);
@@ -2690,7 +2690,7 @@ class WP_ProjectManager
 		
 		if ( ! $this->isSingle() ) {
 			$page = basename(__FILE__,".php").'/page/index.php';
-			add_menu_page(__('Projects', 'projectmanager'), __('Projects', 'projectmanager'), 'manage_projects', $page,'', $this->plugin_url.'/images/menu.png');
+			add_menu_page(__('Projects', 'projectmanager'), __('Projects', 'projectmanager'), 'manage_projects', $page,'', $this->plugin_url.'/admin/icons/databases.png');
 			add_submenu_page($page, __('Overview', 'projectmanager'), __('Overview','projectmanager'),'manage_projects', $page,'');
 			add_submenu_page($page, __( 'Settings'), __('Settings'), 'manage_projects', 'projectmanager', array( &$this, 'displayOptionsPage') );
 		}
