@@ -21,11 +21,9 @@ This plugin is a datamanager for any recurrent datasets. It can be used to manag
 * usage of Wordpress Category System for grouping
 * various output formats (table, list, gallery)
 * Ajax enabled editing of datasets
-* simple display in frontend over shortcodes
 * easy adding of shortcodes via TinyMCE Button
 * change colorscheme for output tables
-* coupling of dataset entries to user ID
-* dataset sorting by form fields
+* dataset sorting by any form field
 * import and export of datasets from/to CSV file
 * hook one project into user profile
 
@@ -53,42 +51,7 @@ To install the plugin to the following steps
 
 = Shortcodes =
 
-Use 
-
-`[prjctmngr_search_form=$project_id,$pos]`
-
-to display the search formular. Substitute $project_id with the respective project ID to display. $pos must have one of the three values 'right', 'center', 'left'.
-
-Use
-
-`[prjcgmngr_group_selection=$project_id,$type,$pos]`
-
-to display the group selections. $project_id is again the ID of the project to display. $type can be 'dropdown' or 'list'. $pos has the same values as above.
-
-Use
-
-`[dataset_list=$project_id,$group,$type]`
-
-to display the datasets of the project with ID=$project_id in a simple form. Display types can be 'table', 'ul', 'ol'. $group is either the groupID of a specific group or left empty.
-
-Use
-
-`[dataset_gallery=$project_id,$cols,$group]`
-
-to display the datasets as a gallery, with a picture if one is supplied. $cols is the number of columns. $group is same as above.
-
-Search by category names with comma separated list.
-
-= Coupling of dataset entries to user ID =
-
-Since Version 1.5 the dataset entries are linked to the user ID who entered it. Users with capability "Manage Projects" can only add one dataset and also edit their dataset only. Those users with capability "Projectmanager Admin" have full access to ProjectManager. They can add as many datasets they like, edit every dataset, change owner of a dataset, edit FormFields and edit Settings as well as Color Scheme. By default Blog Administrators have this access. Editors only get the "Manage Projects" Permission. Use [Role Manager](http://www.im-web-gefunden.de/wordpress-plugins/role-manager/) Plugin to fine control permissions. Thus ProjectManager can now also be used as extended profile for users.
-
 = Customization =
 
-Since version 1.3 it is possible to customize frontend output via function hooks. See functions
+= Hook Project into user profile =
 
-* getDatasetList
-* getGallery
-* getSingleView
-
-in projectmanager.php for details.

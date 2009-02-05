@@ -4,14 +4,15 @@
 else :
 
 $project_id = $projectmanager->getProjectID();
+$projectmanager->getProject();
 if ( isset($_POST['import']) ) {
-	$projectmanager->importDatasets( $project_id, $_FILES['projectmanager_import'], $_POST['delimiter'], $_POST['cols'] );
-     	$projectmanager->printMessage();
+	$this->importDatasets( $project_id, $_FILES['projectmanager_import'], $_POST['delimiter'], $_POST['cols'] );
+     	$this->printMessage();
 }
 ?>
 
 <div class="wrap">
-	<?php $projectmanager->printBreadcrumb( __('Import/Export', 'projectmanager') ) ?>
+	<?php $this->printBreadcrumb( __('Import/Export', 'projectmanager') ) ?>
 	<h2><?php _e( 'Import' ) ?></h2>
 	
 	<form action="" method="post" enctype="multipart/form-data">

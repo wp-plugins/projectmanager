@@ -10,13 +10,13 @@
 		<th scope="row"><label for="projectmanager_image"><?php _e( 'Image', 'projectmanager' ) ?></label></th>
 		<td>
 			<?php if ( '' != $img_filename ) : ?>
-			<img src="<?php echo $projectmanager->getImageUrl('tiny.'.$img_filename)?>" class="alignright" />
+				<img src="<?php echo $projectmanager->getImageUrl('tiny.'.$img_filename)?>" class="alignright" />
 			<?php endif; ?>
 			<input type="file" name="projectmanager_image" id="projectmanager_image" size="45"/><p><?php _e( 'Supported file types', 'projectmanager' ) ?>: <?php echo implode( ',',$projectmanager->getSupportedImageTypes() ); ?></p>
 			<?php if ( '' != $img_filename ) : ?>
-			<p class="alignleft"><label for="overwrite_image"><?php _e( 'Overwrite existing image', 'projectmanager' ) ?></label><input type="checkbox" id="overwrite_image" name="overwrite_image" value="1" style="margin-left: 1em;" /></p>
-			<input type="hidden" name="image_file" value="<?php echo $img_filename ?>" />
-			<p class="alignright"><label for="del_old_image"><?php _e( 'Delete current image', 'projectmanager' ) ?></label><input type="checkbox" id="del_old_image" name="del_old_image" value="1" style="margin-left: 1em;" /></p>
+				<p class="alignleft"><label for="overwrite_image"><?php _e( 'Overwrite existing image', 'projectmanager' ) ?></label><input type="checkbox" id="overwrite_image" name="overwrite_image" value="1" style="margin-left: 1em;" /></p>
+				<input type="hidden" name="image_file" value="<?php echo $img_filename ?>" />
+				<p class="alignright"><label for="del_old_image"><?php _e( 'Delete current image', 'projectmanager' ) ?></label><input type="checkbox" id="del_old_image" name="del_old_image" value="1" style="margin-left: 1em;" /></p>
 			<?php endif; ?>
 		</td>
 	</tr>
@@ -69,7 +69,7 @@
 		<td>
 			<div id="projectmanager-category-adder">
 			<ul class="categorychecklist">
-				<?php $projectmanager->categoryChecklist( $options['category'], $cat_ids ) ?>
+				<?php $this->categoryChecklist( $options['category'], $cat_ids ) ?>
 			</ul>
 			</div>
 		</td>

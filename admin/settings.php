@@ -19,23 +19,26 @@ if ( isset($_POST['saveSettings']) ) {
      	$options['project_options'][$project_id]['medium_size'] = array( "width" => $_POST['medium_width'], "height" => $_POST['medium_height'] );
      	$options['project_options'][$project_id]['navi_link'] = isset( $_POST['navi_link'] ) ? 1 : 0;
      	$options['project_options'][$project_id]['profile_hook'] = isset($_POST['profile_hook'] ) ? 1 : 0;
+	$options['project_options'][$project_id]['menu_icon'] = $_POST['menu_icon'];
 		
-	$projectmanager->editProject( $_POST['project_title'], $_POST['project_id'] );
+	$this->editProject( $_POST['project_title'], $_POST['project_id'] );
 	update_option( 'projectmanager', $options );
 	
-	$projectmanager->setMessage(__( 'Settings saved', 'projectmanager' ));
-	$projectmanager->printMessage();
+	$this->setMessage(__( 'Settings saved', 'projectmanager' ));
+     	$this->printMessage();
 }
 $settings = $options['project_options'][$project_id];
 
 if ( 1 == $settings['show_image'] && !wp_mkdir_p( $projectmanager->getImagePath() ) )
 	echo "<div class='error'><p>".sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $projectmanager->getImagePath() )."</p></div>";
+	
+$menu_icons = array( __('Databases', 'projectmanager') => 'databases.png', __('Calendar', 'projectmanager') => 'calendar.png', __('Person', 'projectmanager') => 'user.png' );
 ?>
 
 <div class="wrap">
-	<?php $projectmanager->printBreadcrumb( __( 'Settings', 'projectmanager' ) ) ?>
+	<?php $this->printBreadcrumb( __( 'Settings', 'projectmanager' ) ) ?>
 	
-	<form action="edit.php?page=projectmanager/page/settings.php&amp;project_id=<?php echo $project_id ?>" method="post">
+	<form action="" method="post">
 		<?php wp_nonce_field( 'projectmanager_manage-settings' ) ?>
 		
 		<h2><?php _e( 'Settings', 'projectmanager' ) ?></h2>
@@ -50,7 +53,7 @@ if ( 1 == $settings['show_image'] && !wp_mkdir_p( $projectmanager->getImagePath(
 			<th scope="row"><label for="category"><?php _e( 'Category', 'projectmanager' ) ?></label></th><td><?php wp_dropdown_categories(array('hide_empty' => 0, 'name' => 'category', 'orderby' => 'name', 'selected' => $settings['category'], 'hierarchical' => true, 'show_option_none' => __('None'))); ?></td>
 		</tr>
 		<tr valign="top">
-			<th scope="row"><label for="dataset_orderby"><?php _e( 'Sort Datasets by', 'projectmanager' ) ?></label></th><td><select size="1" name="dataset_orderby" id="dataset_orderby"><?php $projectmanager->datasetOrderOptions($settings['dataset_orderby']) ?></select></td>
+			<th scope="row"><label for="dataset_orderby"><?php _e( 'Sort Datasets by', 'projectmanager' ) ?></label></th><td><select size="1" name="dataset_orderby" id="dataset_orderby"><?php $this->datasetOrderOptions($settings['dataset_orderby']) ?></select></td>
 		</tr>
 		<tr valign="top">
 			<th scope="row"><label for="use_widget"><?php _e( 'Use Widget', 'projectmanager' ) ?></label></th><td><input type="checkbox" name="use_widget" id="use_widget"<?php if ( 1 == $settings['use_widget']  ) echo ' checked="checked"'; ?> value="1" /></td>
@@ -60,6 +63,16 @@ if ( 1 == $settings['show_image'] && !wp_mkdir_p( $projectmanager->getImagePath(
 		</tr>
 		<tr valign="top">
 			<th scope="row"><label for="profile_hook"><?php _e( 'Hook into Profile', 'projectmanager' ) ?></th><td><input type="checkbox" name="profile_hook" id="profile_hook" value="1" <?php if ( 1 == $settings['profile_hook'] ) echo 'checked="checked"' ?> /><br /><?php _e( 'Only one project can be hooked into the profile!', 'projectmanager' ) ?></td>
+		</tr>
+		<tr valign="top">
+			<th scope="row"><label for="menu_icon"><?php _e( 'Menu Icon', 'projectmanager' ) ?></label></th>
+			<td>
+				<select size="1" name="menu_icon" id="menu_icon">
+					<?php foreach ( $menu_icons AS $title => $icon ) : ?>
+					<option value="<?php echo $icon ?>" <?php if ( $icon == $settings['menu_icon'] ) echo ' selected="selected"' ?>><?php echo $title ?></option>
+					<?php endforeach; ?>
+				</select>
+			</td>
 		</tr>
 		</table>
 		
@@ -80,6 +93,6 @@ if ( 1 == $settings['show_image'] && !wp_mkdir_p( $projectmanager->getImagePath(
 		<p class="submit"><input type="submit" name="saveSettings" value="<?php _e( 'Save Settings', 'projectmanager' ) ?> &raquo;" class="button" /></p>
 	</form> 
 </div>
-<?php if ( $projectmanager->isSingle() ) $projectmanager->displayOptionsPage(true); ?>
+<?php if ( $this->isSingle() ) $this->displayOptionsPage(true); ?>
 
 <?php endif; ?>

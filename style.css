@@ -6,6 +6,7 @@ div.projectmanager { margin-bottom: 1em; }
 /* Header above simple Output */
 div.projectmanager_tablenav {
 	float: left;
+	margin-top: 1em;
 	clear: both;
 }
 div.projectmanager_tablenav select {

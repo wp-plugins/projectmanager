@@ -9,7 +9,7 @@ ProjectManager.addFormField = function() {
   new_element_contents += "<td><input type='checkbox' name='new_show_on_startpage["+new_element_number+"]' value='1' /></td>\n\r";
   new_element_contents += "<td><input type='text' size='2' name='new_form_order["+new_element_number+"]' value='' /></td>\n\r";
   new_element_contents += "<td><input type='checkbox' name='new_order_by["+new_element_number+"]' value='1' /></td>\n\r";
-  new_element_contents += "<td  style='text-align: center; width: 12px; vertical-align: middle;'><a class='image_link' href='#' onclick='return ProjectManager.removeNewFormField(\""+new_element_id+"\");'><img src='../wp-content/plugins/projectmanager/images/trash.gif' alt='" + ProjectManagerAjaxL10n.Delete + "' title='" + ProjectManagerAjaxL10n.Delete + "' /></a></td>\n\r";
+  new_element_contents += "<td  style='text-align: center; width: 12px; vertical-align: middle;'><a class='image_link' href='#' onclick='return ProjectManager.removeNewFormField(\""+new_element_id+"\");'><img src='../wp-content/plugins/projectmanager/admin/icons/trash.gif' alt='" + ProjectManagerAjaxL10n.Delete + "' title='" + ProjectManagerAjaxL10n.Delete + "' /></a></td>\n\r";
   
   new_element = document.createElement('tr');
   new_element.id = new_element_id;

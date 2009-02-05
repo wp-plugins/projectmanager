@@ -15,6 +15,7 @@ The following variables are usable:
 ?>
 <form class='search-form <?php echo $align ?>' action='' method='post'>
 	<input type='text' class='search-input' name='search_string' value='<?php echo $search_string ?>' />
+	
 	<?php if ( $display == 'extend' && $form_fields ) : ?>
 		<select size='1' name='search_option'>
 			<option value='0' <?php if ( 0 == $search_option ) echo " selected='selected'" ?>><?php _e( 'Name', 'projectmanager' ) ?></option>
@@ -25,5 +26,7 @@ The following variables are usable:
 		</select>
 	<?php else : ?>
 	<input type='hidden' name='form_field' value='0' />
+	<?php endif; ?>
+	
 	<input type='submit' value='<?php _e('Search', 'projectmanager') ?> &raquo;' class='button' />
 </form>

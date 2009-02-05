@@ -34,11 +34,10 @@ class ProjectManagerShortcodes extends ProjectManager
 	function addShortcodes()
 	{
 		add_shortcode( 'dataset', array(&$this, 'single') );
-		add_shortcode( 'dataset_list', array(&$this, 'list') );
-		add_shortcode( 'dataset_gallery', array(&$this, 'gallery') );
+		add_shortcode( 'dataset_list', array(&$this, 'datasetList') );
+		add_shortcode( 'dataset_gallery', array(&$this, 'datasetGallery') );
 		add_shortcode( 'projectmanager_search_form', array(&$this, 'getSearchForm') );
 		
-		add_action( 'dataset_single', array(&$this, 'single') );
 		add_action( 'projectmanager_tablenav', array(&$this, 'tablenav') );
 		
 		add_filter( 'the_content', array(&$this, 'convert') );
@@ -60,7 +59,7 @@ class ProjectManagerShortcodes extends ProjectManager
 		ob_start();
 		if ( file_exists( TEMPLATEPATH . "/projectmanager/$template.php")) {
 			include(TEMPLATEPATH . "/projectmanager/$template.php");
-		} elseif ( file_exists(LEAGUEMANAGER_PATH . "/view/$template.php") ) {
+		} elseif ( file_exists(PROJECTMANAGER_PATH . "/view/$template.php") ) {
 			include(PROJECTMANAGER_PATH . "/view/$template.php");
 		} else {
 			parent::setMessage( sprintf(__('Could not load template %s.php', 'projectmanager'), $template), true );
@@ -89,7 +88,7 @@ class ProjectManagerShortcodes extends ProjectManager
 					foreach($matches[1] AS $key => $v0) {
 						$project_id = $v0;
 						$search = $matches[0][$key];
-						$replace = "[projectmanager_search_form project_id=".$project_id." align=".$matches[2][$key]." display=".$matches[3][$key]." ]" );
+						$replace = "[projectmanager_search_form project_id=".$project_id." align=".$matches[2][$key]." display=".$matches[3][$key]." ]";
 			
 						$content = str_replace($search, $replace, $content);
 					}
@@ -156,12 +155,12 @@ class ProjectManagerShortcodes extends ProjectManager
 		
 		$search_option = parent::getSearchOption();
 		$search_string = parent::getSearchString();
-		$form_fields = parent::getFormFields()
+		$form_fields = parent::getFormFields();
 		
-		$align = ( $align != '' ) ? 'align'.$pos : '';
+		$align = ( $align != '' ) ? 'align'.$align : '';
 
 		if ( !isset($_GET['show'])) {
-			$out = $this->loadTeamplate( 'searchform', array( 'form_fields' => $form_fields, 'search_string' => $search_string, 'search_option' => $search_option, 'align' => $align, 'display' => $display ) );
+			$out = $this->loadTemplate( 'searchform', array( 'form_fields' => $form_fields, 'search_string' => $search_string, 'search_option' => $search_option, 'align' => $align, 'display' => $display ) );
 		}
 
 		return $out;
@@ -191,10 +190,10 @@ class ProjectManagerShortcodes extends ProjectManager
 		
 		$order = array( '' => __('Order','projectmanager'), 'ASC' => __('Ascending','projectmanager'), 'DESC' => __('Descending','projectmanager') );
 		
-		$category = ( -1 != $options['category'] ) ? $options['category'] ) : false;
+		$category = ( -1 != $options['category'] ) ? $options['category'] : false;
 		$curr_cat = parent::getCatID();
 		
-		$out = $this->loadTeamplate( 'tablenav', array( 'page_ID' => $page_ID, 'category' => $category, 'curr_cat' => $curr_cat, 'orderby' => $orderby, 'order' => $order) );
+		$out = $this->loadTemplate( 'tablenav', array( 'page_ID' => $page_ID, 'category' => $category, 'curr_cat' => $curr_cat, 'orderby' => $orderby, 'order' => $order) );
 
 		echo $out;
 	}
@@ -212,13 +211,13 @@ class ProjectManagerShortcodes extends ProjectManager
 	 * @param array $atts
 	 * @return the content
 	 */
-	function list( $atts )
+	function datasetList( $atts )
 	{
 		global $wp_query;
 		
 		extract(shortcode_atts(array(
 			'project_id' => 0,
-			'output' = > 'table',
+			'output' => 'table',
 			'cat_id' => false
 		), $atts ));
 		parent::initialize($project_id);
@@ -230,7 +229,7 @@ class ProjectManagerShortcodes extends ProjectManager
 			$out = $this->single(array('id' => $_GET['show']));
 		else {
 			if ( parent::isSearch() )
-				$datasets = parent:getSearchResults();
+				$datasets = parent::getSearchResults();
 			else
 				$datasets = parent::getDatasets( true );
 	
@@ -255,7 +254,7 @@ class ProjectManagerShortcodes extends ProjectManager
 	 * @param array $atts
 	 * @return the content
 	 */
-	function gallery( $atts )
+	function datasetGallery( $atts )
 	{
 		extract(shortcode_atts(array(
 			'project_id' => 0,
@@ -312,3 +311,5 @@ class ProjectManagerShortcodes extends ProjectManager
 		
 		return $out;
 	}
+}
+?>

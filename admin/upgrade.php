@@ -5,9 +5,9 @@
  * @return Success Message
  */
 function projectmanager_upgrade() {
-	global $wpdb, $projectmanager
+	global $wpdb, $projectmanager;
 	
-	$options = get_option( 'leaguemanager' );
+	$options = get_option( 'projectmanager' );
 	$installed = isset($options['dbversion']) ? $options['dbversion'] : '2.6';
 
 	if (version_compare($old_options['version'], '1.2.1', '<')) {
@@ -40,19 +40,21 @@ function projectmanager_upgrade() {
 		* Copy Logos to new image directory and delete old one
 		*/
 		$dir_src = WP_CONTENT_DIR.'/projects';
-		$dir_handle = opendir($dir_src);
-		if ( wp_mkdir_p( $projectmanager->getImagePath() ) ) {
-			while( $file = readdir($dir_handle) ) {
-				if( $file!="." && $file!=".." ) {
-					if ( copy ($dir_src."/".$file, $projectmanager->getImagePath()."/".$file) )
-						unlink($dir_src."/".$file);
+		if ( file_exists($dir_src) ) {
+			$dir_handle = opendir($dir_src);
+			if ( wp_mkdir_p( $projectmanager->getImagePath() ) ) {
+				while( $file = readdir($dir_handle) ) {
+					if( $file!="." && $file!=".." ) {
+						if ( copy ($dir_src."/".$file, $projectmanager->getImagePath()."/".$file) )
+							unlink($dir_src."/".$file);
+					}
 				}
+				
+				
 			}
-			
-			
+			closedir($dir_handle);
+			@rmdir($dir_src);
 		}
-		@rmdir($dir_src);
-		closedir($dir_handle);
 		
 	}
 	
@@ -79,7 +81,7 @@ function projectmanager_upgrade() {
 * @return Upgrade Message
 */
 function projectmanager_upgrade_page()  {	
-	$filepath    = admin_url() . 'admin.php?page=' . $_GET['page'];
+	$filepath = admin_url() . 'admin.php?page=' . $_GET['page'];
 
 	if ($_GET['upgrade'] == 'now') {
 		projectmanager_do_upgrade($filepath);

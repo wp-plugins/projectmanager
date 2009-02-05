@@ -68,10 +68,6 @@ class ProjectManagerLoader
 		$this->loadOptions();
 		$this->loadLibraries();
 
-		// Export datasets
-		if ( isset($_POST['projectmanager_export']) )
-			$this->adminPanel->exportDatasets($_POST['project_id']);
-
 		register_activation_hook(__FILE__, array(&$this, 'activate') );
 		
 		if (function_exists('register_uninstall_hook'))
@@ -82,11 +78,15 @@ class ProjectManagerLoader
 		// Start this plugin once all other plugins are fully loaded
 		add_action( 'plugins_loaded', array(&$this, 'initialize') );
 		
-		$project_id = isset($_GET['project_id']) ? (int)$_GET['project_id'] : false;
-		$projectmanager = new ProjectManager($project_id);
+		$this->project_id = isset($_GET['project_id']) ? (int)$_GET['project_id'] : false;
+		$projectmanager = new ProjectManager($this->project_id);
 		
 		add_action( 'show_user_profile', array(&$projectmanager, 'profileHook') );
 		add_action( 'profile_update', array(&$projectmanager, 'updateProfile') );
+		
+		// Export datasets
+		if ( isset($_POST['projectmanager_export']) )
+			$this->adminPanel->exportDatasets($_POST['project_id']);
 	}
 	function ProjectManagerLoader()
 	{
@@ -103,12 +103,19 @@ class ProjectManagerLoader
 	function initialize()
 	{
 		// Add the script and style files
-		add_action('wp_print_scripts', array(&$this, 'loadScripts') );
+		add_action('wp_head', array(&$this, 'loadScripts') );
 		add_action('wp_print_styles', array(&$this, 'loadStyles') );
 
 		// Add TinyMCE Button
 		add_action( 'init', array(&$this, 'addTinyMCEButton') );
 		add_filter( 'tiny_mce_version', array(&$this, 'changeTinyMCEVersion') );
+		
+		// Ajax Actions
+		add_action( 'wp_ajax_projectmanager_save_name', 'projectmanager_save_name' );
+		add_action( 'wp_ajax_projectmanager_save_categories', 'projectmanager_save_categories' );
+		add_action( 'wp_ajax_projectmanager_save_form_field_data', 'projectmanager_save_form_field_data' );
+		add_action( 'wp_ajax_projectmanager_show_category_selection', 'projectmanager_show_category_selection' );
+		add_action( 'wp_ajax_projectmanager_save_form_field_options', 'projectmanager_save_form_field_options' );
 	}
 	
 	
@@ -131,7 +138,7 @@ class ProjectManagerLoader
 			
 		define( 'PROJECTMANAGER_VERSION', $this->version );
 		define( 'PROJECTMANAGER_DBVERSION', $this->dbversion );
-		define( 'PROJECTMANAGER_URL', WP_PLUGIN_URL.'/projectmanager' )
+		define( 'PROJECTMANAGER_URL', WP_PLUGIN_URL.'/projectmanager' );
 		define( 'PROJECTMANAGER_PATH', WP_PLUGIN_DIR.'/projectmanager' );
 	}
 	
@@ -168,7 +175,7 @@ class ProjectManagerLoader
 		if ( is_admin() ) {
 			require_once (dirname (__FILE__) . '/lib/image.php');
 			require_once (dirname (__FILE__) . '/admin/admin.php');	
-			$this->adminPanel = new ProjectManagerAdminPanel();
+			$this->adminPanel = new ProjectManagerAdminPanel($this->project_id);
 		} else {
 			require_once (dirname (__FILE__) . '/lib/shortcodes.php');
 			$this->shortcodes = new ProjectManagerShortcodes();
@@ -223,11 +230,12 @@ class ProjectManagerLoader
 		$options = get_option( 'projectmanager_widget' );
 		
 		wp_register_script( 'jquery_slideshow', PROJECTMANAGER_URL.'/js/jquery.aslideshow.js', array('jquery'), '0.5.3' );
-		wp_enqueue_script( 'jquery_slideshow' );
+		wp_print_scripts( 'jquery_slideshow' );
 		
 		foreach ( $options AS $widget_id => $opts ) {
 		if ($opts['slideshow']['show'] == 1) {
 		?>
+
 		<script type='text/javascript'>
 		//<![CDATA[
 			   jQuery(document).ready(function(){
@@ -294,7 +302,7 @@ class ProjectManagerLoader
 	}
 	function addTinyMCEPlugin( $plugin_array )
 	{
-		$plugin_array['ProjectManager'] = $this->plugin_url.'/tinymce/editor_plugin.js';
+		$plugin_array['ProjectManager'] = PROJECTMANAGER_URL.'/tinymce/editor_plugin.js';
 		return $plugin_array;
 	}
 	function registerTinyMCEButton( $buttons )
@@ -408,9 +416,25 @@ class ProjectManagerLoader
 		delete_option( 'projectmanager' );
 		delete_option( 'projectmanager_widget' );
 	}
+	
+	
+	/**
+	 * get admin panel object
+	 *
+	 * @param none
+	 * @return object
+	 */
+	function getAdminPanel()
+	{
+		if ( $this->adminPanel )
+			return $this->adminPanel;
+		
+		return false;
+	}
 }
 
 // Run the Plugin
+global $projectmanager_loader;
 $projectmanager_loader = new ProjectManagerLoader();
 
 ?>

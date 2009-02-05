@@ -41,16 +41,17 @@ endif; ?>
 	?>
 	<?php if ( 'table' == $output ) : ?>
 		<tr class='<?php echo $class ?>'><td><?php echo $name ?></td><?php parent::printDatasetMetaData( $dataset, 'td' ) ?></tr>
-		<?php else : ?>
+	<?php else : ?>
 		<li><?php echo $name ?><ul><?php parent::printDatasetMetaData( $dataset, 'li' ) ?></ul></li>
-		<?php endif; ?>
-		
-		<?php echo "\n</$output>\n"; ?>
-	
+	<?php endif; ?>
+<?php endforeach ; ?>		
+<?php echo "\n</$output>\n"; ?>
+
+
 	<?php if ( !parent::isSearch() ) : ?>
 		<p class='page-numbers'><?php echo parent::getPageLinks() ?></p>
 	<?php endif; ?>
-<?php endforeach ; ?>
+
 
 <?php else : ?>
 	<p class='error'><?php _e( 'Nothing found', 'projectmanager') ?></p>

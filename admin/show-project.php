@@ -3,7 +3,11 @@ if ( !current_user_can( 'manage_projects' ) ) :
      echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
 
 else :
-$project_id = $projectmanager->getProjectID();
+if ( $project_id )
+	$projectmanager->initialize($project_id);
+else
+	$project_id = $projectmanager->getProjectID();
+     
 $projectmanager->getProject($project_id);
 
 $options = get_option( 'projectmanager' );
@@ -11,20 +15,20 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['doaction']) ) {
 	if ( 'dataset' == $_POST['updateProjectManager'] ) {
 		check_admin_referer( 'projectmanager_edit-dataset' );
 		if ( '' == $_POST['dataset_id'] ) {
-			$projectmanager->addDataset( $_POST['project_id'], $_POST['name'], $_POST['post_category'], $_POST['form_field'] );
+			$this->addDataset( $_POST['project_id'], $_POST['name'], $_POST['post_category'], $_POST['form_field'] );
 		} else {
 			$dataset_owner = isset($_POST['owner']) ? $_POST['owner'] : false;
 			$del_image = isset( $_POST['del_old_image'] ) ? true : false;
 			$overwrite_image = isset( $_POST['overwrite_image'] ) ? true: false;
-			$projectmanager->editDataset( $_POST['project_id'], $_POST['name'], $_POST['post_category'], $_POST['dataset_id'], $_POST['form_field'], $_POST['user_id'], $del_image, $_POST['image_file'], $overwrite_image, $dataset_owner );
+			$this->editDataset( $_POST['project_id'], $_POST['name'], $_POST['post_category'], $_POST['dataset_id'], $_POST['form_field'], $_POST['user_id'], $del_image, $_POST['image_file'], $overwrite_image, $dataset_owner );
 		}
 	}
-	$projectmanager->printMessage();
+	$this->printMessage();
 }  elseif ( isset($_POST['doaction']) && isset($_POST['action']) ) {
 	check_admin_referer('projectmanager_dataset-bulk');
 	if ( 'delete' == $_POST['action'] ) {
 		foreach ( $_POST['dataset'] AS $dataset_id )
-			$projectmanager->delDataset( $dataset_id );
+			$this->delDataset( $dataset_id );
 	}
 }
 $orderby = array( '' => __('Order By', 'projectmanager'), 'name' => __('Name','projectmanager'), 'id' => __('ID','projectmanager') );
@@ -41,7 +45,7 @@ else
 $options = $options['project_options'][$project_id];
 ?>
 <div class="wrap">
-	<?php $projectmanager->printBreadcrumb( $projectmanager->getProjectTitle(), true ) ?>
+	<?php $this->printBreadcrumb( $projectmanager->getProjectTitle(), true ) ?>
 	
 	<h2><?php echo $projectmanager->getProjectTitle() ?> <?php if ($projectmanager->isCategory()) echo " &#8211; ".$projectmanager->getCatTitle() ?></h2>
 	
@@ -64,13 +68,11 @@ $options = $options['project_options'][$project_id];
 	</form>
 	
 	<ul class="subsubsub">
-		<li><a href="edit.php?page=projectmanager/page/settings.php&amp;project_id=<?php echo $project_id ?>"><?php _e( 'Settings', 'projectmanager' ) ?></a></li> |
-		<li><a href="edit.php?page=projectmanager/page/formfields.php&amp;project_id=<?php echo $project_id ?>"><?php _e( 'Form Fields', 'projectmanager' ) ?></a></li> |
-		<li><a href="edit.php?page=projectmanager/page/dataset.php&amp;project_id=<?php echo $project_id ?>"><?php _e( 'Add Dataset', 'projectmanager' ) ?></a></li> |
+		<li><a href="admin.php?page=projectmanager&amp;subpage=settings&amp;project_id=<?php echo $project_id ?>"><?php _e( 'Settings', 'projectmanager' ) ?></a></li> |
+		<li><a href="admin.php?page=projectmanager&amp;subpage=formfields&amp;project_id=<?php echo $project_id ?>"><?php _e( 'Form Fields', 'projectmanager' ) ?></a></li> |
+		<li><a href="admin.php?page=projectmanager&amp;subpage=dataset&amp;project_id=<?php echo $project_id ?>"><?php _e( 'Add Dataset', 'projectmanager' ) ?></a></li> |
 		<li><a href="categories.php"><?php _e( 'Categories' ) ?></a></li> |
-		<?php if ( current_user_can( 'projectmanager_admin' ) ) : ?>
-		<li><a href="admin.php?page=projectmanager/page/import.php&amp;project_id=<?php echo $project_id ?>"><?php _e('Import/Export', 'projectmanager') ?></a></li>
-		<?php endif; ?>
+		<li><a href="admin.php?page=projectmanager&amp;subpage=import&amp;project_id=<?php echo $project_id ?>"><?php _e('Import/Export', 'projectmanager') ?></a></li>
 	</ul>
 	
 	<?php if ( $datasets ) : ?>
@@ -152,7 +154,6 @@ $options = $options['project_options'][$project_id];
 			<tr class="<?php echo $class ?>">
 				<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $dataset->id ?>" name="dataset[<?php echo $dataset->id ?>]" /></th>
 				<td>
-					<?php if ( $dataset->user_id == $current_user->ID || current_user_can( 'projectmanager_admin') ) : ?>
 					<!-- Popup Window for Ajax name editing -->
 					<div id="datasetnamewrap<?php echo $dataset->id; ?>" style="overflow:auto;display:none;">
 						<div id="datasetnamebox<?php echo $dataset->id; ?>" class='projectmanager_thickbox'>
@@ -160,29 +161,22 @@ $options = $options['project_options'][$project_id];
 							<div style="text-align:center; margin-top: 1em;"><input type="button" value="<?php _e('Save') ?>" class="button-secondary" onclick="ProjectManager.ajaxSaveDatasetName(<?php echo $dataset->id; ?>);return false;" />&#160;<input type="button" value="<?php _e('Cancel') ?>" class="button" onclick="tb_remove();" /></div></form>
 						</div>
 					</div>
-					<a href="edit.php?page=projectmanager/page/dataset.php&amp;edit=<?php echo $dataset->id ?>&amp;project_id=<?php echo $project_id ?>"><span id="dataset_name_text<?php echo $dataset->id ?>"><?php echo $dataset->name ?></span></a>&#160;<a class="thickbox" id="thickboxlink_name<?php echo $dataset->id ?>" href="#TB_inline&amp;height=100&amp;width=300&amp;inlineId=datasetnamewrap<?php echo $dataset->id ?>" title="<?php _e('Name','projectmanager') ?>"><img src="<?php echo PROJECTMANAGER_URL ?>/images/edit.gif" border="0" alt="<?php _e('Edit') ?>" /></a>
-					<?php else : ?>
-						<span><?php echo $dataset->name ?></span>
-					<?php endif; ?>
+					<a href="admin.php?page=projectmanager&amp;subpage=dataset&amp;edit=<?php echo $dataset->id ?>&amp;project_id=<?php echo $project_id ?>"><span id="dataset_name_text<?php echo $dataset->id ?>"><?php echo $dataset->name ?></span></a>&#160;<a class="thickbox" id="thickboxlink_name<?php echo $dataset->id ?>" href="#TB_inline&amp;height=100&amp;width=300&amp;inlineId=datasetnamewrap<?php echo $dataset->id ?>" title="<?php _e('Name','projectmanager') ?>"><img src="<?php echo PROJECTMANAGER_URL ?>/admin/icons/edit.gif" border="0" alt="<?php _e('Edit') ?>" /></a>
 				</td>
 				<?php if ( -1 != $options['category'] ) : ?>
 				<td>
-					<?php if ( $dataset->user_id == $current_user->ID || current_user_can( 'projectmanager_admin') ) : ?>
 					<!-- Popup Window for Ajax group editing -->
 					<div id="groupchoosewrap<?php echo $dataset->id; ?>" style="overflow:auto;display:none;">
 						<div id="groupchoose<?php echo $dataset->id; ?>" class='projectmanager_thickbox'>
 							<form>
 								<ul class="categorychecklist" id="categorychecklist<?php echo $dataset->id ?>">
-								<?php $projectmanager->categoryChecklist( $options['category'], $projectmanager->getSelectedCategoryIDs($dataset) ) ?>
+								<?php $this->categoryChecklist( $options['category'], $projectmanager->getSelectedCategoryIDs($dataset) ) ?>
 								</ul>
 								<div style="text-align:center; margin-top: 1em;"><input type="button" value="<?php _e('Save') ?>" class="button-secondary" onclick="ProjectManager.ajaxSaveCategories(<?php echo $dataset->id; ?>);return false;" />&#160;<input type="button" value="<?php _e('Cancel') ?>" class="button" onclick="tb_remove();" /></div>
 							</form>
 						</div>
 					</div>
-					<span id="dataset_category_text<?php echo $dataset->id ?>"><?php echo $categories ?></span>&#160;<a class="thickbox" id="thickboxlink_category<?php echo $dataset->id ?>" href="#TB_inline&amp;height=300&amp;width=300&amp;inlineId=groupchoosewrap<?php echo $dataset->id ?>" title="<?php printf(__('Categories of %s','projectmanager'),$dataset->name) ?>"><img src="<?php echo PROJECTMANAGER_URL ?>/images/edit.gif" border="0" alt="<?php _e('Edit') ?>" /></a>
-					<?php else : ?>
-						<span><?php echo $categories ?></span>
-					<?php endif; ?>
+					<span id="dataset_category_text<?php echo $dataset->id ?>"><?php echo $categories ?></span>&#160;<a class="thickbox" id="thickboxlink_category<?php echo $dataset->id ?>" href="#TB_inline&amp;height=300&amp;width=300&amp;inlineId=groupchoosewrap<?php echo $dataset->id ?>" title="<?php printf(__('Categories of %s','projectmanager'),$dataset->name) ?>"><img src="<?php echo PROJECTMANAGER_URL ?>/admin/icons/edit.gif" border="0" alt="<?php _e('Edit') ?>" /></a>
 				</td>
 				<?php endif; ?>
 				<?php $projectmanager->printDatasetMetaData( $dataset, 'td', false ) ?>
@@ -191,6 +185,7 @@ $options = $options['project_options'][$project_id];
 		</tbody>
 	</table>
 	</form>
+	<!-- What's that?? -->
 	<?php elseif ( $projectmanager->getNumDatasets($project_id,true) > 0 )  : ?>
 		<div class="error" style="margin-top: 3em;"><p><?php _e( 'Nothing found', 'projectmanager') ?></p></div>
 	<?php endif ?>

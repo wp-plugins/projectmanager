@@ -7,11 +7,11 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 	if ( 'project' == $_POST['updateProjectManager'] ) {
 		check_admin_referer('projectmanager_manage-projects');
 		if ( '' == $_POST['project_id'] )
-			$projectmanager->addProject( $_POST['project_title'] );
+			$this->addProject( $_POST['project_title'] );
 		else
-			$projectmanager->editProject( $_POST['project_title'], $_POST['project_id'] );
+			$this->editProject( $_POST['project_title'], $_POST['project_id'] );
 	}
-	$projectmanager->printMessage();
+	$this->printMessage();
 }  elseif ( isset($_POST['doaction']) && isset($_POST['action']) ) {
 		check_admin_referer('projectmanager_projects-bulk');
 		if ( 'delete' == $_POST['action'] ) {
@@ -66,9 +66,9 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 				<tr class="<?php echo $class ?>">
 					<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $project->id ?>" name="project[<?php echo $project->id ?>]" /></th>
 					<td class="num"><?php echo $project->id ?></td>
-					<td><a href="admin.php?page=projectmanager/page/show-project.php&amp;project_id=<?php echo $project->id ?>"><?php echo $project->title ?></a></td>
+					<td><a href="admin.php?page=projectmanager&amp;subpage=show-project&amp;project_id=<?php echo $project->id ?>"><?php echo $project->title ?></a></td>
 					<td class="num"><?php echo $projectmanager->getNumDatasets( $project->id ) ?></td>
-					<td><a href="edit.php?page=projectmanager/page/settings.php&amp;project_id=<?php echo $project->id ?>"><?php _e( 'Settings', 'projectmanager' ) ?></a> - <a href="edit.php?page=projectmanager/page/dataset.php&amp;project_id=<?php echo $project->id ?>"><?php _e( 'Add Dataset', 'projectmanager' ) ?></a></td>
+					<td><a href="admin.php?page=projectmanager&amp;subpage=settings&amp;project_id=<?php echo $project->id ?>"><?php _e( 'Settings', 'projectmanager' ) ?></a> - <a href="admin.php?page=projectmanager&amp;subpage=dataset&amp;project_id=<?php echo $project->id ?>"><?php _e( 'Add Dataset', 'projectmanager' ) ?></a></td>
 				</tr>
 				<?php endforeach; ?>
 				<?php endif; ?>
@@ -98,6 +98,7 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 		</div>
 	</div>
 	</div><!-- / col-left -->
+</div>
 </div>
 
 <?php endif; ?>

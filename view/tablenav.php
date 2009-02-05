@@ -14,7 +14,7 @@ The following variables are usable:
 */
 ?>		
 <div class='projectmanager_tablenav'>
-<form action='<?php permalink($page_ID) ?>' method='get'>
+<form action='<?php the_permalink($page_ID) ?>' method='get'>
 	<input type='hidden' name='page_id' value='<?php echo $page_ID ?>' />
 	<?php if ( $category ) : ?>
 	<?php wp_dropdown_categories(array('echo' => 1, 'hide_empty' => 0, 'name' => 'cat_id', 'orderby' => 'name', 'selected' => $curr_cat, 'hierarchical' => true, 'child_of' => $category, 'show_option_all' => __('View all categories'))); ?>
