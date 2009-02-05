@@ -54,12 +54,10 @@ class ProjectManagerAdminPanel extends ProjectManager
 			}
 		}
 		
-		if ( ! $this->isSingle() ) {
-			$page = basename(__FILE__,".php").'/page/index.php';
-			add_menu_page(__('Projects', 'projectmanager'), __('Projects', 'projectmanager'), 'manage_projects', PROJECTMANAGER_PATH,array(&$this, 'display'), PROJECTMANAGER_URL.'/admin/icons/menu/databases.png');
-			add_submenu_page(PROJECTMANAGER_PATH, __('Projects', 'projectmanager'), __('Overview','projectmanager'),'manage_projects', PROJECTMANAGER_PATH,array(&$this, 'display'));
-			add_submenu_page(PROJECTMANAGER_PATH, __( 'Settings'), __('Settings'), 'manage_projects', 'projectmanager-settings', array( &$this, 'display') );
-		}
+		// Add global Projects Menu
+		add_menu_page(__('Projects', 'projectmanager'), __('Projects', 'projectmanager'), 'manage_projects', PROJECTMANAGER_PATH,array(&$this, 'display'), PROJECTMANAGER_URL.'/admin/icons/menu/databases.png');
+		add_submenu_page(PROJECTMANAGER_PATH, __('Projects', 'projectmanager'), __('Overview','projectmanager'),'manage_projects', PROJECTMANAGER_PATH,array(&$this, 'display'));
+		add_submenu_page(PROJECTMANAGER_PATH, __( 'Settings'), __('Settings'), 'manage_projects', 'projectmanager-settings', array( &$this, 'display') );
 		
 		$plugin = 'projectmanager/projectmanager.php';
 		add_filter( 'plugin_action_links_' . $plugin, array( &$this, 'pluginActions' ) );
@@ -108,11 +106,10 @@ class ProjectManagerAdminPanel extends ProjectManager
 						break;
 				}
 				break;
-				
+			
 			default:
 				$page = explode("_", $_GET['page']);
-				$project_id = $page[1];
-				$projectmanager->initialize($project_id);
+				$projectmanager->initialize($page[1]);
 							
 				switch ($page[0]) {
 					case 'project':

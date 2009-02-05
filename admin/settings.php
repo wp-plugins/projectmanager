@@ -59,7 +59,7 @@ if ( 1 == $settings['show_image'] && !wp_mkdir_p( $projectmanager->getImagePath(
 			<th scope="row"><label for="use_widget"><?php _e( 'Use Widget', 'projectmanager' ) ?></label></th><td><input type="checkbox" name="use_widget" id="use_widget"<?php if ( 1 == $settings['use_widget']  ) echo ' checked="checked"'; ?> value="1" /></td>
 		</tr>
 		<tr valign="top">
-			<th scope="row"><label for="navi_link"><?php _e( 'Navi Link', 'projectmanager' ) ?></th><td><input type="checkbox" name="navi_link" id="navi_link" value="1"<?php if ( 1 == $settings['navi_link']  ) echo ' checked="checked"'; ?> /><br /><?php _e( 'Set this option to add a direct link in the navigation panel. <br/> If there is only one project in the database, the link to the index page will be disabled.', 'projectmanager' ) ?></td>
+			<th scope="row"><label for="navi_link"><?php _e( 'Navi Link', 'projectmanager' ) ?></th><td><input type="checkbox" name="navi_link" id="navi_link" value="1"<?php if ( 1 == $settings['navi_link']  ) echo ' checked="checked"'; ?> /><br /><?php _e( 'Set this option to add a direct link in the navigation panel.', 'projectmanager' ) ?></td>
 		</tr>
 		<tr valign="top">
 			<th scope="row"><label for="profile_hook"><?php _e( 'Hook into Profile', 'projectmanager' ) ?></th><td><input type="checkbox" name="profile_hook" id="profile_hook" value="1" <?php if ( 1 == $settings['profile_hook'] ) echo 'checked="checked"' ?> /><br /><?php _e( 'Only one project can be hooked into the profile!', 'projectmanager' ) ?></td>
@@ -93,6 +93,5 @@ if ( 1 == $settings['show_image'] && !wp_mkdir_p( $projectmanager->getImagePath(
 		<p class="submit"><input type="submit" name="saveSettings" value="<?php _e( 'Save Settings', 'projectmanager' ) ?> &raquo;" class="button" /></p>
 	</form> 
 </div>
-<?php if ( $this->isSingle() ) $this->displayOptionsPage(true); ?>
 
 <?php endif; ?>

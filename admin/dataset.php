@@ -24,12 +24,13 @@ if ( isset($_GET['edit']) ) {
 }
 $is_profile_page = false;
 $options = $options['project_options'][$project_id];
+$page = ($_GET['page'] == 'projectmanager') ? 'projectmanager&subpage=show-project&project_id='.$project_id : 'project_'.$project_id;
 
 // Try to create image directory
 if ( 1 == $options['show_image'] && !wp_mkdir_p( $projectmanager->getImagePath() ) )
 	echo "<div class='error'><p>".sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $projectmanager->getImagePath() )."</p></div>";
 ?>
-<form name="post" id="post" action="admin.php?page=projectmanager&amp;subpage=show-project&amp;project_id=<?php echo $project_id ?>" method="post" enctype="multipart/form-data">
+<form name="post" id="post" action="admin.php?page=<?php echo $page ?>" method="post" enctype="multipart/form-data">
 	
 <?php wp_nonce_field( 'projectmanager_edit-dataset' ) ?>
 	
