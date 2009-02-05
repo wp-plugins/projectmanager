@@ -3,14 +3,10 @@ if ( !current_user_can( 'manage_projects' ) ) :
      echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
 
 else :
-if ( $project_id )
-	$projectmanager->initialize($project_id);
-else
-	$project_id = $projectmanager->getProjectID();
-     
+$options = get_option( 'projectmanager' );
+$project_id = $projectmanager->getProjectID();
 $projectmanager->getProject($project_id);
 
-$options = get_option( 'projectmanager' );
 if ( isset($_POST['updateProjectManager']) AND !isset($_POST['doaction']) ) {
 	if ( 'dataset' == $_POST['updateProjectManager'] ) {
 		check_admin_referer( 'projectmanager_edit-dataset' );
@@ -41,7 +37,7 @@ if ( $projectmanager->isSearch() )
 	$datasets = $projectmanager->getSearchResults();
 else
 	$datasets = $projectmanager->getDatasets( true );
-     
+
 $options = $options['project_options'][$project_id];
 ?>
 <div class="wrap">
@@ -67,6 +63,7 @@ $options = $options['project_options'][$project_id];
 		<input type='submit' value='<? _e( 'Search', 'projectmanager' ) ?>' class='button-secondary action' />
 	</form>
 	
+	<?php if ( $options['navi_link'] != 1 || isset($_GET['subpage']) ) : ?>
 	<ul class="subsubsub">
 		<li><a href="admin.php?page=projectmanager&amp;subpage=settings&amp;project_id=<?php echo $project_id ?>"><?php _e( 'Settings', 'projectmanager' ) ?></a></li> |
 		<li><a href="admin.php?page=projectmanager&amp;subpage=formfields&amp;project_id=<?php echo $project_id ?>"><?php _e( 'Form Fields', 'projectmanager' ) ?></a></li> |
@@ -74,6 +71,7 @@ $options = $options['project_options'][$project_id];
 		<li><a href="categories.php"><?php _e( 'Categories' ) ?></a></li> |
 		<li><a href="admin.php?page=projectmanager&amp;subpage=import&amp;project_id=<?php echo $project_id ?>"><?php _e('Import/Export', 'projectmanager') ?></a></li>
 	</ul>
+	<?php endif; ?>
 	
 	<?php if ( $datasets ) : ?>
 	

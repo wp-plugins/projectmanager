@@ -4,6 +4,7 @@ by Kolja Schleich <kolja.schleich@googlemail.com>
 V1.8 - February, 2009
 - NEW: dataset ordering selection in frontend
 - NEW: hook one project into profile
+- NEW: set custom menu icon for each project
 
 V1.7 - January 23, 2009
 - NEW: sorting of datasets by form fields

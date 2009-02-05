@@ -43,20 +43,20 @@ class ProjectManagerAdminPanel extends ProjectManager
 			foreach( $projects AS $project ) {
 				if ( 1 == $options['project_options'][$project->id]['navi_link'] ) {
 					$icon = $options['project_options'][$project->id]['menu_icon'];
-					add_menu_page( $project->title, $project->title, 'manage_projects', 'project_' . $project->id, array(&$this, 'display'), PROJECTMANAGER_URL.'/admin/icons/'.$icon );
+					add_menu_page( $project->title, $project->title, 'manage_projects', 'project_' . $project->id, array(&$this, 'display'), PROJECTMANAGER_URL.'/admin/icons/menu/'.$icon );
 					add_submenu_page('project_' . $project->id, __($project->title, 'projectmanager'), __('Overview','projectmanager'),'manage_projects', 'project_' . $project->id, array(&$this, 'display'));
 					add_submenu_page('project_' . $project->id, __( 'Add Dataset', 'projectmanager' ), __( 'Add Dataset', 'projectmanager' ), 'manage_projects', 'project-dataset_' . $project->id, array(&$this, 'display'));
 					add_submenu_page('project_' . $project->id, __( 'Form Fields', 'projectmanager' ), __( 'Form Fields', 'projectmanager' ), 'manage_projects', 'project-formfields_' . $project->id, array(&$this, 'display'));
 					add_submenu_page('project_' . $project->id, __( 'Settings', 'projectmanager' ), __( 'Settings', 'projectmanager' ), 'manage_projects', 'project-settings_' . $project->id, array(&$this, 'display'));
 					add_submenu_page('project_' . $project->id, __('Categories'), __('Categories'), 'manage_projects', 'categories.php');
-					add_submenu_page('project-import_' . $project->id, __('Import/Export', 'projectmanager'), __('Import/Export', 'projectmanager'), 'projectmanager_admin', 'project_' . $project->id, array(&$this, 'display'));
+					add_submenu_page('project_' . $project->id, __('Import/Export', 'projectmanager'), __('Import/Export', 'projectmanager'), 'projectmanager_admin', 'project-import_' . $project->id, array(&$this, 'display'));
 				}
 			}
 		}
 		
 		if ( ! $this->isSingle() ) {
 			$page = basename(__FILE__,".php").'/page/index.php';
-			add_menu_page(__('Projects', 'projectmanager'), __('Projects', 'projectmanager'), 'manage_projects', PROJECTMANAGER_PATH,array(&$this, 'display'), PROJECTMANAGER_URL.'/admin/icons/databases.png');
+			add_menu_page(__('Projects', 'projectmanager'), __('Projects', 'projectmanager'), 'manage_projects', PROJECTMANAGER_PATH,array(&$this, 'display'), PROJECTMANAGER_URL.'/admin/icons/menu/databases.png');
 			add_submenu_page(PROJECTMANAGER_PATH, __('Projects', 'projectmanager'), __('Overview','projectmanager'),'manage_projects', PROJECTMANAGER_PATH,array(&$this, 'display'));
 			add_submenu_page(PROJECTMANAGER_PATH, __( 'Settings'), __('Settings'), 'manage_projects', 'projectmanager-settings', array( &$this, 'display') );
 		}
@@ -112,9 +112,9 @@ class ProjectManagerAdminPanel extends ProjectManager
 			default:
 				$page = explode("_", $_GET['page']);
 				$project_id = $page[1];
-				$page = $page[0];
-				
-				switch ($page) {
+				$projectmanager->initialize($project_id);
+							
+				switch ($page[0]) {
 					case 'project':
 						include_once( dirname(__FILE__) . '/show-project.php' );
 						break;
@@ -757,6 +757,77 @@ class ProjectManagerAdminPanel extends ProjectManager
 			if ( !$start || ($start && !$this->single) ) echo $page_title;
 			
 			echo '</p>';
+		}
+	}
+	
+	
+	/**
+	 * hook dataset input fields into profile
+	 *
+	 * @param none
+	 */
+	function profileHook()
+	{
+		global $current_user, $wpdb, $projectmanager;
+		
+		if ( current_user_can('project_user_profile') ) {
+			$options = get_option('projectmanager');
+			$options = $options['project_options'];
+			
+			$this->project_id = 0;
+			foreach ( $options AS $project_id => $settings ) {
+				if ( 1 == $settings['profile_hook'] ) {
+					$this->project_id = $project_id;
+					break;
+				}
+			}
+			$projectmanager->initialize($this->project_id);
+			$options = $options[$this->project_id];
+			if ( $this->project_id != 0 ) {
+				$projectmanager->getProject();
+				
+				$is_profile_page = true;
+				$dataset = $wpdb->get_results( "SELECT `id`, `name`, `image`, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id} AND `user_id` = '".$current_user->ID."' LIMIT 0,1" );
+				$dataset = $dataset[0];
+				
+				if ( $dataset ) {
+					$dataset_id = $dataset->id;
+					$cat_ids = $projectmanager->getSelectedCategoryIDs($dataset);
+					$dataset_meta = $projectmanager->getDatasetMeta( $dataset_id );
+		
+					$img_filename = $dataset->image;
+					$meta_data = array();
+					foreach ( $dataset_meta AS $meta )
+						$meta_data[$meta->form_field_id] = $meta->value;
+				} else {
+					$dataset_id = ''; $cat_ids = array(); $img_filename = ''; $meta_data = array();
+				}
+				
+				echo '<h3>'.$projectmanager->getProjectTitle().'</h3>';
+				echo '<input type="hidden" name="project_id" value="'.$this->project_id.'" /><input type="hidden" name="dataset_id" value="'.$dataset_id.'" /><input type="hidden" name="dataset_user_id" value="'.$current_user->ID.'" />';
+				
+				include( dirname(__FILE__). '/dataset-form.php' );
+			}
+		}
+	}
+	
+	
+	/**
+	 * update Profile settings
+	 *
+	 * @param none
+	 * @return none
+	 */
+	function updateProfile()
+	{
+		$user_id = $_POST['dataset_user_id'];
+		check_admin_referer('update-user_' . $user_id);
+		if ( '' == $_POST['dataset_id'] ) {
+			$this->addDataset( $_POST['project_id'], $_POST['display_name'], $_POST['post_category'], $_POST['form_field'] );
+		} else {
+			$del_image = isset( $_POST['del_old_image'] ) ? true : false;
+			$overwrite_image = isset( $_POST['overwrite_image'] ) ? true: false;
+			$this->editDataset( $_POST['project_id'], $_POST['display_name'], $_POST['post_category'], $_POST['dataset_id'], $_POST['form_field'], $user_id, $del_image, $_POST['image_file'], $overwrite_image );
 		}
 	}
 }

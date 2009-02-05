@@ -55,3 +55,5 @@ To install the plugin to the following steps
 
 = Hook Project into user profile =
 
+== Credits ==
+The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons of http://www.pinvoke.com/.

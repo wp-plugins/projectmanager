@@ -60,6 +60,15 @@ function projectmanager_upgrade() {
 	
 	if (version_compare($old_options['version'], '1.7', '<')) {
 		$wpdb->query( "ALTER TABLE {$wpdb->projectmanager_projectmeta} ADD `order_by` tinyint( 1 ) NOT NULL default '0' AFTER `order`" );
+			
+		/*
+		* Add new capability to see dataset in profile
+		*/
+		$role = get_role('administrator');
+		$role->add_cap('project_user_profile');
+		
+		$role = get_role('editor');
+		$role->add_cap('project_user_profile');
 	}
 	
 	

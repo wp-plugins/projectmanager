@@ -5,6 +5,7 @@ else :
 
 $project_id = $projectmanager->getProjectID();
 $projectmanager->getProject();
+
 if ( isset($_POST['import']) ) {
 	$this->importDatasets( $project_id, $_FILES['projectmanager_import'], $_POST['delimiter'], $_POST['cols'] );
      	$this->printMessage();

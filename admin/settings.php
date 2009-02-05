@@ -6,6 +6,7 @@ else :
 $options = get_option( 'projectmanager' );
 $project_id = $projectmanager->getProjectID();
 $projectmanager->getProject($project_id);
+
 if ( isset($_POST['saveSettings']) ) {
 	check_admin_referer('projectmanager_manage-settings');
 	$options = get_option( 'projectmanager' );
@@ -31,8 +32,7 @@ $settings = $options['project_options'][$project_id];
 
 if ( 1 == $settings['show_image'] && !wp_mkdir_p( $projectmanager->getImagePath() ) )
 	echo "<div class='error'><p>".sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $projectmanager->getImagePath() )."</p></div>";
-	
-$menu_icons = array( __('Databases', 'projectmanager') => 'databases.png', __('Calendar', 'projectmanager') => 'calendar.png', __('Person', 'projectmanager') => 'user.png' );
+
 ?>
 
 <div class="wrap">
@@ -68,8 +68,8 @@ $menu_icons = array( __('Databases', 'projectmanager') => 'databases.png', __('C
 			<th scope="row"><label for="menu_icon"><?php _e( 'Menu Icon', 'projectmanager' ) ?></label></th>
 			<td>
 				<select size="1" name="menu_icon" id="menu_icon">
-					<?php foreach ( $menu_icons AS $title => $icon ) : ?>
-					<option value="<?php echo $icon ?>" <?php if ( $icon == $settings['menu_icon'] ) echo ' selected="selected"' ?>><?php echo $title ?></option>
+					<?php foreach ( $menu_icons = $projectmanager->readFolder(PROJECTMANAGER_PATH.'/admin/icons/menu') AS $icon ) : ?>
+					<option value="<?php echo $icon ?>" <?php if ( $icon == $settings['menu_icon'] ) echo ' selected="selected"' ?>><?php echo $icon ?></option>
 					<?php endforeach; ?>
 				</select>
 			</td>

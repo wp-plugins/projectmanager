@@ -1104,76 +1104,6 @@ class ProjectManager extends ProjectManagerLoader
 		
 		return false;
 	}
-		
-	
-	/**
-	 * profileHook() - hook dataset input fields into profile
-	 *
-	 * @param none
-	 */
-	function profileHook()
-	{
-		global $current_user, $wpdb, $projectmanager;
-		
-		if ( current_user_can('project_user_profile') ) {
-			$options = get_option('projectmanager');
-			$options = $options['project_options'];
-			
-			$this->project_id = 0;
-			foreach ( $options AS $project_id => $settings ) {
-				if ( 1 == $settings['profile_hook'] ) {
-					$this->project_id = $project_id;
-					break;
-				}
-			}
-			
-			if ( $this->project_id != 0 ) {
-				$this->getProject();
-				
-				$is_profile_page = true;
-				$dataset = $wpdb->get_results( "SELECT `id`, `name`, `image`, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id} AND `user_id` = '".$current_user->ID."' LIMIT 0,1" );
-				$dataset = $dataset[0];
-				
-				if ( $dataset ) {
-					$dataset_id = $dataset->id;
-					$cat_ids = $this->getSelectedCategoryIDs($dataset);
-					$dataset_meta = $this->getDatasetMeta( $dataset_id );
-		
-					$img_filename = $dataset->image;
-					$meta_data = array();
-					foreach ( $dataset_meta AS $meta )
-						$meta_data[$meta->form_field_id] = $meta->value;
-				} else {
-					$dataset_id = ''; $cat_ids = array(); $img_filename = ''; $meta_data = array();
-				}
-				
-				echo '<h3>'.$this->getProjectTitle().'</h3>';
-				echo '<input type="hidden" name="project_id" value="'.$this->project_id.'" /><input type="hidden" name="dataset_id" value="'.$dataset_id.'" /><input type="hidden" name="dataset_user_id" value="'.$current_user->ID.'" />';
-				
-				include( 'page/dataset-form.php' );
-			}
-		}
-	}
-	
-	
-	/**
-	 * updateProfile() - update Profile settings
-	 *
-	 * @param none
-	 * @return none
-	 */
-	function updateProfile()
-	{
-		$user_id = $_POST['dataset_user_id'];
-		check_admin_referer('update-user_' . $user_id);
-		if ( '' == $_POST['dataset_id'] ) {
-			$this->admin->addDataset( $_POST['project_id'], $_POST['display_name'], $_POST['post_category'], $_POST['form_field'] );
-		} else {
-			$del_image = isset( $_POST['del_old_image'] ) ? true : false;
-			$overwrite_image = isset( $_POST['overwrite_image'] ) ? true: false;
-			$this->admin->editDataset( $_POST['project_id'], $_POST['display_name'], $_POST['post_category'], $_POST['dataset_id'], $_POST['form_field'], $user_id, $del_image, $_POST['image_file'], $overwrite_image );
-		}
-	}
 
 	
 	/**
@@ -1235,6 +1165,28 @@ class ProjectManager extends ProjectManagerLoader
 	function getSupportedImageTypes()
 	{
 		return array( "jpg", "jpeg", "png", "gif" );
+	}
+	
+	
+	/**
+	 * read in contents from directory
+	 *
+	 * @param string $dir
+	 * @return array of files
+	 */
+	function readFolder( $dir )
+	{
+		$files = array();
+		if ($handle = opendir($dir)) {
+			while (false !== ($file = readdir($handle))) {
+				if ( $file != '.' && $file != '..' && substr($file,0,1) != '.' )
+					$files[] = $file;
+			}
+			
+			closedir($handle);
+		}
+		
+		return $files;
 	}
 }
 ?>
