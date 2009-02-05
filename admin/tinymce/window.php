@@ -1,6 +1,7 @@
 <?php
 
 $root = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
+$root = '/var/www/trunk/wordpress';
 
 if (file_exists($root.'/wp-load.php')) {
 	// WP 2.6
@@ -44,7 +45,7 @@ $options = get_option('projectmanager');
 		<ul>
 			<li id="list_tab" class="current"><span><a href="javascript:mcTabs.displayTab('list_tab', 'list_panel');" onmouseover="return false;"><?php _e( 'Simple Output', 'projectmanager' ); ?></a></span></li>
 			<li id="gallery_tab"><span><a href="javascript:mcTabs.displayTab('gallery_tab', 'gallery_panel');" onmouseover="return false;"><?php _e( 'Gallery', 'projectmanager' ); ?></a></span></li>
-			<li id="categories_tab"><span><a href="javascript:mcTabs.displayTab('categories_tab', 'categories_panel');" onmouseover="return false;"><?php _e( 'Categories', 'projectmanager' ); ?></a></span></li>
+			<!--<li id="categories_tab"><span><a href="javascript:mcTabs.displayTab('categories_tab', 'categories_panel');" onmouseover="return false;"><?php _e( 'Categories', 'projectmanager' ); ?></a></span></li>-->
 			<li id="search_tab"><span><a href="javascript:mcTabs.displayTab('search_tab', 'search_panel');" onmouseover="return false;"><?php _e( 'Search Form', 'projectmanager' ); ?></a></span></li>
 		</ul>
 	</di>
@@ -111,6 +112,7 @@ $options = get_option('projectmanager');
 	</div>
 	
 	<!-- categories panel -->
+	<!--
 	<div id="categories_panel" class="panel">
 	<table style="border: 0;" cellpadding="5">
 	<tr>
@@ -147,6 +149,7 @@ $options = get_option('projectmanager');
 	</tr>
 	</table>
 	</div>
+	-->
 	
 	<!-- search panel -->
 	<div id="search_panel" class="panel">

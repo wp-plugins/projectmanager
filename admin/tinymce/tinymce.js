@@ -65,7 +65,7 @@ function ProjectManagerInsertLink() {
 			var grpid = '';
 			
 		if (projectId != 0)
-			tagtext = "[dataset_list=" + projectId + "," + grpid + "," + showtype + "]";
+			tagtext = "[dataset_list project_id=" + projectId + " output=" + showtype + " cat_id=" + grpid + "]";
 		else
 			tinyMCEPopup.close();
 	}
@@ -82,12 +82,12 @@ function ProjectManagerInsertLink() {
 		}
 			
 		if (projectId != 0)
-			tagtext = "[dataset_gallery=" + projectId + "," + numCols + "," + grpid + "]";
+			tagtext = "[dataset_gallery project_id" + projectId + " num_cols=" + numCols + " cat_id=" + grpid + "]";
 		else
 			tinyMCEPopup.close();
 	}
 	
-	if (categories.className.indexOf('current') != -1) {
+	/*if (categories.className.indexOf('current') != -1) {
 		var projectId = document.getElementById('categories_projects').value;
 		var showtype = getCheckedValue(document.getElementsByName('categories_showtype'));
 		var pos = document.getElementById('align_categories').value;
@@ -96,14 +96,14 @@ function ProjectManagerInsertLink() {
 			tagtext = "[prjctmngr_category_selection=" + projectId + "," + showtype + "," + pos + "]";	
 		else
 			tinyMCEPopup.close();
-	}
+	}*/
 	
 	if (searchform.className.indexOf('current') != -1) {
 		var projectId = document.getElementById('search_projects').value;
 		var pos = document.getElementById('align_search').value;
 		var display = document.getElementById('display_search').value;
 		if (projectId != 0)
-			tagtext = "[prjctmngr_search_form=" + projectId + "," + pos + "," + display + "]";
+			tagtext = "[projectmanager_search_form project_id=" + projectId + " align=" + pos + " display=" + display + "]";
 		else
 			tinyMCEPopup.close();
 	}

@@ -1,6 +1,6 @@
 <?php
 
-class WP_ProjectManager
+class ProjectManager
 {
 	/**
 	* supported image types
