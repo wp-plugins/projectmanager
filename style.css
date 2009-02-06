@@ -40,19 +40,16 @@ table.projectmanager td img {
 	clear: both;
 	padding-top: 1em;
 }
-.dataset_gallery .gallery-row {
-	clear: both;
-}
 .dataset_gallery .gallery-item {
 	float: left;
 	}
-.dataset_gallery .gallery-row img {
+.dataset_gallery .gallery-image img {
 	display: block;
 	border: 1px solid #cfcfcf;
 	margin: 0.5em auto;
 	padding: 4px;
 }
-.dataset_gallery .gallery-row img:hover {
+.dataset_gallery .gallery-image img:hover {
 	padding: 0;
 	border: 5px solid #cfcfcf;
 	}

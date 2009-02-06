@@ -29,7 +29,6 @@ This plugin is a datamanager for any recurrent datasets. It can be used to manag
 
 After adding a project, check out the settings and form field pages first. The frontend display of datasets is controlled via shortcodes, see the Usage section for details.
 
-
 == Installation ==
 
 To install the plugin to the following steps
@@ -50,6 +49,7 @@ To install the plugin to the following steps
 == Usage ==
 
 = Shortcodes =
+
 
 = Customization =
 

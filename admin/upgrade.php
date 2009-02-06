@@ -8,7 +8,7 @@ function projectmanager_upgrade() {
 	global $wpdb, $projectmanager;
 	
 	$options = get_option( 'projectmanager' );
-	$installed = isset($options['dbversion']) ? $options['dbversion'] : '2.6';
+	$installed = isset($options['dbversion']) ? $options['dbversion'] : '1.7';
 
 	if (version_compare($old_options['version'], '1.2.1', '<')) {
 		$charset_collate = '';
@@ -60,10 +60,10 @@ function projectmanager_upgrade() {
 	
 	if (version_compare($old_options['version'], '1.7', '<')) {
 		$wpdb->query( "ALTER TABLE {$wpdb->projectmanager_projectmeta} ADD `order_by` tinyint( 1 ) NOT NULL default '0' AFTER `order`" );
-			
-		/*
-		* Add new capability to see dataset in profile
-		*/
+	}
+	
+	
+	if (version_compare($installed, '1.8', '<')) {
 		$role = get_role('administrator');
 		$role->add_cap('project_user_profile');
 		
@@ -99,7 +99,7 @@ function projectmanager_upgrade_page()  {
 ?>
 	<div class="wrap">
 		<h2><?php _e('Upgrade ProjectManager', 'projectmanager') ;?></h2>
-		<p><?php _e('Your database for LeagueManager is out-of-date, and must be upgraded before you can continue.', 'projectmanager'); ?>
+		<p><?php _e('Your database for ProjectManager is out-of-date, and must be upgraded before you can continue.', 'projectmanager'); ?>
 		<p><?php _e('The upgrade process may take a while, so please be patient.', 'projectmanager'); ?></p>
 		<h3><a href="<?php echo $filepath;?>&amp;upgrade=now"><?php _e('Start upgrade now', 'projectmanager'); ?>...</a></h3>
 	</div>
