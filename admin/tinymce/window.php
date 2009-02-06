@@ -53,18 +53,18 @@ $options = get_option('projectmanager');
 			<li id="project_tab" class="current"><span><a href="javascript:mcTabs.displayTab('project_tab', 'project_panel');" onmouseover="return false;"><?php _e( 'Project', 'projectmanager' ); ?></a></span></li>
 			<!--<li id="gallery_tab"><span><a href="javascript:mcTabs.displayTab('gallery_tab', 'gallery_panel');" onmouseover="return false;"><?php _e( 'Gallery', 'projectmanager' ); ?></a></span></li>-->
 			<li id="dataset_tab"><span><a href="javascript:mcTabs.displayTab('dataset_tab', 'dataset_panel');" onmouseover="return false;"><?php _e( 'Dataset', 'projectmanager' ); ?></a></span></li>
-			<li id="search_tab"><span <a href="javascript:mcTabs.displayTab('search_tab', 'search_panel');" onmouseover="return false;"><?php _e('Search Form','projectmanager') ?></a></span></li>
+			<li id="search_tab"><span><a href="javascript:mcTabs.displayTab('search_tab', 'search_panel');" onmouseover="return false;"><?php _e('Search Form','projectmanager') ?></a></span></li>
 		</ul>
 	</di>
 	<div class="panel_wrapper">
 		
-	<!-- dataset list panel -->
+	<!-- project panel -->
 	<div id="project_panel" class="panel current">
 	<table style="border: 0;">
 	<tr>
 		<td><label for="projects"><?php _e("Project", 'projectmanager'); ?></label></td>
 		<td>
-		<select id="projects" name="list_projects" style="width: 200px">
+		<select id="projects" name="projects" style="width: 200px">
         	<option value="0"><?php _e("No Project", 'projectmanager'); ?></option>
 		<?php
 			$projects = $wpdb->get_results("SELECT * FROM {$wpdb->projectmanager_projects} ORDER BY id ASC");
@@ -79,17 +79,13 @@ $options = get_option('projectmanager');
 	<tr>
 		<td nowrap="nowrap" valign="top"><label><?php _e( 'Show as', 'projectmanager' ) ?></label></td>
 		<td>
-		<input type="radio" name="project_display" id="project_display_table" value="table" checked="ckecked" /><label for="project_display_table"><?php _e( 'Table', 'projectmanager' ) ?></label><br />
-		<input type="radio" name="project_display" id="project_display_gallery" value="gallery" /><label for="project_display_gallery"><?php _e( 'Gallery', 'projectmanager' ) ?></label><br />
+		<input type="radio" name="project_template" id="project_template_table" value="table" checked="ckecked" /><label for="project_template_table"><?php _e( 'Table', 'projectmanager' ) ?></label><br />
+		<input type="radio" name="project_template" id="project_template_gallery" value="gallery" /><label for="project_template_gallery"><?php _e( 'Gallery', 'projectmanager' ) ?></label><br />
 		</td>
 	</tr>
 	<tr>
 		<td nowrap="nowrap" valign="top"><label><?php _e( 'Category ID', 'projectmanager' ) ?></label></td>
-		<td><input type="text" name="list_cat_id" id="list_cat_id" value="" size="3" /> <small><?php _e( 'Optional: Display only datasets of given Category ID. Leave empty to display all datasets of chosen project.', 'projectmanager' ) ?></small></td>
-	</tr>
-	<tr>
-		<td nowrap="nowrap" valign="top"><label for="num_cols"><?php _e( 'Columns', 'projectmanager' ) ?></label></td>
-		<td><input type="text" name="num_cols" id="num_cols" value="" size="3" /> <small><?php _e( 'Only for Gallery display', 'projectmanager') ?></small></td>
+		<td><input type="text" name="cat_id" id="cat_id" value="" size="3" /> <small><?php _e( 'Optional: Display only datasets of given Category ID. Leave empty to display all datasets of chosen project.', 'projectmanager' ) ?></small></td>
 	</tr>
 	</table>
 	</div>

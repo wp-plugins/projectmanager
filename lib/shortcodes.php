@@ -207,7 +207,7 @@ class ProjectManagerShortcodes extends ProjectManager
 		
 		extract(shortcode_atts(array(
 			'id' => 0,
-			'template' => 'table',
+			'template' => 'listing',
 			'cat_id' => false
 		), $atts ));
 		$projectmanager->initialize($project_id);
@@ -244,7 +244,6 @@ class ProjectManagerShortcodes extends ProjectManager
 				$i++;
 			}
 			
-			$filename = ( empty($template) ) ? 'list' : 'list-'.$template;
 			$out = $this->loadTemplate( $filename, array('datasets' => $datasets, 'title' => $title, 'num_datasets' => $num_datasets, 'pagination' => $pagination) );
 		}
 		
