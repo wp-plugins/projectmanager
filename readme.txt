@@ -53,9 +53,11 @@ You can display all datasets of one project with the following code
 
 `[project id=x template=table|gallery cat_id=y]`
 
+
 Replace x with the respective project ID, the cat_id tag is optional and can be used to only display datasets of that category. If it is missing or empty all datasets of the project are displayed. ProjectManager supports templates, similar to [NextGgen Gallery](http://wordpress.org/extend/plugins/nextgen-gallery/). It comes with two default templates *table* and *gallery* which are located in the *view/table.php* and *view/gallery.php*. *table* displays the datasets in a simple tabular output whereas *gallery* shows them in a gallery only with the images on the main page. You can design your own templates and place them in
 
 `yourthemedirectory/projectmanager/`
+
 
 A more detailed description of the template system can be found below.
 
@@ -63,11 +65,13 @@ Further single datasets can be displayed directly with the following code
 
 `[dataset id=x]`
 
+
 where x is the dataset ID.
 
 Finally ProjectManager comes with a simple search for specific datasets, also form fields or categories. To display the search form use the following code
 
 `[project_search project_id=x template=compact|extend]`
+
 
 where x is again the project ID and template can be either *compact* or *extend*.
 
@@ -77,6 +81,7 @@ You can customize the frontend output via templates. Templates shipped with the 
 
 `yourthemedirectory/projectmanager/`
 
+
 You can either copy and edit the default templates or also create your own templates. To use the templates you need to put in the template tag the filename of it without extension. If you create derivatives of the gallery template, be sure to name them *gallery-yourtemplate* to activate gallery settings. For example you have created a template
 
 `yourthemedirectory/projectmanager/gallery-custom.php`
@@ -84,6 +89,7 @@ You can either copy and edit the default templates or also create your own templ
 you can use this template to display with the following code
 
 `[project id=x template=**gallery-custom** cat_id=y]`
+
 
 = Hook Project into user profile =
 It is possible to hook one project into the user profile to use it as extended profile. Thus it could be used to implement a player registration in combination with my [LeagueManager Plugin](http://wordpress.org/extend/plugins/leaguemanager/). Users need the capability `project_user_profile` to use this feature. By default only Administrators and Editors have this, but you can use [Role Manager](http://www.im-web-gefunden.de/wordpress-plugins/role-manager/) for finetuning.
