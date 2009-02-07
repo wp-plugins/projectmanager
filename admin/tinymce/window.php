@@ -84,7 +84,7 @@ $options = get_option('projectmanager');
 	</tr>
 	<tr>
 		<td nowrap="nowrap" valign="top"><label><?php _e( 'Category', 'projectmanager' ) ?></label></td>
-		<td><?php wp_dropdown_categories(array( 'hide_empty' => 0, 'name' => 'cat_id', 'orderby' => 'name', 'hierarchical' => true, 'show_option_all' => __('Display all Datasets'))); ?></td>
+		<td><?php wp_dropdown_categories(array( 'hide_empty' => 0, 'name' => 'cat_id', 'orderby' => 'name', 'hierarchical' => true, 'show_option_all' => __('Display all Datasets', 'projectmanager'))); ?></td>
 	</tr>
 	</table>
 	</div>
