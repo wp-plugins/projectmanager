@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * Core class for the WordPress plugin ProjectManager
+ * 
+ * @author 	Kolja Schleich
+ * @package	ProjectManager
+ * @copyright 	Copyright 2008-2009
+*/
 class ProjectManager extends ProjectManagerLoader
 {
 	/**
