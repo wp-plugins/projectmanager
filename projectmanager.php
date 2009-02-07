@@ -3,11 +3,11 @@
 Plugin Name: ProjectManager
 Description: This Plugin can be used to manage several different types of projects with redundant data. This could be athlet portraits, DVD database, architect projects. You can define different form field types and groups to sort your project entries.
 Plugin URI: http://wordpress.org/extend/plugins/projectmanager/
-Version: 1.7
+Version: 1.8
 Author: Kolja Schleich
 
 
-Copyright 2007-2008  Kolja Schleich  (email : kolja.schleich@googlemail.com)
+Copyright 2008-2008  Kolja Schleich  (email : kolja.schleich@googlemail.com)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 * 
 * @author 	Kolja Schleich
 * @package	ProjectManager
-* @copyright 	Copyright 2009
+* @copyright 	Copyright 2008-2009
 */
 
 class ProjectManagerLoader
@@ -39,7 +39,7 @@ class ProjectManagerLoader
 	 *
 	 * @var string
 	 */
-	 var $version = '1.7';
+	 var $version = '1.8';
 	 
 	 
 	 /**
@@ -47,7 +47,7 @@ class ProjectManagerLoader
 	  *
 	  * @var string
 	  */
-	 var $dbversion = '1.7';
+	 var $dbversion = '1.8';
 	 
 	 
 	 /**
@@ -114,7 +114,7 @@ class ProjectManagerLoader
 		add_action( 'wp_ajax_projectmanager_save_name', 'projectmanager_save_name' );
 		add_action( 'wp_ajax_projectmanager_save_categories', 'projectmanager_save_categories' );
 		add_action( 'wp_ajax_projectmanager_save_form_field_data', 'projectmanager_save_form_field_data' );
-		add_action( 'wp_ajax_projectmanager_show_category_selection', 'projectmanager_show_category_selection' );
+	//	add_action( 'wp_ajax_projectmanager_show_category_selection', 'projectmanager_show_category_selection' );
 		add_action( 'wp_ajax_projectmanager_save_form_field_options', 'projectmanager_save_form_field_options' );
 	}
 	
@@ -302,7 +302,7 @@ class ProjectManagerLoader
 	}
 	function addTinyMCEPlugin( $plugin_array )
 	{
-		$plugin_array['ProjectManager'] = PROJECTMANAGER_URL.'/tinymce/editor_plugin.js';
+		$plugin_array['ProjectManager'] = PROJECTMANAGER_URL.'/admin/tinymce/editor_plugin.js';
 		return $plugin_array;
 	}
 	function registerTinyMCEButton( $buttons )

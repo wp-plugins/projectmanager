@@ -15,19 +15,18 @@ This plugin is a datamanager for any recurrent datasets. It can be used to manag
 **Features**
 
 * add as many different projects as you want to
-* widget use for any project, controlled via admin panel
+* widget for any project, controlled via admin panel
 * adding of form fields (text, textfield, e-mail, date, url, selection, checkbox and radio list) for each project independently
 * simple search of any form field and category names
-* usage of Wordpress Category System for grouping
-* various output formats (table, list, gallery)
+* template system to easily customize frontend display
 * Ajax enabled editing of datasets
 * easy adding of shortcodes via TinyMCE Button
-* change colorscheme for output tables
+* change colorscheme for output tables via admin panel
 * dataset sorting by any form field
 * import and export of datasets from/to CSV file
 * hook one project into user profile
 
-After adding a project, check out the settings and form field pages first. The frontend display of datasets is controlled via shortcodes, see the Usage section for details.
+See [Usage](http://wordpress.org/extend/plugins/projectmanager/other_notes/) for details on shortcodes and the template system.
 
 
 == Installation ==
@@ -50,10 +49,46 @@ To install the plugin to the following steps
 == Usage ==
 
 = Shortcodes =
+You can display all datasets of one project with the following code
 
-= Customization =
+`[project id=x template=table|gallery cat_id=y]`
+
+Replace x with the respective project ID, the cat_id tag is optional and can be used to only display datasets of that category. If it is missing or empty all datasets of the project are displayed. ProjectManager supports templates, similar to [NextGgen Gallery](http://wordpress.org/extend/plugins/nextgen-gallery/). It comes with two default templates *table* and *gallery* which are located in the *view/table.php* and *view/gallery.php*. *table* displays the datasets in a simple tabular output whereas *gallery* shows them in a gallery only with the images on the main page. You can design your own templates and place them in
+
+`yourthemedirectory/projectmanager/`
+
+A more detailed description of the template system can be found below.
+
+Further single datasets can be displayed directly with the following code
+
+`[dataset id=x]`
+
+where x is the dataset ID.
+
+Finally ProjectManager comes with a simple search for specific datasets, also form fields or categories. To display the search form use the following code
+
+`[project_search project_id=x template=compact|extend]`
+
+where x is again the project ID and template can be either *compact* or *extend*.
+
+
+= Templates =
+You can customize the frontend output via templates. Templates shipped with the plugin are located in the *view* subdirectory. You can store your own templates in
+
+`yourthemedirectory/projectmanager/`
+
+You can either copy and edit the default templates or also create your own templates. To use the templates you need to put in the template tag the filename of it without extension. If you create derivatives of the gallery template, be sure to name them *gallery-yourtemplate* to activate gallery settings. For example you have created a template
+
+`yourthemedirectory/projectmanager/gallery-custom.php`
+
+you can use this template to display with the following code
+
+`[project id=x template=**gallery-custom** cat_id=y]`
+
 
 = Hook Project into user profile =
+It is possible to hook one project into the user profile to use it as extended profile. Thus it could be used to implement a player registration in combination with my [LeagueManager Plugin](http://wordpress.org/extend/plugins/leaguemanager/). Users need the capability `project_user_profile` to use this feature. By default only Administrators and Editors have this, but you can use [Role Manager](http://www.im-web-gefunden.de/wordpress-plugins/role-manager/) for finetuning.
+
 
 == Credits ==
 The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons of http://www.pinvoke.com/.

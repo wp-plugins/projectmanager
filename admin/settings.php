@@ -21,6 +21,7 @@ if ( isset($_POST['saveSettings']) ) {
      	$options['project_options'][$project_id]['navi_link'] = isset( $_POST['navi_link'] ) ? 1 : 0;
      	$options['project_options'][$project_id]['profile_hook'] = isset($_POST['profile_hook'] ) ? 1 : 0;
 	$options['project_options'][$project_id]['menu_icon'] = $_POST['menu_icon'];
+	$options['project_options'][$project_id]['gallery_num_cols'] = $_POST['gallery_num_cols'];
 		
 	$this->editProject( $_POST['project_title'], $_POST['project_id'] );
 	update_option( 'projectmanager', $options );
@@ -50,7 +51,7 @@ if ( 1 == $settings['show_image'] && !wp_mkdir_p( $projectmanager->getImagePath(
 			<th scope="row"><label for="per_page"><?php _e( 'Datasets per page', 'projectmanager' ) ?></label></th><td><input type="text" name="per_page" id="per_page" size="2" value="<?php echo $settings['per_page'] ?>" /></td>
 		</tr>
 		<tr valign="top">
-			<th scope="row"><label for="category"><?php _e( 'Category', 'projectmanager' ) ?></label></th><td><?php wp_dropdown_categories(array('hide_empty' => 0, 'name' => 'category', 'orderby' => 'name', 'selected' => $settings['category'], 'hierarchical' => true, 'show_option_none' => __('None'))); ?></td>
+			<th scope="row"><label for="category"><?php _e( 'Category', 'projectmanager' ) ?></label></th><td><?php wp_dropdown_categories(array('hide_empty' => 0, 'name' => 'category', 'orderby' => 'name', 'selected' => $settings['category'], 'hierarchical' => true, 'show_option_none' => __('None'))); ?>&#160;<span class="setting-description"><?php _e( 'Child categories of this category are used for grouping of datasets', 'projectmanager' ) ?></span></td>
 		</tr>
 		<tr valign="top">
 			<th scope="row"><label for="dataset_orderby"><?php _e( 'Sort Datasets by', 'projectmanager' ) ?></label></th><td><select size="1" name="dataset_orderby" id="dataset_orderby"><?php $this->datasetOrderOptions($settings['dataset_orderby']) ?></select></td>
@@ -59,10 +60,10 @@ if ( 1 == $settings['show_image'] && !wp_mkdir_p( $projectmanager->getImagePath(
 			<th scope="row"><label for="use_widget"><?php _e( 'Use Widget', 'projectmanager' ) ?></label></th><td><input type="checkbox" name="use_widget" id="use_widget"<?php if ( 1 == $settings['use_widget']  ) echo ' checked="checked"'; ?> value="1" /></td>
 		</tr>
 		<tr valign="top">
-			<th scope="row"><label for="navi_link"><?php _e( 'Navi Link', 'projectmanager' ) ?></th><td><input type="checkbox" name="navi_link" id="navi_link" value="1"<?php if ( 1 == $settings['navi_link']  ) echo ' checked="checked"'; ?> /><br /><?php _e( 'Set this option to add a direct link in the navigation panel.', 'projectmanager' ) ?></td>
+			<th scope="row"><label for="navi_link"><?php _e( 'Navi Link', 'projectmanager' ) ?></th><td><input type="checkbox" name="navi_link" id="navi_link" value="1"<?php if ( 1 == $settings['navi_link']  ) echo ' checked="checked"'; ?> />&#160;<span class="setting-description"><?php _e( 'Set this option to add a direct link in the navigation panel.', 'projectmanager' ) ?></span></td>
 		</tr>
 		<tr valign="top">
-			<th scope="row"><label for="profile_hook"><?php _e( 'Hook into Profile', 'projectmanager' ) ?></th><td><input type="checkbox" name="profile_hook" id="profile_hook" value="1" <?php if ( 1 == $settings['profile_hook'] ) echo 'checked="checked"' ?> /><br /><?php _e( 'Only one project can be hooked into the profile!', 'projectmanager' ) ?></td>
+			<th scope="row"><label for="profile_hook"><?php _e( 'Hook into Profile', 'projectmanager' ) ?></th><td><input type="checkbox" name="profile_hook" id="profile_hook" value="1" <?php if ( 1 == $settings['profile_hook'] ) echo 'checked="checked"' ?> />&#160;<span class="setting-description"><?php _e( 'Only one project can be hooked into the profile!', 'projectmanager' ) ?></span></td>
 		</tr>
 		<tr valign="top">
 			<th scope="row"><label for="menu_icon"><?php _e( 'Menu Icon', 'projectmanager' ) ?></label></th>
@@ -74,6 +75,8 @@ if ( 1 == $settings['show_image'] && !wp_mkdir_p( $projectmanager->getImagePath(
 				</select>
 			</td>
 		</tr>
+		<tr valign="top">
+			<th scope="row"><label for="gallery_num_cols"><?php _e( 'Number of Columns', 'projectmanager' ) ?></label></th><td><input type="text" name="gallery_num_cols" id="gallery_num_cols" value="<?php echo $settings['gallery_num_cols'] ?>" size="2" />&#160;<span class="setting-description"><?php _e( 'Only for Gallery display', 'projectmanager') ?></span></td>
 		</table>
 		
 		<h3><?php _e( 'Images', 'projectmanager' ) ?></h3>

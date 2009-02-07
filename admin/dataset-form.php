@@ -48,8 +48,8 @@
 					<?php endforeach; ?>
 				</select>
 				<select size="1" name="form_field[<?php echo $form_field->id ?>][year]">
-					<option value="">Jahr</option>
-					<option value="">&#160;</option>
+					<option value="0000">Jahr</option>
+					<option value="0000">&#160;</option>
 					<?php for ( $year = date('Y')-50; $year <= date('Y')+10; $year++ ) : ?>
 						<option value="<?php echo $year ?>"<?php if ( $year == substr($meta_data[$form_field->id], 0, 4) ) echo ' selected="selected"' ?>><?php echo $year ?></option>
 					<?php endfor; ?>

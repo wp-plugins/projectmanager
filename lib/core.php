@@ -876,26 +876,25 @@ class ProjectManager extends ProjectManagerLoader
 					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span>";
 				} elseif ( 3 == $meta->type && $meta_value != '')
 					$meta_value = "<a href='mailto:".$meta_value."' class='projectmanager_email'><span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span></a>";
-				elseif ( 4 == $meta->type )
+				elseif ( 4 == $meta->type ) {
+					$meta_value = ( $meta_value == '0000-00-00' ) ? '' : $meta_value;
 					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".mysql2date(get_option('date_format'), $meta_value )."</span>";
-				elseif ( 5 == $meta->type && $meta_value != '')
+				} elseif ( 5 == $meta->type && $meta_value != '')
 					$meta_value = "<a class='projectmanager_url' href='http://".$meta_value."' target='_blank' title='".$meta_value."'><span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span></a>";
 					
 				if ( 1 == $meta->show_on_startpage || $show_all ) {
-					if ( $meta->value != '' ) {
-						if ( 'dl' == $output ) {
-							$out .= "\n\t<dt>".$meta->label."</dt><dd>".$meta_value."</dd>";
-						} elseif ( 'li' == $output ) {
-							$out .= "\n\t<".$output."><span class='dataset_label'>".$meta->label."</span>:&#160;".$meta_value."</".$output.">";
-						} else {
-							$out .= "\n\t<".$output.">";
-							$out .= $this->getThickbox( $dataset->id, $meta->form_field_id, $meta->type, maybe_unserialize($meta->value), $dataset->user_id );
-							$out .= "\n\t\t".$meta_value . $this->getThickboxLink($dataset->id, $meta->form_field_id, $meta->type, $meta->label." ".__('of','projectmanager')." ".$dataset->name, $dataset->user_id);
-							$out .= "\n\t</".$output.">";
-						}
-					} elseif ( 'td' == $output ) {
-						$out .= "\n\t<".$output.">&#160;</".$output.">";
+					if ( 'dl' == $output ) {
+						$out .= "\n\t<dt>".$meta->label."</dt><dd>".$meta_value."</dd>";
+					} elseif ( 'li' == $output ) {
+						$out .= "\n\t<".$output."><span class='dataset_label'>".$meta->label."</span>:&#160;".$meta_value."</".$output.">";
+					} else {
+						$out .= "\n\t<".$output.">";
+						$out .= $this->getThickbox( $dataset->id, $meta->form_field_id, $meta->type, maybe_unserialize($meta->value), $dataset->user_id );
+						$out .= "\n\t\t".$meta_value . $this->getThickboxLink($dataset->id, $meta->form_field_id, $meta->type, $meta->label." ".__('of','projectmanager')." ".$dataset->name, $dataset->user_id);
+						$out .= "\n\t</".$output.">";
 					}
+				} elseif ( 'td' == $output ) {
+					$out .= "\n\t<".$output.">&#160;</".$output.">";
 				}
 			}
 		}
