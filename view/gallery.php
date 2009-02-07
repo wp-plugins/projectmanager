@@ -10,21 +10,20 @@ The following variables are usable:
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
 */
 ?>
+
 <?php if ( isset( $_GET['show'] ) ) : ?>
-	<?php do_action('projectmanager_dataset', array('id' => $_GET['show'], 'echo' => 1)) ?>
+ 	<?php do_action('projectmanager_dataset', array('id' => $_GET['show'], 'echo' => 1)) ?>
 <?php else: ?>
 	
 <?php do_action('projectmanager_tablenav'); ?>
-
 <?php if ( $datasets ) : $i = 0; ?>
-
 <div class='dataset_gallery'>
 	<?php foreach ( $datasets AS $dataset ) : $i++; ?>
 	
 	<div class='gallery-item' style='width: <?php echo $project['dataset_width'] ?>;'>
 		<div class="gallery-image">
 			<?php if ( $dataset->image != '' ) : ?>
-			<a href="<?php echo $dataset->URL ?>"><img src="<?php echo $dataset->thumbURL ?>" alt="<?php echo $dataset->name ?>" title="<?php echo $dataset->name ?>" /></a>;
+			<a href="<?php echo $dataset->URL ?>"><img src="<?php echo $dataset->thumbURL ?>" alt="<?php echo $dataset->name ?>" title="<?php echo $dataset->name ?>" /></a>
 			<?php endif; ?>
 	
 			<p class='caption'><a href="<?php echo $dataset->URL ?>"><?php echo $dataset->name ?></a></p>

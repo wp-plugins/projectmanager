@@ -1,7 +1,10 @@
 ProjectManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
-V1.8 - February, 2009
+V1.8.1 - February 7, 2009
+- BUGFIX: shortcode display of single dataset
+
+V1.8 - February 7, 2009
 - NEW: dataset ordering selection in frontend
 - NEW: hook one project into profile
 - NEW: set custom menu icon for each project

@@ -20,12 +20,12 @@ The following variables are usable:
 	<?php endif; ?>
 	<select size='1' name='orderby'>
 		<?php foreach ( $orderby AS $key => $value ) : ?>
-		<option value='<?php echo $key ?>' <?php if (get_query_var('orderby') == $key) echo ' selected="selected"' ?>><?php echo $value ?></option>
+		<option value='<?php echo $key ?>' <?php if ($_GET['orderby'] == $key) echo ' selected="selected"' ?>><?php echo $value ?></option>
 		<?php endforeach; ?>
 	</select>
 	<select size='1' name='order'>
 		<?php foreach ( $order AS $key => $value ) : ?>
-		<option value='<?php echo $key ?>' <?php if (get_query_var('order') == $key) echo ' selected="selected"' ?>><?php echo $value ?></option>
+		<option value='<?php echo $key ?>' <?php if ($_GET['order'] == $key) echo ' selected="selected"' ?>><?php echo $value ?></option>
 		<?php endforeach; ?>
 	</select>
 	

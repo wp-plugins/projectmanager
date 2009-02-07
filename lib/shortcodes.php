@@ -203,7 +203,7 @@ class ProjectManagerShortcodes extends ProjectManager
 	 */
 	function displayProject( $atts )
 	{
-		global $wp_query, $projectmanager;
+		global $wp, $projectmanager;
 		
 		extract(shortcode_atts(array(
 			'id' => 0,
@@ -218,9 +218,9 @@ class ProjectManagerShortcodes extends ProjectManager
 		$this->project_id = $id;
 		if ( $cat_id ) $projectmanager->setCatID($cat_id);
 	
-		if ( isset( $_GET['show'] ) )
+		if ( isset( $_GET['show'] ) ) {
 			$datasets = $title = $pagination = $project = false;
-		else {
+		} else {
 			if ( $projectmanager->isSearch() )
 				$datasets = $projectmanager->getSearchResults();
 			else
@@ -258,9 +258,9 @@ class ProjectManagerShortcodes extends ProjectManager
 				}
 				$i++;
 			}
-			
-			$out = $this->loadTemplate( $template, array('project' => $project, 'datasets' => $datasets, 'title' => $title, 'pagination' => $pagination) );
 		}
+		
+		$out = $this->loadTemplate( $template, array('project' => $project, 'datasets' => $datasets, 'title' => $title, 'pagination' => $pagination) );
 		
 		return $out;
 	}
@@ -297,7 +297,7 @@ class ProjectManagerShortcodes extends ProjectManager
 				
 		$filename = ( empty($template) ) ? 'dataset' : $template;
 		
-		$out = $this->loadTemplate( $filename, array($filename => $dataset, 'backurl' => $url) );
+		$out = $this->loadTemplate( $filename, array('dataset' => $dataset, 'backurl' => $url) );
 
 		if ( $echo )
 			echo $out;

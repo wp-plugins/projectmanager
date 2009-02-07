@@ -9,7 +9,12 @@ div.projectmanager_tablenav {
 	margin-top: 1em;
 	clear: both;
 }
-div.projectmanager_tablenav select {
+div.projectmanager_tablenav select.postform {
+	padding: 0;
+	margin: 0;
+	background: white;
+	}
+div.projectmanager_tablenav select, div.projectmanager_tablenav select.postform {
 	margin-right: 0.5em;
 	}
 

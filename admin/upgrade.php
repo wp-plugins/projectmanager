@@ -75,9 +75,7 @@ function projectmanager_upgrade() {
 	}
 	
 	
-	/*
-	* Update version and dbversion
-	*/
+	// Update dbversion
 	$options['dbversion'] = PROJECTMANAGER_DBVERSION;
 	
 	update_option('projectmanager', $options);
