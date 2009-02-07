@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
 "POT-Creation-Date: 2009-02-05 22:08+0000\n"
-"PO-Revision-Date: 2009-02-07 11:40+0100\n"
+"PO-Revision-Date: 2009-02-07 12:19+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -565,6 +565,10 @@ msgstr "Kompakt"
 #: admin/tinymce/window.php:202
 msgid "Insert"
 msgstr "Einfügen"
+
+#: admin/upgrade.php:13
+msgid "Upgrade database structure..."
+msgstr "Aktualisieren der Datenbankstruktur..."
 
 #: admin/upgrade.php:81
 msgid "finished"
