@@ -5,7 +5,7 @@
 * 
 * @author 	Kolja Schleich
 * @package	ProjectManager
-* @copyright 	Copyright 2009
+* @copyright 	Copyright 2008-2009
 */
 
 class ProjectManagerImage extends ProjectManager
