@@ -15,7 +15,7 @@ The following variables are usable:
 <?php echo $title ?>
 
 <?php if ( isset( $_GET['show'] ) ) : ?>
-	<?php do_action('projectmanager_dataset', array('id' => $_GET['show'])) ?>
+	<?php do_action('projectmanager_dataset', array('id' => $_GET['show'], 'echo' => 1)) ?>
 <?php else: ?>
 
 <?php do_action('projectmanager_tablenav'); ?>

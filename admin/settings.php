@@ -51,7 +51,7 @@ if ( 1 == $settings['show_image'] && !wp_mkdir_p( $projectmanager->getImagePath(
 			<th scope="row"><label for="per_page"><?php _e( 'Datasets per page', 'projectmanager' ) ?></label></th><td><input type="text" name="per_page" id="per_page" size="2" value="<?php echo $settings['per_page'] ?>" /></td>
 		</tr>
 		<tr valign="top">
-			<th scope="row"><label for="category"><?php _e( 'Category', 'projectmanager' ) ?></label></th><td><?php wp_dropdown_categories(array('hide_empty' => 0, 'name' => 'category', 'orderby' => 'name', 'selected' => $settings['category'], 'hierarchical' => true, 'show_option_none' => __('None'))); ?></td>
+			<th scope="row"><label for="category"><?php _e( 'Category', 'projectmanager' ) ?></label></th><td><?php wp_dropdown_categories(array('hide_empty' => 0, 'name' => 'category', 'orderby' => 'name', 'selected' => $settings['category'], 'hierarchical' => true, 'show_option_none' => __('None'))); ?>&#160;<span class="setting-description"><?php _e( 'Child categories of this category are used for grouping of datasets', 'projectmanager' ) ?></span></td>
 		</tr>
 		<tr valign="top">
 			<th scope="row"><label for="dataset_orderby"><?php _e( 'Sort Datasets by', 'projectmanager' ) ?></label></th><td><select size="1" name="dataset_orderby" id="dataset_orderby"><?php $this->datasetOrderOptions($settings['dataset_orderby']) ?></select></td>

@@ -37,8 +37,8 @@ class ProjectManagerShortcodes extends ProjectManager
 		add_shortcode( 'project', array(&$this, 'displayProject') );
 		add_shortcode( 'project_search', array(&$this, 'displaySearchForm') );
 		
-		add_action( 'projectmanager_tablenav', array(&$this, 'tablenav') );
-		add_action( 'projectmanager_dataset', array(&$this, 'dataset') );
+		add_action( 'projectmanager_tablenav', array(&$this, 'displayTablenav') );
+		add_action( 'projectmanager_dataset', array(&$this, 'displayDataset') );
 		
 		add_filter( 'the_content', array(&$this, 'convert') );
 	}
@@ -103,7 +103,7 @@ class ProjectManagerShortcodes extends ProjectManager
 					foreach($matches[1] AS $key => $v0) {
 						$project_id = $v0;
 						$search = $matches[0][$key];
-						$replace = "[project id=".$project_id." template=".$matches[3][$key]." cat_id=".$matches[2][$key]."]";
+						$replace = "[project id=".$project_id." template=table cat_id=".$matches[2][$key]."]";
 						$content = str_replace($search, $replace, $content);
 					}
 				}
@@ -136,7 +136,7 @@ class ProjectManagerShortcodes extends ProjectManager
 	 * @param array $atts
 	 * @return string
 	 */
-	function getsearchForm( $atts )
+	function displaySearchForm( $atts )
 	{
 		global $projectmanager;
 		
@@ -168,7 +168,7 @@ class ProjectManagerShortcodes extends ProjectManager
 	 * @param boolean $echo
 	 * @return void the dropdown selections
 	 */
-	function tablenav()
+	function displayTablenav()
 	{
 		global $projectmanager;
 		$options = get_option( 'projectmanager' );
@@ -190,12 +190,12 @@ class ProjectManagerShortcodes extends ProjectManager
 	
 	
 	/**
-	 * Function to display the datasets of a given project in a page or post as list.
+	 * Function to display the project in a page or post as list.
 	 *
-	 *	[dataset_list project_id="1" output="table" cat_id="3"]
+	 *	[project id="x" template="table|gallery" cat_id="3"]
 	 *
 	 * - project_id is the ID of the project to display
-	 * - output can be either "table", "ul" or "ol" to show them as table, unsorted or sorted list. (default is "table")
+	 * - template is the template file without extension. Default values are "table" or "gallery".
 	 * - cat_id: specify a category to only display those datasets. all datasets will be displayed if missing
 	 *
 	 * @param array $atts
@@ -207,23 +207,24 @@ class ProjectManagerShortcodes extends ProjectManager
 		
 		extract(shortcode_atts(array(
 			'id' => 0,
-			'template' => 'listing',
+			'template' => 'table',
 			'cat_id' => false
 		), $atts ));
-		$projectmanager->initialize($project_id);
+		$projectmanager->initialize($id);
 		
-		$this->project_id = $project_id;
+		$options = get_option('projectmanager');
+		$options = $options['project_options'][$id];
+		
+		$this->project_id = $id;
 		if ( $cat_id ) $projectmanager->setCatID($cat_id);
 	
 		if ( isset( $_GET['show'] ) )
-			$datasets = $title = $num_datasets = $pagination = false;
+			$datasets = $title = $pagination = $project = false;
 		else {
 			if ( $projectmanager->isSearch() )
 				$datasets = $projectmanager->getSearchResults();
 			else
 				$datasets = $projectmanager->getDatasets( true );
-	
-			$num_datasets = $projectmanager->getNumDatasets($projectmanager->getProjectID(), true);
 			
 			$title = '';
 			if ( $projectmanager->isSearch() ) {
@@ -236,76 +237,30 @@ class ProjectManagerShortcodes extends ProjectManager
 			
 			$i = 0;
 			foreach ( $datasets AS $dataset ) {
-				$url = get_permalink();$url = add_query_arg('show', $dataset->id, $url);
-				$url = ($projectmanager->isCategory()) ? add_query_arg('cat_id', $projectmanager->getCatID(), $url) : $url;
+				if ( substr($template,0,7) == 'gallery' ) {
+					$url = get_permalink();
+					$url = add_query_arg('show', $dataset->id, $url);
+					$url = ($projectmanager->isCategory()) ? add_query_arg('cat_id', $projectmanager->getCatID(), $url) : $url;
 				
-				$datasets[$i]->name = ($projectmanager->hasDetails()) ? '<a href="'.$url.'">'.$dataset->name.'</a>' : $dataset->name;
+					$datasets[$i]->URL = $url;
+					$datasets[$i]->thumbURL = $projectmanager->getImageUrl('/thumb.'.$dataset->image);
 				
+					$project['num_datasets'] = $projectmanager->getNumDatasets($projectmanager->getProjectID(), true);
+					$project['num_cols'] = ( $options['gallery_num_cols'] == 0 ) ? 4 : $options['gallery_num_cols'];
+					$project['dataset_width'] = floor(100/$options['gallery_num_cols'])."%";
+				} else {
+					$url = get_permalink();$url = add_query_arg('show', $dataset->id, $url);
+					$url = ($projectmanager->isCategory()) ? add_query_arg('cat_id', $projectmanager->getCatID(), $url) : $url;
+				
+					$datasets[$i]->name = ($projectmanager->hasDetails()) ? '<a href="'.$url.'">'.$dataset->name.'</a>' : $dataset->name;
+				
+					$project['num_datasets'] = $projectmanager->getNumDatasets($projectmanager->getProjectID(), true);
+				}
 				$i++;
 			}
 			
-			$out = $this->loadTemplate( $filename, array('datasets' => $datasets, 'title' => $title, 'num_datasets' => $num_datasets, 'pagination' => $pagination) );
+			$out = $this->loadTemplate( $template, array('project' => $project, 'datasets' => $datasets, 'title' => $title, 'pagination' => $pagination) );
 		}
-		
-		return $out;
-	}
-	
-	
-	/**
-	 * Function to display the datasets of a given project in a page or post as gallery.
-	 *
-	 *	[dataset_gallery project_id="1" templatenum_cols="3" cat_id="3"]
-	 *
-	 * - project_id is the ID of the project to display
-	 * - num_cols is the number of columns (default: 3)
-	 * - cat_id: specify a category to only display those datasets. all datasets will be displayed if missing
-	 *
-	 * @param array $atts
-	 * @return the content
-	 */
-	function datasetGallery( $atts )
-	{
-		global $projectmanager;
-		extract(shortcode_atts(array(
-			'project_id' => 0,
-			'template' => '',
-			'num_cols' => 4,
-			'cat_id' => false
-		), $atts ));
-		
-		$this->project_id = $project_id;
-		$projectmanager->initialize($project_id);
-
-		if ( $cat_id ) $projectmanager->setCatID($cat_id);
-
-		if ( !isset($_GET['show']) ) {
-			if ( $projectmanager->isSearch() )
-				$datasets = $projectmanager->getSearchResults();
-			else
-				$datasets = $projectmanager->getDatasets( true );
-			
-			$gallery['num_cols'] = $num_cols;
-			$gallery['dataset_width'] = floor(100/$num_cols)."%";
-			
-			$pagination = ( $projectmanager->isSearch() ) ? '' : $projectmanager->getPageLinks();
-			
-			$i = 0;
-			foreach ( $datasets AS $dataset ) {
-				$url = get_permalink();
-				$url = add_query_arg('show', $dataset->id, $url);
-				$url = ($projectmanager->isCategory()) ? add_query_arg('cat_id', $projectmanager->getCatID(), $url) : $url;
-				
-				$datasets[$i]->URL = $url;
-				$datasets[$i]->thumbURL = $projectmanager->getImageUrl('/thumb.'.$dataset->image);
-				
-				$i++;
-			}
-		} else {
-			$gallery = $datasets = $pagination = false;
-		}
-				
-		$filename = ( empty($template) ) ? 'gallery' : 'gallery-'.$template;
-		$out = $this->loadTemplate( $filename, array('gallery' => $gallery, 'datasets' => $datasets, 'pagination' => $pagination) );
 		
 		return $out;
 	}
@@ -346,8 +301,8 @@ class ProjectManagerShortcodes extends ProjectManager
 
 		if ( $echo )
 			echo $out;
-		else
-			return $out;
+		
+		return $out;
 	}
 }
 ?>

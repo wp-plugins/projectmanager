@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
 "POT-Creation-Date: 2009-02-05 22:08+0000\n"
-"PO-Revision-Date: 2009-02-06 20:06+0100\n"
+"PO-Revision-Date: 2009-02-07 11:40+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -737,18 +737,21 @@ msgstr "Erweiterte Version"
 msgid "Compact Version"
 msgstr "Kompakte Version"
 
+msgid "Dataset"
+msgstr "Datensatz"
+
 msgid "No Dataset"
 msgstr "Kein Datensatz"
-
-msgid "Category ID"
-msgstr "Kategorie ID"
-
-msgid "Optional: Display only datasets of given Category ID. Leave empty to display all datasets of chosen project."
-msgstr "Optional: Zeige nur Datensätze der ausgewählten Kategorie. Lasse es leer, um alle Datensätze des Projekts anzuzeigen."
 
 msgid "Number of Columns"
 msgstr "Anzahl Spalten"
 
 msgid "Only for Gallery display"
 msgstr "Nur für Galerie Anzeige"
+
+msgid "Display all Datasets"
+msgstr "Alle Datensätze anzeigen"
+
+msgid "Child categories of this category are used for grouping of datasets"
+msgstr "Kind Kategorien dieser Kategorie werden zur Gruppierung der Datensätze verwendet"
 

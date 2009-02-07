@@ -4,7 +4,7 @@ Template page for dataset gallery
 
 The following variables are usable:
 
-	$gallery: contains data for the gallery
+	$project: contains data for the project
 	$datasets: contains all datasets for current selection
 	
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
@@ -21,7 +21,7 @@ The following variables are usable:
 <div class='dataset_gallery'>
 	<?php foreach ( $datasets AS $dataset ) : $i++; ?>
 	
-	<div class='gallery-item' style='width: <?php echo $gallery['dataset_width'] ?>;'>
+	<div class='gallery-item' style='width: <?php echo $project['dataset_width'] ?>;'>
 		<div class="gallery-image">
 			<?php if ( $dataset->image != '' ) : ?>
 			<a href="<?php echo $dataset->URL ?>"><img src="<?php echo $dataset->thumbURL ?>" alt="<?php echo $dataset->name ?>" title="<?php echo $dataset->name ?>" /></a>;
@@ -31,7 +31,7 @@ The following variables are usable:
 		</div>
 	</div>
 	
-	<?php if ( 0 == $i % $gallery['num_cols'] ) : ?>
+	<?php if ( 0 == $i % $project['num_cols'] ) : ?>
 	<br style="clear: both;" />
 	<?php endif; ?>
 

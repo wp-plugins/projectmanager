@@ -33,6 +33,9 @@ function ProjectManagerInsertLink() {
 		var projectId = document.getElementById('projects').value;
 		var template = getCheckedValue(document.getElementsByName('project_template'));
 		var cat = document.getElementById('cat_id').value;
+		
+		if ( cat <= 0 )
+			cat = '';
 	
 		if (projectId != 0)
 			tagtext = "[project id=" + projectId + " template=" + template + " cat_id=" + cat + "]";

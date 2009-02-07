@@ -1,7 +1,6 @@
 <?php
 
-$root = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
-$root = '/var/www/trunk/wordpress';
+$root = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))));
 
 if (file_exists($root.'/wp-load.php')) {
 	// WP 2.6
@@ -84,8 +83,8 @@ $options = get_option('projectmanager');
 		</td>
 	</tr>
 	<tr>
-		<td nowrap="nowrap" valign="top"><label><?php _e( 'Category ID', 'projectmanager' ) ?></label></td>
-		<td><input type="text" name="cat_id" id="cat_id" value="" size="3" /> <small><?php _e( 'Optional: Display only datasets of given Category ID. Leave empty to display all datasets of chosen project.', 'projectmanager' ) ?></small></td>
+		<td nowrap="nowrap" valign="top"><label><?php _e( 'Category', 'projectmanager' ) ?></label></td>
+		<td><?php wp_dropdown_categories(array( 'hide_empty' => 0, 'name' => 'cat_id', 'orderby' => 'name', 'hierarchical' => true, 'show_option_all' => __('Display all Datasets'))); ?></td>
 	</tr>
 	</table>
 	</div>
@@ -94,7 +93,7 @@ $options = get_option('projectmanager');
 	<div id="dataset_panel" class="panel">
 	<table style="border: 0;" cellpadding="5">
 	<tr>
-		<td><label for="datasets"><?php _e("Project", 'projectmanager'); ?></label></td>
+		<td><label for="datasets"><?php _e("Dataset", 'projectmanager'); ?></label></td>
 		<td>
 		<select id="datasets" name="datasets" style="width: 200px">
 		<option value="0"><?php _e("No Dataset", 'projectmanager'); ?></option>
