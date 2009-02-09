@@ -15,8 +15,8 @@ The following variables are usable:
 <?php if ( $dataset ) : ?>
 <fieldset class='dataset'><legend><?php printf(__( 'Details of %s', 'projectmanager' ), $dataset->name) ?></legend>
 	<?php if ( $dataset->image != '' ) : ?>
-	<div class='image'><img src='<?php parent::getImageUrl($dataset->image) ?>' title='<?php echo $dataset->name ?>' alt='<?php echo $dataset->name ?>' /></div>
+	<div class='image'><img src='<?php echo $dataset->imgURL ?>' title='<?php echo $dataset->name ?>' alt='<?php echo $dataset->name ?>' /></div>
 	<?php endif; ?>
-	<dl><?php parent::printDatasetMetaData( $dataset, 'dl', true ) ?></dl>
+	<dl><?php $projectmanager->printDatasetMetaData( $dataset, 'dl', true ) ?></dl>
 </fieldset>
 <?php endif; ?>
