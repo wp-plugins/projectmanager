@@ -14,7 +14,7 @@ if ( isset($_POST['import']) ) {
 
 <div class="wrap">
 	<?php $this->printBreadcrumb( __('Import/Export', 'projectmanager') ) ?>
-	<h2><?php _e( 'Import' ) ?></h2>
+	<h2><?php _e( 'Import Datasets', 'projectmanager' ) ?></h2>
 	
 	<form action="" method="post" enctype="multipart/form-data">
 	<?php wp_nonce_field( 'projectmanager_import-datasets' ) ?>
@@ -49,15 +49,15 @@ if ( isset($_POST['import']) ) {
 	<?php endfor; ?>
 	</table>
 	
-	<p class="submit"><input type="submit" name="import" value="<?php _e('Import') ?> &raquo;" class="button" /></p>
+	<p class="submit"><input type="submit" name="import" value="<?php _e('Import Datasets', 'projectmanager') ?> &raquo;" class="button" /></p>
 	</form>
 </div>
 
 <div class="wrap">
-	<h2><?php _e( 'Export') ?></h2>
+	<h2><?php _e( 'Export Datasets', 'projectmanager' ) ?></h2>
 	<form action="" method="post">
 		<input type="hidden" name="project_id" value="<?php echo $project_id ?>" />
-		<p class="submit"><input type="submit" name="projectmanager_export" value="<?php _e('Export') ?> &raquo;" class="button" /></p>
+		<p class="submit"><input type="submit" name="projectmanager_export" value="<?php _e('Export Datasets', 'projectmanager') ?> &raquo;" class="button" /></p>
 	</form>
 </div>
 <?php endif; ?>

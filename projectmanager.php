@@ -227,7 +227,8 @@ class ProjectManagerLoader
 	 */
 	function loadScripts()
 	{
-		$options = get_option( 'projectmanager_widget' );
+		if ( !$options = get_option( 'projectmanager_widget' ) )
+			$options = array();
 		
 		wp_register_script( 'jquery_slideshow', PROJECTMANAGER_URL.'/js/jquery.aslideshow.js', array('jquery'), '0.5.3' );
 		wp_print_scripts( 'jquery_slideshow' );

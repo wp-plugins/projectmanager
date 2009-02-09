@@ -1,6 +1,10 @@
 ProjectManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
+V1.8.2 - February 9, 2009
+- NEW: remove line breaks from form field values upon export
+- BUGFIX: image upload and thumbnail creation
+
 V1.8.1 - February 7, 2009
 - BUGFIX: shortcode display of single dataset
 

@@ -425,9 +425,9 @@ class ProjectManagerAdminPanel extends ProjectManager
 		
 		$this->project_id = $project_id;
 		$projectmanager->initialize($project_id);
-		$projectmanager->getProject();
+		$project = $projectmanager->getProject();
 			
-		$filename = $projectmanager->getProjectTitle()."_".date("Y-m-d").".csv";
+		$filename = $project->title."_".date("Y-m-d").".csv";
 		/*
 		* Generate Header
 		*/
@@ -439,6 +439,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 			$contents .= "\n".$dataset->name."\t".$projectmanager->getSelectedCategoryTitles(maybe_unserialize($dataset->cat_ids));
 
 			foreach ( $projectmanager->getDatasetMeta( $dataset->id ) AS $meta ) {
+				// Remove line breaks
+				$meta->value = str_replace("\r\n", "", stripslashes($meta->value));
 				$contents .= "\t".$meta->value;
 			}
 		}

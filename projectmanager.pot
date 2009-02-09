@@ -230,7 +230,7 @@ msgid "Save Form Fields"
 msgstr ""
 
 #: admin/import.php:17 admin/import.php:52
-msgid "Import"
+msgid "Import Datasets"
 msgstr ""
 
 #: admin/import.php:25
@@ -263,7 +263,7 @@ msgid "Column %d"
 msgstr ""
 
 #: admin/import.php:57 admin/import.php:60
-msgid "Export"
+msgid "Export Datasets"
 msgstr ""
 
 #: admin/index.php:36 admin/show-project.php:84
