@@ -3,11 +3,11 @@
 Plugin Name: ProjectManager
 Description: This Plugin can be used to manage several different types of projects with redundant data. This could be athlet portraits, DVD database, architect projects. You can define different form field types and groups to sort your project entries.
 Plugin URI: http://wordpress.org/extend/plugins/projectmanager/
-Version: 1.7
+Version: 1.9
 Author: Kolja Schleich
 
 
-Copyright 2007-2008  Kolja Schleich  (email : kolja.schleich@googlemail.com)
+Copyright 2008-2008  Kolja Schleich  (email : kolja.schleich@googlemail.com)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 * 
 * @author 	Kolja Schleich
 * @package	ProjectManager
-* @copyright 	Copyright 2009
+* @copyright 	Copyright 2008-2009
 */
 
 class ProjectManagerLoader
@@ -39,7 +39,7 @@ class ProjectManagerLoader
 	 *
 	 * @var string
 	 */
-	 var $version = '1.7';
+	 var $version = '1.9';
 	 
 	 
 	 /**
@@ -47,7 +47,7 @@ class ProjectManagerLoader
 	  *
 	  * @var string
 	  */
-	 var $dbversion = '1.7';
+	 var $dbversion = '1.9';
 	 
 	 
 	 /**
@@ -114,7 +114,7 @@ class ProjectManagerLoader
 		add_action( 'wp_ajax_projectmanager_save_name', 'projectmanager_save_name' );
 		add_action( 'wp_ajax_projectmanager_save_categories', 'projectmanager_save_categories' );
 		add_action( 'wp_ajax_projectmanager_save_form_field_data', 'projectmanager_save_form_field_data' );
-		add_action( 'wp_ajax_projectmanager_show_category_selection', 'projectmanager_show_category_selection' );
+	//	add_action( 'wp_ajax_projectmanager_show_category_selection', 'projectmanager_show_category_selection' );
 		add_action( 'wp_ajax_projectmanager_save_form_field_options', 'projectmanager_save_form_field_options' );
 	}
 	
@@ -227,7 +227,8 @@ class ProjectManagerLoader
 	 */
 	function loadScripts()
 	{
-		$options = get_option( 'projectmanager_widget' );
+		if ( !$options = get_option( 'projectmanager_widget' ) )
+			$options = array();
 		
 		wp_register_script( 'jquery_slideshow', PROJECTMANAGER_URL.'/js/jquery.aslideshow.js', array('jquery'), '0.5.3' );
 		wp_print_scripts( 'jquery_slideshow' );
@@ -302,7 +303,7 @@ class ProjectManagerLoader
 	}
 	function addTinyMCEPlugin( $plugin_array )
 	{
-		$plugin_array['ProjectManager'] = PROJECTMANAGER_URL.'/tinymce/editor_plugin.js';
+		$plugin_array['ProjectManager'] = PROJECTMANAGER_URL.'/admin/tinymce/editor_plugin.js';
 		return $plugin_array;
 	}
 	function registerTinyMCEButton( $buttons )
@@ -340,7 +341,7 @@ class ProjectManagerLoader
 		
 		$create_projects_sql = "CREATE TABLE {$wpdb->projectmanager_projects} (
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT ,
-						`title` varchar( 50 ) NOT NULL default '',
+						`title` varchar( 255 ) NOT NULL default '',
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->projectmanager_projects, $create_projects_sql );
 			
@@ -357,7 +358,7 @@ class ProjectManagerLoader
 				
 		$create_dataset_sql = "CREATE TABLE {$wpdb->projectmanager_dataset} (
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT ,
-						`name` varchar( 150 ) NOT NULL default '' ,
+						`name` varchar( 255 ) NOT NULL default '' ,
 						`image` varchar( 50 ) NOT NULL default '' ,
 						`cat_ids` longtext NOT NULL ,
 						`project_id` int( 11 ) NOT NULL ,

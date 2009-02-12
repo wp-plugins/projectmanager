@@ -1,10 +1,29 @@
 ProjectManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
-V1.8 - February, 2009
+V1.9 - February 12, 2009
+- NEW: show formfield ID on admin page
+- NEW: shortcode supports ordering of datasets including TinyMCE Button
+- BUGFIX: project deletion
+- CHANGED: varchar lengths for project title, dataset name and image
+
+V1.8.2 - February 9, 2009
+- NEW: remove line breaks from form field values upon export
+- BUGFIX: image upload and thumbnail creation
+
+V1.8.1 - February 7, 2009
+- BUGFIX: shortcode display of single dataset
+
+V1.8 - February 7, 2009
 - NEW: dataset ordering selection in frontend
 - NEW: hook one project into profile
 - NEW: set custom menu icon for each project
+- NEW: shortcode to display single dataset
+- NEW: template engine for frontend display
+- CHANGED: new menu icons
+- CHANGED: major restructuring of plugin
+- CHANGED: shortcodes
+- DELETED: Ajax adding of category dropdown in TinyMCE Button. Using text field for direct input of Category ID.
 
 V1.7 - January 23, 2009
 - NEW: sorting of datasets by form fields

@@ -239,7 +239,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 				$this->printMessage();
 			}
 			require_once (dirname (__FILE__) . '/settings-global.php');
-		} elseif(!$include) {
+		} else {
 			echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
 		}
 	}
@@ -425,9 +425,9 @@ class ProjectManagerAdminPanel extends ProjectManager
 		
 		$this->project_id = $project_id;
 		$projectmanager->initialize($project_id);
-		$projectmanager->getProject();
+		$project = $projectmanager->getProject();
 			
-		$filename = $projectmanager->getProjectTitle()."_".date("Y-m-d").".csv";
+		$filename = $project->title."_".date("Y-m-d").".csv";
 		/*
 		* Generate Header
 		*/
@@ -439,6 +439,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 			$contents .= "\n".$dataset->name."\t".$projectmanager->getSelectedCategoryTitles(maybe_unserialize($dataset->cat_ids));
 
 			foreach ( $projectmanager->getDatasetMeta( $dataset->id ) AS $meta ) {
+				// Remove line breaks
+				$meta->value = str_replace("\r\n", "", stripslashes($meta->value));
 				$contents .= "\t".$meta->value;
 			}
 		}
@@ -468,6 +470,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 			$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_dataset} (name, cat_ids, project_id, user_id) VALUES ('%s', '%s', '%d', '%d')", $name, maybe_serialize($cat_ids), $project_id, $current_user->ID ) );
 			$dataset_id = $wpdb->insert_id;
 				
+			
 			if ( $dataset_meta ) {
 				foreach ( $dataset_meta AS $meta_id => $meta_value ) {
 					if ( is_array($meta_value) ) {
@@ -525,7 +528,6 @@ class ProjectManagerAdminPanel extends ProjectManager
 			// Change Dataset owner if supplied
 			if ( $owner )
 				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `user_id` = '%d' WHERE `id` = '%d'", $owner, $dataset_id ) );
-			
 			
 			if ( $dataset_meta ) {
 				foreach ( $dataset_meta AS $meta_id => $meta_value ) {
@@ -719,7 +721,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 				/*
 				* Populate default values for every dataset
 				*/
-				if ( $datasets = $this->getDatasets() ) {
+				if ( $datasets = $wpdb->get_results( "SELECT `id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$project_id}" ) ) {
 					foreach ( $datasets AS $dataset ) {
 						$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ( '%d', '%d', '' );", $form_id, $dataset->id ) );
 					}

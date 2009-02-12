@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * Core class for the WordPress plugin ProjectManager
+ * 
+ * @author 	Kolja Schleich
+ * @package	ProjectManager
+ * @copyright 	Copyright 2008-2009
+*/
 class ProjectManager extends ProjectManagerLoader
 {
 	/**
@@ -627,21 +633,25 @@ class ProjectManager extends ProjectManagerLoader
 	/**
 	 * gets all datasets for a project
 	 *
-	 * @param int $dataset_id
-	 * @param int $project_id
-	 * @param bool $limit
-	 * @param string $order
+	 * @param boolean $limit
+	 * @param string orderby field to orderby
+	 * @param string $order ASC|DESC
+	 * @param int $formfield_id FormField ID to order by
 	 * @return array
 	 */
-	function getDatasets( $limit = false )
+	function getDatasets( $limit = false, $orderby = false, $order = false, $formfield_id = false )
 	{
 		global $wpdb;
 		$options = get_option('projectmanager');
 		
 		// Set ordering
-		$formfield_id = $this->setDatasetOrder();
+		if ( !$formfield_id )
+			$formfield_id = $this->setDatasetOrder();
 
-		$sql_order = ( $this->orderby != 'name' && $this->orderby != 'id' ) ? 'name '.$this->order : $this->getDatasetOrder();
+		if ( $orderby && $orderby != 'formfields' )
+			$sql_order = $orderby." ".$order;
+		else
+			$sql_order = ( $this->orderby != 'name' && $this->orderby != 'id' ) ? 'name '.$this->order : $this->getDatasetOrder();
 		
 		if ( $limit ) $offset = ( $this->getCurrentPage() - 1 ) * $this->per_page;
 
@@ -828,7 +838,7 @@ class ProjectManager extends ProjectManagerLoader
 		if ( $form_fields = $this->getFormFields() ) {
 			foreach ( $form_fields AS $form_field ) {
 				if ( 1 == $form_field->show_on_startpage )
-				$out .= "\n\t<th scop='col'>".$form_field->label."</th>";
+				$out .= "\n\t<th scope='col'>".$form_field->label."</th>";
 			}
 		}
 		return $out;
@@ -876,13 +886,14 @@ class ProjectManager extends ProjectManagerLoader
 					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span>";
 				} elseif ( 3 == $meta->type && $meta_value != '')
 					$meta_value = "<a href='mailto:".$meta_value."' class='projectmanager_email'><span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span></a>";
-				elseif ( 4 == $meta->type )
+				elseif ( 4 == $meta->type ) {
+					$meta_value = ( $meta_value == '0000-00-00' ) ? '' : $meta_value;
 					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".mysql2date(get_option('date_format'), $meta_value )."</span>";
-				elseif ( 5 == $meta->type && $meta_value != '')
+				} elseif ( 5 == $meta->type && $meta_value != '')
 					$meta_value = "<a class='projectmanager_url' href='http://".$meta_value."' target='_blank' title='".$meta_value."'><span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span></a>";
 					
 				if ( 1 == $meta->show_on_startpage || $show_all ) {
-					if ( $meta->value != '' ) {
+					if ( $meta_value != '' ) {
 						if ( 'dl' == $output ) {
 							$out .= "\n\t<dt>".$meta->label."</dt><dd>".$meta_value."</dd>";
 						} elseif ( 'li' == $output ) {
@@ -894,7 +905,10 @@ class ProjectManager extends ProjectManagerLoader
 							$out .= "\n\t</".$output.">";
 						}
 					} elseif ( 'td' == $output ) {
-						$out .= "\n\t<".$output.">&#160;</".$output.">";
+						$out .= "\n\t<".$output.">";
+						$out .= $this->getThickbox( $dataset->id, $meta->form_field_id, $meta->type, maybe_unserialize($meta->value), $dataset->user_id );
+						$this->getThickboxLink($dataset->id, $meta->form_field_id, $meta->type, $meta->label." ".__('of','projectmanager')." ".$dataset->name, $dataset->user_id);
+						$out .= "</".$output.">";
 					}
 				}
 			}

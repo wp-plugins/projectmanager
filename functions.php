@@ -19,39 +19,6 @@ function projectmanager_save_form_field_options() {
 
 
 /**
- * SACK response for showing category selection in TinyMCE button
- *
- * @since 1.2
- */
-function projectmanager_show_category_selection() {
-	$options = get_option('projectmanager');
-	$el_id = $_POST['el_id'];
-	$project_id = intval($_POST['project_id']);
-	
-	if ( -1 != $options[$project_id]['category'] ) {	
-		$cat_selection = wp_dropdown_categories( array( "hide_empty" => 0, "name" => $el_id, "orderby" => "name", "hierarchical" => true, "child_of" => $options[$project_id]['category'], "show_option_none" => __("None") ));
-	
-		$cat_selection = str_replace("&nbsp;", "&#160;", $cat_selection);
-		$cat_selection =  str_replace("\n", '', $cat_selection);
-		$cat_selection = addslashes_gpc($cat_selection);
-		
-		die( "function displayCategorySelection() {
-			var projectId = ".$project_id.";
-			catTitle = '".__("Category", "projectmanager")."';
-			catSelection = '".$cat_selection."';
-			if ( projectId != 0 ) {
-				out = \"<td><label for='".$el_id."'>\" + catTitle + \"</label></td>\";
-				out += \"<td>\" + catSelection + \"</td>\";
-				document.getElementById('".$el_id."').innerHTML = out;
-			}
-		}
-		displayCategorySelection();
-		");
-	}
-}
-
-
-/**
  * SACK response function for saving dataset name
  *
  * @since 1.2
