@@ -223,7 +223,7 @@ class ProjectManagerShortcodes extends ProjectManager
 			$datasets = $title = $pagination = $project = false;
 		} else {
 			$orderby = $order = $formfield_id = false;
-			if ( $order ) {
+			if ( $order && $order != '' ) {
 				$tmp = explode("-",$order);
 				$orderby = $tmp[0];
 				$order = $tmp[1];
