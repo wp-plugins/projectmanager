@@ -209,6 +209,7 @@ class ProjectManagerShortcodes extends ProjectManager
 			'id' => 0,
 			'template' => 'table',
 			'cat_id' => false,
+			'orderby' => false,
 			'order' => false
 		), $atts ));
 		$projectmanager->initialize($id);
@@ -222,12 +223,11 @@ class ProjectManagerShortcodes extends ProjectManager
 		if ( isset( $_GET['show'] ) ) {
 			$datasets = $title = $pagination = $project = false;
 		} else {
-			$orderby = $order = $formfield_id = false;
-			if ( $order && $order != '' ) {
-				$tmp = explode("-",$order);
+			$orderby = $formfield_id = false;
+			if ( $order ) {
+				$tmp = explode("-",$orderby);
 				$orderby = $tmp[0];
-				$order = $tmp[1];
-				$formfield_id = $tmp[2];
+				$formfield_id = $tmp[1];
 			}
 			
 			if ( $projectmanager->isSearch() )
