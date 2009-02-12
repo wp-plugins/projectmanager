@@ -76,16 +76,36 @@ $options = get_option('projectmanager');
 		</td>
 	</tr>
 	<tr>
-		<td nowrap="nowrap" valign="top"><label><?php _e( 'Show as', 'projectmanager' ) ?></label></td>
+		<td nowrap="nowrap" valign="top"><label for="template"><?php _e( 'Template', 'projectmanager' ) ?></label></td>
 		<td>
 		<input type="radio" name="project_template" id="project_template_table" value="table" checked="ckecked" /><label for="project_template_table"><?php _e( 'Table', 'projectmanager' ) ?></label><br />
 		<input type="radio" name="project_template" id="project_template_gallery" value="gallery" /><label for="project_template_gallery"><?php _e( 'Gallery', 'projectmanager' ) ?></label><br />
 		</td>
 	</tr>
 	<tr>
-		<td nowrap="nowrap" valign="top"><label><?php _e( 'Category', 'projectmanager' ) ?></label></td>
+		<td nowrap="nowrap" valign="top"><label for="cat_id"><?php _e( 'Category', 'projectmanager' ) ?></label></td>
 		<td><?php wp_dropdown_categories(array( 'hide_empty' => 0, 'name' => 'cat_id', 'orderby' => 'name', 'hierarchical' => true, 'show_option_all' => __('Display all Datasets', 'projectmanager'))); ?></td>
 	</tr>
+	<tr>
+		<td nowrap="nowrap" valign="top"><label for="orderby"><?php _e( 'Order By', 'projectmanager' ) ?></label></td>
+		<td>
+			<select size="1" name="orderby" id="orderby">
+				<option value=""><?php _e( 'Default', 'projectmanager') ?></option>
+				<option value="name"><?php _e('Name', 'projectmanager') ?></option>
+				<option value="id"><?php _e('ID', 'projectmanager') ?></option>
+				<option value="formfields"><?php _e( 'Formfields', 'projectmanager') ?></option>
+			</select>
+			<input type="text" size="3" name="formfield_id" id="formfield_id" />
+		</td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" valign="top"><label for="order"><?php _e( 'Order', 'projectmanager' ) ?></label></td>
+		<td>
+			<select size="1" name="order" id="order">
+				<option value=""><?php _e( 'Default', 'projectmanager') ?></option>
+				<option value="asc"><?php _e('Ascending', 'projectmanager') ?></option>
+				<option value="desc"><?php _e('Descending', 'projectmanager') ?></option>
+			</select>
 	</table>
 	</div>
 	

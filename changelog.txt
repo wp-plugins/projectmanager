@@ -1,9 +1,11 @@
 ProjectManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
-V1.9 - February , 2009
+V1.9 - February 12, 2009
 - NEW: show formfield ID on admin page
-- NEW: shortcode supports ordering of datasets
+- NEW: shortcode supports ordering of datasets including TinyMCE Button
+- BUGFIX: project deletion
+- CHANGED: varchar lengths for project title, dataset name and image
 
 V1.8.2 - February 9, 2009
 - NEW: remove line breaks from form field values upon export

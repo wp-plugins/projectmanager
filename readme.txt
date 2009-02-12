@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: datamanager, CMS, Content Management System
 Requires at least: 2.7
 Tested up to: 2.7
-Stable tag: 1.8.2
+Stable tag: 1.9
 
 This plugin can be used to manage any number of projects with recurrent datasets (e.g. portrait system, dvd collection)
 
@@ -86,23 +86,29 @@ You can either copy and edit the default templates or also create your own templ
 
 `yourthemedirectory/projectmanager/gallery-custom.php`
 
+
 you can use this template to display with the following code
 
 `[project id=x template=**gallery-custom** cat_id=y]`
 
 
 = Hook Project into user profile =
+
 It is possible to hook one project into the user profile to use it as extended profile. Thus it could be used to implement a player registration in combination with my [LeagueManager Plugin](http://wordpress.org/extend/plugins/leaguemanager/). Users need the capability `project_user_profile` to use this feature. By default only Administrators and Editors have this, but you can use [Role Manager](http://www.im-web-gefunden.de/wordpress-plugins/role-manager/) for finetuning.
 
 
 = Access control =
+
 ProjectManager has three different capabilities: 
 
 *projectmanager_admin
 *manage_projects
-*project_user_profile*
+*project_user_profile
 
 Users with the capability *projectmanager_admin* can edit settings, edit formfields and import datasets from CSV files. By default only Administrators have this privilege. Users with the capability *manage_projects* can add and edit datasets and those with the capability *project_user_profile* can use the profile hook feature. **Important**: The capabilities are not additive! Thus a user with capability *projectmanager_admin*, but not *manage_projects* will not be able to add and edit datasets.
+
+== ChangeLog ==
+See [changelog.txt](http://wordpress.org/extend/plugins/projectmanager/trunk/changelog.txt).
 
 == Credits ==
 The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons of http://www.pinvoke.com/.

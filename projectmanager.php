@@ -3,7 +3,7 @@
 Plugin Name: ProjectManager
 Description: This Plugin can be used to manage several different types of projects with redundant data. This could be athlet portraits, DVD database, architect projects. You can define different form field types and groups to sort your project entries.
 Plugin URI: http://wordpress.org/extend/plugins/projectmanager/
-Version: 1.8.2
+Version: 1.9
 Author: Kolja Schleich
 
 
@@ -39,7 +39,7 @@ class ProjectManagerLoader
 	 *
 	 * @var string
 	 */
-	 var $version = '1.8.2';
+	 var $version = '1.9';
 	 
 	 
 	 /**
@@ -47,7 +47,7 @@ class ProjectManagerLoader
 	  *
 	  * @var string
 	  */
-	 var $dbversion = '1.8';
+	 var $dbversion = '1.9';
 	 
 	 
 	 /**
@@ -341,7 +341,7 @@ class ProjectManagerLoader
 		
 		$create_projects_sql = "CREATE TABLE {$wpdb->projectmanager_projects} (
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT ,
-						`title` varchar( 50 ) NOT NULL default '',
+						`title` varchar( 255 ) NOT NULL default '',
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->projectmanager_projects, $create_projects_sql );
 			
@@ -358,7 +358,7 @@ class ProjectManagerLoader
 				
 		$create_dataset_sql = "CREATE TABLE {$wpdb->projectmanager_dataset} (
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT ,
-						`name` varchar( 150 ) NOT NULL default '' ,
+						`name` varchar( 255 ) NOT NULL default '' ,
 						`image` varchar( 50 ) NOT NULL default '' ,
 						`cat_ids` longtext NOT NULL ,
 						`project_id` int( 11 ) NOT NULL ,

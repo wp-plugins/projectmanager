@@ -33,12 +33,27 @@ function ProjectManagerInsertLink() {
 		var projectId = document.getElementById('projects').value;
 		var template = getCheckedValue(document.getElementsByName('project_template'));
 		var cat = document.getElementById('cat_id').value;
+		var orderby = document.getElementById('orderby').value;
+		var formfield_id = document.getElementById('formfield_id').value;
+		var order = document.getElementById('order').value;
+		
+		if ( orderby != '' ) {
+			if ( orderby == 'formfields' && formfield_id != '' )
+				orderby = " orderby=" + orderby + "-" + formfield_id;
+			else
+				orderby = " orderby=" + orderby;
+		}
+		if ( order != '' ) {	
+			order = " order=" + order;
+		}
 		
 		if ( cat <= 0 )
 			cat = '';
+		else
+			cat = " cat_id=" + cat;
 	
 		if (projectId != 0)
-			tagtext = "[project id=" + projectId + " template=" + template + " cat_id=" + cat + "]";
+			tagtext = "[project id=" + projectId + " template=" + template + cat + orderby + order +"]";
 		else
 			tinyMCEPopup.close();
 	}

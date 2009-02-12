@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
 "POT-Creation-Date: 2009-02-05 22:08+0000\n"
-"PO-Revision-Date: 2009-02-09 20:26+0100\n"
+"PO-Revision-Date: 2009-02-12 21:39+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -758,4 +758,7 @@ msgstr "Alle Datensätze anzeigen"
 
 msgid "Child categories of this category are used for grouping of datasets"
 msgstr "Kind Kategorien dieser Kategorie werden zur Gruppierung der Datensätze verwendet"
+
+msgid "Default"
+msgstr "Standard"
 
