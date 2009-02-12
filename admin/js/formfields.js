@@ -4,6 +4,7 @@ ProjectManager.addFormField = function() {
   new_element_id = "form_id_"+new_element_number;
   
   new_element_contents = "";
+  new_element_contents = "<td>&#160;</td>";
   new_element_contents += "<td><input type='text' name='new_form_name["+new_element_number+"]' value='' /></td>\n\r";
   new_element_contents += "<td id='form_field_options_box"+new_element_number+"'><select onChange='ProjectManager.toggleOptions("+new_element_number+", this.value, \"" + ProjectManagerAjaxL10n.Save + "\", \"" + ProjectManagerAjaxL10n.Cancel + "\", \"" + ProjectManagerAjaxL10n.Options + "\", \"\");' name='new_form_type["+new_element_number+"]' size='1'>"+PRJCTMNGR_HTML_FORM_FIELD_TYPES+"</select></td>\n\r";
   new_element_contents += "<td><input type='checkbox' name='new_show_on_startpage["+new_element_number+"]' value='1' /></td>\n\r";

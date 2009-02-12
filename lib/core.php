@@ -633,21 +633,25 @@ class ProjectManager extends ProjectManagerLoader
 	/**
 	 * gets all datasets for a project
 	 *
-	 * @param int $dataset_id
-	 * @param int $project_id
-	 * @param bool $limit
-	 * @param string $order
+	 * @param boolean $limit
+	 * @param string orderby field to orderby
+	 * @param string $order ASC|DESC
+	 * @param int $formfield_id FormField ID to order by
 	 * @return array
 	 */
-	function getDatasets( $limit = false )
+	function getDatasets( $limit = false, $orderby = false, $order = false, $formfield_id = false )
 	{
 		global $wpdb;
 		$options = get_option('projectmanager');
 		
 		// Set ordering
-		$formfield_id = $this->setDatasetOrder();
+		if ( !$formfield_id )
+			$formfield_id = $this->setDatasetOrder();
 
-		$sql_order = ( $this->orderby != 'name' && $this->orderby != 'id' ) ? 'name '.$this->order : $this->getDatasetOrder();
+		if ( $orderby && $orderby != 'formfields' )
+			$sql_order = $orderby." ".$order;
+		else
+			$sql_order = ( $this->orderby != 'name' && $this->orderby != 'id' ) ? 'name '.$this->order : $this->getDatasetOrder();
 		
 		if ( $limit ) $offset = ( $this->getCurrentPage() - 1 ) * $this->per_page;
 

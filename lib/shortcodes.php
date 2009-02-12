@@ -208,7 +208,8 @@ class ProjectManagerShortcodes extends ProjectManager
 		extract(shortcode_atts(array(
 			'id' => 0,
 			'template' => 'table',
-			'cat_id' => false
+			'cat_id' => false,
+			'order' => false
 		), $atts ));
 		$projectmanager->initialize($id);
 		
@@ -221,10 +222,18 @@ class ProjectManagerShortcodes extends ProjectManager
 		if ( isset( $_GET['show'] ) ) {
 			$datasets = $title = $pagination = $project = false;
 		} else {
+			$orderby = $order = $formfield_id = false;
+			if ( $order ) {
+				$tmp = explode("-",$order);
+				$orderby = $tmp[0];
+				$order = $tmp[1];
+				$formfield_id = $tmp[2];
+			}
+			
 			if ( $projectmanager->isSearch() )
 				$datasets = $projectmanager->getSearchResults();
 			else
-				$datasets = $projectmanager->getDatasets( true );
+				$datasets = $projectmanager->getDatasets( true, $orderby, $order, $formfield_id );
 			
 			$title = '';
 			if ( $projectmanager->isSearch() ) {
