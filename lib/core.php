@@ -529,7 +529,7 @@ class ProjectManager extends ProjectManagerLoader
 	{
 		global $wpdb;
 	
-		$sql = "SELECT `label`, `type`, `order`, `order_by`, `show_on_startpage`, `id` FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = {$this->project_id} ORDER BY `order` ASC;";
+		$sql = "SELECT `label`, `type`, `order`, `order_by`, `show_on_startpage`, `show_in_profile`, `id` FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = {$this->project_id} ORDER BY `order` ASC;";
 		return $wpdb->get_results( $sql );
 	}
 	

@@ -8,7 +8,7 @@ function projectmanager_upgrade() {
 	global $wpdb, $projectmanager;
 	
 	$options = get_option( 'projectmanager' );
-	$installed = isset($options['dbversion']) ? $options['dbversion'] : '1.7';
+	$installed = $options['dbversion'];
 
 	echo __('Upgrade database structure...', 'projectmanager');
 	$wpdb->show_errors();
@@ -79,6 +79,11 @@ function projectmanager_upgrade() {
 		$wpdb->query( "ALTER TABLE {$wpdb->projectmanager_projects} CHANGE `title` `title` varchar( 255 ) NOT NULL default ''" );
 		$wpdb->query( "ALTER TABLE {$wpdb->projectmanager_dataset} CHANGE `name` `name` varchar( 255 ) NOT NULL default '', CHANGE `image` `image` varchar( 50 ) NOT NULL default ''" );
 	}
+	
+	if (version_compare($installed, '2.0', '<')) {
+		$wpdb->query( "ALTER TABLE {$wpdb->projectmanager_projectmeta} ADD `show_in_profile` tinyint( 1 ) NOT NULL default '0' AFTER `show_on_startpage`" );
+	}
+	
 	
 	// Update dbversion
 	$options['dbversion'] = PROJECTMANAGER_DBVERSION;

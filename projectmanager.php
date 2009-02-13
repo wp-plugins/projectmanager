@@ -3,7 +3,7 @@
 Plugin Name: ProjectManager
 Description: This Plugin can be used to manage several different types of projects with redundant data. This could be athlet portraits, DVD database, architect projects. You can define different form field types and groups to sort your project entries.
 Plugin URI: http://wordpress.org/extend/plugins/projectmanager/
-Version: 1.9
+Version: 2.0-testing
 Author: Kolja Schleich
 
 
@@ -39,7 +39,7 @@ class ProjectManagerLoader
 	 *
 	 * @var string
 	 */
-	 var $version = '1.9';
+	 var $version = '2.0';
 	 
 	 
 	 /**
@@ -47,7 +47,7 @@ class ProjectManagerLoader
 	  *
 	  * @var string
 	  */
-	 var $dbversion = '1.9';
+	 var $dbversion = '2.0';
 	 
 	 
 	 /**
@@ -114,7 +114,6 @@ class ProjectManagerLoader
 		add_action( 'wp_ajax_projectmanager_save_name', 'projectmanager_save_name' );
 		add_action( 'wp_ajax_projectmanager_save_categories', 'projectmanager_save_categories' );
 		add_action( 'wp_ajax_projectmanager_save_form_field_data', 'projectmanager_save_form_field_data' );
-	//	add_action( 'wp_ajax_projectmanager_show_category_selection', 'projectmanager_show_category_selection' );
 		add_action( 'wp_ajax_projectmanager_save_form_field_options', 'projectmanager_save_form_field_options' );
 	}
 	
@@ -351,7 +350,8 @@ class ProjectManagerLoader
 						`label` varchar( 100 ) NOT NULL default '' ,
 						`order` int( 10 ) NOT NULL ,
 						`order_by` tinyint( 1 ) NOT NULL default '0',
-						`show_on_startpage` tinyint( 1 ) NOT NULL ,
+						`show_on_startpage` tinyint( 1 ) NOT NULL,
+						`show_in_profile` tinyint( 1 ) NOT NULL,
 						`project_id` int( 11 ) NOT NULL ,
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->projectmanager_projectmeta, $create_projectmeta_sql );

@@ -8,6 +8,7 @@ ProjectManager.addFormField = function() {
   new_element_contents += "<td><input type='text' name='new_form_name["+new_element_number+"]' value='' /></td>\n\r";
   new_element_contents += "<td id='form_field_options_box"+new_element_number+"'><select onChange='ProjectManager.toggleOptions("+new_element_number+", this.value, \"" + ProjectManagerAjaxL10n.Save + "\", \"" + ProjectManagerAjaxL10n.Cancel + "\", \"" + ProjectManagerAjaxL10n.Options + "\", \"\");' name='new_form_type["+new_element_number+"]' size='1'>"+PRJCTMNGR_HTML_FORM_FIELD_TYPES+"</select></td>\n\r";
   new_element_contents += "<td><input type='checkbox' name='new_show_on_startpage["+new_element_number+"]' value='1' /></td>\n\r";
+  new_element_contents += "<td><input type='checkbox' name='new_show_in_profile["+new_element_number+"]' value='1' checked='checked' /></td>\n\r";
   new_element_contents += "<td><input type='text' size='2' name='new_form_order["+new_element_number+"]' value='' /></td>\n\r";
   new_element_contents += "<td><input type='checkbox' name='new_order_by["+new_element_number+"]' value='1' /></td>\n\r";
   new_element_contents += "<td  style='text-align: center; width: 12px; vertical-align: middle;'><a class='image_link' href='#' onclick='return ProjectManager.removeNewFormField(\""+new_element_id+"\");'><img src='../wp-content/plugins/projectmanager/admin/icons/trash.gif' alt='" + ProjectManagerAjaxL10n.Delete + "' title='" + ProjectManagerAjaxL10n.Delete + "' /></a></td>\n\r";

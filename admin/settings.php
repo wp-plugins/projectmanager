@@ -15,6 +15,7 @@ if ( isset($_POST['saveSettings']) ) {
 	$options['project_options'][$project_id]['category'] = $_POST['category'];
 	$options['project_options'][$project_id]['dataset_orderby'] = $_POST['dataset_orderby'];
 	$options['project_options'][$project_id]['show_image'] = isset( $_POST['show_image']) ? 1 : 0;
+	$options['project_options'][$project_id]['show_image_profile'] = ( isset($_POST['show_image_profile']) && isset($_POST['show_image']) ) ? 1 : 0;
 	$options['project_options'][$project_id]['use_widget'] = isset( $_POST['use_widget'] ) ? 1 : 0;
 	$options['project_options'][$project_id]['thumb_size'] = array( "width" => $_POST['thumb_width'], "height" => $_POST['thumb_height'] );
      	$options['project_options'][$project_id]['medium_size'] = array( "width" => $_POST['medium_width'], "height" => $_POST['medium_height'] );
@@ -82,7 +83,7 @@ if ( 1 == $settings['show_image'] && !wp_mkdir_p( $projectmanager->getImagePath(
 		<h3><?php _e( 'Images', 'projectmanager' ) ?></h3>
 		<table class="form-table">
 		<tr valign="top">
-			<th scope="row"><label for="show_image"><?php _e( 'Show Image', 'projectmanager' ) ?></label></th><td><input type="checkbox" name="show_image" id="show_image"<?php if ( 1 == $settings['show_image'] ) echo ' checked="checked"' ?> value="1"></td>
+			<th scope="row"><label for="show_image"><?php _e( 'Show Image', 'projectmanager' ) ?></label></th><td><input type="checkbox" name="show_image" id="show_image"<?php if ( 1 == $settings['show_image'] ) echo ' checked="checked"' ?> value="1">&#160;<input type="checkbox" name="show_image_profile" id="show_image_profile"<?php if ( 1 == $settings['show_image_profile'] ) echo ' checked="checked"' ?> value="1">&#160;<span class="setting-description"><?php _e( 'The second checkbox controls image display in user profile', 'projectmanager') ?></span></td>
 		</tr>
 		<tr valign="top">
 			<th scope="row"><label for="thumb_size"><?php _e( 'Thumbnail size', 'projectmanager' ) ?></label></th><td><label for="thumb_width"><?php _e( 'Width' ) ?>&#160;</label><input type="text" name="thumb_width" id="thumb_width" size="3" value="<?php echo $settings['thumb_size']['width'] ?>" />  <label for="thumb_height"><?php _e( 'Height' ) ?>&#160;</label><input type="text" name="thumb_height" id="thumb_height" size="3" value="<?php echo $settings['thumb_size']['height'] ?>" /></td>
