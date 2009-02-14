@@ -407,7 +407,7 @@ class ProjectManagerLoader
 	 */
 	function uninstall()
 	{
-		global $wpdb;
+		global $wpdb, $projectmanager;
 
 		$wpdb->query( "DROP TABLE {$wpdb->projectmanager_projects}" );
 		$wpdb->query( "DROP TABLE {$wpdb->projectmanager_projectmeta}" );
@@ -416,6 +416,17 @@ class ProjectManagerLoader
 
 		delete_option( 'projectmanager' );
 		delete_option( 'projectmanager_widget' );
+		
+		// Delete Images
+		$dir = $projectmanager->getImagePath();
+		if ( $handle = opendir($dir) ) {
+			while (false !== ($file = readdir($handle))) {
+				if ($file != "." && $file != "..")
+					@unlink($file);
+			}
+			closedir($handle);
+		}
+		@rmdir($dir);
 	}
 	
 	

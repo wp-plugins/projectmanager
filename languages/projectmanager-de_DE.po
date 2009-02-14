@@ -767,4 +767,3 @@ msgstr "Zeige im Profil"
 
 msgid "The second checkbox controls image display in user profile"
 msgstr "Die zweite Checkbox kontrolliert die Bild-Anzeige im Benutzerprofil"
-
