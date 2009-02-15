@@ -1,6 +1,9 @@
 ProjectManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
+V1.9.1 - February , 2009
+- NEW: delete image folder upon plugin uninstallation
+
 V1.9 - February 12, 2009
 - NEW: show formfield ID on admin page
 - NEW: shortcode supports ordering of datasets including TinyMCE Button
