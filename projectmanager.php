@@ -83,10 +83,6 @@ class ProjectManagerLoader
 		
 		add_action( 'show_user_profile', array(&$this->adminPanel, 'profileHook') );
 		add_action( 'profile_update', array(&$this->adminPanel, 'updateProfile') );
-		
-		// Export datasets
-		if ( isset($_POST['projectmanager_export']) )
-			$this->adminPanel->exportDatasets($_POST['project_id']);
 	}
 	function ProjectManagerLoader()
 	{
@@ -448,4 +444,9 @@ class ProjectManagerLoader
 // Run the Plugin
 global $projectmanager_loader;
 $projectmanager_loader = new ProjectManagerLoader();
+
+
+// Export datasets
+if ( isset($_POST['projectmanager_export']) )
+	$projectmanager_loader->adminPanel->exportDatasets($_POST['project_id']);
 ?>

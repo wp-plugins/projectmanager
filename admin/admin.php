@@ -392,7 +392,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 						foreach ( $cols AS $col => $form_field_id ) {
 							$meta[$form_field_id] = $line[$col];
 						}
-						if ( $name != '' ) {
+						
+						if ( $line && !empty($name) ) {
 							$this->addDataset($project_id, $name, array(), $meta);
 							$i++;
 						}
@@ -431,7 +432,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 		/*
 		* Generate Header
 		*/
-		$contents = "Name\tCategories";
+		$contents = __('Name','projectmanager')."\t".__('Categories','projectmanager');
 		foreach ( $projectmanager->getFormFields() AS $form_field )
 			$contents .= "\t".$form_field->label;
 		
@@ -625,6 +626,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 				$options = $options['project_options'][$this->project_id];
 				
 				if ( file_exists($new_file) && !$overwrite ) {
+					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `image` = '%s' WHERE id = '%d'", basename($file['name']), $dataset_id ) );
+			
 					$this->setMessage( __('File exists and is not uploaded. Set the overwrite option if you want to replace it.','projectmanager'), true );
 				} else {
 					if ( move_uploaded_file($file['tmp_name'], $new_file) ) {
