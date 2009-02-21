@@ -60,7 +60,7 @@ if ( 1 == $settings['show_image'] && !wp_mkdir_p( $projectmanager->getImagePath(
 			<td>
 				<select size="1" name="dataset_orderby" id="dataset_orderby"><?php $this->datasetOrderbyOptions($settings['dataset_orderby']) ?></select>
 				<select size="1" name="dataset_order" id="dataset_order"><?php $this->datasetOrderOptions($settings['dataset_order']) ?></select>
-				&#160;<span class="setting-description"><?php _e('To order datasets manually leave datasets per page empty for the time of ordering', 'projectmanager') ?></span>
+				&#160;<span class="setting-description"><?php _e('To order datasets manually leave datasets per page empty for the time of ordering. Only works with Firefox.', 'projectmanager') ?></span>
 			</td>
 			
 		</tr>

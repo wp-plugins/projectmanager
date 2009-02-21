@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
 "POT-Creation-Date: 2009-02-05 22:08+0000\n"
-"PO-Revision-Date: 2009-02-21 15:58+0100\n"
+"PO-Revision-Date: 2009-02-21 17:41+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -780,6 +780,6 @@ msgstr "Achtung: Du musst die Formularfelder speichern, um die Optionen in der D
 msgid "Leave empty for no limit"
 msgstr "Lasse leer für kein Limit"
 
-msgid "To order datasets manually leave datasets per page empty for the time of ordering"
-msgstr "Um Datensätze manuell so ordnen, lasse Datensätze pro Seite leer währenddessen"
+msgid "To order datasets manually leave datasets per page empty for the time of ordering. Only works with Firefox."
+msgstr "Um Datensätze manuell so ordnen, lasse Datensätze pro Seite leer währenddessen. Funktioniert nur mit Firefox."
 

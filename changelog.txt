@@ -1,8 +1,8 @@
 ProjectManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
-V2.0 - February , 2009
-- NEW: manual drag&drop sorting of datasets (ajax saving, but not updating tr class)
+V2.0 - February 21, 2009
+- NEW: manual drag & drop sorting of datasets (ajax saving, but not updating tr class)
 - NEW: set order of datasets in option
 - NEW: more shortcode atts for project display
 - NEW: delete image folder upon plugin uninstallation

@@ -4,7 +4,7 @@ ProjectManager.saveOrder = function(order) {
 	ajax.method = 'POST';
 	ajax.setVar( "action", "projectmanager_save_dataset_order" );
 	ajax.setVar( "order", order );
-	ajax.onError = function() { alert('Ajax error on saving group'); };
+	ajax.onError = function() { alert('Ajax error on saving dataset order'); };
 	ajax.onCompletion = function() { return true; };
 	ajax.runAJAX();
 }

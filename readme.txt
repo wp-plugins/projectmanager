@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: datamanager, CMS, Content Management System
 Requires at least: 2.7
 Tested up to: 2.7
-Stable tag: 1.9
+Stable tag: 2.0
 
 This plugin can be used to manage any number of projects with recurrent datasets (e.g. portrait system, dvd collection)
 
@@ -25,7 +25,7 @@ This plugin is a datamanager for any recurrent datasets. It can be used to manag
 * dataset sorting by any form field
 * import and export of datasets from/to CSV file
 * hook one project into user profile
-* manual drag&drop sorting of datasets
+* manual drag & drop sorting of datasets
 
 See [Usage](http://wordpress.org/extend/plugins/projectmanager/other_notes/) for details on shortcodes and the template system.
 
