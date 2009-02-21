@@ -5,7 +5,7 @@
 		<td><input type="text" name="name" id="name" value="<?php echo $name ?>" size="45" /></td>
 	</tr>
 	<?php endif; ?>
-	<?php if ( 1 == $options['show_image'] ) : ?>
+	<?php if ( 1 == $options['show_image'] && ( !$is_profile_page || ($is_profile_page && $options['show_image_profile']) ) ) : ?>
 	<tr valign="top">
 		<th scope="row"><label for="projectmanager_image"><?php _e( 'Image', 'projectmanager' ) ?></label></th>
 		<td>
@@ -23,6 +23,8 @@
 	<?php endif; ?>
 	<?php if ( $form_fields = $projectmanager->getFormFields() ) : ?>
 		<?php foreach ( $form_fields AS $form_field ) : ?>
+		
+		<?php if ( !$is_profile_page || ( $is_profile_page && $form_field->show_in_profile == 1 ) ) : ?>
 		<tr valign="top">
 			<th scope="row"><label for="form_field_<?php echo $form_field->id ?>"><?php echo $form_field->label ?></label></th>
 			<td>
@@ -48,8 +50,8 @@
 					<?php endforeach; ?>
 				</select>
 				<select size="1" name="form_field[<?php echo $form_field->id ?>][year]">
-					<option value="">Jahr</option>
-					<option value="">&#160;</option>
+					<option value="0000">Jahr</option>
+					<option value="0000">&#160;</option>
 					<?php for ( $year = date('Y')-50; $year <= date('Y')+10; $year++ ) : ?>
 						<option value="<?php echo $year ?>"<?php if ( $year == substr($meta_data[$form_field->id], 0, 4) ) echo ' selected="selected"' ?>><?php echo $year ?></option>
 					<?php endfor; ?>
@@ -60,6 +62,8 @@
 				<?php endif; ?>
 			</td>
 		</tr>
+		<?php endif; ?>
+		
 		<?php endforeach; ?>
 	<?php endif; ?>
 	<?php if ( -1 != $options['category'] && current_user_can('projectmanager_admin') ) : ?>

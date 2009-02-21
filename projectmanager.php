@@ -3,11 +3,11 @@
 Plugin Name: ProjectManager
 Description: This Plugin can be used to manage several different types of projects with redundant data. This could be athlet portraits, DVD database, architect projects. You can define different form field types and groups to sort your project entries.
 Plugin URI: http://wordpress.org/extend/plugins/projectmanager/
-Version: 1.7
+Version: 2.0
 Author: Kolja Schleich
 
 
-Copyright 2007-2008  Kolja Schleich  (email : kolja.schleich@googlemail.com)
+Copyright 2008-2008  Kolja Schleich  (email : kolja.schleich@googlemail.com)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 * 
 * @author 	Kolja Schleich
 * @package	ProjectManager
-* @copyright 	Copyright 2009
+* @copyright 	Copyright 2008-2009
 */
 
 class ProjectManagerLoader
@@ -39,7 +39,7 @@ class ProjectManagerLoader
 	 *
 	 * @var string
 	 */
-	 var $version = '1.7';
+	 var $version = '2.0';
 	 
 	 
 	 /**
@@ -47,7 +47,7 @@ class ProjectManagerLoader
 	  *
 	  * @var string
 	  */
-	 var $dbversion = '1.7';
+	 var $dbversion = '2.0';
 	 
 	 
 	 /**
@@ -83,10 +83,6 @@ class ProjectManagerLoader
 		
 		add_action( 'show_user_profile', array(&$this->adminPanel, 'profileHook') );
 		add_action( 'profile_update', array(&$this->adminPanel, 'updateProfile') );
-		
-		// Export datasets
-		if ( isset($_POST['projectmanager_export']) )
-			$this->adminPanel->exportDatasets($_POST['project_id']);
 	}
 	function ProjectManagerLoader()
 	{
@@ -114,8 +110,8 @@ class ProjectManagerLoader
 		add_action( 'wp_ajax_projectmanager_save_name', 'projectmanager_save_name' );
 		add_action( 'wp_ajax_projectmanager_save_categories', 'projectmanager_save_categories' );
 		add_action( 'wp_ajax_projectmanager_save_form_field_data', 'projectmanager_save_form_field_data' );
-		add_action( 'wp_ajax_projectmanager_show_category_selection', 'projectmanager_show_category_selection' );
 		add_action( 'wp_ajax_projectmanager_save_form_field_options', 'projectmanager_save_form_field_options' );
+		add_action( 'wp_ajax_projectmanager_save_dataset_order', 'projectmanager_save_dataset_order' );
 	}
 	
 	
@@ -227,7 +223,8 @@ class ProjectManagerLoader
 	 */
 	function loadScripts()
 	{
-		$options = get_option( 'projectmanager_widget' );
+		if ( !$options = get_option( 'projectmanager_widget' ) )
+			$options = array();
 		
 		wp_register_script( 'jquery_slideshow', PROJECTMANAGER_URL.'/js/jquery.aslideshow.js', array('jquery'), '0.5.3' );
 		wp_print_scripts( 'jquery_slideshow' );
@@ -302,7 +299,7 @@ class ProjectManagerLoader
 	}
 	function addTinyMCEPlugin( $plugin_array )
 	{
-		$plugin_array['ProjectManager'] = PROJECTMANAGER_URL.'/tinymce/editor_plugin.js';
+		$plugin_array['ProjectManager'] = PROJECTMANAGER_URL.'/admin/tinymce/editor_plugin.js';
 		return $plugin_array;
 	}
 	function registerTinyMCEButton( $buttons )
@@ -329,6 +326,7 @@ class ProjectManagerLoader
 		$options = array();
 		$options['version'] = $this->version;
 		$options['dbversion'] = $this->dbversion;
+		$options['colors'] = array( 'headers' => '#ddd', 'rows' => array( '#efefef', '#ffffff' ) );
 		
 		$charset_collate = '';
 		if ( $wpdb->supports_collation() ) {
@@ -340,7 +338,7 @@ class ProjectManagerLoader
 		
 		$create_projects_sql = "CREATE TABLE {$wpdb->projectmanager_projects} (
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT ,
-						`title` varchar( 50 ) NOT NULL default '',
+						`title` varchar( 255 ) NOT NULL default '',
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->projectmanager_projects, $create_projects_sql );
 			
@@ -350,18 +348,20 @@ class ProjectManagerLoader
 						`label` varchar( 100 ) NOT NULL default '' ,
 						`order` int( 10 ) NOT NULL ,
 						`order_by` tinyint( 1 ) NOT NULL default '0',
-						`show_on_startpage` tinyint( 1 ) NOT NULL ,
+						`show_on_startpage` tinyint( 1 ) NOT NULL,
+						`show_in_profile` tinyint( 1 ) NOT NULL,
 						`project_id` int( 11 ) NOT NULL ,
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->projectmanager_projectmeta, $create_projectmeta_sql );
 				
 		$create_dataset_sql = "CREATE TABLE {$wpdb->projectmanager_dataset} (
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT ,
-						`name` varchar( 150 ) NOT NULL default '' ,
+						`name` varchar( 255 ) NOT NULL default '' ,
 						`image` varchar( 50 ) NOT NULL default '' ,
 						`cat_ids` longtext NOT NULL ,
 						`project_id` int( 11 ) NOT NULL ,
 						`user_id` int( 11 ) NOT NULL default '1',
+						`order` int( 11 ) NOT NULL default '0',
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->projectmanager_dataset, $create_dataset_sql );
 			
@@ -406,7 +406,7 @@ class ProjectManagerLoader
 	 */
 	function uninstall()
 	{
-		global $wpdb;
+		global $wpdb, $projectmanager;
 
 		$wpdb->query( "DROP TABLE {$wpdb->projectmanager_projects}" );
 		$wpdb->query( "DROP TABLE {$wpdb->projectmanager_projectmeta}" );
@@ -415,6 +415,17 @@ class ProjectManagerLoader
 
 		delete_option( 'projectmanager' );
 		delete_option( 'projectmanager_widget' );
+		
+		// Delete Images
+		$dir = $projectmanager->getImagePath();
+		if ( $handle = opendir($dir) ) {
+			while (false !== ($file = readdir($handle))) {
+				if ($file != "." && $file != "..")
+					@unlink($file);
+			}
+			closedir($handle);
+		}
+		@rmdir($dir);
 	}
 	
 	
@@ -436,4 +447,9 @@ class ProjectManagerLoader
 // Run the Plugin
 global $projectmanager_loader;
 $projectmanager_loader = new ProjectManagerLoader();
+
+
+// Export datasets
+if ( isset($_POST['projectmanager_export']) )
+	$projectmanager_loader->adminPanel->exportDatasets($_POST['project_id']);
 ?>

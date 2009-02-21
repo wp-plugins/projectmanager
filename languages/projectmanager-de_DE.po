@@ -6,625 +6,780 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
-"POT-Creation-Date: 2008-12-19 13:16+0000\n"
-"PO-Revision-Date: 2009-01-31 18:47+0100\n"
+"POT-Creation-Date: 2009-02-05 22:08+0000\n"
+"PO-Revision-Date: 2009-02-21 17:41+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: functions.php:32
-#: functions.php:88
-#: page/settings.php:43
-#: page/show-project.php:81
-msgid "None"
-msgstr "Keine"
+#: admin/admin.php:47
+#: admin/admin.php:59
+msgid "Overview"
+msgstr "Übersicht"
 
-#: functions.php:40
-#: page/settings.php:43
-msgid "Category"
-msgstr "Kategorie"
-
-#: page/dataset.php:10
-msgid "Edit Dataset"
-msgstr "Datensatz bearbeiten"
-
-#: page/dataset.php:25
-#: projectmanager.php:1092
-msgid "You don't have the permission to edit this dataset"
-msgstr "Du hast nicht die nötigen Rechte diesen Datensatz zu bearbeiten"
-
-#: page/dataset.php:32
-#: projectmanager.php:1017
-msgid "An Entry of your user ID has been detected"
-msgstr "Ein Eintrag mit deiner Benutzer ID wurde bereits gefunden"
-
-#: page/dataset.php:35
-#: page/index.php:71
-#: page/show-project.php:64
-#: projectmanager.php:2282
+#: admin/admin.php:48
+#: admin/dataset.php:22
+#: admin/index.php:71
+#: admin/show-project.php:70
 msgid "Add Dataset"
 msgstr "Datensatz hinzufügen"
 
-#: page/dataset.php:40
-#: page/show-project.php:67
-#: page/show-project.php:93
-#: projectmanager.php:1373
-#: projectmanager.php:1521
-msgid "Name"
-msgstr "Name"
-
-#: page/dataset.php:45
-msgid "Image"
-msgstr "Bild"
-
-#: page/dataset.php:50
-msgid "Supported file types"
-msgstr "Unterstützte Dateitypen"
-
-#: page/dataset.php:52
-msgid "Overwrite existing image"
-msgstr "Überschreibe existierendes Bild"
-
-#: page/dataset.php:54
-msgid "Delete current image"
-msgstr "Lösche aktuelles Bild"
-
-#: page/dataset.php:103
-#: page/show-project.php:69
-#: projectmanager.php:1379
-#: projectmanager.php:1437
-#: projectmanager.php:1467
-#: tinymce/window.php:47
-msgid "Categories"
-msgstr "Kategorien"
-
-#: page/dataset.php:131
-msgid "Owner"
-msgstr "Besitzer"
-
-#: page/formfields.php:16
-#: page/formfields.php:18
-#: page/show-project.php:48
+#: admin/admin.php:49
+#: admin/formfields.php:18
+#: admin/formfields.php:20
+#: admin/show-project.php:69
 msgid "Form Fields"
 msgstr "Formularfelder"
 
-#: page/formfields.php:26
-msgid "Label"
-msgstr "Label"
-
-#: page/formfields.php:27
-msgid "Type"
-msgstr "Typ"
-
-#: page/formfields.php:28
-msgid "Show on startpage"
-msgstr "Zeige auf Startseite"
-
-#: page/formfields.php:29
-msgid "Order"
-msgstr "Reihenfolge"
-
-#: page/formfields.php:41
-#: page/formfields.php:53
-#: page/show-project.php:90
-#: page/show-project.php:104
-#: projectmanager.php:808
-#: projectmanager.php:1887
-msgid "Save"
-msgstr "Speichern"
-
-#: page/formfields.php:41
-#: page/formfields.php:53
-#: page/show-project.php:90
-#: page/show-project.php:104
-#: projectmanager.php:808
-#: projectmanager.php:1887
-#: tinymce/window.php:186
-msgid "Cancel"
-msgstr "Abbrechen"
-
-#: page/formfields.php:41
-#: page/formfields.php:55
-#: projectmanager.php:1887
-msgid "Options"
-msgstr "Optionen"
-
-#: page/formfields.php:61
-#: page/index.php:31
-#: page/show-project.php:60
-#: projectmanager.php:1887
-msgid "Delete"
-msgstr "Löschen"
-
-#: page/formfields.php:61
-msgid "Delete formfield"
-msgstr "Lösche Formularfeld"
-
-#: page/formfields.php:67
-msgid "Add new formfield"
-msgstr "Neues Formularfeld hinzufügen"
-
-#: page/formfields.php:71
-msgid "Save Form Fields"
-msgstr "Formularfelder speichern"
-
-#: page/index.php:24
-#: page/index.php:33
-#: projectmanager.php:1835
-#: projectmanager.php:2095
-#: tinymce/window.php:30
-msgid "Projectmanager"
-msgstr "Projektmanager"
-
-#: page/index.php:37
-msgid "ID"
-msgstr "ID"
-
-#: page/index.php:38
-#: tinymce/window.php:57
-#: tinymce/window.php:88
-#: tinymce/window.php:117
-#: tinymce/window.php:155
-msgid "Project"
-msgstr "Projekt"
-
-#: page/index.php:39
-msgid "Datasets"
-msgstr "Datensätze"
-
-#: page/index.php:40
-msgid "Action"
-msgstr "Aktion"
-
-#: page/index.php:50
-#: page/settings.php:29
-#: page/settings.php:34
-#: page/show-project.php:47
-#: projectmanager.php:2110
+#: admin/admin.php:50
+#: admin/admin.php:60
+#: admin/admin.php:144
+#: admin/index.php:71
+#: admin/settings.php:39
+#: admin/settings.php:44
+#: admin/show-project.php:68
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: page/index.php:60
-#: page/index.php:69
-msgid "Add Project"
-msgstr "Projekt hinzufügen"
+#: admin/admin.php:51
+#: admin/dataset-form.php:68
+#: admin/show-project.php:58
+#: admin/show-project.php:71
+#: admin/show-project.php:127
+#: admin/show-project.php:137
+#: admin/tinymce/window.php:48
+#: view/searchform.php:25
+msgid "Categories"
+msgstr "Kategorien"
 
-#: page/index.php:64
-#: page/settings.php:37
-#: projectmanager.php:1773
-msgid "Title"
-msgstr "Titel"
+#: admin/admin.php:52
+#: admin/import.php:16
+#: admin/show-project.php:72
+msgid "Import/Export"
+msgstr "Import/Export"
 
-#: page/settings.php:22
-#: projectmanager.php:1913
+#: admin/admin.php:58
+#: admin/admin.php:59
+msgid "Projects"
+msgstr "Projekte"
+
+#: admin/admin.php:175
+#: admin/show-project.php:162
+#: admin/show-project.php:177
+#: lib/core.php:932
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: admin/admin.php:175
+msgid "Post"
+msgstr "Post"
+
+#: admin/admin.php:175
+#: admin/formfields.php:56
+#: admin/formfields.php:68
+#: admin/show-project.php:159
+#: admin/show-project.php:173
+#: lib/core.php:989
+msgid "Save"
+msgstr "Speichern"
+
+#: admin/admin.php:175
+#: admin/formfields.php:56
+#: admin/formfields.php:68
+#: admin/show-project.php:159
+#: admin/show-project.php:173
+#: admin/tinymce/window.php:198
+#: lib/core.php:989
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: admin/admin.php:175
+msgid "Please wait..."
+msgstr "Bitte warten..."
+
+#: admin/admin.php:175
+msgid "Page Revisions"
+msgstr "Seiten Revisionen"
+
+#: admin/admin.php:175
+msgid "Insert time"
+msgstr "Einfügungszeit"
+
+#: admin/admin.php:175
+#: admin/formfields.php:56
+#: admin/formfields.php:70
+msgid "Options"
+msgstr "Optionen"
+
+#: admin/admin.php:175
+#: admin/formfields.php:77
+#: admin/index.php:37
+#: admin/show-project.php:85
+msgid "Delete"
+msgstr "Löschen"
+
+#: admin/admin.php:238
+#: admin/settings.php:28
 msgid "Settings saved"
 msgstr "Einstellungen gespeichert"
 
-#: page/settings.php:40
+#: admin/admin.php:308
+#: admin/index.php:47
+#: admin/index.php:56
+#: admin/show-project.php:30
+#: lib/shortcodes.php:187
+msgid "ID"
+msgstr "ID"
+
+#: admin/admin.php:308
+#: admin/dataset-form.php:4
+#: admin/import.php:36
+#: admin/show-project.php:30
+#: admin/show-project.php:53
+#: admin/show-project.php:125
+#: admin/show-project.php:135
+#: admin/show-project.php:162
+#: lib/shortcodes.php:187
+#: view/list.php:27
+#: view/searchform.php:21
+msgid "Name"
+msgstr "Name"
+
+#: admin/admin.php:308
+msgid "Formfields"
+msgstr "Formularfelder"
+
+#: admin/admin.php:328
+msgid "Project added"
+msgstr "Projekt hinzugefügt"
+
+#: admin/admin.php:343
+msgid "Project updated"
+msgstr "Projekt aktualisiert"
+
+#: admin/admin.php:402
+#, php-format
+msgid "%d Datasets successfully imported"
+msgstr "%d Datensätze erfolgreich importiert"
+
+#: admin/admin.php:404
+msgid "The file is not readable"
+msgstr "Die Datei ist nicht lesbar"
+
+#: admin/admin.php:411
+msgid "The uploaded file seems to be empty"
+msgstr "Die hochgeladene Datei scheint leer zu sein"
+
+#: admin/admin.php:496
+msgid "New dataset added to the database."
+msgstr "Neuer Datensatz in die Datenbank eingetragen."
+
+#: admin/admin.php:498
+msgid "You don't have the permission to add datasets"
+msgstr "Du hast keine Berechtigung Datensätze hinzuzufügen"
+
+#: admin/admin.php:565
+msgid "Dataset updated."
+msgstr "Datensatz aktualisiert"
+
+#: admin/admin.php:567
+msgid "You don't have the permission to edit this dataset"
+msgstr "Du hast nicht die Berechtigung Datensätze zu bearbeiten"
+
+#: admin/admin.php:626
+msgid "File exists and is not uploaded. Set the overwrite option if you want to replace it."
+msgstr "Die Datei existiert bereits und wird nicht hochgeladen."
+
+#: admin/admin.php:649
+msgid "The file type is not supported."
+msgstr "Der Dateityp wird nicht unterstützt"
+
+#: admin/admin.php:731
+msgid "Form Fields updated"
+msgstr "Formularfelder aktualisiert"
+
+#: admin/admin.php:749
+#: admin/index.php:24
+#: admin/index.php:43
+#: admin/tinymce/window.php:31
+msgid "Projectmanager"
+msgstr "Projektmanager"
+
+#: admin/dataset-form.php:10
+msgid "Image"
+msgstr "Bild"
+
+#: admin/dataset-form.php:15
+msgid "Supported file types"
+msgstr "Unterstützte Dateitypen"
+
+#: admin/dataset-form.php:17
+msgid "Overwrite existing image"
+msgstr "Überschreibe existierendes Bild"
+
+#: admin/dataset-form.php:19
+msgid "Delete current image"
+msgstr "Lösche aktuelles Bild"
+
+#: admin/dataset-form.php:80
+msgid "Owner"
+msgstr "Besitzer"
+
+#: admin/dataset.php:9
+msgid "Edit Dataset"
+msgstr "Datensatz bearbeiten"
+
+#: admin/formfields.php:29
+#: admin/formfields.php:39
+msgid "Label"
+msgstr "Label"
+
+#: admin/formfields.php:30
+#: admin/formfields.php:40
+msgid "Type"
+msgstr "Typ"
+
+#: admin/formfields.php:31
+#: admin/formfields.php:41
+msgid "Show on startpage"
+msgstr "Zeige auf Startseite"
+
+#: admin/formfields.php:32
+#: admin/formfields.php:42
+#: admin/show-project.php:34
+#: lib/shortcodes.php:191
+#: lib/widget.php:155
+msgid "Order"
+msgstr "Reihenfolge"
+
+#: admin/formfields.php:33
+#: admin/formfields.php:43
+#: admin/show-project.php:30
+#: lib/shortcodes.php:187
+msgid "Order By"
+msgstr "Sortieren"
+
+#: admin/formfields.php:77
+msgid "Delete formfield"
+msgstr "Formularfeld löschen"
+
+#: admin/formfields.php:83
+msgid "Add new formfield"
+msgstr "Neues Formularfeld hinzufügen"
+
+#: admin/formfields.php:84
+msgid "Save Form Fields"
+msgstr "Formularfelder speichern"
+
+#: admin/import.php:17
+#: admin/import.php:52
+msgid "Import Datasets"
+msgstr "Datensätze importieren"
+
+#: admin/import.php:25
+msgid "File"
+msgstr "Datei"
+
+#: admin/import.php:28
+msgid "Delimiter"
+msgstr "Trennzeichen"
+
+#: admin/import.php:28
+msgid "For tab delimited files use TAB as delimiter"
+msgstr "Für tab getrennte Dateien, verwende TAB als Trennzeichen"
+
+#: admin/import.php:31
+msgid "Column Assignment"
+msgstr "Spalten Zuordnung"
+
+#: admin/import.php:32
+msgid "All FormFields need to be assigned, also if some contain no data."
+msgstr "Alle Formularfelder müssen zugeordnet werden, auch wenn einige keine Daten enthalten"
+
+#: admin/import.php:33
+msgid "Dates must have the format <strong>YYYY-MM-DD</strong>."
+msgstr "Daten müssen das Format <strong>JJJJ-MM-TT</strong> haben."
+
+#: admin/import.php:36
+#: admin/import.php:40
+#, php-format
+msgid "Column %d"
+msgstr "Spalte %d"
+
+#: admin/import.php:57
+#: admin/import.php:60
+msgid "Export Datasets"
+msgstr "Datensätze exportieren"
+
+#: admin/index.php:48
+#: admin/index.php:57
+#: admin/tinymce/window.php:58
+#: admin/tinymce/window.php:89
+#: admin/tinymce/window.php:119
+#: admin/tinymce/window.php:158
+msgid "Project"
+msgstr "Projekt"
+
+#: admin/index.php:49
+#: admin/index.php:58
+msgid "Datasets"
+msgstr "Datensätze"
+
+#: admin/index.php:50
+#: admin/index.php:59
+msgid "Action"
+msgstr "Aktion"
+
+#: admin/index.php:90
+#: admin/index.php:96
+msgid "Add Project"
+msgstr "Projekt hinzufügen"
+
+#: admin/index.php:92
+#: admin/settings.php:47
+#: lib/widget.php:138
+msgid "Title"
+msgstr "Titel"
+
+#: admin/settings-global.php:5
+msgid "Global Settings"
+msgstr "Globale Einstellungen"
+
+#: admin/settings-global.php:6
+msgid "Color Scheme"
+msgstr "Farbschema"
+
+#: admin/settings-global.php:10
+msgid "Table Headers"
+msgstr "Tabellen Header"
+
+#: admin/settings-global.php:13
+msgid "Table Rows"
+msgstr "Tabellenzeilen"
+
+#: admin/settings-global.php:22
+msgid "Save Preferences"
+msgstr "Einstellungen speichern"
+
+#: admin/settings.php:50
 msgid "Datasets per page"
 msgstr "Datensätze pro Seite"
 
-#: page/settings.php:46
+#: admin/settings.php:53
+#: functions.php:40
+msgid "Category"
+msgstr "Kategorie"
+
+#: admin/settings.php:53
+#: admin/show-project.php:150
+#: functions.php:32
+#: functions.php:88
+msgid "None"
+msgstr "Keine"
+
+#: admin/settings.php:56
+msgid "Sort Datasets by"
+msgstr "Datensätze sortieren nach"
+
+#: admin/settings.php:59
 msgid "Use Widget"
 msgstr "Verwende Widget"
 
-#: page/settings.php:49
+#: admin/settings.php:62
 msgid "Navi Link"
-msgstr ""
+msgstr "Navi Link"
 
-#: page/settings.php:49
-msgid "Set this option to add a direct link in the navigation panel. <br/> If there is only one project in the database, the link to the index page will be disabled."
-msgstr "Setze diese Option, um einen direkten Link im Navigations-Panel zu setzen. <br/> Wenn nur ein Projekt vorhanden ist, wird der Link zur Hauptseite deaktiviert."
+#: admin/settings.php:62
+msgid "Set this option to add a direct link in the navigation panel."
+msgstr "Wähle diese Option, um einen direkten Link im Navigations-Panel zu setzen."
 
-#: page/settings.php:53
+#: admin/settings.php:65
+msgid "Hook into Profile"
+msgstr "In Profil einbinden"
+
+#: admin/settings.php:65
+msgid "Only one project can be hooked into the profile!"
+msgstr "Nur ein Projekt kann in das Profil eingebunden werden!"
+
+#: admin/settings.php:68
+msgid "Menu Icon"
+msgstr "Menu Icon"
+
+#: admin/settings.php:79
 msgid "Images"
 msgstr "Bilder"
 
-#: page/settings.php:56
+#: admin/settings.php:82
 msgid "Show Image"
 msgstr "Zeige Bild"
 
-#: page/settings.php:59
+#: admin/settings.php:85
 msgid "Thumbnail size"
 msgstr "Vorschaubild-Größe"
 
-#: page/settings.php:59
+#: admin/settings.php:85
+#: lib/widget.php:151
 msgid "Width"
 msgstr "Breite"
 
-#: page/settings.php:59
+#: admin/settings.php:85
+#: lib/widget.php:152
 msgid "Height"
 msgstr "Höhe"
 
-#: page/settings.php:62
+#: admin/settings.php:88
 msgid "Medium size"
 msgstr "Mittlere Größe"
 
-#: page/settings.php:62
+#: admin/settings.php:88
 msgid "Max Width"
 msgstr "Max. Breite"
 
-#: page/settings.php:62
+#: admin/settings.php:88
 msgid "Max Height"
 msgstr "Max. Höhe"
 
-#: page/settings.php:67
+#: admin/settings.php:93
 msgid "Save Settings"
 msgstr "Einstellungen speichern"
 
-#: page/show-project.php:59
-#: projectmanager.php:1512
-#, php-format
-msgid "%d of %d Datasets"
-msgstr "%d von %d Datensätze"
+#: admin/show-project.php:34
+#: lib/shortcodes.php:191
+msgid "Ascending"
+msgstr "Aufsteigend"
 
-#: page/show-project.php:90
+#: admin/show-project.php:34
+#: lib/shortcodes.php:191
+msgid "Descending"
+msgstr "Absteigend"
+
+#: admin/show-project.php:63
+#: view/searchform.php:31
+msgid "Search"
+msgstr "Suchen"
+
+#: admin/show-project.php:91
+#: view/tablenav.php:20
+msgid "View all categories"
+msgstr "Alle Kategorien anzeigen"
+
+#: admin/show-project.php:111
 #, php-format
 msgid "Displaying %s&#8211;%s of %s"
 msgstr "Angezeigt %s&#8211;%s von %s"
 
-#: page/show-project.php:93
-#: page/show-project.php:108
-#: projectmanager.php:751
-#: projectmanager.php:1887
-msgid "Edit"
-msgstr "Bearbeiten"
-
-#: page/show-project.php:108
+#: admin/show-project.php:177
 #, php-format
 msgid "Categories of %s"
 msgstr "Kategorien von %s"
 
-#: page/show-project.php:118
-#: projectmanager.php:1549
-#: projectmanager.php:1615
+#: admin/show-project.php:188
+#: view/gallery.php:54
+#: view/list.php:57
 msgid "Nothing found"
 msgstr "Nichts gefunden"
 
-#: projectmanager.php:136
+#: admin/tinymce/window.php:46
+msgid "Simple Output"
+msgstr "Einfache Ausgabe"
+
+#: admin/tinymce/window.php:47
+msgid "Gallery"
+msgstr "Galerie"
+
+#: admin/tinymce/window.php:49
+msgid "Search Form"
+msgstr "Suchformular"
+
+#: admin/tinymce/window.php:61
+#: admin/tinymce/window.php:92
+#: admin/tinymce/window.php:122
+#: admin/tinymce/window.php:161
+msgid "No Project"
+msgstr "Kein Projekt"
+
+#: admin/tinymce/window.php:75
+#: admin/tinymce/window.php:134
+msgid "Show as"
+msgstr "Zeige als"
+
+#: admin/tinymce/window.php:77
+msgid "Table"
+msgstr "Tabelle"
+
+#: admin/tinymce/window.php:78
+msgid "Unsorted List"
+msgstr "Unsortierte Liste"
+
+#: admin/tinymce/window.php:79
+msgid "Sorted List"
+msgstr "Sortierte Liste"
+
+#: admin/tinymce/window.php:108
+msgid "Columns"
+msgstr "Spalten"
+
+#: admin/tinymce/window.php:136
+msgid "Dropdown Menu"
+msgstr "Dropdown Menu"
+
+#: admin/tinymce/window.php:137
+msgid "List"
+msgstr "Liste"
+
+#: admin/tinymce/window.php:141
+#: admin/tinymce/window.php:173
+msgid "Alignment"
+msgstr "Ausrichtung"
+
+#: admin/tinymce/window.php:144
+#: admin/tinymce/window.php:176
+msgid "Left"
+msgstr "Links"
+
+#: admin/tinymce/window.php:145
+#: admin/tinymce/window.php:177
+msgid "Center"
+msgstr "Zentriert"
+
+#: admin/tinymce/window.php:146
+#: admin/tinymce/window.php:178
+msgid "Right"
+msgstr "Rechts"
+
+#: admin/tinymce/window.php:183
+#: lib/widget.php:139
+msgid "Display"
+msgstr "Anzeige"
+
+#: admin/tinymce/window.php:186
+msgid "Extend"
+msgstr "Erweitert"
+
+#: admin/tinymce/window.php:187
+msgid "Compact"
+msgstr "Kompakt"
+
+#: admin/tinymce/window.php:202
+msgid "Insert"
+msgstr "Einfügen"
+
+#: admin/upgrade.php:13
+msgid "Upgrade database structure..."
+msgstr "Aktualisieren der Datenbankstruktur..."
+
+#: admin/upgrade.php:81
+msgid "finished"
+msgstr "fertig"
+
+#: admin/upgrade.php:101
+#: admin/upgrade.php:120
+msgid "Upgrade ProjectManager"
+msgstr "Projektmanager aktualisieren"
+
+#: admin/upgrade.php:102
+msgid "Your database for ProjectManager is out-of-date, and must be upgraded before you can continue."
+msgstr "Deine Datenbank für Projectmanager is veraltet und muss aktualisiert werden, bevor du weitermachen kannst."
+
+#: admin/upgrade.php:103
+msgid "The upgrade process may take a while, so please be patient."
+msgstr "Der Upgrade Prozesss kann eine Weile dauern, sei also geduldig."
+
+#: admin/upgrade.php:104
+msgid "Start upgrade now"
+msgstr "Aktualisierung jetzt starten"
+
+#: admin/upgrade.php:122
+msgid "Upgrade sucessfull"
+msgstr "Aktualisierung erfolgreich"
+
+#: admin/upgrade.php:123
+msgid "Continue"
+msgstr "Weiter"
+
+#: lib/core.php:254
 msgid "Text"
 msgstr "Text"
 
-#: projectmanager.php:136
+#: lib/core.php:254
 msgid "Textfield"
 msgstr "Textfeld"
 
-#: projectmanager.php:136
+#: lib/core.php:254
 msgid "E-Mail"
 msgstr "E-Mail"
 
-#: projectmanager.php:136
+#: lib/core.php:254
 msgid "Date"
 msgstr "Datum"
 
-#: projectmanager.php:136
+#: lib/core.php:254
 msgid "URL"
 msgstr "URL"
 
-#: projectmanager.php:136
+#: lib/core.php:254
 msgid "Selection"
-msgstr "Auswahl Liste"
+msgstr "Dropdown Menu"
 
-#: projectmanager.php:136
+#: lib/core.php:254
 msgid "Checkbox List"
 msgstr "Checkbox Liste"
 
-#: projectmanager.php:136
+#: lib/core.php:254
 msgid "Radio List"
 msgstr "Radio Liste"
 
-#: projectmanager.php:720
+#: lib/core.php:893
 msgid "of"
 msgstr "von"
 
-#: projectmanager.php:846
-msgid "Project added"
-msgstr "Projekt hinzugefügt"
+#: lib/shortcodes.php:65
+#, php-format
+msgid "Could not load template %s.php"
+msgstr "Konnte template %s.php nicht laden"
 
-#: projectmanager.php:861
-msgid "Project updated"
-msgstr "Projekt aktualisiert"
+#: lib/widget.php:141
+msgid "All"
+msgstr "Alle"
 
-#: projectmanager.php:927
-msgid "New dataset added to the database."
-msgstr "Neuer Datensatz der Datenbank hinzugefügt."
+#: lib/widget.php:147
+msgid "Page"
+msgstr "Seite"
 
-#: projectmanager.php:988
-msgid "Dataset updated."
-msgstr "Datensatz aktualisiert."
+#: lib/widget.php:148
+msgid "Slideshow"
+msgstr "Slideshow"
 
-#: projectmanager.php:1159
-msgid "File exists and is not uploaded. Set the overwrite option if you want to replace it."
-msgstr "Die Datei existiert bereits und wird nicht hochgeladen."
+#: lib/widget.php:150
+msgid "Use Slideshow"
+msgstr "Slideshow verwenden"
 
-#: projectmanager.php:1184
-msgid "The file type is not supported."
-msgstr "Der Dateityp wird nicht unterstützt"
+#: lib/widget.php:153
+msgid "Time"
+msgstr "Zeit"
 
-#: projectmanager.php:1276
-msgid "Form Fields updated"
-msgstr "Formularfelder aktualisiert"
+#: lib/widget.php:153
+msgid "seconds"
+msgstr "Sekunden"
 
-#: projectmanager.php:1384
-msgid "Search"
-msgstr "Suchen"
+#: lib/widget.php:154
+msgid "Fade Effect"
+msgstr "Fade Effekt"
 
-#: projectmanager.php:1514
+#: lib/widget.php:172
+msgid "Fade"
+msgstr "Fade"
+
+#: lib/widget.php:172
+msgid "Zoom Fade"
+msgstr "Zoom Fade"
+
+#: lib/widget.php:172
+msgid "Scroll Up"
+msgstr "Hoch rollen"
+
+#: lib/widget.php:172
+msgid "Scroll Left"
+msgstr "Links rollen"
+
+#: lib/widget.php:172
+msgid "Scroll Right"
+msgstr "Rechts rollen"
+
+#: lib/widget.php:172
+msgid "Scroll Down"
+msgstr "Runter rollen"
+
+#: lib/widget.php:172
+msgid "Zoom"
+msgstr "Zoom"
+
+#: lib/widget.php:172
+msgid "Grow X"
+msgstr "Wachsen X"
+
+#: lib/widget.php:172
+msgid "Grow Y"
+msgstr "Wachsen Y"
+
+#: lib/widget.php:172
+msgid "Zoom BR"
+msgstr "Zoom UL"
+
+#: lib/widget.php:172
+msgid "Zoom TL"
+msgstr "Zoom OL"
+
+#: lib/widget.php:172
+#: lib/widget.php:193
+msgid "Random"
+msgstr "Zufällig"
+
+#: lib/widget.php:193
+msgid "Ordered"
+msgstr "Geordnet"
+
+#: view/list.php:16
 #, php-format
 msgid "Search: %d of %d"
 msgstr "Suche: %d von %d"
 
-#: projectmanager.php:1647
+#: view/single.php:13
 msgid "Back to list"
-msgstr "Zurück zur Liste"
-
-#: projectmanager.php:1650
-msgid "Details of"
-msgstr "Details von"
-
-#: projectmanager.php:1896
-msgid "Display"
-msgstr "Anzeige"
-
-#: projectmanager.php:1898
-msgid "All"
-msgstr "Alle"
-
-#: projectmanager.php:1780
-msgid "Page"
-msgstr "Seite"
-
-#: projectmanager.php:1905
-msgid "Slideshow"
-msgstr "Slideshow"
-
-#: projectmanager.php:1907
-msgid "Use Slideshow"
-msgstr "Slideshow verwenden"
-
-#: projectmanager.php:1910
-msgid "Time"
-msgstr "Zeit"
-
-#: projectmanager.php:1910
-msgid "seconds"
-msgstr "Sekunden"
-
-#: projectmanager.php:1911
-msgid "Fade Effect"
-msgstr "Übergang"
-
-#: projectmanager.php:1929
-msgid "Fade"
-msgstr "Fade"
-
-#: projectmanager.php:1929
-msgid "Zoom Fade"
-msgstr "Zoom Fade"
-
-#: projectmanager.php:1929
-msgid "Scroll Up"
-msgstr "Hoch rollen"
-
-#: projectmanager.php:1929
-msgid "Scroll Left"
-msgstr "Links rollen"
-
-#: projectmanager.php:1929
-msgid "Scroll Right"
-msgstr "Rechts rollen"
-
-#: projectmanager.php:1929
-msgid "Scroll Down"
-msgstr "Runter rollen"
-
-#: projectmanager.php:1929
-msgid "Zoom"
-msgstr "Zoom"
-
-#: projectmanager.php:1929
-msgid "Grow X"
-msgstr "Wachsen X"
-
-#: projectmanager.php:1929
-msgid "Grow Y"
-msgstr "Wachsen Y"
-
-#: projectmanager.php:1929
-msgid "Zoom BR"
-msgstr "Zoom UL"
-
-#: projectmanager.php:1929
-msgid "Zoom TL"
-msgstr "Zoom OL"
-
-#: projectmanager.php:1929
-#: projectmanager.php:1950
-msgid "Random"
-msgstr "Zufällig"
-
-#: projectmanager.php:1950
-msgid "Ordered"
-msgstr "Geordnet"
-
-#: projectmanager.php:2281
-#: projectmanager.php:2294
-msgid "Overview"
-msgstr "Übersicht"
-
-#: projectmanager.php:1887
-msgid "Post"
-msgstr "Post"
-
-#: projectmanager.php:1887
-msgid "Please wait..."
-msgstr "Bitte warten..."
-
-#: projectmanager.php:1887
-msgid "Page Revisions"
-msgstr "Seiten Revisionen"
-
-#: projectmanager.php:1887
-msgid "Insert time"
-msgstr "Einfügungszeit"
-
-#: projectmanager.php:1920
-msgid "Global Settings"
-msgstr "Globale Einstellungen"
-
-#: projectmanager.php:1921
-msgid "Color Scheme"
-msgstr "Farbschema"
-
-#: projectmanager.php:1924
-msgid "Table Headers"
-msgstr "Tabelle Headers"
-
-#: projectmanager.php:1927
-msgid "Table Rows"
-msgstr "Tabelle Zeilen"
-
-#: projectmanager.php:1935
-msgid "Save Preferences"
-msgstr "Einstellungen speichern"
-
-#: projectmanager.php:2093
-msgid "Projects"
-msgstr "Projekte"
-
-#: tinymce/window.php:45
-msgid "Simple Output"
-msgstr "Einfache Ausgabe"
-
-#: tinymce/window.php:46
-msgid "Gallery"
-msgstr "Galerie"
+msgstr "Zurück zur Übersicht"
 
-#: tinymce/window.php:48
-msgid "Search Form"
-msgstr "Suchformular"
+#: view/single.php:16
+#, php-format
+msgid "Details of %s"
+msgstr "Details von %s"
 
-#: tinymce/window.php:60
-#: tinymce/window.php:91
-#: tinymce/window.php:120
-#: tinymce/window.php:158
-msgid "No Project"
-msgstr "Kein Projekt"
+msgid "Extended Version"
+msgstr "Erweiterte Version"
 
-#: tinymce/window.php:74
-#: tinymce/window.php:132
-msgid "Show as"
-msgstr "Zeige als"
+msgid "Compact Version"
+msgstr "Kompakte Version"
 
-#: tinymce/window.php:76
-msgid "Table"
-msgstr "Tabelle"
+msgid "Dataset"
+msgstr "Datensatz"
 
-#: tinymce/window.php:77
-msgid "Unsorted List"
-msgstr "Unsortierte Liste"
+msgid "No Dataset"
+msgstr "Kein Datensatz"
 
-#: tinymce/window.php:78
-msgid "Sorted List"
-msgstr "Sortierte Liste"
+msgid "Number of Columns"
+msgstr "Anzahl Spalten"
 
-#: tinymce/window.php:107
-msgid "Columns"
-msgstr "Spalten"
+msgid "Needed for multicolumn output, e.g. gallery"
+msgstr "Benögigt für Mehrspaltige Ausgabe, z.B. Galerie"
 
-#: tinymce/window.php:134
-msgid "Dropdown Menu"
-msgstr "Dropdown Menu"
+msgid "Display all Datasets"
+msgstr "Alle Datensätze anzeigen"
 
-#: tinymce/window.php:135
-msgid "List"
-msgstr "Liste"
+msgid "Child categories of this category are used for grouping of datasets"
+msgstr "Kind Kategorien dieser Kategorie werden zur Gruppierung der Datensätze verwendet"
 
-#: tinymce/window.php:139
-#: tinymce/window.php:170
-msgid "Alignment"
-msgstr "Ausrichtung"
+msgid "Default"
+msgstr "Standard"
 
-#: tinymce/window.php:142
-#: tinymce/window.php:173
-msgid "Left"
-msgstr "Links"
+msgid "Show in Profile"
+msgstr "Zeige im Profil"
 
-#: tinymce/window.php:143
-#: tinymce/window.php:174
-msgid "Center"
-msgstr "Zentriert"
+msgid "The second checkbox controls image display in user profile"
+msgstr "Die zweite Checkbox kontrolliert die Bild-Anzeige im Benutzerprofil"
 
-#: tinymce/window.php:144
-#: tinymce/window.php:175
-msgid "Right"
-msgstr "Rechts"
+msgid "Manual"
+msgstr "Manuell"
 
-#: tinymce/window.php:190
-msgid "Insert"
-msgstr "Einfügen"
+msgid "Separate Options by newline. Click on <em>Save</em> when you are done."
+msgstr "Beginne für jede Option einen neue Zeile. Klicke auf <em>Speichern</em> wenn du fertig bist."
 
-#: tinymce/window.php:183
-msgid "Extend"
-msgstr "Voll"
+msgid "Note: You will have to save the Formfields to finally save the otions to the database."
+msgstr "Achtung: Du musst die Formularfelder speichern, um die Optionen in der Datenbank zu speichern."
 
-#: tinymce/window.php:184
-msgid "Compact"
-msgstr "Kompakt"
+msgid "Leave empty for no limit"
+msgstr "Lasse leer für kein Limit"
 
-msgid "Sort Datasets by"
-msgstr "Datensätze sortieren nach"
-
-msgid "Formfields"
-msgstr "Formularfelder"
-
-msgid "Order By"
-msgstr "Sortieren"
-
-msgid "File"
-msgstr "Datei"
-
-msgid "Delimiter"
-msgstr "Trennzeichen"
-
-msgid "For tab delimited files use TAB as delimiter"
-msgstr "Für Tabulator getrennte Dateien, verwende TAB als Trennzeichen"
-
-msgid "Column Assignment"
-msgstr "Spaltenzuordnung"
-
-msgid "All FormFields need to be assigned, also if some contain no data."
-msgstr "Alle Formularfelder müssen zugeordnet werden, auch wenn manche keine Daten enthalten."
-
-msgid "Column %d"
-msgstr "Spalte %d"
-
-msgid "%d Datasets successfully imported"
-msgstr "%d Datensätze erfolgreich importiert"
-
-msgid "The file is not readable"
-msgstr "Die Datei ist nicht lesbar"
-
-msgid "The uploaded file seems to be empty"
-msgstr "Die hochgeladene Datei scheint leer zu sein"
-
-msgid "Import/Export"
-msgstr "Import/Export"
-
-msgid "Dates must have the format <strong>YYYY-MM-DD</strong>."
-msgstr "Daten müssen das Format <strong>JJJJ-MM-TT</strong> haben."
-
-msgid "Ascending"
-msgstr "Aufsteigend"
-
-msgid "Descending"
-msgstr "Absteigend"
-
-msgid "Hook into Profile"
-msgstr "In Profil einbinden"
-
-msgid "Only one project can be hooked into the profile!"
-msgstr "Nur ein Projekt kann in das Profil eingebunden werden!"
+msgid "To order datasets manually leave datasets per page empty for the time of ordering. Only works with Firefox."
+msgstr "Um Datensätze manuell so ordnen, lasse Datensätze pro Seite leer währenddessen. Funktioniert nur mit Firefox."
 

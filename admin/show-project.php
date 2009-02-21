@@ -118,7 +118,7 @@ $options = $options['project_options'][$project_id];
 		<?php endif; ?>
 	</div>
 
-	<table class="widefat">
+	<table class="widefat" id="datasets">
 		<thead>
 		<tr>
 			<th scope="col" class="check-column"><input type="checkbox" onclick="ProjectManager.checkAll(document.getElementById('dataset-filter'));" /></th>
@@ -149,7 +149,7 @@ $options = $options['project_options'][$project_id];
 			else
 				$categories = __( 'None', 'projectmanager' );
 		?>
-			<tr class="<?php echo $class ?>">
+			<tr class="<?php echo $class ?>" id="dataset_<?php echo $dataset->id ?>">
 				<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $dataset->id ?>" name="dataset[<?php echo $dataset->id ?>]" /></th>
 				<td>
 					<!-- Popup Window for Ajax name editing -->
@@ -159,7 +159,7 @@ $options = $options['project_options'][$project_id];
 							<div style="text-align:center; margin-top: 1em;"><input type="button" value="<?php _e('Save') ?>" class="button-secondary" onclick="ProjectManager.ajaxSaveDatasetName(<?php echo $dataset->id; ?>);return false;" />&#160;<input type="button" value="<?php _e('Cancel') ?>" class="button" onclick="tb_remove();" /></div></form>
 						</div>
 					</div>
-					<a href="admin.php?page=projectmanager&amp;subpage=dataset&amp;edit=<?php echo $dataset->id ?>&amp;project_id=<?php echo $project_id ?>"><span id="dataset_name_text<?php echo $dataset->id ?>"><?php echo $dataset->name ?></span></a>&#160;<a class="thickbox" id="thickboxlink_name<?php echo $dataset->id ?>" href="#TB_inline&amp;height=100&amp;width=300&amp;inlineId=datasetnamewrap<?php echo $dataset->id ?>" title="<?php _e('Name','projectmanager') ?>"><img src="<?php echo PROJECTMANAGER_URL ?>/admin/icons/edit.gif" border="0" alt="<?php _e('Edit') ?>" /></a>
+					<a href="admin.php?page=<?php if($_GET['page'] == 'projectmanager') echo 'projectmanager&subpage=dataset'; else echo 'project-dataset_'.$project_id ?>&amp;edit=<?php echo $dataset->id ?>&amp;project_id=<?php echo $project_id ?>"><span id="dataset_name_text<?php echo $dataset->id ?>"><?php echo $dataset->name ?></span></a>&#160;<a class="thickbox" id="thickboxlink_name<?php echo $dataset->id ?>" href="#TB_inline&amp;height=100&amp;width=300&amp;inlineId=datasetnamewrap<?php echo $dataset->id ?>" title="<?php _e('Name','projectmanager') ?>"><img src="<?php echo PROJECTMANAGER_URL ?>/admin/icons/edit.gif" border="0" alt="<?php _e('Edit') ?>" /></a>
 				</td>
 				<?php if ( -1 != $options['category'] ) : ?>
 				<td>
@@ -183,6 +183,15 @@ $options = $options['project_options'][$project_id];
 		</tbody>
 	</table>
 	</form>
+	
+	<script type='text/javascript'>
+	// <![CDATA[
+	    Sortable.create("the-list",
+	    {dropOnEmpty:true, tag: 'tr', ghosting:true, constraint:false, onUpdate: function() {Leaguemanager.saveStandings(Sortable.serialize('the-list'))} });
+	    //")
+	// ]]>
+	</script>
+		
 	<!-- What's that?? -->
 	<?php elseif ( $projectmanager->getNumDatasets($project_id,true) > 0 )  : ?>
 		<div class="error" style="margin-top: 3em;"><p><?php _e( 'Nothing found', 'projectmanager') ?></p></div>

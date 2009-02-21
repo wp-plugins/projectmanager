@@ -16,7 +16,7 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 		check_admin_referer('projectmanager_projects-bulk');
 		if ( 'delete' == $_POST['action'] ) {
 			foreach ( $_POST['project'] AS $project_id )
-				$projectmanager->delProject( $project_id );
+				$this->delProject( $project_id );
 		}
 }
 ?>
