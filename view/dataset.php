@@ -10,7 +10,9 @@ The following variables are usable:
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
 */
 ?>
+<?php if ( $backurl ) : ?>
 <p><a href='<?php echo $backurl ?>'><?php _e('Back to list', 'projectmanager') ?></a></p>
+<?php endif; ?>
 
 <?php if ( $dataset ) : ?>
 <fieldset class='dataset'><legend><?php printf(__( 'Details of %s', 'projectmanager' ), $dataset->name) ?></legend>

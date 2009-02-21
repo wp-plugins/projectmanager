@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
 "POT-Creation-Date: 2009-02-05 22:08+0000\n"
-"PO-Revision-Date: 2009-02-13 23:44+0100\n"
+"PO-Revision-Date: 2009-02-21 15:58+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -750,8 +750,8 @@ msgstr "Kein Datensatz"
 msgid "Number of Columns"
 msgstr "Anzahl Spalten"
 
-msgid "Only for Gallery display"
-msgstr "Nur für Galerie Anzeige"
+msgid "Needed for multicolumn output, e.g. gallery"
+msgstr "Benögigt für Mehrspaltige Ausgabe, z.B. Galerie"
 
 msgid "Display all Datasets"
 msgstr "Alle Datensätze anzeigen"
@@ -767,3 +767,19 @@ msgstr "Zeige im Profil"
 
 msgid "The second checkbox controls image display in user profile"
 msgstr "Die zweite Checkbox kontrolliert die Bild-Anzeige im Benutzerprofil"
+
+msgid "Manual"
+msgstr "Manuell"
+
+msgid "Separate Options by newline. Click on <em>Save</em> when you are done."
+msgstr "Beginne für jede Option einen neue Zeile. Klicke auf <em>Speichern</em> wenn du fertig bist."
+
+msgid "Note: You will have to save the Formfields to finally save the otions to the database."
+msgstr "Achtung: Du musst die Formularfelder speichern, um die Optionen in der Datenbank zu speichern."
+
+msgid "Leave empty for no limit"
+msgstr "Lasse leer für kein Limit"
+
+msgid "To order datasets manually leave datasets per page empty for the time of ordering"
+msgstr "Um Datensätze manuell so ordnen, lasse Datensätze pro Seite leer währenddessen"
+

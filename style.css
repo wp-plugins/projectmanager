@@ -130,6 +130,8 @@ p.error {
 /**
  * @section Administration
  */
+#datasets tr { cursor: move; }
+
 a.image_link { border-bottom: none !important; }
 	
 p.projectmanager_breadcrumb { float: right; margin: 1.5em 1.5em 0em auto; }
@@ -137,6 +139,7 @@ p.projectmanager_breadcrumb { float: right; margin: 1.5em 1.5em 0em auto; }
 div.projectmanager_thickbox { text-align: center; }
 div.projectmanager_thickbox input, div.projectmanager_thickbox textarea, div.projectmanager_thickbox select { margin-top: 1em; }
 div.projectmanager_thickbox ul { margin: 1em auto auto 1em; }
+div.projectmanager_thickbox p { text-align: left; margin: 0; padding: 0}
 	
 div#projectmanager-category-adder {
 	height: 180px;

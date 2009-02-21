@@ -118,7 +118,7 @@ $options = $options['project_options'][$project_id];
 		<?php endif; ?>
 	</div>
 
-	<table class="widefat">
+	<table class="widefat" id="datasets">
 		<thead>
 		<tr>
 			<th scope="col" class="check-column"><input type="checkbox" onclick="ProjectManager.checkAll(document.getElementById('dataset-filter'));" /></th>
@@ -149,7 +149,7 @@ $options = $options['project_options'][$project_id];
 			else
 				$categories = __( 'None', 'projectmanager' );
 		?>
-			<tr class="<?php echo $class ?>">
+			<tr class="<?php echo $class ?>" id="dataset_<?php echo $dataset->id ?>">
 				<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $dataset->id ?>" name="dataset[<?php echo $dataset->id ?>]" /></th>
 				<td>
 					<!-- Popup Window for Ajax name editing -->
@@ -183,6 +183,15 @@ $options = $options['project_options'][$project_id];
 		</tbody>
 	</table>
 	</form>
+	
+	<script type='text/javascript'>
+	// <![CDATA[
+	    Sortable.create("the-list",
+	    {dropOnEmpty:true, tag: 'tr', ghosting:true, constraint:false, onUpdate: function() {ProjectManager.saveOrder(Sortable.serialize('the-list'))} });
+	    //")
+	// ]]>
+	</script>
+		
 	<!-- What's that?? -->
 	<?php elseif ( $projectmanager->getNumDatasets($project_id,true) > 0 )  : ?>
 		<div class="error" style="margin-top: 3em;"><p><?php _e( 'Nothing found', 'projectmanager') ?></p></div>

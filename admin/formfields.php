@@ -68,9 +68,12 @@ $options = get_option('projectmanager');
 				
 				<?php if ( $form_field->type == 6 || $form_field->type == 7 || $form_field->type == 8 ) : ?>
 				<!-- Thickbox Container and Link for Form Field Options -->
-				<div id="form_field_options_container<?php echo $form_field->id ?>" style="display: inline;">
+				<div id="form_field_options_container<?php echo $form_field->id ?>" style="display: inline;" >
 					<div id="form_field_options_div<?php echo $form_field->id ?>" style="width: 150px; height: 80px; overflow: auto; display: none;"><div class="projectmanager_thickbox">
 						<form><textarea cols="40" rows="10" id="form_field_options<?php echo $form_field->id ?>"><?php if ($options['form_field_options'][$form_field->id] != '' ) echo implode("\n", $options['form_field_options'][$form_field->id]) ?></textarea><div style="text-align:center; margin-top: 1em;"><input type="button" value="<?php _e('Save') ?>" class="button-secondary" onclick="ProjectManager.ajaxSaveFormFieldOptions(<?php echo $form_field->id; ?>);return false;" />&#160;<input type="button" value="<?php _e('Cancel') ?>" class="button" onclick="tb_remove();" /></div></form>
+						
+						<p><?php _e( "Separate Options by newline. Click on <em>Save</em> when you are done.", 'projectmanager' ) ?></p>
+						<p><?php _e( 'Note: You will have to save the Formfields to finally save the otions to the database.', 'projectmanager' )  ?></p>
 					</div></div>
 					<span>&#160;<a href='#TB_inline?width=150&heigth=100&inlineId=form_field_options_div<?php echo $form_field->id ?>' style="display: inline;" id="options_link<?php echo $form_field->id ?>" class="thickbox" title="<?php _e('Options','projectmanager') ?>"><?php _e('Options','projectmanager') ?></a></span>
 				</div>

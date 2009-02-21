@@ -211,6 +211,8 @@ class ProjectManagerShortcodes extends ProjectManager
 			'cat_id' => false,
 			'orderby' => false,
 			'order' => false,
+			'single' => 'true',
+			'selections' => 'true',
 		), $atts ));
 		$projectmanager->initialize($id);
 		
@@ -218,9 +220,10 @@ class ProjectManagerShortcodes extends ProjectManager
 		$options = $options['project_options'][$id];
 		
 		$this->project_id = $id;
+		$single = ( $single == 'true' ) ? true : false;
 		if ( $cat_id ) $projectmanager->setCatID($cat_id);
 	
-		if ( isset( $_GET['show'] ) ) {
+		if ( isset($_GET['show']) ) {
 			$datasets = $title = $pagination = $project = false;
 		} else {
 			$formfield_id = false;
@@ -246,25 +249,24 @@ class ProjectManagerShortcodes extends ProjectManager
 			
 			$i = 0;
 			foreach ( $datasets AS $dataset ) {
-				if ( substr($template,0,7) == 'gallery' ) {
-					$url = get_permalink();
-					$url = add_query_arg('show', $dataset->id, $url);
-					$url = ($projectmanager->isCategory()) ? add_query_arg('cat_id', $projectmanager->getCatID(), $url) : $url;
+				$class = ( "alternate" == $class ) ? '' : "alternate"; 
 				
-					$datasets[$i]->URL = $url;
-					$datasets[$i]->thumbURL = $projectmanager->getImageUrl('/thumb.'.$dataset->image);
+				$url = get_permalink();
+				$url = add_query_arg('show', $dataset->id, $url);
+				$url = ($projectmanager->isCategory()) ? add_query_arg('cat_id', $projectmanager->getCatID(), $url) : $url;
 				
-					$project['num_datasets'] = $projectmanager->getNumDatasets($projectmanager->getProjectID(), true);
-					$project['num_cols'] = ( $options['gallery_num_cols'] == 0 ) ? 4 : $options['gallery_num_cols'];
-					$project['dataset_width'] = floor(100/$options['gallery_num_cols'])."%";
-				} else {
-					$url = get_permalink();$url = add_query_arg('show', $dataset->id, $url);
-					$url = ($projectmanager->isCategory()) ? add_query_arg('cat_id', $projectmanager->getCatID(), $url) : $url;
+				$project['num_datasets'] = $projectmanager->getNumDatasets($projectmanager->getProjectID(), true);
+				$project['num_cols'] = ( $options['gallery_num_cols'] == 0 ) ? 4 : $options['gallery_num_cols'];
+				$project['dataset_width'] = ( !empty($options['gallery_num_cols']) ) ? floor(100/$options['gallery_num_cols'])."%" : false;
+				$project['single'] = ( $single == 'true' ) ? true : false;
+				$project['tablenav'] = ( $selections == 'true' ) ? true : false;
 				
-					$datasets[$i]->name = ($projectmanager->hasDetails()) ? '<a href="'.$url.'">'.$dataset->name.'</a>' : $dataset->name;
+				$datasets[$i]->class = $class;
+				$datasets[$i]->URL = $url;
+				$datasets[$i]->thumbURL = $projectmanager->getImageUrl('/thumb.'.$dataset->image);
 				
-					$project['num_datasets'] = $projectmanager->getNumDatasets($projectmanager->getProjectID(), true);
-				}
+				$datasets[$i]->nameURL = ($projectmanager->hasDetails($single)) ? '<a href="'.$url.'">'.$dataset->name.'</a>' : $dataset->name;
+				
 				$i++;
 			}
 		}
@@ -284,9 +286,10 @@ class ProjectManagerShortcodes extends ProjectManager
 	 * - template is the name of a template (without extension). Will use default template dataset.php if missing or empty
 	 *
 	 * @param int $dataset_id
+	 * @param boolean $callback - checks if function is called via action hook
 	 * @return string
 	 */
-	function displayDataset( $atts )
+	function displayDataset( $atts, $action = false )
 	{
 		global $projectmanager;
 		
@@ -296,13 +299,17 @@ class ProjectManagerShortcodes extends ProjectManager
 			'echo' => 0
 		), $atts ));
 		
-		$url = get_permalink();
-		$url = remove_query_arg('show', $url);
-		$url = add_query_arg('paged', $projectmanager->getDatasetPage($id), $url);
-		$url = ($projectmanager->isCategory()) ? add_query_arg('cat_id', $projectmanager->getCatID(), $url) : $url;
-		
-		$dataset = $this->getDataset( $id );
-		$dataset->imgURL = $projectmanager->getImageUrl($dataset->image);
+		if ( !$action ) {
+			$url = get_permalink();
+			$url = remove_query_arg('show', $url);
+			$url = add_query_arg('paged', $projectmanager->getDatasetPage($id), $url);
+			$url = ($projectmanager->isCategory()) ? add_query_arg('cat_id', $projectmanager->getCatID(), $url) : $url;
+		} else {
+			$url = false;
+		}
+
+		if ( $dataset = parent::getDataset( $id ) )
+			$dataset->imgURL = $projectmanager->getImageUrl($dataset->image);
 				
 		$filename = ( empty($template) ) ? 'dataset' : $template;
 		

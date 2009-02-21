@@ -1,8 +1,13 @@
 ProjectManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
-V1.9.1 - February , 2009
+V2.0 - February , 2009
+- NEW: manual drag&drop sorting of datasets (ajax saving, but not updating tr class)
+- NEW: set order of datasets in option
+- NEW: more shortcode atts for project display
 - NEW: delete image folder upon plugin uninstallation
+- BUGFIX: dataset division by zero
+- CHANGED: save image name in database also if file already exists
 
 V1.9 - February 12, 2009
 - NEW: show formfield ID on admin page

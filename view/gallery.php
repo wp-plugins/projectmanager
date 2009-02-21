@@ -6,23 +6,24 @@ The following variables are usable:
 
 	$project: contains data for the project
 	$datasets: contains all datasets for current selection
+	$pagination: contains the pagination
 	
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
 */
 ?>
 
-<?php if ( isset( $_GET['show'] ) ) : ?>
- 	<?php do_action('projectmanager_dataset', array('id' => $_GET['show'], 'echo' => 1)) ?>
+<?php if ( isset($_GET['show']) && $project['single'] ) : ?>
+ 	<?php do_action('projectmanager_dataset', array('id' => $_GET['show'], 'echo' => 1), true) ?>
 <?php else: ?>
 	
-<?php do_action('projectmanager_tablenav'); ?>
+<?php if ( $project['tablenav'] ) do_action('projectmanager_tablenav'); ?>
 <?php if ( $datasets ) : $i = 0; ?>
 <div class='dataset_gallery'>
 	<?php foreach ( $datasets AS $dataset ) : $i++; ?>
 	
 	<div class='gallery-item' style='width: <?php echo $project['dataset_width'] ?>;'>
 		<div class="gallery-image">
-			<?php if ( $dataset->image != '' ) : ?>
+			<?php if ( !empty($dataset->image) ) : ?>
 			<a href="<?php echo $dataset->URL ?>"><img src="<?php echo $dataset->thumbURL ?>" alt="<?php echo $dataset->name ?>" title="<?php echo $dataset->name ?>" /></a>
 			<?php endif; ?>
 	

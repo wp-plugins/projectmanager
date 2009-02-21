@@ -82,6 +82,7 @@ function projectmanager_upgrade() {
 	
 	if (version_compare($installed, '2.0', '<')) {
 		$wpdb->query( "ALTER TABLE {$wpdb->projectmanager_projectmeta} ADD `show_in_profile` tinyint( 1 ) NOT NULL default '0' AFTER `show_on_startpage`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->projectmanager_dataset} ADD `order` int( 11 ) NOT NULL default '0'" );
 	}
 	
 	

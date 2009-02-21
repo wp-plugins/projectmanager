@@ -14,6 +14,7 @@ if ( isset($_POST['saveSettings']) ) {
 	$options['project_options'][$project_id]['per_page'] = $_POST['per_page'];
 	$options['project_options'][$project_id]['category'] = $_POST['category'];
 	$options['project_options'][$project_id]['dataset_orderby'] = $_POST['dataset_orderby'];
+	$options['project_options'][$project_id]['dataset_order'] = $_POST['dataset_order'];
 	$options['project_options'][$project_id]['show_image'] = isset( $_POST['show_image']) ? 1 : 0;
 	$options['project_options'][$project_id]['show_image_profile'] = ( isset($_POST['show_image_profile']) && isset($_POST['show_image']) ) ? 1 : 0;
 	$options['project_options'][$project_id]['use_widget'] = isset( $_POST['use_widget'] ) ? 1 : 0;
@@ -49,13 +50,19 @@ if ( 1 == $settings['show_image'] && !wp_mkdir_p( $projectmanager->getImagePath(
 			<th scope="row"><label for="project_title"><?php _e( 'Title', 'projectmanager' ) ?></label></td><td><input type="text" name="project_title" id="project_title" value="<?php echo $projectmanager->getProjectTitle( ) ?>" size="30" style="margin-bottom: 1em;" /></td>
 		</tr>
 		<tr valign="top">
-			<th scope="row"><label for="per_page"><?php _e( 'Datasets per page', 'projectmanager' ) ?></label></th><td><input type="text" name="per_page" id="per_page" size="2" value="<?php echo $settings['per_page'] ?>" /></td>
+			<th scope="row"><label for="per_page"><?php _e( 'Datasets per page', 'projectmanager' ) ?></label></th><td><input type="text" name="per_page" id="per_page" size="2" value="<?php echo $settings['per_page'] ?>" /> <span class="setting-description"><?php _e( 'Leave empty for no limit', 'projectmanager' ) ?></td>
 		</tr>
 		<tr valign="top">
 			<th scope="row"><label for="category"><?php _e( 'Category', 'projectmanager' ) ?></label></th><td><?php wp_dropdown_categories(array('hide_empty' => 0, 'name' => 'category', 'orderby' => 'name', 'selected' => $settings['category'], 'hierarchical' => true, 'show_option_none' => __('None'))); ?>&#160;<span class="setting-description"><?php _e( 'Child categories of this category are used for grouping of datasets', 'projectmanager' ) ?></span></td>
 		</tr>
 		<tr valign="top">
-			<th scope="row"><label for="dataset_orderby"><?php _e( 'Sort Datasets by', 'projectmanager' ) ?></label></th><td><select size="1" name="dataset_orderby" id="dataset_orderby"><?php $this->datasetOrderOptions($settings['dataset_orderby']) ?></select></td>
+			<th scope="row"><label for="dataset_orderby"><?php _e( 'Sort Datasets by', 'projectmanager' ) ?></label></th>
+			<td>
+				<select size="1" name="dataset_orderby" id="dataset_orderby"><?php $this->datasetOrderbyOptions($settings['dataset_orderby']) ?></select>
+				<select size="1" name="dataset_order" id="dataset_order"><?php $this->datasetOrderOptions($settings['dataset_order']) ?></select>
+				&#160;<span class="setting-description"><?php _e('To order datasets manually leave datasets per page empty for the time of ordering', 'projectmanager') ?></span>
+			</td>
+			
 		</tr>
 		<tr valign="top">
 			<th scope="row"><label for="use_widget"><?php _e( 'Use Widget', 'projectmanager' ) ?></label></th><td><input type="checkbox" name="use_widget" id="use_widget"<?php if ( 1 == $settings['use_widget']  ) echo ' checked="checked"'; ?> value="1" /></td>
@@ -77,7 +84,7 @@ if ( 1 == $settings['show_image'] && !wp_mkdir_p( $projectmanager->getImagePath(
 			</td>
 		</tr>
 		<tr valign="top">
-			<th scope="row"><label for="gallery_num_cols"><?php _e( 'Number of Columns', 'projectmanager' ) ?></label></th><td><input type="text" name="gallery_num_cols" id="gallery_num_cols" value="<?php echo $settings['gallery_num_cols'] ?>" size="2" />&#160;<span class="setting-description"><?php _e( 'Only for Gallery display', 'projectmanager') ?></span></td>
+			<th scope="row"><label for="gallery_num_cols"><?php _e( 'Number of Columns', 'projectmanager' ) ?></label></th><td><input type="text" name="gallery_num_cols" id="gallery_num_cols" value="<?php echo $settings['gallery_num_cols'] ?>" size="2" />&#160;<span class="setting-description"><?php _e( 'Needed for multicolumn output, e.g. gallery', 'projectmanager') ?></span></td>
 		</table>
 		
 		<h3><?php _e( 'Images', 'projectmanager' ) ?></h3>

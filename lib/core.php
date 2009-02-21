@@ -117,7 +117,7 @@ class ProjectManager extends ProjectManagerLoader
 		$options = $options['project_options'][$project_id];
 		
 		$this->project_id = $project_id;
-		$this->per_page = isset($options['per_page']) ? $options['per_page'] : 20;
+		$this->per_page = ( isset($options['per_page']) && !empty($options['per_page']) ) ? $options['per_page'] : false;
 
 		$this->num_items = $this->getNumDatasets($this->project_id);
 		$this->num_max_pages = ( 0 == $this->per_page || $this->isSearch() ) ? 1 : ceil( $this->num_items/$this->per_page );
@@ -204,11 +204,12 @@ class ProjectManager extends ProjectManagerLoader
 	/**
 	 * get dataset order
 	 *
-	 * @param none
+	 * @param boolean $orderby
+	 * @param boolean $order
 	 * @return boolean|int false if ordered by name or ID otherwise formfield ID to order by
 	 */
-	function setDatasetOrder( )
-	{
+	function setDatasetOrder( $orderby = false, $order = false )
+	{	
 		$options = get_option('projectmanager');
 		$options = $options['project_options'][$this->project_id];
 
@@ -226,9 +227,9 @@ class ProjectManager extends ProjectManagerLoader
 			$this->orderby = ( $_GET['orderby'] != '' ) ? $_GET['orderby'] : 'name';
 			$formfield_id = $orderby[1];
 			$this->order = ( $_GET['order'] != '' ) ? $_GET['order'] : 'ASC';
-		} elseif ( isset($options['dataset_orderby']) && $options['dataset_orderby'] != 'formfields' && $options['dataset_orderby'] != '' ) {
+		} elseif ( isset($options['dataset_orderby']) && $options['dataset_orderby'] != 'formfields' && !empty($options['dataset_orderby']) ) {
 			$this->orderby = $options['dataset_orderby'];
-			$this->order = 'ASC';
+			$this->order = (isset($options['dataset_order']) && !empty($options['dataset_order'])) ? $options['dataset_order'] : 'ASC';
 		} else {
 			$this->orderby = 'name';
 			$this->order = 'ASC';
@@ -245,7 +246,7 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function getDatasetOrder()
 	{
-		return $this->orderby." ".$this->order;
+		return "`{$this->orderby}` {$this->order}";
 	}
 
 
@@ -644,16 +645,20 @@ class ProjectManager extends ProjectManagerLoader
 		global $wpdb;
 		$options = get_option('projectmanager');
 		
+		if ( $orderby ) $this->orderby = $orderby;
+		if ( $order ) $this->order = $order;
+		
 		// Set ordering
 		if ( !$formfield_id )
 			$formfield_id = $this->setDatasetOrder();
 
-		if ( $orderby && $orderby != 'formfields' )
-			$sql_order = $orderby." ".$order;
-		else
-			$sql_order = ( $this->orderby != 'name' && $this->orderby != 'id' ) ? 'name '.$this->order : $this->getDatasetOrder();
+		if ( $orderby && $orderby != 'formfields' ) {
+			$sql_order = "`$orderby` $order";
+		} else {
+			$sql_order = ( $this->orderby != 'name' && $this->orderby != 'id' && $this->orderby != 'order' ) ? '`name` '.$this->order : $this->getDatasetOrder();
+		}
 		
-		if ( $limit ) $offset = ( $this->getCurrentPage() - 1 ) * $this->per_page;
+		if ( $limit && $this->per_page ) $offset = ( $this->getCurrentPage() - 1 ) * $this->per_page;
 
 		$sql = "SELECT `id`, `name`, `image`, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id}";
 		
@@ -661,7 +666,7 @@ class ProjectManager extends ProjectManagerLoader
 			$sql .= $this->getCategorySearchString();
 		
 		$sql .=  " ORDER BY ".$sql_order;
-		$sql .= ( $limit ) ? " LIMIT ".$offset.",".$this->per_page.";" : ";";
+		$sql .= ( $limit && $this->per_page ) ? " LIMIT ".$offset.",".$this->per_page.";" : ";";
 		
 		$datasets = $wpdb->get_results($sql);
 		
@@ -682,6 +687,7 @@ class ProjectManager extends ProjectManagerLoader
 	{
 		global $wpdb;
 		$dataset = $wpdb->get_results( "SELECT `id`, `name`, `image`, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} WHERE `id` = {$dataset_id}" );
+			
 		return $dataset[0];
 	}
 		
@@ -802,12 +808,16 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function getDatasetPage( $dataset_id )
 	{
+		if ( !$this->getPerPage() )
+			return false;
+			
 		$datasets = $this->getDatasets();
 		$offsets = array();
 		foreach ( $datasets AS $o => $d ) {
 			$offsets[$d->id] = $o;
 		}
 		$number = $offsets[$dataset_id] + 1;
+		
 		return ceil($number/$this->getPerPage());
 	}
 	
@@ -1105,12 +1115,15 @@ class ProjectManager extends ProjectManagerLoader
 	/**
 	 * hasDetails() - check if datasets have details
 	 * 
-	 * @param int $project_id
+	 * @param boolean $single
 	 * @return boolean
 	 */
-	function hasDetails()
+	function hasDetails($single = true)
 	{
 		global $wpdb;
+		
+		if ( !$single ) return false;
+		
 		$num_form_fields = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = {$this->project_id} AND `show_on_startpage` = 0" );
 			
 		if ( $num_form_fields > 0 )

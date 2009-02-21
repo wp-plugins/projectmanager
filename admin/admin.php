@@ -156,7 +156,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 */
 	function loadScripts()
 	{
-		wp_register_script( 'projectmanager', PROJECTMANAGER_URL.'/admin/js/functions.js', array( 'colorpicker', 'sack' ), PROJECTMANAGER_VERSION );
+		wp_register_script( 'projectmanager', PROJECTMANAGER_URL.'/admin/js/functions.js', array( 'colorpicker', 'sack', 'scriptaculous', 'prototype' ), PROJECTMANAGER_VERSION );
 		wp_register_script( 'projectmanager_formfields', PROJECTMANAGER_URL.'/admin/js/formfields.js', array( 'projectmanager', 'thickbox' ), PROJECTMANAGER_VERSION );
 		wp_register_script ('projectmanager_ajax', PROJECTMANAGER_URL.'/admin/js/ajax.js', array( 'projectmanager' ), PROJECTMANAGER_VERSION );
 		
@@ -267,6 +267,26 @@ class ProjectManagerAdminPanel extends ProjectManager
 	
 	
 	/**
+	 * gets order of datasets
+	 *
+	 * @param string $input serialized string with order
+	 * @param string $listname ID of list to sort
+	 * @return sorted array of parameters
+	 */
+ 	function getOrder( $input, $listname = 'the-list' )
+	{
+		parse_str( $input, $input_array );
+		$input_array = $input_array[$listname];
+		$order_array = array();
+		for ( $i = 0; $i < count($input_array); $i++ ) {
+			if ( $input_array[$i] != '' )
+				$order_array[$i+1] = $input_array[$i];
+		}
+		return $order_array;	
+	}
+	
+	
+	/**
 	 * gets checklist for groups. Adopted from wp-admin/includes/template.php
 	 *
 	 * @param int $child_of parent category
@@ -303,9 +323,26 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 * @param string $selected
 	 * @return string
 	 */
+	function datasetOrderbyOptions( $selected )
+	{
+		$options = array( 'order' => __('Manual', 'projectmanager'), 'id' => __('ID', 'projectmanager'), 'name' => __('Name','projectmanager'), 'formfields' => __('Formfields', 'projectmanager') );
+		
+		foreach ( $options AS $option => $title ) {
+			$select = ( $selected == $option ) ? ' selected="selected"' : '';
+			echo '<option value="'.$option.'"'.$select.'>'.$title.'</option>';
+		}
+	}
+	
+	
+	/**
+	 * get possible order options
+	 *
+	 * @param string $selected
+	 * @return string
+	 */
 	function datasetOrderOptions( $selected )
 	{
-		$options = array( 'id' => __('ID', 'projectmanager'), 'name' => __('Name','projectmanager'), 'formfields' => __('Formfields', 'projectmanager') );
+		$options = array( 'ASC' => __('Ascending','projectmanager'), 'DESC' => __('Descending','projectmanager') );
 		
 		foreach ( $options AS $option => $title ) {
 			$select = ( $selected == $option ) ? ' selected="selected"' : '';

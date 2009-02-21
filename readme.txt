@@ -25,9 +25,11 @@ This plugin is a datamanager for any recurrent datasets. It can be used to manag
 * dataset sorting by any form field
 * import and export of datasets from/to CSV file
 * hook one project into user profile
+* manual drag&drop sorting of datasets
 
 See [Usage](http://wordpress.org/extend/plugins/projectmanager/other_notes/) for details on shortcodes and the template system.
 
+[ChangeLog](http://svn.wp-plugins.org/leaguemanager/trunk/changelog.txt)
 
 == Installation ==
 
@@ -51,10 +53,20 @@ To install the plugin to the following steps
 = Shortcodes =
 You can display all datasets of one project with the following code
 
-`[project id=x template=table|gallery cat_id=y]`
+`[project id=ID template=table|gallery cat_id=ID orderby=name|id|order|formfields-ID order=ASC|DESC single=true|false selections=true|false]`
 
 
-Replace x with the respective project ID, the cat_id tag is optional and can be used to only display datasets of that category. If it is missing or empty all datasets of the project are displayed. ProjectManager supports templates, similar to [NextGgen Gallery](http://wordpress.org/extend/plugins/nextgen-gallery/). It comes with two default templates *table* and *gallery* which are located in the *view/table.php* and *view/gallery.php*. *table* displays the datasets in a simple tabular output whereas *gallery* shows them in a gallery only with the images on the main page. You can design your own templates and place them in
+The following list gives a short description of each attribute:
+
+* id: the ID of the project to display
+* template: the template to load. Default templates are *table* and *gallery* (default: table)
+* cat_id: ID of category to display datasets of (optional, default: show datasets of all categories)
+* orderby: field to order datasets by. Either *name*, *id*, *order* or *formfields-ID* where ID is the formfield ID (optional, default: name)
+* order: direction of dataset ordering, either *ASC* or *DESC* (optional, default: ASC)
+* single: switch to add link to single dataset page (optional, default: 'true')
+* selections: switch to control display of selections navbar for categories and dataset ordering (optional, default: 'true')
+
+ProjectManager supports templates, similar to [NextGgen Gallery](http://wordpress.org/extend/plugins/nextgen-gallery/). It comes with two default templates *table* and *gallery* which are located in the *view/table.php* and *view/gallery.php*. *table* displays the datasets in a simple tabular output whereas *gallery* shows them in a gallery only with the images on the main page. You can design your own templates and place them in
 
 `yourthemedirectory/projectmanager/`
 
@@ -82,7 +94,7 @@ You can customize the frontend output via templates. Templates shipped with the 
 `yourthemedirectory/projectmanager/`
 
 
-You can either copy and edit the default templates or also create your own templates. To use the templates you need to put in the template tag the filename of it without extension. If you create derivatives of the gallery template, be sure to name them *gallery-yourtemplate* to activate gallery settings. For example you have created a template
+You can either copy and edit the default templates or also create your own templates. To use the templates you need to put in the template tag the filename of it without extension. For example you have created a template
 
 `yourthemedirectory/projectmanager/gallery-custom.php`
 
@@ -108,7 +120,7 @@ ProjectManager has three different capabilities:
 Users with the capability *projectmanager_admin* can edit settings, edit formfields and import datasets from CSV files. By default only Administrators have this privilege. Users with the capability *manage_projects* can add and edit datasets and those with the capability *project_user_profile* can use the profile hook feature. **Important**: The capabilities are not additive! Thus a user with capability *projectmanager_admin*, but not *manage_projects* will not be able to add and edit datasets.
 
 == ChangeLog ==
-See [changelog.txt](http://wordpress.org/extend/plugins/projectmanager/trunk/changelog.txt).
+See [changelog.txt](http://svn.wp-plugins.org/projectmanager/trunk/changelog.txt).
 
 == Credits ==
 The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons of http://www.pinvoke.com/.

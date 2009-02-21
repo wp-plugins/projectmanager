@@ -107,4 +107,19 @@ function projectmanager_save_form_field_data() {
 	});");
 }
 
+
+/**
+ * SACK response to manually set order of datasets
+ *
+ * @since 2.0
+ */
+function projectmanager_save_dataset_order() {
+	global $wpdb, $projectmanager_loader;
+	$order = $_POST['order'];
+	$order = $projectmanager_loader->adminPanel->getOrder($order);
+	foreach ( $order AS $order => $dataset_id ) {
+		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `order` = '%d' WHERE `id` = '%d'", $order, $dataset_id ) );
+	}
+}
+
 ?>

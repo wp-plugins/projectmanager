@@ -6,7 +6,6 @@ The following variables are usable:
 
 	$title: holds a subtitle (h3) of the page
 	$datasets: contains all datasets for current selection
-	$num_datasets: contains the number of datasets
 	$pagination: contains the pagination
 	
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
@@ -14,11 +13,11 @@ The following variables are usable:
 ?>
 <?php echo $title ?>
 
-<?php if ( isset( $_GET['show'] ) ) : ?>
-	<?php do_action('projectmanager_dataset', array('id' => $_GET['show'], 'echo' => 1)) ?>
+<?php if ( isset($_GET['show']) ) : ?>
+	<?php do_action('projectmanager_dataset', array('id' => $_GET['show'], 'echo' => 1), true) ?>
 <?php else: ?>
 
-<?php do_action('projectmanager_tablenav'); ?>
+<?php if ( $project['tablenav'] ) do_action('projectmanager_tablenav'); ?>
 
 <?php if ( $datasets ) : ?>
 
@@ -28,9 +27,9 @@ The following variables are usable:
 	<?php $projectmanager->printTableHeader(); ?>
 </tr>
 
-<?php foreach ( $datasets AS $dataset ) : $class = ("alternate" == $class) ? '' : "alternate"; ?>
-	<tr class='<?php echo $class ?>'>
-		<td><?php echo $dataset->name ?></td>
+<?php foreach ( $datasets AS $dataset ) : ?>
+	<tr class='<?php echo $dataset->class ?>'>
+		<td><?php echo $dataset->nameURL ?></td>
 		<?php $projectmanager->printDatasetMetaData( $dataset, 'td' ); ?>
 	</tr>
 <?php endforeach ; ?>
