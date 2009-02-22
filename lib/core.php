@@ -253,16 +253,22 @@ class ProjectManager extends ProjectManagerLoader
 	/**
 	 * returns array of form field types
 	 *
-	 * @param none
+	 * @param mixed $index
 	 * @return array
 	 */
-	function getFormFieldTypes()
+	function getFormFieldTypes($index = false)
 	{
-		$form_field_types = array( 1 => __('Text', 'projectmanager'), 2 => __('Textfield', 'projectmanager'), 3 => __('E-Mail', 'projectmanager'), 4 => __('Date', 'projectmanager'), 5 => __('URL', 'projectmanager'), 6 => __('Selection', 'projectmanager'), 7 => __( 'Checkbox List', 'projectmanager'), 8 => __( 'Radio List', 'projectmanager') );
+		$form_field_types = array( 'text' => __('Text', 'projectmanager'), 'textfield' => __('Textfield', 'projectmanager'), 'email' => __('E-Mail', 'projectmanager'), 'date' => __('Date', 'projectmanager'), 'uri' => __('URL', 'projectmanager'), 'select' => __('Selection', 'projectmanager'), 'checkbox' => __( 'Checkbox List', 'projectmanager'), 'radio' => __( 'Radio List', 'projectmanager') );
+		
+		$form_field_types = apply_filters( 'projectmanager_formfields', $form_field_types );
+		
+		if ( $index )
+			return $form_field_types[$index];
+			
 		return $form_field_types;
 	}
 	
-	
+
 	/**
 	 * returns array of months in appropriate language depending on Wordpress locale
 	 *
@@ -872,35 +878,29 @@ class ProjectManager extends ProjectManagerLoader
 		$out = '';
 		if ( $dataset_meta = $this->getDatasetMeta( $dataset->id ) ) {
 			foreach ( $dataset_meta AS $meta ) {
-				/*
-				* Check some special field types
-				*
-				* 1: One line Text
-				* 2: Multiple lines Text
-				* 3: E-Mail
-				* 4: Date
-				* 5: External URL
-				* 6: Dropdown
-				* 7: Checkbox List
-				* 8: Radio List
-				*/
 				$meta_value = (is_string($meta->value)) ? htmlspecialchars( $meta->value ) : $meta->value;
 				
-				if ( 1 == $meta->type || 6 == $meta->type || 7 == $meta->type || 8 == $meta->type )
+				if ( 'text' == $meta->type || 'select' == $meta->type || 'checkbox' == $meta->type || 'radio' == $meta->type ) {
 					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span>";
-				elseif ( 2 == $meta->type ) {
+				} elseif ( 'textfield' == $meta->type ) {
 					if ( strlen($meta_value) > 150 && !$show_all )
 						$meta_value = substr($meta_value, 0, 150)."...";
 					$meta_value = nl2br($meta_value);
 						
 					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span>";
-				} elseif ( 3 == $meta->type && $meta_value != '')
+				} elseif ( 'email' == $meta->type && $meta_value != '') {
 					$meta_value = "<a href='mailto:".$meta_value."' class='projectmanager_email'><span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span></a>";
-				elseif ( 4 == $meta->type ) {
+				} elseif ( 'date' == $meta->type ) {
 					$meta_value = ( $meta_value == '0000-00-00' ) ? '' : $meta_value;
 					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".mysql2date(get_option('date_format'), $meta_value )."</span>";
-				} elseif ( 5 == $meta->type && $meta_value != '')
+				} elseif ( 'uri' == $meta->type && $meta_value != '') {
 					$meta_value = "<a class='projectmanager_url' href='http://".$meta_value."' target='_blank' title='".$meta_value."'><span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span></a>";
+				} elseif ( !empty($meta->type) && is_array($this->getFormFieldTypes($meta->type)) ) {
+					// Data is retried via callback function. Most likely a special field from LeagueManager
+					$field = $this->getFormFieldTypes($meta->type);
+					$meta_value = call_user_func_array($field['callback'], $field['args']);
+				}
+				
 					
 				if ( 1 == $meta->show_on_startpage || $show_all ) {
 					if ( $meta_value != '' ) {

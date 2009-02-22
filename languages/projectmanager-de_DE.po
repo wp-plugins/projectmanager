@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
 "POT-Creation-Date: 2009-02-05 22:08+0000\n"
-"PO-Revision-Date: 2009-02-21 17:41+0100\n"
+"PO-Revision-Date: 2009-02-23 00:14+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -782,4 +782,7 @@ msgstr "Lasse leer für kein Limit"
 
 msgid "To order datasets manually leave datasets per page empty for the time of ordering. Only works with Firefox."
 msgstr "Um Datensätze manuell so ordnen, lasse Datensätze pro Seite leer währenddessen. Funktioniert nur mit Firefox."
+
+msgid "This Field has a callback attached which will get the data from somewhere else!"
+msgstr "Dieses Feld hat eine Callback Funktion angefügt, die die Daten von woanders holt!"
 

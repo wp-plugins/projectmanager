@@ -61,12 +61,13 @@ $options = get_option('projectmanager');
 				<select id="form_type_<?php echo $form_field->id ?>" name="form_type[<?php echo $form_field->id ?>]" size="1" onChange="ProjectManager.toggleOptions(<?php echo $form_field->id ?>, this.value, '<?php _e('Save') ?>', '<?php _e('Cancel') ?>', '<?php _e('Options','projectmanager') ?>', '<?php echo $form_field_options ?>' );">
 				<?php foreach( $projectmanager->getFormFieldTypes() AS $form_type_id => $form_type ) : 
 					$selected = ( $form_type_id == $form_field->type ) ? "selected='selected'" : '';
+					$field_name = is_array($form_type) ? $form_type['name'] : $form_type;
 				?>
-					<option value="<?php echo $form_type_id ?>"<?php echo $selected ?>><?php echo $form_type ?></option>
+					<option value="<?php echo $form_type_id ?>"<?php echo $selected ?>><?php echo $field_name ?></option>
 				<?php endforeach; ?>
 				</select>
 				
-				<?php if ( $form_field->type == 6 || $form_field->type == 7 || $form_field->type == 8 ) : ?>
+				<?php if ( $form_field->type == 'select' || $form_field->type == 'checkbox' || $form_field->type == 'radio' ) : ?>
 				<!-- Thickbox Container and Link for Form Field Options -->
 				<div id="form_field_options_container<?php echo $form_field->id ?>" style="display: inline;" >
 					<div id="form_field_options_div<?php echo $form_field->id ?>" style="width: 150px; height: 80px; overflow: auto; display: none;"><div class="projectmanager_thickbox">

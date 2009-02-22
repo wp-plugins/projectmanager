@@ -85,6 +85,25 @@ function projectmanager_upgrade() {
 		$wpdb->query( "ALTER TABLE {$wpdb->projectmanager_dataset} ADD `order` int( 11 ) NOT NULL default '0'" );
 	}
 	
+	if (version_compare($installed, '2.1', '<')) {
+		if ( $formfields = $wpdb->get_results("SELECT `type`, `id` FROM {$wpdb->projectmanager_projectmeta};") ) {
+			$wpdb->query( "ALTER TABLE {$wpdb->projectmanager_projectmeta} CHANGE `type` `type` varchar( 50 ) NOT NULL" );
+			foreach ( $formfields AS $formfield ) {
+				if ( $formfield->type == 1 ) $type = 'text';
+				elseif ( $formfield->type == 2 ) $type = 'textfield';
+				elseif ( $formfield->type == 3 ) $type = 'email';
+				elseif ( $formfield->type == 4 ) $type = 'date';
+				elseif ( $formfield->type == 5 ) $type = 'uri';
+				elseif ( $formfield->type == 6 ) $type = 'select';
+				elseif ( $formfield->type == 7 ) $type = 'checkbox';
+				elseif ( $formfield->type == 8 ) $type = 'radio';
+		
+				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projectmeta} SET `type` = '%s' WHERE `id` = '%d'", $type, $formfield->id ) );
+			}
+		}
+		
+
+	}
 	
 	// Update dbversion
 	$options['dbversion'] = PROJECTMANAGER_DBVERSION;

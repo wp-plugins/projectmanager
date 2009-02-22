@@ -734,7 +734,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 				$show_on_startpage = isset($form_show_on_startpage[$form_id]) ? 1 : 0;
 				$show_in_profile = isset($form_show_in_profile[$form_id]) ? 1 : 0;
 					
-				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projectmeta} SET `label` = '%s', `type` = '%d', `show_on_startpage` = '%d', `show_in_profile` = '%d', `order` = '%d', `order_by` = '%d' WHERE `id` = '%d' LIMIT 1 ;", $form_label, $type, $show_on_startpage, $show_in_profile, $order, $order_by, $form_id ) );
+				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projectmeta} SET `label` = '%s', `type` = '%s', `show_on_startpage` = '%d', `show_in_profile` = '%d', `order` = '%d', `order_by` = '%d' WHERE `id` = '%d' LIMIT 1 ;", $form_label, $type, $show_on_startpage, $show_in_profile, $order, $order_by, $form_id ) );
 				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `form_id` = '%d' WHERE `form_id` = '%d'", $form_id, $form_id ) );
 			}
 		}
@@ -754,7 +754,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 					$order = $max_order_sql[0]['order'] +1;
 				}
 				
-				$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_projectmeta} (`label`, `type`, `show_on_startpage`, `show_in_profile`, `order`, `order_by`, `project_id`) VALUES ( '%s', '%d', '%d', '%d', '%d', '%d', '%d');", $form_label, $type, $show_on_startpage, $show_in_profile, $order, $order_by, $project_id ) );
+				$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_projectmeta} (`label`, `type`, `show_on_startpage`, `show_in_profile`, `order`, `order_by`, `project_id`) VALUES ( '%s', '%s', '%d', '%d', '%d', '%d', '%d');", $form_label, $type, $show_on_startpage, $show_in_profile, $order, $order_by, $project_id ) );
 				$form_id = mysql_insert_id();
 					
 				// Redirect form field options to correct $form_id if present
