@@ -49,7 +49,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 					add_submenu_page('project_' . $project->id, __( 'Form Fields', 'projectmanager' ), __( 'Form Fields', 'projectmanager' ), 'manage_projects', 'project-formfields_' . $project->id, array(&$this, 'display'));
 					add_submenu_page('project_' . $project->id, __( 'Settings', 'projectmanager' ), __( 'Settings', 'projectmanager' ), 'manage_projects', 'project-settings_' . $project->id, array(&$this, 'display'));
 					add_submenu_page('project_' . $project->id, __('Categories'), __('Categories'), 'manage_projects', 'categories.php');
-					add_submenu_page('project_' . $project->id, __('Import/Export', 'projectmanager'), __('Import/Export', 'projectmanager'), 'projectmanager_admin', 'project-import_' . $project->id, array(&$this, 'display'));
+					add_submenu_page('project_' . $project->id, __('Import/Export', 'projectmanager'), __('Import/Export', 'projectmanager'), 'manage_projects', 'project-import_' . $project->id, array(&$this, 'display'));
 				}
 			}
 		}

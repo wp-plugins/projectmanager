@@ -311,8 +311,7 @@ class ProjectManagerShortcodes extends ProjectManager
 		if ( $dataset = parent::getDataset( $id ) )
 			$dataset->imgURL = $projectmanager->getImageUrl($dataset->image);
 				
-		$filename = ( empty($template) ) ? 'dataset' : $template;
-		
+		$filename = ( empty($template) ) ? 'dataset' : 'dataset-'.$template;
 		$out = $this->loadTemplate( $filename, array('dataset' => $dataset, 'backurl' => $url) );
 
 		if ( $echo )
