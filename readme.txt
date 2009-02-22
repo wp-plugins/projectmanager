@@ -29,6 +29,8 @@ This plugin is a datamanager for any recurrent datasets. It can be used to manag
 
 See [Usage](http://wordpress.org/extend/plugins/projectmanager/other_notes/) for details on shortcodes and the template system.
 
+Due to the growing popularity of my plugins I have launched a [website](http://kolja.galerie-neander.de/)!
+
 [ChangeLog](http://svn.wp-plugins.org/leaguemanager/trunk/changelog.txt)
 
 == Installation ==
