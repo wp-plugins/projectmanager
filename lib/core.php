@@ -898,7 +898,8 @@ class ProjectManager extends ProjectManagerLoader
 				} elseif ( !empty($meta->type) && is_array($this->getFormFieldTypes($meta->type)) ) {
 					// Data is retried via callback function. Most likely a special field from LeagueManager
 					$field = $this->getFormFieldTypes($meta->type);
-					$field['args'] = array( 'dataset' => array( 'id' => $dataset->id, 'name' => $dataset->name ), $field['args'] );
+					$args = array( 'dataset' => array( 'id' => $dataset->id, 'name' => $dataset->name ) );
+					$field['args'] = array_merge( $args, $field['args'] );
 					$meta_value = call_user_func_array($field['callback'], $field['args']);
 				}
 				
