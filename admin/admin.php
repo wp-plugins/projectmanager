@@ -165,8 +165,10 @@ class ProjectManagerAdminPanel extends ProjectManager
 			
 		echo "<script type='text/javascript'>\n";
 		echo "var PRJCTMNGR_HTML_FORM_FIELD_TYPES = \"";
-		foreach ($this->getFormFieldTypes() AS $form_type_id => $form_type)
-			echo "<option value='".$form_type_id."'>".$form_type."</option>";
+		foreach (parent::getFormFieldTypes() AS $form_type_id => $form_type) {
+			$field_name = is_array($form_type) ? $form_type['name'] : $form_type;
+			echo "<option value='".$form_type_id."'>".$field_name."</option>";
+		}
 		echo "\";\n";
 			
 		?>
