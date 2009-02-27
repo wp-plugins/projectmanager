@@ -5,7 +5,7 @@
 		<td><input type="text" name="name" id="name" value="<?php echo $name ?>" size="45" /></td>
 	</tr>
 	<?php endif; ?>
-	<?php if ( 1 == $options['show_image'] ) : ?>
+	<?php if ( 1 == $options['show_image'] && ( !$is_profile_page || ($is_profile_page && $options['show_image_profile']) ) ) : ?>
 	<tr valign="top">
 		<th scope="row"><label for="projectmanager_image"><?php _e( 'Image', 'projectmanager' ) ?></label></th>
 		<td>
@@ -23,16 +23,18 @@
 	<?php endif; ?>
 	<?php if ( $form_fields = $projectmanager->getFormFields() ) : ?>
 		<?php foreach ( $form_fields AS $form_field ) : ?>
+		
+		<?php if ( !$is_profile_page || ( $is_profile_page && $form_field->show_in_profile == 1 && !is_array($projectmanager->getFormFieldTypes($form_field->type)) ) ) : ?>
 		<tr valign="top">
 			<th scope="row"><label for="form_field_<?php echo $form_field->id ?>"><?php echo $form_field->label ?></label></th>
 			<td>
-				<?php if ( 1 == $form_field->type || 3 == $form_field->type || 5 == $form_field->type ) : ?>
+				<?php if ( 'text' == $form_field->type || 'email' == $form_field->type || 'uri' == $form_field->type ) : ?>
 				<input type="text" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" value="<?php echo $meta_data[$form_field->id] ?>" size="45" />
-				<?php elseif ( 2 == $form_field->type ) : ?>
+				<?php elseif ( 'textfield' == $form_field->type ) : ?>
 				<div style="width: 60%;">
 					<textarea class="projectmanager_mceEditor" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" cols="70" rows="8"><?php echo $meta_data[$form_field->id] ?></textarea>
 				</div>
-				<?php elseif ( 4 == $form_field->type ) : ?>
+				<?php elseif ( 'date' == $form_field->type ) : ?>
 				<select size="1" name="form_field[<?php echo $form_field->id ?>][day]">
 					<option value="">Tag</option>
 					<option value="">&#160;</option>
@@ -48,18 +50,23 @@
 					<?php endforeach; ?>
 				</select>
 				<select size="1" name="form_field[<?php echo $form_field->id ?>][year]">
-					<option value="">Jahr</option>
-					<option value="">&#160;</option>
+					<option value="0000">Jahr</option>
+					<option value="0000">&#160;</option>
 					<?php for ( $year = date('Y')-50; $year <= date('Y')+10; $year++ ) : ?>
 						<option value="<?php echo $year ?>"<?php if ( $year == substr($meta_data[$form_field->id], 0, 4) ) echo ' selected="selected"' ?>><?php echo $year ?></option>
 					<?php endfor; ?>
 				</select>
-				<?php elseif ( 6 == $form_field->type ) : $projectmanager->printFormFieldDropDown($form_field->id, $meta_data[$form_field->id], $dataset_id, "form_field[".$form_field->id."]"); ?>
-				<?php elseif ( 7 == $form_field->type ) : $projectmanager->printFormFieldCheckboxList($form_field->id, $meta_data[$form_field->id], $dataset_id, "form_field[".$form_field->id."][]"); ?>
-				<?php elseif ( 8 == $form_field->type ) : $projectmanager->printFormFieldRadioList($form_field->id, $meta_data[$form_field->id], $dataset_id, "form_field[".$form_field->id."]"); ?>
+				<?php elseif ( 'select' == $form_field->type ) : $projectmanager->printFormFieldDropDown($form_field->id, $meta_data[$form_field->id], $dataset_id, "form_field[".$form_field->id."]"); ?>
+				<?php elseif ( 'checkbox' == $form_field->type ) : $projectmanager->printFormFieldCheckboxList($form_field->id, $meta_data[$form_field->id], $dataset_id, "form_field[".$form_field->id."][]"); ?>
+				<?php elseif ( 'radio' == $form_field->type ) : $projectmanager->printFormFieldRadioList($form_field->id, $meta_data[$form_field->id], $dataset_id, "form_field[".$form_field->id."]"); ?>
+				<?php elseif ( !empty($form_field->type) && is_array($projectmanager->getFormFieldTypes($form_field->type)) ) : ?>
+					<input type="hidden" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" value="" />
+					<p><?php _e( 'This Field has a callback attached which will get the data from somewhere else!', 'projectmanager' ) ?></p>
 				<?php endif; ?>
 			</td>
 		</tr>
+		<?php endif; ?>
+		
 		<?php endforeach; ?>
 	<?php endif; ?>
 	<?php if ( -1 != $options['category'] && current_user_can('projectmanager_admin') ) : ?>

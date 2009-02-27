@@ -1,26 +1,3 @@
-function addAttributes () {
-	document.getElementById('list_projects').setAttribute("onChange", "ProjectManagerAjaxShowCategoryFormList('list_projects_category_form', getSelectedValue('list_projects'))", 1);
-	document.getElementById('gallery_projects').setAttribute("onChange", "ProjectManagerAjaxShowCategoryFormList('gallery_projects_category_form', getSelectedValue('gallery_projects'))", 1);
-}
-function getSelectedValue( el_id ) {
- 	return document.getElementById(el_id).value;
-}
-
-function ProjectManagerAjaxShowCategoryFormList( el_id, projectId ) {
-	var ajax = new sack(ProjectManagerAjaxL10n.requestUrl);
-	ajax.execute = 1;
-	ajax.method = 'POST';
-	ajax.setVar( "action", "projectmanager_show_category_selection" );
-	ajax.setVar( "el_id", el_id );
-	ajax.setVar( "project_id", projectId );
-	ajax.onError = function() { alert('Ajax error on saving group'); };
-	ajax.onCompletion = function() { return true; };
-	ajax.runAJAX();
-
-	return true;
-}
-
-
 function init() {
 	tinyMCEPopup.resizeToInnerSize();
 }
@@ -47,63 +24,54 @@ function ProjectManagerInsertLink() {
 	
 	var tagtext;
 	
-	var list = document.getElementById('list_panel');
-	var gallery = document.getElementById('gallery_panel');
-	var categories = document.getElementById('categories_panel');
-	var searchform = document.getElementById('search_panel');
+	var project = document.getElementById('project_panel');
+	var dataset = document.getElementById('dataset_panel');
+	var search = document.getElementById('search_panel');
 	
 	// who is active ?
-	if (list.className.indexOf('current') != -1) {
-		var projectId = document.getElementById('list_projects').value;
-		var showtype = getCheckedValue(document.getElementsByName('list_showtype'));
-		var grpid = document.getElementById('list_projects_category_form').value;
-		if ( grpid == 'undefined' ) {
-			grpid = '';
+	if (project.className.indexOf('current') != -1) {
+		var projectId = document.getElementById('projects').value;
+		var template = getCheckedValue(document.getElementsByName('project_template'));
+		var cat = document.getElementById('cat_id').value;
+		var orderby = document.getElementById('orderby').value;
+		var formfield_id = document.getElementById('formfield_id').value;
+		var order = document.getElementById('order').value;
+		
+		if ( orderby != '' ) {
+			if ( orderby == 'formfields' && formfield_id != '' )
+				orderby = " orderby=" + orderby + "-" + formfield_id;
+			else
+				orderby = " orderby=" + orderby;
+		}
+		if ( order != '' ) {	
+			order = " order=" + order;
 		}
 		
-		if ( grpid == -1 )
-			var grpid = '';
-			
+		if ( cat <= 0 )
+			cat = '';
+		else
+			cat = " cat_id=" + cat;
+	
 		if (projectId != 0)
-			tagtext = "[dataset_list project_id=" + projectId + " output=" + showtype + " cat_id=" + grpid + "]";
+			tagtext = "[project id=" + projectId + " template=" + template + cat + orderby + order +"]";
 		else
 			tinyMCEPopup.close();
 	}
 	
-	if (gallery.className.indexOf('current') != -1) {
-		var projectId = document.getElementById('gallery_projects').value;
-		var numCols = document.getElementById('num_cols').value;
-		var grpid = document.getElementById('gallery_projects_category_form').value;
-		
-		if ( grpid == -1 ) {
-			var grpid = '';
-		} else if ( grpid == 'undefined' ) {
-			grpid = '';
-		}
-			
-		if (projectId != 0)
-			tagtext = "[dataset_gallery project_id" + projectId + " num_cols=" + numCols + " cat_id=" + grpid + "]";
+	if (dataset.className.indexOf('current') != -1) {
+		var datasetId = document.getElementById('datasets').value;
+		if (datasetId != 0)
+			tagtext = "[dataset id=" + datasetId + "]";
 		else
 			tinyMCEPopup.close();
 	}
 	
-	/*if (categories.className.indexOf('current') != -1) {
-		var projectId = document.getElementById('categories_projects').value;
-		var showtype = getCheckedValue(document.getElementsByName('categories_showtype'));
-		var pos = document.getElementById('align_categories').value;
-		
-		if (projectId != 0)
-			tagtext = "[prjctmngr_category_selection=" + projectId + "," + showtype + "," + pos + "]";	
-		else
-			tinyMCEPopup.close();
-	}*/
-	
-	if (searchform.className.indexOf('current') != -1) {
+	if (search.className.indexOf('current') != -1) {
 		var projectId = document.getElementById('search_projects').value;
-		var pos = document.getElementById('align_search').value;
-		var display = document.getElementById('display_search').value;
+		var template = getCheckedValue(document.getElementsByName('search_display'));
+		
 		if (projectId != 0)
-			tagtext = "[projectmanager_search_form project_id=" + projectId + " align=" + pos + " display=" + display + "]";
+			tagtext = "[project_search project_id=" + projectId + " template=" + template + "]";
 		else
 			tinyMCEPopup.close();
 	}

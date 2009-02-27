@@ -49,7 +49,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 					add_submenu_page('project_' . $project->id, __( 'Form Fields', 'projectmanager' ), __( 'Form Fields', 'projectmanager' ), 'manage_projects', 'project-formfields_' . $project->id, array(&$this, 'display'));
 					add_submenu_page('project_' . $project->id, __( 'Settings', 'projectmanager' ), __( 'Settings', 'projectmanager' ), 'manage_projects', 'project-settings_' . $project->id, array(&$this, 'display'));
 					add_submenu_page('project_' . $project->id, __('Categories'), __('Categories'), 'manage_projects', 'categories.php');
-					add_submenu_page('project_' . $project->id, __('Import/Export', 'projectmanager'), __('Import/Export', 'projectmanager'), 'projectmanager_admin', 'project-import_' . $project->id, array(&$this, 'display'));
+					add_submenu_page('project_' . $project->id, __('Import/Export', 'projectmanager'), __('Import/Export', 'projectmanager'), 'manage_projects', 'project-import_' . $project->id, array(&$this, 'display'));
 				}
 			}
 		}
@@ -156,7 +156,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 */
 	function loadScripts()
 	{
-		wp_register_script( 'projectmanager', PROJECTMANAGER_URL.'/admin/js/functions.js', array( 'colorpicker', 'sack' ), PROJECTMANAGER_VERSION );
+		wp_register_script( 'projectmanager', PROJECTMANAGER_URL.'/admin/js/functions.js', array( 'colorpicker', 'sack', 'scriptaculous', 'prototype' ), PROJECTMANAGER_VERSION );
 		wp_register_script( 'projectmanager_formfields', PROJECTMANAGER_URL.'/admin/js/formfields.js', array( 'projectmanager', 'thickbox' ), PROJECTMANAGER_VERSION );
 		wp_register_script ('projectmanager_ajax', PROJECTMANAGER_URL.'/admin/js/ajax.js', array( 'projectmanager' ), PROJECTMANAGER_VERSION );
 		
@@ -239,7 +239,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 				$this->printMessage();
 			}
 			require_once (dirname (__FILE__) . '/settings-global.php');
-		} elseif(!$include) {
+		} else {
 			echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
 		}
 	}
@@ -263,6 +263,26 @@ class ProjectManagerAdminPanel extends ProjectManager
 			}
 		}
 		return $this->single;
+	}
+	
+	
+	/**
+	 * gets order of datasets
+	 *
+	 * @param string $input serialized string with order
+	 * @param string $listname ID of list to sort
+	 * @return sorted array of parameters
+	 */
+ 	function getOrder( $input, $listname = 'the-list' )
+	{
+		parse_str( $input, $input_array );
+		$input_array = $input_array[$listname];
+		$order_array = array();
+		for ( $i = 0; $i < count($input_array); $i++ ) {
+			if ( $input_array[$i] != '' )
+				$order_array[$i+1] = $input_array[$i];
+		}
+		return $order_array;	
 	}
 	
 	
@@ -303,9 +323,26 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 * @param string $selected
 	 * @return string
 	 */
+	function datasetOrderbyOptions( $selected )
+	{
+		$options = array( 'order' => __('Manual', 'projectmanager'), 'id' => __('ID', 'projectmanager'), 'name' => __('Name','projectmanager'), 'formfields' => __('Formfields', 'projectmanager') );
+		
+		foreach ( $options AS $option => $title ) {
+			$select = ( $selected == $option ) ? ' selected="selected"' : '';
+			echo '<option value="'.$option.'"'.$select.'>'.$title.'</option>';
+		}
+	}
+	
+	
+	/**
+	 * get possible order options
+	 *
+	 * @param string $selected
+	 * @return string
+	 */
 	function datasetOrderOptions( $selected )
 	{
-		$options = array( 'id' => __('ID', 'projectmanager'), 'name' => __('Name','projectmanager'), 'formfields' => __('Formfields', 'projectmanager') );
+		$options = array( 'ASC' => __('Ascending','projectmanager'), 'DESC' => __('Descending','projectmanager') );
 		
 		foreach ( $options AS $option => $title ) {
 			$select = ( $selected == $option ) ? ' selected="selected"' : '';
@@ -392,7 +429,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 						foreach ( $cols AS $col => $form_field_id ) {
 							$meta[$form_field_id] = $line[$col];
 						}
-						if ( $name != '' ) {
+						
+						if ( $line && !empty($name) ) {
 							$this->addDataset($project_id, $name, array(), $meta);
 							$i++;
 						}
@@ -425,13 +463,13 @@ class ProjectManagerAdminPanel extends ProjectManager
 		
 		$this->project_id = $project_id;
 		$projectmanager->initialize($project_id);
-		$projectmanager->getProject();
+		$project = $projectmanager->getProject();
 			
-		$filename = $projectmanager->getProjectTitle()."_".date("Y-m-d").".csv";
+		$filename = $project->title."_".date("Y-m-d").".csv";
 		/*
 		* Generate Header
 		*/
-		$contents = "Name\tCategories";
+		$contents = __('Name','projectmanager')."\t".__('Categories','projectmanager');
 		foreach ( $projectmanager->getFormFields() AS $form_field )
 			$contents .= "\t".$form_field->label;
 		
@@ -439,6 +477,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 			$contents .= "\n".$dataset->name."\t".$projectmanager->getSelectedCategoryTitles(maybe_unserialize($dataset->cat_ids));
 
 			foreach ( $projectmanager->getDatasetMeta( $dataset->id ) AS $meta ) {
+				// Remove line breaks
+				$meta->value = str_replace("\r\n", "", stripslashes($meta->value));
 				$contents .= "\t".$meta->value;
 			}
 		}
@@ -468,6 +508,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 			$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_dataset} (name, cat_ids, project_id, user_id) VALUES ('%s', '%s', '%d', '%d')", $name, maybe_serialize($cat_ids), $project_id, $current_user->ID ) );
 			$dataset_id = $wpdb->insert_id;
 				
+			
 			if ( $dataset_meta ) {
 				foreach ( $dataset_meta AS $meta_id => $meta_value ) {
 					if ( is_array($meta_value) ) {
@@ -525,7 +566,6 @@ class ProjectManagerAdminPanel extends ProjectManager
 			// Change Dataset owner if supplied
 			if ( $owner )
 				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `user_id` = '%d' WHERE `id` = '%d'", $owner, $dataset_id ) );
-			
 			
 			if ( $dataset_meta ) {
 				foreach ( $dataset_meta AS $meta_id => $meta_value ) {
@@ -623,6 +663,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 				$options = $options['project_options'][$this->project_id];
 				
 				if ( file_exists($new_file) && !$overwrite ) {
+					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `image` = '%s' WHERE id = '%d'", basename($file['name']), $dataset_id ) );
+			
 					$this->setMessage( __('File exists and is not uploaded. Set the overwrite option if you want to replace it.','projectmanager'), true );
 				} else {
 					if ( move_uploaded_file($file['tmp_name'], $new_file) ) {
@@ -657,16 +699,19 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 * @param int $project_id
 	 * @param array $form_name
 	 * @param array $form_type
+	 * @param array $form_show_on_startpage
+	 * @param array $form_show_in_profile
 	 * @param array $form_order
 	 * @param array $form_order_by
 	 * @param array $new_form_name
 	 * @param array $new_form_type
+	 * @param array $new_show_in_profile
 	 * @param array $new_form_order
 	 * @param array $new_form_order_by
 	 *
 	 * @return string
 	 */
-	function setFormFields( $project_id, $form_name, $form_type, $form_show_on_startpage, $form_order, $form_order_by, $new_form_name, $new_form_type, $new_form_show_on_startpage, $new_form_order, $new_form_order_by )
+	function setFormFields( $project_id, $form_name, $form_type, $form_show_on_startpage, $form_show_in_profile, $form_order, $form_order_by, $new_form_name, $new_form_type, $new_form_show_on_startpage, $new_form_show_in_profile, $new_form_order, $new_form_order_by )
 	{
 		global $wpdb;
 		
@@ -687,8 +732,9 @@ class ProjectManagerAdminPanel extends ProjectManager
 				$order = $form_order[$form_id];
 				$order_by = isset($form_order_by[$form_id]) ? 1 : 0;
 				$show_on_startpage = isset($form_show_on_startpage[$form_id]) ? 1 : 0;
+				$show_in_profile = isset($form_show_in_profile[$form_id]) ? 1 : 0;
 					
-				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projectmeta} SET `label` = '%s', `type` = '%d', `show_on_startpage` = '%d', `order` = '%d', `order_by` = '%d' WHERE `id` = '%d' LIMIT 1 ;", $form_label, $type, $show_on_startpage, $order, $order_by, $form_id ) );
+				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projectmeta} SET `label` = '%s', `type` = '%s', `show_on_startpage` = '%d', `show_in_profile` = '%d', `order` = '%d', `order_by` = '%d' WHERE `id` = '%d' LIMIT 1 ;", $form_label, $type, $show_on_startpage, $show_in_profile, $order, $order_by, $form_id ) );
 				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `form_id` = '%d' WHERE `form_id` = '%d'", $form_id, $form_id ) );
 			}
 		}
@@ -697,7 +743,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 			foreach ($new_form_name AS $tmp_form_id => $form_label) {
 				$type = $new_form_type[$tmp_form_id];
 				$order_by = isset($new_form_order_by[$tmp_form_id]) ? 1 : 0;
-				$show_on_startpage = (isset($new_form_show_on_startpage[$tmp_form_id])) ? 1 : 0;
+				$show_on_startpage = isset($new_form_show_on_startpage[$tmp_form_id]) ? 1 : 0;
+				$show_in_profile = isset($new_form_show_in_profile[$tmp_form_id]) ? 1 : 0;
 					
 				$max_order_sql = "SELECT MAX(`order`) AS `order` FROM {$wpdb->projectmanager_projectmeta};";
 				if ($new_form_order[$tmp_form_id] != '') {
@@ -707,7 +754,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 					$order = $max_order_sql[0]['order'] +1;
 				}
 				
-				$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_projectmeta} (`label`, `type`, `show_on_startpage`, `order`, `order_by`, `project_id`) VALUES ( '%s', '%d', '%d', '%d', '%d', '%d');", $form_label, $type, $show_on_startpage, $order, $order_by, $project_id ) );
+				$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_projectmeta} (`label`, `type`, `show_on_startpage`, `show_in_profile`, `order`, `order_by`, `project_id`) VALUES ( '%s', '%s', '%d', '%d', '%d', '%d', '%d');", $form_label, $type, $show_on_startpage, $show_in_profile, $order, $order_by, $project_id ) );
 				$form_id = mysql_insert_id();
 					
 				// Redirect form field options to correct $form_id if present
@@ -719,7 +766,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 				/*
 				* Populate default values for every dataset
 				*/
-				if ( $datasets = $this->getDatasets() ) {
+				if ( $datasets = $wpdb->get_results( "SELECT `id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$project_id}" ) ) {
 					foreach ( $datasets AS $dataset ) {
 						$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ( '%d', '%d', '' );", $form_id, $dataset->id ) );
 					}

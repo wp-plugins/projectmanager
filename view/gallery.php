@@ -4,52 +4,47 @@ Template page for dataset gallery
 
 The following variables are usable:
 
+	$project: contains data for the project
 	$datasets: contains all datasets for current selection
-	$num_cols: number of colums (default: 3)
+	$pagination: contains the pagination
 	
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
 */
 ?>
-<?php do_action('projectmanager_tablenav'); ?>
 
-<?php if ( $datasets ) : ?>
-
-<div class='dataset_gallery'>
-	<div class='gallery-row'>
-				
-	<?php foreach ( $datasets AS $dataset ) : ?>
-	<?php
-		$i++;
-		$url = get_permalink();
-		$url = add_query_arg('show', $dataset->id, $url);
-		$url = ($this->isCategory()) ? add_query_arg('cat_id', $this->getCatID(), $url) : $url;
-								
-		$before_name = '<a href="'.$url.'">';
-		$after_name = '</a>';
-					
-		$width = floor(100/$num_cols);
-	?>
-	<div class='gallery-item' style='width: <?php echo $width ?>%;'>
-		<?php if ( $dataset->image != '' ) : ?>
-		<?php echo $before_name ?><img src="<?php echo parent::getImageUrl('/thumb.'.$dataset->image) ?>" alt="<?php echo $dataset->name ?>" title="<?php echo $dataset->name ?>" /><?php echo $after_name ?>;
+<?php if ( isset($_GET['show']) && $project['single'] ) : ?>
+ 	<?php do_action('projectmanager_dataset', array('id' => $_GET['show'], 'echo' => 1), true) ?>
+<?php else: ?>
 	
-		<p class='caption'><?php echo $before_name.$dataset->name.$after_name ?></p>
+<?php if ( $project['tablenav'] ) do_action('projectmanager_tablenav'); ?>
+<?php if ( $datasets ) : $i = 0; ?>
+<div class='dataset_gallery'>
+	<?php foreach ( $datasets AS $dataset ) : $i++; ?>
+	
+	<div class='gallery-item' style='width: <?php echo $project['dataset_width'] ?>;'>
+		<div class="gallery-image">
+			<?php if ( !empty($dataset->image) ) : ?>
+			<a href="<?php echo $dataset->URL ?>"><img src="<?php echo $dataset->thumbURL ?>" alt="<?php echo $dataset->name ?>" title="<?php echo $dataset->name ?>" /></a>
+			<?php endif; ?>
+	
+			<p class='caption'><a href="<?php echo $dataset->URL ?>"><?php echo $dataset->name ?></a></p>
+		</div>
 	</div>
 	
-	<?php if ( ( ( 0 == $i % $num_cols)) && ( $i < count($datasets) ) ) : ?>
-	</div><div class='gallery-row'>
+	<?php if ( 0 == $i % $project['num_cols'] ) : ?>
+	<br style="clear: both;" />
 	<?php endif; ?>
-			
+
 	<?php endforeach; ?>
 	</div>
 </div>
 
 <br style='clear: both;' />
 
-<?php if ( !parent::isSearch() ) : ?>
-<p class='page-numbers'><?php echo parent::getPageLinks() ?></p>
-<?php endif; ?>
+<p class='page-numbers'><?php echo $pagination ?></p>
 
 <?php else : ?>
 <p class='error'><?php _e( 'Nothing found', 'projectmanager') ?></p>
+<?php endif; ?>
+
 <?php endif; ?>

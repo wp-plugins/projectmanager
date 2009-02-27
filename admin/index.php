@@ -1,5 +1,5 @@
 <?php
-if ( !current_user_can( 'manage_projects' ) ) : 
+if ( !current_user_can( 'manage_projects' ) && !current_user_can( 'projectmanager_admin' ) ) : 
      echo '<div class="error"><p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p></div>';
 else :
 
@@ -16,7 +16,7 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 		check_admin_referer('projectmanager_projects-bulk');
 		if ( 'delete' == $_POST['action'] ) {
 			foreach ( $_POST['project'] AS $project_id )
-				$projectmanager->delProject( $project_id );
+				$this->delProject( $project_id );
 		}
 }
 ?>

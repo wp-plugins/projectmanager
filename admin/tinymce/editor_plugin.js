@@ -20,7 +20,7 @@
 				ed.windowManager.open({
 					file : url + '/window.php',
 					width : 360 + ed.getLang('ProjectManager.delta_width', 0),
-					height : 210 + ed.getLang('ProjectManager.delta_height', 0),
+					height : 230 + ed.getLang('ProjectManager.delta_height', 0),
 					inline : 1
 				}, {
 					plugin_url : url // Plugin absolute URL
@@ -66,7 +66,7 @@
 					author 	  : 'Kolja Schleich',
 					authorurl : 'http://wordpress.org/extend/plugins/projectmanager/',
 					infourl   : 'http://wordpress.org/extend/plugins/projectmanager/',
-					version   : "1.1"
+					version   : "1.8.2"
 			};
 		}
 	});

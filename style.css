@@ -9,7 +9,12 @@ div.projectmanager_tablenav {
 	margin-top: 1em;
 	clear: both;
 }
-div.projectmanager_tablenav select {
+div.projectmanager_tablenav select.postform {
+	padding: 0;
+	margin: 0;
+	background: white;
+	}
+div.projectmanager_tablenav select, div.projectmanager_tablenav select.postform {
 	margin-right: 0.5em;
 	}
 
@@ -40,19 +45,16 @@ table.projectmanager td img {
 	clear: both;
 	padding-top: 1em;
 }
-.dataset_gallery .gallery-row {
-	clear: both;
-}
 .dataset_gallery .gallery-item {
 	float: left;
 	}
-.dataset_gallery .gallery-row img {
+.dataset_gallery .gallery-image img {
 	display: block;
 	border: 1px solid #cfcfcf;
 	margin: 0.5em auto;
 	padding: 4px;
 }
-.dataset_gallery .gallery-row img:hover {
+.dataset_gallery .gallery-image img:hover {
 	padding: 0;
 	border: 5px solid #cfcfcf;
 	}
@@ -128,6 +130,8 @@ p.error {
 /**
  * @section Administration
  */
+#datasets tr { cursor: move; }
+
 a.image_link { border-bottom: none !important; }
 	
 p.projectmanager_breadcrumb { float: right; margin: 1.5em 1.5em 0em auto; }
@@ -135,6 +139,7 @@ p.projectmanager_breadcrumb { float: right; margin: 1.5em 1.5em 0em auto; }
 div.projectmanager_thickbox { text-align: center; }
 div.projectmanager_thickbox input, div.projectmanager_thickbox textarea, div.projectmanager_thickbox select { margin-top: 1em; }
 div.projectmanager_thickbox ul { margin: 1em auto auto 1em; }
+div.projectmanager_thickbox p { text-align: left; margin: 0; padding: 0}
 	
 div#projectmanager-category-adder {
 	height: 180px;

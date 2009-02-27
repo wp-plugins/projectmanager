@@ -1,8 +1,20 @@
+ProjectManager.saveOrder = function(order) {
+	var ajax = new sack(ProjectManagerAjaxL10n.requestUrl);
+	ajax.execute = 1;
+	ajax.method = 'POST';
+	ajax.setVar( "action", "projectmanager_save_dataset_order" );
+	ajax.setVar( "order", order );
+	ajax.onError = function() { alert('Ajax error on saving dataset order'); };
+	ajax.onCompletion = function() { return true; };
+	ajax.runAJAX();
+}
+
 ProjectManager.ajaxSaveDatasetName = function( dataset_id ) {
 	tb_remove();
 	var dataset_name = document.getElementById('dataset_name' + dataset_id).value;
 	window.setTimeout("ProjectManager.datasetnameSpanFadeOut(" + dataset_id + ",'" + dataset_name + "')", 50);
 }
+
 ProjectManager.datasetnameSpanFadeOut = function( dataset_id, dataset_name ) {
 	jQuery("span#dataset_name_text" + dataset_id).fadeIn('fast', function() {
 		var ajax = new sack(ProjectManagerAjaxL10n.requestUrl);

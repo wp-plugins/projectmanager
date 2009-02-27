@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * Core class for the WordPress plugin ProjectManager
+ * 
+ * @author 	Kolja Schleich
+ * @package	ProjectManager
+ * @copyright 	Copyright 2008-2009
+*/
 class ProjectManager extends ProjectManagerLoader
 {
 	/**
@@ -111,7 +117,7 @@ class ProjectManager extends ProjectManagerLoader
 		$options = $options['project_options'][$project_id];
 		
 		$this->project_id = $project_id;
-		$this->per_page = isset($options['per_page']) ? $options['per_page'] : 20;
+		$this->per_page = ( isset($options['per_page']) && !empty($options['per_page']) ) ? $options['per_page'] : false;
 
 		$this->num_items = $this->getNumDatasets($this->project_id);
 		$this->num_max_pages = ( 0 == $this->per_page || $this->isSearch() ) ? 1 : ceil( $this->num_items/$this->per_page );
@@ -198,11 +204,12 @@ class ProjectManager extends ProjectManagerLoader
 	/**
 	 * get dataset order
 	 *
-	 * @param none
+	 * @param boolean $orderby
+	 * @param boolean $order
 	 * @return boolean|int false if ordered by name or ID otherwise formfield ID to order by
 	 */
-	function setDatasetOrder( )
-	{
+	function setDatasetOrder( $orderby = false, $order = false )
+	{	
 		$options = get_option('projectmanager');
 		$options = $options['project_options'][$this->project_id];
 
@@ -220,9 +227,9 @@ class ProjectManager extends ProjectManagerLoader
 			$this->orderby = ( $_GET['orderby'] != '' ) ? $_GET['orderby'] : 'name';
 			$formfield_id = $orderby[1];
 			$this->order = ( $_GET['order'] != '' ) ? $_GET['order'] : 'ASC';
-		} elseif ( isset($options['dataset_orderby']) && $options['dataset_orderby'] != 'formfields' && $options['dataset_orderby'] != '' ) {
+		} elseif ( isset($options['dataset_orderby']) && $options['dataset_orderby'] != 'formfields' && !empty($options['dataset_orderby']) ) {
 			$this->orderby = $options['dataset_orderby'];
-			$this->order = 'ASC';
+			$this->order = (isset($options['dataset_order']) && !empty($options['dataset_order'])) ? $options['dataset_order'] : 'ASC';
 		} else {
 			$this->orderby = 'name';
 			$this->order = 'ASC';
@@ -239,23 +246,29 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function getDatasetOrder()
 	{
-		return $this->orderby." ".$this->order;
+		return "`{$this->orderby}` {$this->order}";
 	}
 
 
 	/**
 	 * returns array of form field types
 	 *
-	 * @param none
+	 * @param mixed $index
 	 * @return array
 	 */
-	function getFormFieldTypes()
+	function getFormFieldTypes($index = false)
 	{
-		$form_field_types = array( 1 => __('Text', 'projectmanager'), 2 => __('Textfield', 'projectmanager'), 3 => __('E-Mail', 'projectmanager'), 4 => __('Date', 'projectmanager'), 5 => __('URL', 'projectmanager'), 6 => __('Selection', 'projectmanager'), 7 => __( 'Checkbox List', 'projectmanager'), 8 => __( 'Radio List', 'projectmanager') );
+		$form_field_types = array( 'text' => __('Text', 'projectmanager'), 'textfield' => __('Textfield', 'projectmanager'), 'email' => __('E-Mail', 'projectmanager'), 'date' => __('Date', 'projectmanager'), 'uri' => __('URL', 'projectmanager'), 'select' => __('Selection', 'projectmanager'), 'checkbox' => __( 'Checkbox List', 'projectmanager'), 'radio' => __( 'Radio List', 'projectmanager') );
+		
+		$form_field_types = apply_filters( 'projectmanager_formfields', $form_field_types );
+		
+		if ( $index )
+			return $form_field_types[$index];
+			
 		return $form_field_types;
 	}
 	
-	
+
 	/**
 	 * returns array of months in appropriate language depending on Wordpress locale
 	 *
@@ -523,7 +536,7 @@ class ProjectManager extends ProjectManagerLoader
 	{
 		global $wpdb;
 	
-		$sql = "SELECT `label`, `type`, `order`, `order_by`, `show_on_startpage`, `id` FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = {$this->project_id} ORDER BY `order` ASC;";
+		$sql = "SELECT `label`, `type`, `order`, `order_by`, `show_on_startpage`, `show_in_profile`, `id` FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = {$this->project_id} ORDER BY `order` ASC;";
 		return $wpdb->get_results( $sql );
 	}
 	
@@ -627,23 +640,31 @@ class ProjectManager extends ProjectManagerLoader
 	/**
 	 * gets all datasets for a project
 	 *
-	 * @param int $dataset_id
-	 * @param int $project_id
-	 * @param bool $limit
-	 * @param string $order
+	 * @param boolean $limit
+	 * @param string orderby field to orderby
+	 * @param string $order ASC|DESC
+	 * @param int $formfield_id FormField ID to order by
 	 * @return array
 	 */
-	function getDatasets( $limit = false )
+	function getDatasets( $limit = false, $orderby = false, $order = false, $formfield_id = false )
 	{
 		global $wpdb;
 		$options = get_option('projectmanager');
 		
-		// Set ordering
-		$formfield_id = $this->setDatasetOrder();
-
-		$sql_order = ( $this->orderby != 'name' && $this->orderby != 'id' ) ? 'name '.$this->order : $this->getDatasetOrder();
+		if ( $orderby ) $this->orderby = $orderby;
+		if ( $order ) $this->order = $order;
 		
-		if ( $limit ) $offset = ( $this->getCurrentPage() - 1 ) * $this->per_page;
+		// Set ordering
+		if ( !$formfield_id )
+			$formfield_id = $this->setDatasetOrder();
+
+		if ( $orderby && $orderby != 'formfields' ) {
+			$sql_order = "`$orderby` $order";
+		} else {
+			$sql_order = ( $this->orderby != 'name' && $this->orderby != 'id' && $this->orderby != 'order' ) ? '`name` '.$this->order : $this->getDatasetOrder();
+		}
+		
+		if ( $limit && $this->per_page ) $offset = ( $this->getCurrentPage() - 1 ) * $this->per_page;
 
 		$sql = "SELECT `id`, `name`, `image`, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id}";
 		
@@ -651,7 +672,7 @@ class ProjectManager extends ProjectManagerLoader
 			$sql .= $this->getCategorySearchString();
 		
 		$sql .=  " ORDER BY ".$sql_order;
-		$sql .= ( $limit ) ? " LIMIT ".$offset.",".$this->per_page.";" : ";";
+		$sql .= ( $limit && $this->per_page ) ? " LIMIT ".$offset.",".$this->per_page.";" : ";";
 		
 		$datasets = $wpdb->get_results($sql);
 		
@@ -672,6 +693,7 @@ class ProjectManager extends ProjectManagerLoader
 	{
 		global $wpdb;
 		$dataset = $wpdb->get_results( "SELECT `id`, `name`, `image`, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} WHERE `id` = {$dataset_id}" );
+			
 		return $dataset[0];
 	}
 		
@@ -792,12 +814,16 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function getDatasetPage( $dataset_id )
 	{
+		if ( !$this->getPerPage() )
+			return false;
+			
 		$datasets = $this->getDatasets();
 		$offsets = array();
 		foreach ( $datasets AS $o => $d ) {
 			$offsets[$d->id] = $o;
 		}
 		$number = $offsets[$dataset_id] + 1;
+		
 		return ceil($number/$this->getPerPage());
 	}
 	
@@ -828,7 +854,7 @@ class ProjectManager extends ProjectManagerLoader
 		if ( $form_fields = $this->getFormFields() ) {
 			foreach ( $form_fields AS $form_field ) {
 				if ( 1 == $form_field->show_on_startpage )
-				$out .= "\n\t<th scop='col'>".$form_field->label."</th>";
+				$out .= "\n\t<th scope='col'>".$form_field->label."</th>";
 			}
 		}
 		return $out;
@@ -852,37 +878,34 @@ class ProjectManager extends ProjectManagerLoader
 		$out = '';
 		if ( $dataset_meta = $this->getDatasetMeta( $dataset->id ) ) {
 			foreach ( $dataset_meta AS $meta ) {
-				/*
-				* Check some special field types
-				*
-				* 1: One line Text
-				* 2: Multiple lines Text
-				* 3: E-Mail
-				* 4: Date
-				* 5: External URL
-				* 6: Dropdown
-				* 7: Checkbox List
-				* 8: Radio List
-				*/
 				$meta_value = (is_string($meta->value)) ? htmlspecialchars( $meta->value ) : $meta->value;
 				
-				if ( 1 == $meta->type || 6 == $meta->type || 7 == $meta->type || 8 == $meta->type )
+				if ( 'text' == $meta->type || 'select' == $meta->type || 'checkbox' == $meta->type || 'radio' == $meta->type ) {
 					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span>";
-				elseif ( 2 == $meta->type ) {
+				} elseif ( 'textfield' == $meta->type ) {
 					if ( strlen($meta_value) > 150 && !$show_all )
 						$meta_value = substr($meta_value, 0, 150)."...";
 					$meta_value = nl2br($meta_value);
 						
 					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span>";
-				} elseif ( 3 == $meta->type && $meta_value != '')
+				} elseif ( 'email' == $meta->type && $meta_value != '') {
 					$meta_value = "<a href='mailto:".$meta_value."' class='projectmanager_email'><span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span></a>";
-				elseif ( 4 == $meta->type )
+				} elseif ( 'date' == $meta->type ) {
+					$meta_value = ( $meta_value == '0000-00-00' ) ? '' : $meta_value;
 					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".mysql2date(get_option('date_format'), $meta_value )."</span>";
-				elseif ( 5 == $meta->type && $meta_value != '')
+				} elseif ( 'uri' == $meta->type && $meta_value != '') {
 					$meta_value = "<a class='projectmanager_url' href='http://".$meta_value."' target='_blank' title='".$meta_value."'><span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span></a>";
+				} elseif ( !empty($meta->type) && is_array($this->getFormFieldTypes($meta->type)) ) {
+					// Data is retried via callback function. Most likely a special field from LeagueManager
+					$field = $this->getFormFieldTypes($meta->type);
+					$args = array( 'dataset' => array( 'id' => $dataset->id, 'name' => $dataset->name ) );
+					$field['args'] = array_merge( $args, $field['args'] );
+					$meta_value = call_user_func_array($field['callback'], $field['args']);
+				}
+				
 					
 				if ( 1 == $meta->show_on_startpage || $show_all ) {
-					if ( $meta->value != '' ) {
+					if ( $meta_value != '' ) {
 						if ( 'dl' == $output ) {
 							$out .= "\n\t<dt>".$meta->label."</dt><dd>".$meta_value."</dd>";
 						} elseif ( 'li' == $output ) {
@@ -894,7 +917,10 @@ class ProjectManager extends ProjectManagerLoader
 							$out .= "\n\t</".$output.">";
 						}
 					} elseif ( 'td' == $output ) {
-						$out .= "\n\t<".$output.">&#160;</".$output.">";
+						$out .= "\n\t<".$output.">";
+						$out .= $this->getThickbox( $dataset->id, $meta->form_field_id, $meta->type, maybe_unserialize($meta->value), $dataset->user_id );
+						$this->getThickboxLink($dataset->id, $meta->form_field_id, $meta->type, $meta->label." ".__('of','projectmanager')." ".$dataset->name, $dataset->user_id);
+						$out .= "</".$output.">";
 					}
 				}
 			}
@@ -1091,12 +1117,15 @@ class ProjectManager extends ProjectManagerLoader
 	/**
 	 * hasDetails() - check if datasets have details
 	 * 
-	 * @param int $project_id
+	 * @param boolean $single
 	 * @return boolean
 	 */
-	function hasDetails()
+	function hasDetails($single = true)
 	{
 		global $wpdb;
+		
+		if ( !$single ) return false;
+		
 		$num_form_fields = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = {$this->project_id} AND `show_on_startpage` = 0" );
 			
 		if ( $num_form_fields > 0 )

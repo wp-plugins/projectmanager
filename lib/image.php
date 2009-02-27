@@ -5,7 +5,7 @@
 * 
 * @author 	Kolja Schleich
 * @package	ProjectManager
-* @copyright 	Copyright 2009
+* @copyright 	Copyright 2008-2009
 */
 
 class ProjectManagerImage extends ProjectManager
@@ -46,8 +46,6 @@ class ProjectManagerImage extends ProjectManager
 			require_once( dirname (__FILE__) . '/thumbnail.inc.php' );
 			
 		$this->image = $imagefile;
-		if ( $imagefile )
-			$this->thumbnail = new Thumbnail($imagefile);
 	}
 	function LeagueManagerImage($imagefile)
 	{
@@ -103,9 +101,9 @@ class ProjectManagerImage extends ProjectManager
 	 */
 	function createThumbnail( $dims, $new_image )
 	{
-		//$thumb = new Thumbnail($image);
-		$this->thumbnail->resize( $dims['width'], $dims['heigth'] );
-		$this->thumbnail->save($new_image);
+		$thumbnail = new Thumbnail($this->image);
+		$thumbnail->resize( $dims['width'], $dims['heigth'] );
+		$thumbnail->save($new_image);
 	}
 }
 

@@ -8,7 +8,7 @@ $projectmanager->getProject();
 
 if ( isset($_POST['saveFormFields']) ) {
 	check_admin_referer('projectmanager_manage-formfields');
-	$this->setFormFields( $_POST['project_id'], $_POST['form_name'], $_POST['form_type'], $_POST['show_on_startpage'], $_POST['form_order'], $_POST['order_by'], $_POST['new_form_name'], $_POST['new_form_type'], $_POST['new_show_on_startpage'], $_POST['new_form_order'], $_POST['new_order_by'] );
+	$this->setFormFields( $_POST['project_id'], $_POST['form_name'], $_POST['form_type'], $_POST['show_on_startpage'], $_POST['show_in_profile'], $_POST['form_order'], $_POST['order_by'], $_POST['new_form_name'], $_POST['new_form_type'], $_POST['new_show_on_startpage'], $_POST['new_show_in_profile'], $_POST['new_form_order'], $_POST['new_order_by'] );
      
 	$this->printMessage();
 }
@@ -26,9 +26,11 @@ $options = get_option('projectmanager');
 	<table class="widefat">
 	<thead>
 	<tr>
+		<th scope="col"><?php _e( 'ID', 'projectmanager' ) ?></th>
 		<th scope="col"><?php _e( 'Label', 'projectmanager' ) ?></th>
 		<th scope="col"><?php _e( 'Type', 'projectmanager' ) ?></th>
 		<th scope="col"><?php _e( 'Show on startpage', 'projectmanager' ) ?></th>
+		<th scope="col"><?php _e( 'Show in Profile', 'projectmanager' ) ?></th>
 		<th scope="col"><?php _e( 'Order', 'projectmanager' ) ?></th>
 		<th scope="sol"><?php _e( 'Order By', 'projectmanager' ) ?></th>
 		<th scope="col">&#160;</th>
@@ -36,9 +38,11 @@ $options = get_option('projectmanager');
 	</thead>
 	<tfoot>
 	<tr>
+		<th scope="col"><?php _e( 'ID', 'projectmanager' ) ?></th>
 		<th scope="col"><?php _e( 'Label', 'projectmanager' ) ?></th>
 		<th scope="col"><?php _e( 'Type', 'projectmanager' ) ?></th>
 		<th scope="col"><?php _e( 'Show on startpage', 'projectmanager' ) ?></th>
+		<th scope="col"><?php _e( 'Show in Profile', 'projectmanager' ) ?></th>
 		<th scope="col"><?php _e( 'Order', 'projectmanager' ) ?></th>
 		<th scope="sol"><?php _e( 'Order By', 'projectmanager' ) ?></th>
 		<th scope="col">&#160;</th>
@@ -50,28 +54,34 @@ $options = get_option('projectmanager');
 	<?php if ( $form_fields ) : ?>
 		<?php foreach( $form_fields AS $form_field ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
 		<tr id="form_id_<?php echo $form_field->id ?>" class="<?php echo $class ?>">
+			<td><?php echo $form_field->id ?></td>
 			<td><input type="text" name="form_name[<?php echo $form_field->id ?>]" value="<?php echo $form_field->label ?>" /></td>
 			<td id="form_field_options_box<?php echo $form_field->id ?>">
 				<?php $form_field_options = is_array($options['form_field_options'][$form_field->id]) ? implode(', ', $options['form_field_options'][$form_field->id]) : ''; ?>
 				<select id="form_type_<?php echo $form_field->id ?>" name="form_type[<?php echo $form_field->id ?>]" size="1" onChange="ProjectManager.toggleOptions(<?php echo $form_field->id ?>, this.value, '<?php _e('Save') ?>', '<?php _e('Cancel') ?>', '<?php _e('Options','projectmanager') ?>', '<?php echo $form_field_options ?>' );">
 				<?php foreach( $projectmanager->getFormFieldTypes() AS $form_type_id => $form_type ) : 
 					$selected = ( $form_type_id == $form_field->type ) ? "selected='selected'" : '';
+					$field_name = is_array($form_type) ? $form_type['name'] : $form_type;
 				?>
-					<option value="<?php echo $form_type_id ?>"<?php echo $selected ?>><?php echo $form_type ?></option>
+					<option value="<?php echo $form_type_id ?>"<?php echo $selected ?>><?php echo $field_name ?></option>
 				<?php endforeach; ?>
 				</select>
 				
-				<?php if ( $form_field->type == 6 || $form_field->type == 7 || $form_field->type == 8 ) : ?>
+				<?php if ( $form_field->type == 'select' || $form_field->type == 'checkbox' || $form_field->type == 'radio' ) : ?>
 				<!-- Thickbox Container and Link for Form Field Options -->
-				<div id="form_field_options_container<?php echo $form_field->id ?>" style="display: inline;">
+				<div id="form_field_options_container<?php echo $form_field->id ?>" style="display: inline;" >
 					<div id="form_field_options_div<?php echo $form_field->id ?>" style="width: 150px; height: 80px; overflow: auto; display: none;"><div class="projectmanager_thickbox">
 						<form><textarea cols="40" rows="10" id="form_field_options<?php echo $form_field->id ?>"><?php if ($options['form_field_options'][$form_field->id] != '' ) echo implode("\n", $options['form_field_options'][$form_field->id]) ?></textarea><div style="text-align:center; margin-top: 1em;"><input type="button" value="<?php _e('Save') ?>" class="button-secondary" onclick="ProjectManager.ajaxSaveFormFieldOptions(<?php echo $form_field->id; ?>);return false;" />&#160;<input type="button" value="<?php _e('Cancel') ?>" class="button" onclick="tb_remove();" /></div></form>
+						
+						<p><?php _e( "Separate Options by newline. Click on <em>Save</em> when you are done.", 'projectmanager' ) ?></p>
+						<p><?php _e( 'Note: You will have to save the Formfields to finally save the otions to the database.', 'projectmanager' )  ?></p>
 					</div></div>
 					<span>&#160;<a href='#TB_inline?width=150&heigth=100&inlineId=form_field_options_div<?php echo $form_field->id ?>' style="display: inline;" id="options_link<?php echo $form_field->id ?>" class="thickbox" title="<?php _e('Options','projectmanager') ?>"><?php _e('Options','projectmanager') ?></a></span>
 				</div>
 				<?php endif; ?>
 			</td>
 			<td><input type="checkbox" name="show_on_startpage[<?php echo $form_field->id ?>]"<?php echo ( 1 == $form_field->show_on_startpage ) ? ' checked="checked"' : '' ?> value="1" /></td>
+			<td><input type="checkbox" name="show_in_profile[<?php echo $form_field->id ?>]"<?php echo ( 1 == $form_field->show_in_profile ) ? ' checked="checked"' : '' ?> value="1" /></td>
 			<td><input type="text" size="2" name="form_order[<?php echo $form_field->id ?>]" value="<?php echo $form_field->order ?>" /></td>
 			<td><input type="checkbox" name="order_by[<?php echo $form_field->id ?>]" value="1"<?php echo ( 1 == $form_field->order_by ) ? ' checked="checked"' : '' ?> /></td>
 			<td style="text-align: center; width: 12px; vertical-align: middle;"><a class="image_link" href="#" onclick='return ProjectManager.removeFormField("form_id_<?php echo $form_field->id ?>", <?php echo $form_field->id ?>);'><img src="../wp-content/plugins/projectmanager/admin/icons/trash.gif" alt="<?php _e( 'Delete', 'projectmanager' ) ?>" title="<?php _e( 'Delete formfield', 'projectmanager' ) ?>" /></a>
