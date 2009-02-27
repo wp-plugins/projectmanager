@@ -86,8 +86,9 @@ function projectmanager_upgrade() {
 	}
 	
 	if (version_compare($installed, '2.1', '<')) {
-		if ( $formfields = $wpdb->get_results("SELECT `type`, `id` FROM {$wpdb->projectmanager_projectmeta};") ) {
-			$wpdb->query( "ALTER TABLE {$wpdb->projectmanager_projectmeta} CHANGE `type` `type` varchar( 50 ) NOT NULL" );
+		$wpdb->query( "ALTER TABLE {$wpdb->projectmanager_projectmeta} CHANGE `type` `type` varchar( 50 ) NOT NULL" );
+
+		if ( $formfields = $wpdb->get_results("SELECT `type`, `id` FROM {$wpdb->projectmanager_projectmeta}") ) {
 			foreach ( $formfields AS $formfield ) {
 				if ( $formfield->type == 1 ) $type = 'text';
 				elseif ( $formfield->type == 2 ) $type = 'textfield';
@@ -107,6 +108,7 @@ function projectmanager_upgrade() {
 	
 	// Update dbversion
 	$options['dbversion'] = PROJECTMANAGER_DBVERSION;
+	$options['version'] = PROJECTMANAGER_VERSION;
 	
 	update_option('projectmanager', $options);
 	echo __('finished', 'projectmanager') . "<br />\n";
