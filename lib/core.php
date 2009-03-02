@@ -950,9 +950,9 @@ class ProjectManager extends ProjectManagerLoader
 		$out = '';
 		if ( is_admin() && current_user_can( 'manage_projects' ) ) {
 			$dims = array('width' => '300', 'height' => '100');
-			if ( 2 == $formfield_type )
+			if ( 'textfield' == $formfield_type )
 				$dims = array('width' => '400', 'height' => '400');
-			if ( 7 == $formfield_type || 8 == $formfield_type )
+			if ( 'checkbox' == $formfield_type || 'radio' == $formfield_type )
 				$dims = array('width' => '300', 'height' => '300');
 						
 			$out .= "&#160;<a class='thickbox' id='thickboxlink".$formfield_id."_".$dataset_id."' href='#TB_inline&height=".$dims['height']."&width=".$dims['width']."&inlineId=datafieldwrap".$formfield_id."_".$dataset_id."' title='".$title."'><img src='".PROJECTMANAGER_URL."/admin/icons/edit.gif' border='0' alt='".__('Edit')."' /></a>";
@@ -981,11 +981,11 @@ class ProjectManager extends ProjectManagerLoader
 			$out .= "\n\t\t<div id='datafieldwrap".$formfield_id."_".$dataset_id."' style='overfow:auto;display:none;'>";
 			$out .= "\n\t\t<div id='datafieldbox".$formfield_id."_".$dataset_id."' class='projectmanager_thickbox'>";
 			$out .= "\n\t\t\t<form>";
-			if ( 1 == $formfield_type || 3 == $formfield_type || 5 == $formfield_type )
+			if ( 'text' == $formfield_type || 'email' == $formfield_type || 'uri' == $formfield_type )
 				$out .= "\n\t\t\t<input type='text' name='form_field_".$formfield_id."_".$dataset_id."' id='form_field_".$formfield_id."_".$dataset_id."' value='".$value."' size='30' />";
-			elseif ( 2 == $formfield_type )
+			elseif ( 'textfield' == $formfield_type )
 				$out .= "\n\t\t\t<textarea name='form_field_".$formfield_id."_".$dataset_id."' id='form_field_".$formfield_id."_".$dataset_id."' rows='10' cols='40'>".$value."</textarea>";
-			elseif  ( 4 == $formfield_type ) {
+			elseif  ( 'date' == $formfield_type ) {
 				$out .= "\n\t\t\t<select size='1' name='form_field_".$formfield_id."_".$dataset_id."_day' id='form_field_".$formfield_id."_".$dataset_id."_day'>\n\t\t\t<option value=''>Tag</option>\n\t\t\t<option value=''>&#160;</option>";
 				for ( $day = 1; $day <= 30; $day++ ) {
 					$selected = ( $day == substr($value, 8, 2) ) ? ' selected="selected"' : '';
@@ -1005,11 +1005,11 @@ class ProjectManager extends ProjectManagerLoader
 				}
 				$out .= "\n\t\t\t</select>";
 			}
-			elseif ( 6 == $formfield_type )
+			elseif ( 'select' == $formfield_type )
 				$out .= $this->printFormFieldDropDown($formfield_id, $value, $dataset_id, "form_field_".$formfield_id."_".$dataset_id, false);
-			elseif ( 7 == $formfield_type )
+			elseif ( 'checkbox' == $formfield_type )
 				$out .= $this->printFormFieldCheckboxList($formfield_id, $value, 0, "form_field_".$formfield_id."_".$dataset_id, false);
-			elseif ( 8 == $formfield_type )
+			elseif ( 'radio' == $formfield_type )
 				$out .= $this->printFormFieldRadioList($formfield_id, $value, 0, "form_field_".$formfield_id."_".$dataset_id, false);
 	
 			$out .= "\n\t\t\t<div style='text-align:center; margin-top: 1em;'><input type='button' value='".__('Save')."' class='button-secondary' onclick='ProjectManager.ajaxSaveDataField(".$dataset_id.",".$formfield_id.",".$formfield_type.");return false;' />&#160;<input type='button' value='".__('Cancel')."' class='button' onclick='tb_remove();' /></div>";
