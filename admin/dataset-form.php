@@ -28,7 +28,7 @@
 		<tr valign="top">
 			<th scope="row"><label for="form_field_<?php echo $form_field->id ?>"><?php echo $form_field->label ?></label></th>
 			<td>
-				<?php if ( 'text' == $form_field->type || 'email' == $form_field->type || 'uri' == $form_field->type ) : ?>
+				<?php if ( 'text' == $form_field->type || 'email' == $form_field->type || 'uri' == $form_field->type || 'image' == $form_field->type ) : ?>
 				<input type="text" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" value="<?php echo $meta_data[$form_field->id] ?>" size="45" />
 				<?php elseif ( 'textfield' == $form_field->type ) : ?>
 				<div style="width: 60%;">

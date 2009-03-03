@@ -17,7 +17,7 @@ if ( isset($_GET['edit']) ) {
 	$img_filename = $dataset->image;
 	$meta_data = array();
 	foreach ( $dataset_meta AS $meta )
-		$meta_data[$meta->form_field_id] = $meta->value;
+		$meta_data[$meta->form_field_id] = stripslashes_deep($meta->value);
 }  else {
 	$form_title = __('Add Dataset','projectmanager');
 	$dataset_id = ''; $cat_ids = array(); $img_filename = ''; $name = ''; $meta_data = array();

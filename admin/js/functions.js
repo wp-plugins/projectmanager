@@ -82,6 +82,23 @@ ProjectManager.getSelectedCheckboxValue = function(buttonGroup) {
 }
 
 
+ProjectManager.addslashes = function( str ) {
+    // Quote string with slashes
+    // 
+    // +    discuss at: http://kevin.vanzonneveld.net/techblog/article/javascript_equivalent_for_phps_addslashes/
+    // +       version: 809.2122
+    // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+    // +   improved by: Ates Goral (http://magnetiq.com)
+    // +   improved by: marrtins
+    // +   improved by: Nate
+    // +   improved by: Onno Marsman
+    // *     example 1: addslashes("kevin's birthday");
+    // *     returns 1: 'kevin\'s birthday'
+ 
+    return (str+'').replace(/([\\"'])/g, "\\$1").replace(/\0/g, "\\0");
+}
+
+
 /*
 function is_array(variable) {
    return typeof(variable) == "object" && (variable instanceof Array);

@@ -98,12 +98,15 @@ class ProjectManagerImage extends ProjectManager
 	 *
 	 * @param array $dims
 	 * @param string $new_image
+	 * @param string $chmod chmod of uploaded image file. ignored if empty
 	 */
-	function createThumbnail( $dims, $new_image )
+	function createThumbnail( $dims, $new_image, $chmod )
 	{
 		$thumbnail = new Thumbnail($this->image);
 		$thumbnail->resize( $dims['width'], $dims['heigth'] );
 		$thumbnail->save($new_image);
+		
+		if ( !empty($chmod) ) chmod( $new_image, $chmod );
 	}
 }
 

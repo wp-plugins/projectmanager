@@ -520,6 +520,12 @@ class ProjectManagerAdminPanel extends ProjectManager
 						else
 							$meta_value = implode(",", $meta_value);
 					}
+					
+					// Remove slashes if magic_quotes_gpc is turned on
+					/*if (get_magic_quotes_gpc()) {
+						$meta_value = stripslashes_deep($meta_value);
+					}*/
+					
 					$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ('%d', '%d', '%s')", $meta_id, $dataset_id, $meta_value ) );
 				}
 			}
@@ -578,6 +584,12 @@ class ProjectManagerAdminPanel extends ProjectManager
 						else
 							$meta_value = implode(",", $meta_value);
 					}
+					
+					// Remove slashes if magic_quotes_gpc is turned on
+					/*if (get_magic_quotes_gpc()) {
+						$meta_value = stripslashes_deep($meta_value);
+					}*/
+					
 					if ( 1 == $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_datasetmeta} WHERE `dataset_id` = '".$dataset_id."' AND `form_id` = '".$meta_id."'" ) )
 						$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `value` = '%s' WHERE `dataset_id` = '%d' AND `form_id` = '%d'", $meta_value, $dataset_id, $meta_id ) );
 					else
@@ -677,13 +689,13 @@ class ProjectManagerAdminPanel extends ProjectManager
 			
 						// Resize original file and create thumbnails
 						$dims = array( 'width' => $options['medium_size']['width'], 'height' => $options['medium_size']['height'] );
-						$image->createThumbnail( $dims, $new_file );
-
+						$image->createThumbnail( $dims, $new_file, $options['chmod'] );
+						
 						$dims = array( 'width' => $options['thumb_size']['width'], 'height' => $options['thumb_size']['height'] );
-						$image->createThumbnail( $dims, parent::getImagePath().'/thumb.'.basename($file['name']) );
-
+						$image->createThumbnail( $dims, parent::getImagePath().'/thumb.'.basename($file['name']), $options['chmod'] );
+						
 						$dims = array( 'width' => 80, 'height' => 50 );
-						$image->createThumbnail( $dims, parent::getImagePath().'/tiny.'.basename($file['name']) );
+						$image->createThumbnail( $dims, parent::getImagePath().'/tiny.'.basename($file['name']), $options['chmod'] );
 					} else {
 						$this->setMessage( sprintf( __('The uploaded file could not be moved to %s.' ), parent::getImagePath() ), true );
 					}

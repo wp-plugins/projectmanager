@@ -19,9 +19,10 @@ if ( isset($_POST['saveSettings']) ) {
 	$options['project_options'][$project_id]['show_image_profile'] = ( isset($_POST['show_image_profile']) && isset($_POST['show_image']) ) ? 1 : 0;
 	$options['project_options'][$project_id]['use_widget'] = isset( $_POST['use_widget'] ) ? 1 : 0;
 	$options['project_options'][$project_id]['thumb_size'] = array( "width" => $_POST['thumb_width'], "height" => $_POST['thumb_height'] );
-     	$options['project_options'][$project_id]['medium_size'] = array( "width" => $_POST['medium_width'], "height" => $_POST['medium_height'] );
-     	$options['project_options'][$project_id]['navi_link'] = isset( $_POST['navi_link'] ) ? 1 : 0;
-     	$options['project_options'][$project_id]['profile_hook'] = isset($_POST['profile_hook'] ) ? 1 : 0;
+    $options['project_options'][$project_id]['medium_size'] = array( "width" => $_POST['medium_width'], "height" => $_POST['medium_height'] );
+    $options['project_options'][$project_id]['chmod'] = $_POST['chmod'];
+    $options['project_options'][$project_id]['navi_link'] = isset( $_POST['navi_link'] ) ? 1 : 0;
+    $options['project_options'][$project_id]['profile_hook'] = isset($_POST['profile_hook'] ) ? 1 : 0;
 	$options['project_options'][$project_id]['menu_icon'] = $_POST['menu_icon'];
 	$options['project_options'][$project_id]['gallery_num_cols'] = $_POST['gallery_num_cols'];
 		
@@ -97,6 +98,9 @@ if ( 1 == $settings['show_image'] && !wp_mkdir_p( $projectmanager->getImagePath(
 		</tr>
 		<tr valign="top">
 			<th scope="row"><label for="medium_size"><?php _e( 'Medium size', 'projectmanager' ) ?></label></th><td><label for="medium_width"><?php _e( 'Max Width' ) ?>&#160;</label><input type="text" id="medium_width" name="medium_width" size="3" value="<?php echo $settings['medium_size']['width'] ?>" /> <label for="medium_height"><?php _e( 'Max Height' ) ?>&#160;</label> <input type="text" id="medium_height" name="medium_height" size="3" value="<?php echo $settings['medium_size']['height'] ?>" /></td>
+		</tr>
+		<tr valign="top">
+			<th scope="row"><label for="chmod"><?php _e( 'File permissions', 'projectmanager' ) ?></label></th><td><input type="text" id="chmod" name="chmod" size="3" value="<?php echo $settings['chmod'] ?>" />&#160;<span class="setting-description"><?php _e( "See <a href='http://de2.php.net/manual/en/function.chmod.php'>http://de2.php.net/manual/en/function.chmod.php</a> for more information", 'projectmanager' ) ?></span></td>
 		</tr>
 		</table>
 		

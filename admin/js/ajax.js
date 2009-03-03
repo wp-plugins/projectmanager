@@ -59,25 +59,27 @@ ProjectManager.categorySpanFadeOut = function( dataset_id, cats ) {
 
 ProjectManager.ajaxSaveDataField = function( dataset_id, formfield_id, formfield_type ) {
 	tb_remove();
-	if ( formfield_type == 4 ) {
+	if ( formfield_type == 'date' ) {
 		var day = document.getElementById('form_field_' + formfield_id + '_' + dataset_id + '_day').value;
 		var month = document.getElementById('form_field_' + formfield_id + '_' + dataset_id + '_month').value;
 		var year = document.getElementById('form_field_' + formfield_id + '_' + dataset_id + '_year').value;
 		var newvalue = year+"-"+month+"-"+day;
-	} else if ( formfield_type == 7 ) {
+	} else if ( formfield_type == 'checkbox' ) {
 		var values = ProjectManager.getSelectedCheckboxValue(document.getElementsByName("form_field_"+formfield_id+"_"+dataset_id));
 		var newvalue = '';
 		for(var a=0;a<values.length;a++){
 			newvalue += values[a] + ",";
 		}
-	} else if ( formfield_type == 8 ) {
+	} else if ( formfield_type == 'radio' ) {
 		var newvalue = ProjectManager.getSelectedRadioValue(document.getElementsByName("form_field_"+formfield_id+"_"+dataset_id));
 	} else {
 		var newvalue = document.getElementById('form_field_' + formfield_id + '_' + dataset_id).value.split('\n').join('\\n');
 	}
-	window.setTimeout("ProjectManager.dataFieldSpanFadeOut(" +  dataset_id  +  ","  + formfield_id + ",'" + newvalue + "'," + formfield_type + ")", 50);
+	newvalue = ProjectManager.addslashes(newvalue);
+	window.setTimeout("ProjectManager.dataFieldSpanFadeOut(" +  dataset_id  +  ","  + formfield_id + ",'" + newvalue + "','" + formfield_type + "')", 50);
 }
 ProjectManager.dataFieldSpanFadeOut = function( dataset_id, formfield_id, newvalue, formfield_type ) {
+	newvalue = ProjectManager.addslashes(newvalue);
 	jQuery("span#datafield" + formfield_id + "_" + dataset_id).fadeIn('fast', function() {
 		var ajax = new sack(ProjectManagerAjaxL10n.requestUrl);
 		ajax.execute = 1;

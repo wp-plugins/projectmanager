@@ -72,6 +72,7 @@ function projectmanager_save_form_field_data() {
 	global $wpdb, $projectmanager;
 	
 	$dataset_id = intval($_POST['dataset_id']);
+	$formfield_type = $_POST['formfield_type'];
 	$meta_id = intval($_POST['formfield_id']);
 	$new_value = $_POST['new_value'];
 	
@@ -81,10 +82,15 @@ function projectmanager_save_form_field_data() {
 	// Checkbox List
 	if ( 'checkbox' == $_POST['formfield_type'] )
 		$new_value = substr($new_value,0,-1);
-	
+
+	if (get_magic_quotes_gpc()) {
+		$new_value = stripslashes_deep($new_value);
+	}
+	/*
 	if (is_string($new_value))
 		$new_value = addslashes_gpc( $new_value );
-		
+	*/	
+	
 	if ( 1 == $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_datasetmeta} WHERE `dataset_id` = '".$dataset_id."' AND `form_id` = '".$meta_id."'" ) )
 		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `value` = '%s' WHERE `dataset_id` = '%d' AND `form_id` = '%d'", $new_value, $dataset_id, $meta_id ) );
 	else
@@ -97,10 +103,12 @@ function projectmanager_save_form_field_data() {
 			$new_value = substr($new_value, 0, 150)."...";
 	}
 			
-	// Date
-	if ( 'date' == $_POST['formfield_type'] )
+	// Some special output formats
+	if ( 'date' == $formfield_type )
 		$new_value = mysql2date(get_option('date_format'), $_POST['new_value']);
-	
+	elseif ( 'image' == $formfield_type )
+		$new_value = '<img class="projectmanager_image" src="'.$new_value.'" alt="'.__("Image", "projectmanager").'" />';
+		
 	die( "ProjectManager.reInit();jQuery('span#datafield" . $meta_id . "_" . $dataset_id . "').fadeOut('fast', function() {
 		jQuery('a#thickboxlink" . $meta_id . "_" . $dataset_id . "').show();
 		jQuery('span#datafield" . $meta_id . "_" . $dataset_id . "').html('" . $new_value . "').fadeIn('fast');
