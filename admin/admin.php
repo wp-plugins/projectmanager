@@ -760,7 +760,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 				$show_on_startpage = isset($new_form_show_on_startpage[$tmp_form_id]) ? 1 : 0;
 				$show_in_profile = isset($new_form_show_in_profile[$tmp_form_id]) ? 1 : 0;
 					
-				$max_order_sql = "SELECT MAX(`order`) AS `order` FROM {$wpdb->projectmanager_projectmeta};";
+				$max_order_sql = "SELECT MAX(`order`) AS `order` FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = {$project_id};";
 				if ($new_form_order[$tmp_form_id] != '') {
 					$order = $new_form_order[$tmp_form_id];
 				} else {

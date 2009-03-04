@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
 "POT-Creation-Date: 2009-02-05 22:08+0000\n"
-"PO-Revision-Date: 2009-03-03 20:53+0100\n"
+"PO-Revision-Date: 2009-03-04 13:03+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -787,7 +787,7 @@ msgid "This Field has a callback attached which will get the data from somewhere
 msgstr "Dieses Feld hat eine Callback Funktion angefügt, die die Daten von woanders holt!"
 
 msgid "See <a href='http://de2.php.net/manual/en/function.chmod.php'>http://de2.php.net/manual/en/function.chmod.php</a> for more information"
-msgstr "Siehe <a href='http://de2.php.net/manual/en/function.chmod.php'>http://de2.php.net/manual/en/function.chmod.php</a> für mehr Informationen"
+msgstr "Siehe <a href='http://de2.php.net/manual/de/function.chmod.php'>http://de2.php.net/manual/de/function.chmod.php</a> für mehr Informationen"
 
 msgid "File permissions"
 msgstr "Datei Zugriffsrechte"
