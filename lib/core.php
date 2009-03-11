@@ -854,7 +854,7 @@ class ProjectManager extends ProjectManagerLoader
 		if ( $form_fields = $this->getFormFields() ) {
 			foreach ( $form_fields AS $form_field ) {
 				if ( 1 == $form_field->show_on_startpage )
-				$out .= "\n\t<th scope='col'>".$form_field->label."</th>";
+				$out .= "\n\t<th scope='col'>".stripslashes($form_field->label)."</th>";
 			}
 		}
 		return $out;
@@ -878,8 +878,11 @@ class ProjectManager extends ProjectManagerLoader
 		$out = '';
 		if ( $dataset_meta = $this->getDatasetMeta( $dataset->id ) ) {
 			foreach ( $dataset_meta AS $meta ) {
-				$meta_value = (is_string($meta->value)) ? htmlspecialchars( $meta->value ) : $meta->value;
-				$meta_value = stripslashes_deep($meta_value);
+				$meta->label = stripslashes($meta->label);
+				$meta_value = stripslashes_deep($meta->value);
+				$meta_value = is_string($meta_value) ? htmlspecialchars( $meta_value, ENT_QUOTES ) : $meta_value;
+				
+				
 				
 				if ( 'text' == $meta->type || 'select' == $meta->type || 'checkbox' == $meta->type || 'radio' == $meta->type ) {
 					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span>";
@@ -978,7 +981,7 @@ class ProjectManager extends ProjectManagerLoader
 	{
 		global $current_user;
 		
-		$value = stripslashes_deep($value);
+		$value = htmlspecialchars(stripslashes_deep($value), ENT_QUOTES);
 		$out = '';
 		if ( is_admin() && current_user_can( 'manage_projects' ) ) {
 			

@@ -9,7 +9,7 @@ $projectmanager->getProject();
 if ( isset($_POST['saveFormFields']) ) {
 	check_admin_referer('projectmanager_manage-formfields');
 	$this->setFormFields( $_POST['project_id'], $_POST['form_name'], $_POST['form_type'], $_POST['show_on_startpage'], $_POST['show_in_profile'], $_POST['form_order'], $_POST['order_by'], $_POST['new_form_name'], $_POST['new_form_type'], $_POST['new_show_on_startpage'], $_POST['new_show_in_profile'], $_POST['new_form_order'], $_POST['new_order_by'] );
-     
+
 	$this->printMessage();
 }
 $options = get_option('projectmanager');
@@ -55,7 +55,7 @@ $options = get_option('projectmanager');
 		<?php foreach( $form_fields AS $form_field ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
 		<tr id="form_id_<?php echo $form_field->id ?>" class="<?php echo $class ?>">
 			<td><?php echo $form_field->id ?></td>
-			<td><input type="text" name="form_name[<?php echo $form_field->id ?>]" value="<?php echo $form_field->label ?>" /></td>
+			<td><input type="text" name="form_name[<?php echo $form_field->id ?>]" value="<?php echo htmlspecialchars(stripslashes($form_field->label), ENT_QUOTES) ?>" /></td>
 			<td id="form_field_options_box<?php echo $form_field->id ?>">
 				<?php $form_field_options = is_array($options['form_field_options'][$form_field->id]) ? implode(', ', $options['form_field_options'][$form_field->id]) : ''; ?>
 				<select id="form_type_<?php echo $form_field->id ?>" name="form_type[<?php echo $form_field->id ?>]" size="1" onChange="ProjectManager.toggleOptions(<?php echo $form_field->id ?>, this.value, '<?php _e('Save') ?>', '<?php _e('Cancel') ?>', '<?php _e('Options','projectmanager') ?>', '<?php echo $form_field_options ?>' );">
