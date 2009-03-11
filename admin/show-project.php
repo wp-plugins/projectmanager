@@ -148,6 +148,9 @@ $options = $options['project_options'][$project_id];
 				$categories = $projectmanager->getSelectedCategoryTitles( $projectmanager->getSelectedCategoryIDs($dataset) );
 			else
 				$categories = __( 'None', 'projectmanager' );
+				
+			$dataset->name = stripslashes($dataset->name);
+			$dataset->name = str_replace("\"", "&quot;", str_replace("\'", "&#039;", $dataset->name));
 		?>
 			<tr class="<?php echo $class ?>" id="dataset_<?php echo $dataset->id ?>">
 				<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $dataset->id ?>" name="dataset[<?php echo $dataset->id ?>]" /></th>
@@ -155,7 +158,7 @@ $options = $options['project_options'][$project_id];
 					<!-- Popup Window for Ajax name editing -->
 					<div id="datasetnamewrap<?php echo $dataset->id; ?>" style="overflow:auto;display:none;">
 						<div id="datasetnamebox<?php echo $dataset->id; ?>" class='projectmanager_thickbox'>
-							<form><input type='text' name='dataset_name<?php echo $dataset_id ?>' id='dataset_name<?php echo $dataset->id ?>' value='<?php echo $dataset->name ?>' size='30' />
+							<form><input type='text' name='dataset_name<?php echo $dataset_id ?>' id='dataset_name<?php echo $dataset->id ?>' value="<?php echo $dataset->name ?>" size='30' />
 							<div style="text-align:center; margin-top: 1em;"><input type="button" value="<?php _e('Save') ?>" class="button-secondary" onclick="ProjectManager.ajaxSaveDatasetName(<?php echo $dataset->id; ?>);return false;" />&#160;<input type="button" value="<?php _e('Cancel') ?>" class="button" onclick="tb_remove();" /></div></form>
 						</div>
 					</div>

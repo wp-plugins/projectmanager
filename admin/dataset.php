@@ -13,11 +13,15 @@ if ( isset($_GET['edit']) ) {
 	$cat_ids = $projectmanager->getSelectedCategoryIDs($dataset);
 	$dataset_meta = $projectmanager->getDatasetMeta( $dataset_id );
 	
-	$name = $dataset->name;
+	$name = htmlspecialchars(stripslashes_deep($dataset->name), ENT_QUOTES);
+	//$name = str_replace("\"", "&quot;", str_replace("\'", "&#039;", $name));
+	
 	$img_filename = $dataset->image;
 	$meta_data = array();
-	foreach ( $dataset_meta AS $meta )
-		$meta_data[$meta->form_field_id] = stripslashes_deep($meta->value);
+	foreach ( $dataset_meta AS $meta ) {
+		$meta_data[$meta->form_field_id] = htmlspecialchars(stripslashes_deep($meta->value), ENT_QUOTES);
+		//$meta_data[$meta->form_field_id] = str_replace("\"", "&quot;", str_replace("\'", "&#039;", $meta->value));
+	}
 }  else {
 	$form_title = __('Add Dataset','projectmanager');
 	$dataset_id = ''; $cat_ids = array(); $img_filename = ''; $name = ''; $meta_data = array();

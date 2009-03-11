@@ -251,6 +251,8 @@ class ProjectManagerShortcodes extends ProjectManager
 			foreach ( $datasets AS $dataset ) {
 				$class = ( "alternate" == $class ) ? '' : "alternate"; 
 				
+				$dataset->name = stripslashes($dataset->name);
+				
 				$url = get_permalink();
 				$url = add_query_arg('show', $dataset->id, $url);
 				$url = ($projectmanager->isCategory()) ? add_query_arg('cat_id', $projectmanager->getCatID(), $url) : $url;
@@ -308,8 +310,10 @@ class ProjectManagerShortcodes extends ProjectManager
 			$url = false;
 		}
 
-		if ( $dataset = parent::getDataset( $id ) )
+		if ( $dataset = parent::getDataset( $id ) ) {
 			$dataset->imgURL = $projectmanager->getImageUrl($dataset->image);
+			$dataset->name = stripslashes($dataset->name);
+		}
 				
 		$filename = ( empty($template) ) ? 'dataset' : 'dataset-'.$template;
 		$out = $this->loadTemplate( $filename, array('dataset' => $dataset, 'backurl' => $url) );

@@ -12,10 +12,12 @@ ProjectManager.saveOrder = function(order) {
 ProjectManager.ajaxSaveDatasetName = function( dataset_id ) {
 	tb_remove();
 	var dataset_name = document.getElementById('dataset_name' + dataset_id).value;
+	dataset_name = ProjectManager.addslashes(dataset_name);
 	window.setTimeout("ProjectManager.datasetnameSpanFadeOut(" + dataset_id + ",'" + dataset_name + "')", 50);
 }
 
 ProjectManager.datasetnameSpanFadeOut = function( dataset_id, dataset_name ) {
+	dataset_name = ProjectManager.addslashes(dataset_name);
 	jQuery("span#dataset_name_text" + dataset_id).fadeIn('fast', function() {
 		var ajax = new sack(ProjectManagerAjaxL10n.requestUrl);
 		ajax.execute = 1;
