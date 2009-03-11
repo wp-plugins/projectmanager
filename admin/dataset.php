@@ -14,7 +14,6 @@ if ( isset($_GET['edit']) ) {
 	$dataset_meta = $projectmanager->getDatasetMeta( $dataset_id );
 	
 	$name = htmlspecialchars(stripslashes_deep($dataset->name), ENT_QUOTES);
-	//$name = str_replace("\"", "&quot;", str_replace("\'", "&#039;", $name));
 	
 	$img_filename = $dataset->image;
 	$meta_data = array();

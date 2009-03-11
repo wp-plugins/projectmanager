@@ -855,10 +855,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 		
 					$img_filename = $dataset->image;
 					$meta_data = array();
-					foreach ( $dataset_meta AS $meta ) {
-						$meta->value = stripslashes_deep($meta->value);
-						$meta_data[$meta->form_field_id] = str_replace("\"", "&quot;", str_replace("\'", "&#039;", $meta->value));
-					}
+					foreach ( $dataset_meta AS $meta )
+						$meta_data[$meta->form_field_id] = htmlspecialchars(stripslashes_deep($meta->value),ENT_QUOTES);
 				} else {
 					$dataset_id = ''; $cat_ids = array(); $img_filename = ''; $meta_data = array();
 				}

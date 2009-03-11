@@ -17,7 +17,7 @@ ProjectManager.ajaxSaveDatasetName = function( dataset_id ) {
 }
 
 ProjectManager.datasetnameSpanFadeOut = function( dataset_id, dataset_name ) {
-	dataset_name = ProjectManager.addslashes(dataset_name);
+	//dataset_name = ProjectManager.addslashes(dataset_name);
 	jQuery("span#dataset_name_text" + dataset_id).fadeIn('fast', function() {
 		var ajax = new sack(ProjectManagerAjaxL10n.requestUrl);
 		ajax.execute = 1;
@@ -81,7 +81,7 @@ ProjectManager.ajaxSaveDataField = function( dataset_id, formfield_id, formfield
 	window.setTimeout("ProjectManager.dataFieldSpanFadeOut(" +  dataset_id  +  ","  + formfield_id + ",'" + newvalue + "','" + formfield_type + "')", 50);
 }
 ProjectManager.dataFieldSpanFadeOut = function( dataset_id, formfield_id, newvalue, formfield_type ) {
-	newvalue = ProjectManager.addslashes(newvalue);
+	//newvalue = ProjectManager.addslashes(newvalue);
 	jQuery("span#datafield" + formfield_id + "_" + dataset_id).fadeIn('fast', function() {
 		var ajax = new sack(ProjectManagerAjaxL10n.requestUrl);
 		ajax.execute = 1;

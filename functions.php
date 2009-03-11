@@ -29,8 +29,8 @@ function projectmanager_save_name() {
 	$dataset_id = intval($_POST['dataset_id']);
 	$new_name = $_POST['new_name'];
 	
-	if (get_magic_quotes_gpc())
-		$new_name = stripslashes_deep($new_name);
+	/*if (get_magic_quotes_gpc())
+		$new_name = stripslashes_deep($new_name);*/
 		
 	$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `name` = '%s' WHERE `id` = '%d'", $new_name, $dataset_id ) );
 
@@ -79,8 +79,8 @@ function projectmanager_save_form_field_data() {
 	$meta_id = intval($_POST['formfield_id']);
 	$new_value = $_POST['new_value'];
 	
-	if (get_magic_quotes_gpc())
-		$new_value = stripslashes_deep($new_value);
+	/*if (get_magic_quotes_gpc())
+		$new_value = stripslashes_deep($new_value);*/
 		
 	// Textarea
 	if ( 'textfield' == $_POST['formfield_type'] )

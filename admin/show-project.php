@@ -149,8 +149,7 @@ $options = $options['project_options'][$project_id];
 			else
 				$categories = __( 'None', 'projectmanager' );
 				
-			$dataset->name = stripslashes($dataset->name);
-			$dataset->name = str_replace("\"", "&quot;", str_replace("\'", "&#039;", $dataset->name));
+			$dataset->name = htmlspecialchars(stripslashes($dataset->name), ENT_QUOTES);
 		?>
 			<tr class="<?php echo $class ?>" id="dataset_<?php echo $dataset->id ?>">
 				<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $dataset->id ?>" name="dataset[<?php echo $dataset->id ?>]" /></th>
