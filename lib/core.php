@@ -838,7 +838,13 @@ class ProjectManager extends ProjectManagerLoader
 	{
 	 	global $wpdb;
 		$sql = "SELECT form.id AS form_field_id, form.label AS label, data.value AS value, form.type AS type, form.show_on_startpage AS show_on_startpage FROM {$wpdb->projectmanager_datasetmeta} AS data LEFT JOIN {$wpdb->projectmanager_projectmeta} AS form ON form.id = data.form_id WHERE data.dataset_id = {$dataset_id} ORDER BY form.order ASC";
-		return $wpdb->get_results( $sql );
+		$meta = $wpdb->get_results( $sql );
+		$i = 0;
+		foreach ( $meta AS $item ) {
+			$meta[$i]->value = stripslashes_deep($item->value);
+			$i++;
+		}
+		return $meta;
 	}
 		
 	
@@ -879,10 +885,8 @@ class ProjectManager extends ProjectManagerLoader
 		if ( $dataset_meta = $this->getDatasetMeta( $dataset->id ) ) {
 			foreach ( $dataset_meta AS $meta ) {
 				$meta->label = stripslashes($meta->label);
-				$meta_value = stripslashes_deep($meta->value);
-				$meta_value = is_string($meta_value) ? htmlspecialchars( $meta_value, ENT_QUOTES ) : $meta_value;
-				
-				
+				//$meta_value = stripslashes_deep($meta->value);
+				$meta_value = is_string($meta->value) ? htmlspecialchars( $meta->value, ENT_QUOTES ) : $meta->value;
 				
 				if ( 'text' == $meta->type || 'select' == $meta->type || 'checkbox' == $meta->type || 'radio' == $meta->type ) {
 					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span>";
