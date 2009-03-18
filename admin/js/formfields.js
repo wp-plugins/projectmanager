@@ -41,7 +41,6 @@ ProjectManager.removeFormField = function(id,form_id) {
 
 
 ProjectManager.toggleOptions = function(form_id, value, button_save, button_cancel, title, textarea_value) {
-
 	textarea_value = textarea_value.split(',').join("\n");
 	new_element_contents = "";
 	new_element_contents += "<div id='form_field_options_div" + form_id + "' style='width: 150px; height: 80px; overflow: auto; display: none;'><div class='projectmanager_thickbox'>";
@@ -55,7 +54,7 @@ ProjectManager.toggleOptions = function(form_id, value, button_save, button_canc
 	new_element.style.display = 'inline';
 	
 	// Check if selected form type is selection, checkbox, or radio
-	if ( value == 6 || value == 7 || value == 8 ) {
+	if ( value == 'select' || value == 'checkbox' || value == 'radio' ) {
 		if ( ! document.getElementById(new_element_id) ) {
 			document.getElementById("form_field_options_box"+form_id).appendChild(new_element);
 			jQuery("div#form_field_options_container"+form_id).html(new_element_contents).fadeIn('fast');
