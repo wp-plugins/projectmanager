@@ -338,39 +338,39 @@ class ProjectManagerLoader
 		}
 		
 		$create_projects_sql = "CREATE TABLE {$wpdb->projectmanager_projects} (
-						`id` int( 11 ) NOT NULL AUTO_INCREMENT ,
+						`id` int( 11 ) NOT NULL AUTO_INCREMENT,
 						`title` varchar( 255 ) NOT NULL default '',
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->projectmanager_projects, $create_projects_sql );
 			
 		$create_projectmeta_sql = "CREATE TABLE {$wpdb->projectmanager_projectmeta} (
-						`id` int( 11 ) NOT NULL AUTO_INCREMENT ,
-						`type` varchar( 50 ) NOT NULL ,
-						`label` varchar( 100 ) NOT NULL default '' ,
-						`order` int( 10 ) NOT NULL ,
+						`id` int( 11 ) NOT NULL AUTO_INCREMENT,
+						`type` varchar( 50 ) NOT NULL default '',
+						`label` varchar( 100 ) NOT NULL default '',
+						`order` int( 10 ) NOT NULL default '0',
 						`order_by` tinyint( 1 ) NOT NULL default '0',
-						`show_on_startpage` tinyint( 1 ) NOT NULL,
-						`show_in_profile` tinyint( 1 ) NOT NULL,
-						`project_id` int( 11 ) NOT NULL ,
+						`show_on_startpage` tinyint( 1 ) NOT NULL default '0',
+						`show_in_profile` tinyint( 1 ) NOT NULL default '0',
+						`project_id` int( 11 ) NOT NULL,
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->projectmanager_projectmeta, $create_projectmeta_sql );
 				
 		$create_dataset_sql = "CREATE TABLE {$wpdb->projectmanager_dataset} (
-						`id` int( 11 ) NOT NULL AUTO_INCREMENT ,
-						`name` varchar( 255 ) NOT NULL default '' ,
-						`image` varchar( 50 ) NOT NULL default '' ,
-						`cat_ids` longtext NOT NULL ,
-						`project_id` int( 11 ) NOT NULL ,
+						`id` int( 11 ) NOT NULL AUTO_INCREMENT,
+						`name` varchar( 255 ) NOT NULL default '',
+						`image` varchar( 50 ) NOT NULL default '',
+						`cat_ids` longtext NOT NULL default '',
+						`project_id` int( 11 ) NOT NULL,
 						`user_id` int( 11 ) NOT NULL default '1',
 						`order` int( 11 ) NOT NULL default '0',
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->projectmanager_dataset, $create_dataset_sql );
 			
 		$create_datasetmeta_sql = "CREATE TABLE {$wpdb->projectmanager_datasetmeta} (
-						`id` int( 11 ) NOT NULL AUTO_INCREMENT ,
-						`form_id` int( 11 ) NOT NULL ,
-						`dataset_id` int( 11 ) NOT NULL ,
-						`value` longtext NOT NULL default '' ,
+						`id` int( 11 ) NOT NULL AUTO_INCREMENT,
+						`form_id` int( 11 ) NOT NULL,
+						`dataset_id` int( 11 ) NOT NULL,
+						`value` longtext NOT NULL default '',
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->projectmanager_datasetmeta, $create_datasetmeta_sql );
 
