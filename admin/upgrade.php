@@ -102,10 +102,20 @@ function projectmanager_upgrade() {
 				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projectmeta} SET `type` = '%s' WHERE `id` = '%d'", $type, $formfield->id ) );
 			}
 		}
-		
-
 	}
 	
+	if (version_compare($installed, '2.2.1', '<')) {
+		// Add default values for each database field	
+		$wpdb->query( "ALTER TABLE {$wpdb->projectmanager_projectmeta} CHANGE `type` `type` varchar( 50 ) NOT NULL default ''" );
+		$wpdb->query( "ALTER TABLE {$wpdb->projectmanager_projectmeta} CHANGE `label` `label` varchar( 100 ) NOT NULL default ''" );
+		$wpdb->query( "ALTER TABLE {$wpdb->projectmanager_projectmeta} CHANGE `show_on_startpage` `show_on_startpage` tinyint( 1 ) NOT NULL default '0'" );
+		$wpdb->query( "ALTER TABLE {$wpdb->projectmanager_projectmeta} CHANGE `show_in_profile` `show_in_profile` tinyint( 1 ) NOT NULL default '0'" );
+		
+		$wpdb->query( "ALTER TABLE {$wpdb->projectmanager_dataset} CHANGE `name` `name` varchar( 255 ) NOT NULL default ''" );
+		$wpdb->query( "ALTER TABLE {$wpdb->projectmanager_dataset} CHANGE `cat_ids` `cat_ids` longtext NOT NULL default ''" );
+	}
+
+
 	// Update dbversion
 	$options['dbversion'] = PROJECTMANAGER_DBVERSION;
 	$options['version'] = PROJECTMANAGER_VERSION;

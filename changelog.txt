@@ -1,5 +1,9 @@
 ProjectManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
+	
+V2.2.1 - March , 2009
+- BUGFIX: options link for select, checkbox and radio form types
+- CHANGED: apply stripslashes in function getDatasetMeta instead of getDatasetMetaData
 
 V2.2 - March 11, 2009
 - NEW: set file permission for image uploads
