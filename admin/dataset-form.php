@@ -38,7 +38,7 @@
 				<select size="1" name="form_field[<?php echo $form_field->id ?>][day]">
 					<option value="">Tag</option>
 					<option value="">&#160;</option>
-					<?php for ( $day = 1; $day <= 30; $day++ ) : ?>
+					<?php for ( $day = 1; $day <= 31; $day++ ) : ?>
 						<option value="<?php echo $day ?>"<?php if ( $day == substr($meta_data[$form_field->id], 8, 2) ) echo ' selected="selected"'; ?>><?php echo $day ?></option>
 					<?php endfor; ?>
 				</select>
@@ -52,7 +52,7 @@
 				<select size="1" name="form_field[<?php echo $form_field->id ?>][year]">
 					<option value="0000">Jahr</option>
 					<option value="0000">&#160;</option>
-					<?php for ( $year = date('Y')-50; $year <= date('Y')+10; $year++ ) : ?>
+					<?php for ( $year = date('Y')-100; $year <= date('Y')+10; $year++ ) : ?>
 						<option value="<?php echo $year ?>"<?php if ( $year == substr($meta_data[$form_field->id], 0, 4) ) echo ' selected="selected"' ?>><?php echo $year ?></option>
 					<?php endfor; ?>
 				</select>
