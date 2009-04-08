@@ -258,7 +258,7 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function getFormFieldTypes($index = false)
 	{
-		$form_field_types = array( 'text' => __('Text', 'projectmanager'), 'textfield' => __('Textfield', 'projectmanager'), 'email' => __('E-Mail', 'projectmanager'), 'date' => __('Date', 'projectmanager'), 'uri' => __('URL', 'projectmanager'), 'image' => __( 'Image', 'projectmanager' ), 'select' => __('Selection', 'projectmanager'), 'checkbox' => __( 'Checkbox List', 'projectmanager'), 'radio' => __( 'Radio List', 'projectmanager'), 'file' => __('File', 'projectmanager') );
+		$form_field_types = array( 'text' => __('Text', 'projectmanager'), 'textfield' => __('Textfield', 'projectmanager'), 'email' => __('E-Mail', 'projectmanager'), 'date' => __('Date', 'projectmanager'), 'uri' => __('URL', 'projectmanager'), 'image' => __( 'Image', 'projectmanager' ), 'select' => __('Selection', 'projectmanager'), 'checkbox' => __( 'Checkbox List', 'projectmanager'), 'radio' => __( 'Radio List', 'projectmanager'), 'fileupload' => __('File Upload', 'projectmanager') );
 		
 		$form_field_types = apply_filters( 'projectmanager_formfields', $form_field_types );
 		
@@ -911,7 +911,7 @@ class ProjectManager extends ProjectManagerLoader
 					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'><a class='projectmanager_url' href='http://".$this->extractURL($meta_value, 'url')."' target='_blank' title='".$this->extractURL($meta_value, 'title')."'>".$this->extractURL($meta_value, 'title')."</a></span>";
 				} elseif( 'image' == $meta->type && !empty($meta_value) ) {
 					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'><img class='projectmanager_image' src='".$meta_value."' alt='".__('Image', 'projectmanager')."' /></span>";
-				} elseif ( 'file' == $meta->type && !empty($meta_value) ) {
+				} elseif ( 'fileupload' == $meta->type && !empty($meta_value) ) {
 					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'><a href='".$this->getFileURL($meta_value)."' target='_blank'>".$meta_value."</a></span>";
 				} elseif ( !empty($meta->type) && is_array($this->getFormFieldTypes($meta->type)) ) {
 					// Data is retried via callback function. Most likely a special field from LeagueManager
@@ -971,7 +971,7 @@ class ProjectManager extends ProjectManagerLoader
 		$out = '';
 		if ( is_admin() && current_user_can( 'manage_projects' ) ) {
 			$dims = array('width' => '300', 'height' => '100');
-			if ( 'textfield' == $formfield_type )
+			if ( 'textfield' == $formfield_type || 'fileupload' == $formfield_type )
 				$dims = array('width' => '400', 'height' => '400');
 			if ( 'checkbox' == $formfield_type || 'radio' == $formfield_type )
 				$dims = array('width' => '300', 'height' => '300');
@@ -1026,6 +1026,15 @@ class ProjectManager extends ProjectManagerLoader
 					$out .= "\n\t\t\t<option value='".$year."'".$selected.">".$year."</option>";
 				}
 				$out .= "\n\t\t\t</select>";
+			} elseif ( 'fileupload' == $formfield_type ) {
+				$out .= '
+				<input type="file" name="form_field'.$form_field_id.'['.$dataset_id.']" id="form_field_'.$form_field_id.'" size="20" />
+				<input type="hidden" name="form_field'.$form_field_id.']'.$dataset_id.'][current]" value="'.$value.'" />';
+				if (!empty($value)) {
+					$out .= '<p>'.__( "Current File", "projectmanager" ).': <a href="'.$this->getFileURL($value).'">'.$value .'</a>&#160;</p>
+					<p><input type="checkbox" name="form_field['.$form_field_id.']['.$dataset_id.'][del]" value="1" id="delete_file_'.$form_field_id.'_'.$dataset_id.'">&#160;<label for="delete_file_'.$form_field_id.'_'.$dataset_id.'"><strong>'.__( 'Delete File', 'projectmanager' ).'</strong></label>&#160;</p>
+					<p><input type="checkbox" name="form_field['.$form_field_id.']['.$dataset_id.'][overwrite]" value="1" id="overwrite_file_'.$form_field_id.'_'.$dataset_id.'">&#160;<label for="overwrite_file_'.$form_field_id.'_'.$dataset_id.'"><strong>'.__( 'Overwrite File', 'projectmanager' ).'</strong></label></p>';
+				}
 			}
 			elseif ( 'select' == $formfield_type )
 				$out .= $this->printFormFieldDropDown($formfield_id, $value, $dataset_id, "form_field_".$formfield_id."_".$dataset_id, false);
@@ -1033,6 +1042,8 @@ class ProjectManager extends ProjectManagerLoader
 				$out .= $this->printFormFieldCheckboxList($formfield_id, $value, 0, "form_field_".$formfield_id."_".$dataset_id, false);
 			elseif ( 'radio' == $formfield_type )
 				$out .= $this->printFormFieldRadioList($formfield_id, $value, 0, "form_field_".$formfield_id."_".$dataset_id, false);
+			
+				
 	
 			$out .= "\n\t\t\t<div style='text-align:center; margin-top: 1em;'><input type='button' value='".__('Save')."' class='button-secondary' onclick='ProjectManager.ajaxSaveDataField(".$dataset_id.",".$formfield_id.",\"".$formfield_type."\");return false;' />&#160;<input type='button' value='".__('Cancel')."' class='button' onclick='tb_remove();' /></div>";
 			$out .= "\n\t\t\t</form>";

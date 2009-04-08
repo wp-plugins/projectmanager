@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
 "POT-Creation-Date: 2009-02-05 22:08+0000\n"
-"PO-Revision-Date: 2009-04-08 14:37+0100\n"
+"PO-Revision-Date: 2009-04-08 21:49+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -794,4 +794,16 @@ msgstr "Datei Zugriffsrechte"
 
 msgid "Display datasets from ProjectManager"
 msgstr "Datensätze vom ProjektManager anzeigen"
+
+msgid "File Upload"
+msgstr "Datei-Upload"
+
+msgid "Current File"
+msgstr "Aktuelle Datei"
+
+msgid "Delete File"
+msgstr "Datei Löschen"
+
+msgid "Overwrite File"
+msgstr "Datei überschreiben"
 

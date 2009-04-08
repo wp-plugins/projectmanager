@@ -513,20 +513,22 @@ class ProjectManagerAdminPanel extends ProjectManager
 			if ( $dataset_meta ) {
 				foreach ( $dataset_meta AS $meta_id => $meta_value ) {
 					$formfield = parent::getFormFields($meta_id);
+					
+					// Manage file upload
+					if ( 'fileupload' == $formfield->type ) {
+						$file = array('name' => $_FILES['form_field']['name'][$meta_id], 'tmp_name' => $_FILES['form_field']['tmp_name'][$meta_id], 'size' => $_FILES['form_field']['size'][$meta_id], 'type' => $_FILES['form_field']['type'][$meta_id]);
+						if ( !empty($file['name']) )
+							$this->uploadFile($file);
+							
+						$meta_value = basename($file['name']);
+					}
+					
 					if ( is_array($meta_value) ) {
 						// form field value is a date
 						if ( array_key_exists('day', $meta_value) && array_key_exists('month', $meta_value) && array_key_exists('year', $meta_value) )
 							$meta_value = $meta_value['year'].'-'.str_pad($meta_value['month'], 2, 0, STR_PAD_LEFT).'-'.str_pad($meta_value['day'], 2, 0, STR_PAD_LEFT);
 						else
 							$meta_value = implode(",", $meta_value);
-					}
-					if ( 'file' == $formfield->type ) {
-						$file = $_FILES['form_field'][$formfield->id]['file'];
-						if ( !empty($file)) {
-							$overwrite = isset($meta_value['overwrite']) ? true : false;
-							$this->uploadFile($file, $dataset_meta, $overwrite);
-						}
-						$meta_value = basename($file['name']);
 					}
 
 					$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ('%d', '%d', '%s')", $meta_id, $dataset_id, $meta_value ) );
@@ -581,28 +583,21 @@ class ProjectManagerAdminPanel extends ProjectManager
 			if ( $dataset_meta ) {
 				foreach ( $dataset_meta AS $meta_id => $meta_value ) {
 					$formfield = parent::getFormFields($meta_id);
+					
+					// Manage file upload
+					if ( 'fileupload' == $formfield->type ) {
+						$file = array('name' => $_FILES['form_field']['name'][$meta_id], 'tmp_name' => $_FILES['form_field']['tmp_name'][$meta_id], 'size' => $_FILES['form_field']['size'][$meta_id], 'type' => $_FILES['form_field']['type'][$meta_id], 'current' => $meta_value['current']);
+						$delete = (1 == $meta_value['del']) ? true : false;
+						$meta_value = $this->editFile($file, $meta_value['overwrite'], $delete);
+					}
+					
+					
 					if ( is_array($meta_value) ) {
 						// form field value is a date
 						if ( array_key_exists('day', $meta_value) && array_key_exists('month', $meta_value) && array_key_exists('year', $meta_value) )
 							$meta_value = $meta_value['year'].'-'.str_pad($meta_value['month'], 2, 0, STR_PAD_LEFT).'-'.str_pad($meta_value['day'], 2, 0, STR_PAD_LEFT);
 						else
 							$meta_value = implode(",", $meta_value);
-					}
-					
-					if ( 'file' == $formfield->type ) {
-						if (isset($_FILES['form_field']))
-							$file = array('name' => $_FILES['form_field']['name'][$meta_id], 'tmp_name' => $_FILES['form_field']['tmp_name'][$meta_id], 'size' => $_FILES['form_field']['size'][$meta_id], 'type' => $_FILES['form_field']['type'][$meta_id]);
-						else
-							$file = '';
-
-						if ( isset($meta_value['delete']))
-							@unlink(parent::getFilePath(basename($file['name'])));
-							
-						if ( !empty($file)) {
-							$overwrite = isset($meta_value['overwrite']) ? true : false;
-							$this->uploadFile($file, $dataset_meta, $overwrite);
-						}
-						$meta_value = basename($file['name']);
 					}
 					
 					if ( 1 == $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_datasetmeta} WHERE `dataset_id` = '".$dataset_id."' AND `form_id` = '".$meta_id."'" ) )
@@ -651,6 +646,10 @@ class ProjectManagerAdminPanel extends ProjectManager
 			$img = $dataset[0]->image;
 			
 		$this->delImage( $img );
+		foreach ( parent::getDatasetMeta($dataset_id) AS $dataset_meta ) {
+			if ( 'fileupload' == $dataset_meta->type )
+				@unlink(parent::getFilePath($dataset_meta->value));
+		}
 		$wpdb->query("DELETE FROM {$wpdb->projectmanager_datasetmeta} WHERE `dataset_id` = {$dataset_id}");
 		$wpdb->query("DELETE FROM {$wpdb->projectmanager_dataset} WHERE `id` = {$dataset_id}");
 	}
@@ -735,6 +734,32 @@ class ProjectManagerAdminPanel extends ProjectManager
 				$this->setMessage( sprintf( __('The uploaded file could not be moved to %s.' ), parent::getFilePath() ), true );
 			}
 		}
+	}
+	
+	
+	/**
+	 * Set File for editing datasets
+	 * 
+	 * @param array $file
+	 * @param boolean $overwrite
+	 * @param boolean $del_file
+	 * @return string
+	 */
+	function editFile( $file, $overwrite, $del )
+	{
+		if ( $del )
+			@unlink(parent::getFilePath(basename($file['current'])));
+						
+		if ( !empty($file['name']) ) {
+			$overwrite = isset($overwrite) ? true : false;
+			$this->uploadFile($file, $overwrite);
+		}
+		if ( $del )
+			$meta_value = '';
+		else
+			$meta_value = !empty($file['name']) ? basename($file['name']) : $file['current'];
+			
+		return $meta_value;
 	}
 	
 	
