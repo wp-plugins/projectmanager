@@ -30,8 +30,8 @@ $options = $options['project_options'][$project_id];
 $page = ($_GET['page'] == 'projectmanager') ? 'projectmanager&subpage=show-project&project_id='.$project_id : 'project_'.$project_id;
 
 // Try to create image directory
-if ( 1 == $options['show_image'] && !wp_mkdir_p( $projectmanager->getImagePath() ) )
-	echo "<div class='error'><p>".sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $projectmanager->getImagePath() )."</p></div>";
+if ( 1 == $options['show_image'] && !wp_mkdir_p( $projectmanager->getFilePath() ) )
+	echo "<div class='error'><p>".sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $projectmanager->getFilePath() )."</p></div>";
 ?>
 <form name="post" id="post" action="admin.php?page=<?php echo $page ?>" method="post" enctype="multipart/form-data">
 	

@@ -416,7 +416,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 			/*
 			* Upload CSV file to image directory, temporarily
 			*/
-			$new_file =  parent::getImagePath().'/'.basename($file['name']);
+			$new_file =  parent::getFilePath().'/'.basename($file['name']);
 			if ( move_uploaded_file($file['tmp_name'], $new_file) ) {
 				$handle = @fopen($new_file, "r");
 				if ($handle) {
@@ -444,7 +444,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 					$this->setMessage( __('The file is not readable', 'projectmanager'), true );
 				}
 			} else {
-				$this->setMessage(sprintf( __('The uploaded file could not be moved to %s.' ), parent::getImagePath()) );
+				$this->setMessage(sprintf( __('The uploaded file could not be moved to %s.' ), parent::getFilePath()) );
 			}
 			@unlink($new_file); // remove file from server after import is done
 		} else {
@@ -510,9 +510,9 @@ class ProjectManagerAdminPanel extends ProjectManager
 			$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_dataset} (name, cat_ids, project_id, user_id) VALUES ('%s', '%s', '%d', '%d')", $name, maybe_serialize($cat_ids), $project_id, $current_user->ID ) );
 			$dataset_id = $wpdb->insert_id;
 				
-			
 			if ( $dataset_meta ) {
 				foreach ( $dataset_meta AS $meta_id => $meta_value ) {
+					$formfield = parent::getFormFields($meta_id);
 					if ( is_array($meta_value) ) {
 						// form field value is a date
 						if ( array_key_exists('day', $meta_value) && array_key_exists('month', $meta_value) && array_key_exists('year', $meta_value) )
@@ -520,17 +520,20 @@ class ProjectManagerAdminPanel extends ProjectManager
 						else
 							$meta_value = implode(",", $meta_value);
 					}
-					
-					// Remove slashes if magic_quotes_gpc is turned on
-					/*if (get_magic_quotes_gpc()) {
-						$meta_value = stripslashes_deep($meta_value);
-					}*/
-					
+					if ( 'file' == $formfield->type ) {
+						$file = $_FILES['form_field'][$formfield->id]['file'];
+						if ( !empty($file)) {
+							$overwrite = isset($meta_value['overwrite']) ? true : false;
+							$this->uploadFile($file, $dataset_meta, $overwrite);
+						}
+						$meta_value = basename($file['name']);
+					}
+
 					$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ('%d', '%d', '%s')", $meta_id, $dataset_id, $meta_value ) );
 				}
 			}
 			
-			// Check for unsbumitted form data, e.g. checkbox list
+			// Check for unsubmitted form data, e.g. checkbox list
 			if ($form_fields = parent::getFormFields()) {
 				foreach ( $form_fields AS $form_field ) {
 					if ( !array_key_exists($form_field->id, $dataset_meta) ) {
@@ -577,6 +580,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 			
 			if ( $dataset_meta ) {
 				foreach ( $dataset_meta AS $meta_id => $meta_value ) {
+					$formfield = parent::getFormFields($meta_id);
 					if ( is_array($meta_value) ) {
 						// form field value is a date
 						if ( array_key_exists('day', $meta_value) && array_key_exists('month', $meta_value) && array_key_exists('year', $meta_value) )
@@ -585,10 +589,21 @@ class ProjectManagerAdminPanel extends ProjectManager
 							$meta_value = implode(",", $meta_value);
 					}
 					
-					// Remove slashes if magic_quotes_gpc is turned on
-					/*if (get_magic_quotes_gpc()) {
-						$meta_value = stripslashes_deep($meta_value);
-					}*/
+					if ( 'file' == $formfield->type ) {
+						if (isset($_FILES['form_field']))
+							$file = array('name' => $_FILES['form_field']['name'][$meta_id], 'tmp_name' => $_FILES['form_field']['tmp_name'][$meta_id], 'size' => $_FILES['form_field']['size'][$meta_id], 'type' => $_FILES['form_field']['type'][$meta_id]);
+						else
+							$file = '';
+
+						if ( isset($meta_value['delete']))
+							@unlink(parent::getFilePath(basename($file['name'])));
+							
+						if ( !empty($file)) {
+							$overwrite = isset($meta_value['overwrite']) ? true : false;
+							$this->uploadFile($file, $dataset_meta, $overwrite);
+						}
+						$meta_value = basename($file['name']);
+					}
 					
 					if ( 1 == $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_datasetmeta} WHERE `dataset_id` = '".$dataset_id."' AND `form_id` = '".$meta_id."'" ) )
 						$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `value` = '%s' WHERE `dataset_id` = '%d' AND `form_id` = '%d'", $meta_value, $dataset_id, $meta_id ) );
@@ -606,7 +621,6 @@ class ProjectManagerAdminPanel extends ProjectManager
 				}
 			}
 			
-				
 			// Delete Image if option is checked
 			if ($del_image) {
 				$wpdb->query("UPDATE {$wpdb->projectmanager_dataset} SET `image` = '' WHERE `id` = {$dataset_id}");
@@ -651,16 +665,16 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 */
 	function delImage( $image )
 	{
-		@unlink( parent::getImagePath($image) );
-		@unlink( parent::getImagePath('/thumb.'.$image) );
-		@unlink( parent::getImagePath('/tiny.'.$image) );
+		@unlink( parent::getFilePath($image) );
+		@unlink( parent::getFilePath('/thumb.'.$image) );
+		@unlink( parent::getFilePath('/tiny.'.$image) );
 	}
 	
 	
 	/**
 	 * set image path in database and upload image to server
 	 *
-	 * @param int  $dataset_id
+	 * @param int $dataset_id
 	 * @param array $file
 	 * @param boolean $overwrite_image
 	 * @return void | string
@@ -669,7 +683,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 	{
 		global $wpdb;
 		
-		$new_file = parent::getImagePath().'/'.basename($file['name']);
+		$new_file = parent::getFilePath().'/'.basename($file['name']);
 		$image = new ProjectManagerImage($new_file);
 		if ( $image->supported($file['name']) ) {
 			if ( $file['size'] > 0 ) {
@@ -692,17 +706,34 @@ class ProjectManagerAdminPanel extends ProjectManager
 						$image->createThumbnail( $dims, $new_file, $options['chmod'] );
 						
 						$dims = array( 'width' => $options['thumb_size']['width'], 'height' => $options['thumb_size']['height'] );
-						$image->createThumbnail( $dims, parent::getImagePath().'/thumb.'.basename($file['name']), $options['chmod'] );
+						$image->createThumbnail( $dims, parent::getFilePath().'/thumb.'.basename($file['name']), $options['chmod'] );
 						
 						$dims = array( 'width' => 80, 'height' => 50 );
-						$image->createThumbnail( $dims, parent::getImagePath().'/tiny.'.basename($file['name']), $options['chmod'] );
+						$image->createThumbnail( $dims, parent::getFilePath().'/tiny.'.basename($file['name']), $options['chmod'] );
 					} else {
-						$this->setMessage( sprintf( __('The uploaded file could not be moved to %s.' ), parent::getImagePath() ), true );
+						$this->setMessage( sprintf( __('The uploaded file could not be moved to %s.' ), parent::getFilePath() ), true );
 					}
 				}
 			}
 		} else {
 			$this->setMessage( __('The file type is not supported.','projectmanager'), true );
+		}
+	}
+	
+	
+	/**
+	 * Upload file to webserver
+	 * 
+	 */
+	function uploadFile( $file, $overwrite = false )
+	{
+		$new_file = parent::getFilePath().'/'.basename($file['name']);
+		if ( file_exists($new_file) && !$overwrite ) {
+			$this->setMessage( __('File exists and is not uploaded. Set the overwrite option if you want to replace it.','projectmanager'), true );
+		} else {
+			if ( !move_uploaded_file($file['tmp_name'], $new_file) ) {
+				$this->setMessage( sprintf( __('The uploaded file could not be moved to %s.' ), parent::getFilePath() ), true );
+			}
 		}
 	}
 	
@@ -759,7 +790,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 				$order_by = isset($new_form_order_by[$tmp_form_id]) ? 1 : 0;
 				$show_on_startpage = isset($new_form_show_on_startpage[$tmp_form_id]) ? 1 : 0;
 				$show_in_profile = isset($new_form_show_in_profile[$tmp_form_id]) ? 1 : 0;
-					
+				
 				$max_order_sql = "SELECT MAX(`order`) AS `order` FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = {$project_id};";
 				if ($new_form_order[$tmp_form_id] != '') {
 					$order = $new_form_order[$tmp_form_id];

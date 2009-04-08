@@ -258,7 +258,7 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function getFormFieldTypes($index = false)
 	{
-		$form_field_types = array( 'text' => __('Text', 'projectmanager'), 'textfield' => __('Textfield', 'projectmanager'), 'email' => __('E-Mail', 'projectmanager'), 'date' => __('Date', 'projectmanager'), 'uri' => __('URL', 'projectmanager'), 'image' => __( 'Image', 'projectmanager' ), 'select' => __('Selection', 'projectmanager'), 'checkbox' => __( 'Checkbox List', 'projectmanager'), 'radio' => __( 'Radio List', 'projectmanager') );
+		$form_field_types = array( 'text' => __('Text', 'projectmanager'), 'textfield' => __('Textfield', 'projectmanager'), 'email' => __('E-Mail', 'projectmanager'), 'date' => __('Date', 'projectmanager'), 'uri' => __('URL', 'projectmanager'), 'image' => __( 'Image', 'projectmanager' ), 'select' => __('Selection', 'projectmanager'), 'checkbox' => __( 'Checkbox List', 'projectmanager'), 'radio' => __( 'Radio List', 'projectmanager'), 'file' => __('File', 'projectmanager') );
 		
 		$form_field_types = apply_filters( 'projectmanager_formfields', $form_field_types );
 		
@@ -320,12 +320,12 @@ class ProjectManager extends ProjectManagerLoader
 	
 	
 	/**
-	 * returns image directory
+	 * returns upload directory
 	 *
 	 * @param string | false $file
 	 * @return string
 	 */
-	function getImagePath( $file = false )
+	function getFilePath( $file = false )
 	{
 		if ( $file )
 			return WP_CONTENT_DIR.'/uploads/projects/'.$file;
@@ -335,12 +335,12 @@ class ProjectManager extends ProjectManagerLoader
 	
 	
 	/**
-	 * returns url of image directory
+	 * returns url of upload directory
 	 *
 	 * @param string | false $file image file
 	 * @return string
 	 */
-	function getImageUrl( $file = false )
+	function getFileURL( $file = false )
 	{
 		if ( $file )
 			return WP_CONTENT_URL.'/uploads/projects/'.$file;
@@ -529,15 +529,21 @@ class ProjectManager extends ProjectManagerLoader
 	/**
 	 * gets form fields for project
 	 *
-	 * @param none
+	 * @param int|false $id ID of formfield
 	 * @return array
 	 */
-	function getFormFields()
+	function getFormFields( $id = false )
 	{
 		global $wpdb;
 	
-		$sql = "SELECT `label`, `type`, `order`, `order_by`, `show_on_startpage`, `show_in_profile`, `id` FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = {$this->project_id} ORDER BY `order` ASC;";
-		return $wpdb->get_results( $sql );
+		$search = ( $id ) ? "`id` = {$id}" : "`project_id` = {$this->project_id}"; 
+		$sql = "SELECT `label`, `type`, `order`, `order_by`, `show_on_startpage`, `show_in_profile`, `id` FROM {$wpdb->projectmanager_projectmeta} WHERE $search ORDER BY `order` ASC;";
+		$formfields = $wpdb->get_results( $sql );
+		
+		if ($id)
+			return $formfields[0];
+		else
+			return $formfields;
 	}
 	
 	
@@ -896,15 +902,17 @@ class ProjectManager extends ProjectManagerLoader
 					$meta_value = nl2br($meta_value);
 						
 					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span>";
-				} elseif ( 'email' == $meta->type && $meta_value != '') {
-					$meta_value = "<a href='mailto:".$meta_value."' class='projectmanager_email'><span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span></a>";
+				} elseif ( 'email' == $meta->type && !empty($meta_value) ) {
+					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'><a href='mailto:".$this->extractURL($meta_value, 'url')."' class='projectmanager_email'>".$this->extractURL($meta_value, 'title')."</a></span>";
 				} elseif ( 'date' == $meta->type ) {
 					$meta_value = ( $meta_value == '0000-00-00' ) ? '' : $meta_value;
 					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".mysql2date(get_option('date_format'), $meta_value )."</span>";
-				} elseif ( 'uri' == $meta->type && $meta_value != '') {
-					$meta_value = "<a class='projectmanager_url' href='http://".$meta_value."' target='_blank' title='".$meta_value."'><span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span></a>";
-				} elseif( 'image' == $meta->type && $meta_value != '' ) {
+				} elseif ( 'uri' == $meta->type && !empty($meta_value) ) {
+					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'><a class='projectmanager_url' href='http://".$this->extractURL($meta_value, 'url')."' target='_blank' title='".$this->extractURL($meta_value, 'title')."'>".$this->extractURL($meta_value, 'title')."</a></span>";
+				} elseif( 'image' == $meta->type && !empty($meta_value) ) {
 					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'><img class='projectmanager_image' src='".$meta_value."' alt='".__('Image', 'projectmanager')."' /></span>";
+				} elseif ( 'file' == $meta->type && !empty($meta_value) ) {
+					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'><a href='".$this->getFileURL($meta_value)."' target='_blank'>".$meta_value."</a></span>";
 				} elseif ( !empty($meta->type) && is_array($this->getFormFieldTypes($meta->type)) ) {
 					// Data is retried via callback function. Most likely a special field from LeagueManager
 					$field = $this->getFormFieldTypes($meta->type);
@@ -927,10 +935,13 @@ class ProjectManager extends ProjectManagerLoader
 							$out .= "\n\t</".$output.">";
 						}
 					} elseif ( 'td' == $output ) {
+						if (empty($meta_value))
+							$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>&#160;</span>";
+							
 						$out .= "\n\t<td>";
 						$out .= $this->getThickbox( $dataset->id, $meta->form_field_id, $meta->type, maybe_unserialize($meta->value), $dataset->user_id );
-						$out .= $this->getThickboxLink($dataset->id, $meta->form_field_id, $meta->type, sprintf(__('%s of %s','projectmanager'), $meta->label, $dataset->name), $dataset->user_id);
-						$out .= "</td>";
+						$out .= $meta_value . $this->getThickboxLink($dataset->id, $meta->form_field_id, $meta->type, sprintf(__('%s of %s','projectmanager'), $meta->label, $dataset->name), $dataset->user_id);
+						$out .= "\n\t</td>";
 					}
 				}
 			}
@@ -1032,6 +1043,27 @@ class ProjectManager extends ProjectManagerLoader
 	}
 	
 
+	/**
+	 * Extract url or title from website field
+	 * 
+	 * @param string $url
+	 * @param string $index
+	 * @return string
+	 */
+	function extractURL($url, $index)
+	{
+		if ( strstr($url,'|') ) {
+			$pos = strpos($url,'|');
+			$uri = substr($url,0,$pos);
+			$title = substr($url, $pos+1, strlen($url)-$pos);
+		} else {
+			$uri = $title = $url;
+		}
+		$data = array( 'url' => $uri, 'title' => $title );
+		return $data[$index];
+	}
+	
+	
 	/**
 	 * display Form Field options as dropdown
 	 *

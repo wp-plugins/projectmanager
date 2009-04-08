@@ -191,24 +191,46 @@ ul.categorychecklist li label, ul.categorychecklist li input, ul.children li lab
 }
 
 	
-.projectmanager_widget_control p { text-align: left; clear: both; }
-.projectmanager_widget_control select {
-	display: block;
+.projectmanager_widget_control p {
+	text-align: left;
+	clear: both;
+}
+.projectmanager_widget_control input {
+	display: inline;
+	clear: none;
 	width: auto;
-	}
-.projectmanager_widget_control .slideshow_control { padding: 5px; border: 1px dashed #cfcfcf; margin-bottom: 1em; }
-.projectmanager_widget_control .slideshow_control legend { font-weight: bold; }
-.projectmanager_widget_control .slideshow_control label {
+	border-width: 1px;
+	border-style: solid;
+	border-collapse: separate;
+	border-spacing: 0;
+	-moz-border-radius: 4px;
+	-khtml-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+}
+.projectmanager_widget_control select {
+	display: inline;
+	clear: none;
+	width: auto;
+}
+.projectmanager_widget_control label {
 	padding: 0.5em 0.5em;
 	width: 6em;
 	float: left;
+}
+.projectmanager_widget_control .slideshow_control {
+	padding: 5px;
+	border: 1px dashed #cfcfcf;
+	margin-bottom: 1em;
+}
+.projectmanager_widget_control .slideshow_control legend {
+	font-weight: bold;
 }
 .projectmanager_widget_control .slideshow_control label.right {
 	padding: 0.5em 0.5em;
 	float: none;
 	width: auto;
-	}
-.projectmanager_widget_control .slideshow_control input, .projectmanager_widget_control .slideshow_control select { display: inline; clear: none; width: auto; }
+}
 
 
 /*--- JQuery Slideshow Styles. Cleaned ---*/

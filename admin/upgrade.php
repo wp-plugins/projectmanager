@@ -45,10 +45,10 @@ function projectmanager_upgrade() {
 		$dir_src = WP_CONTENT_DIR.'/projects';
 		if ( file_exists($dir_src) ) {
 			$dir_handle = opendir($dir_src);
-			if ( wp_mkdir_p( $projectmanager->getImagePath() ) ) {
+			if ( wp_mkdir_p( $projectmanager->getFilePath() ) ) {
 				while( $file = readdir($dir_handle) ) {
 					if( $file!="." && $file!=".." ) {
-						if ( copy ($dir_src."/".$file, $projectmanager->getImagePath()."/".$file) )
+						if ( copy ($dir_src."/".$file, $projectmanager->getFilePath()."/".$file) )
 							unlink($dir_src."/".$file);
 					}
 				}

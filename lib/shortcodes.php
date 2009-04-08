@@ -265,7 +265,7 @@ class ProjectManagerShortcodes extends ProjectManager
 				
 				$datasets[$i]->class = $class;
 				$datasets[$i]->URL = $url;
-				$datasets[$i]->thumbURL = $projectmanager->getImageUrl('/thumb.'.$dataset->image);
+				$datasets[$i]->thumbURL = $projectmanager->getFileURL('/thumb.'.$dataset->image);
 				
 				$datasets[$i]->nameURL = ($projectmanager->hasDetails($single)) ? '<a href="'.$url.'">'.$dataset->name.'</a>' : $dataset->name;
 				
@@ -311,7 +311,7 @@ class ProjectManagerShortcodes extends ProjectManager
 		}
 
 		if ( $dataset = parent::getDataset( $id ) ) {
-			$dataset->imgURL = $projectmanager->getImageUrl($dataset->image);
+			$dataset->imgURL = $projectmanager->getFileURL($dataset->image);
 			$dataset->name = stripslashes($dataset->name);
 		}
 				

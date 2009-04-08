@@ -229,31 +229,6 @@ class ProjectManagerLoader
 		
 		wp_register_script( 'jquery_slideshow', PROJECTMANAGER_URL.'/js/jquery.aslideshow.js', array('jquery'), '0.5.3' );
 		wp_print_scripts( 'jquery_slideshow' );
-		
-		foreach ( $options AS $widget_id => $opts ) {
-		if ($opts['slideshow']['show'] == 1) {
-		?>
-
-		<script type='text/javascript'>
-		//<![CDATA[
-			   jQuery(document).ready(function(){
-			   jQuery('#projectmanager_slideshow_<?php echo $opts['project_id'] ?>').slideshow({
-			   width: <?php echo $opts['slideshow']['width'] ?>,
-			   height:<?php echo $opts['slideshow']['height']; ?>,
-			   time: <?php echo $opts['slideshow']['time']*1000; ?>,
-			   title:false,
-			   panel:false,
-			   loop:true,
-			   play:true,
-			   playframe: false,
-			   effect: '<?php echo $opts['slideshow']['fade'] ?>',
-			   random: <?php echo $opts['slideshow']['random'] ?>,
-			   });
-			   });
-		   //]]>
-		</script>
-		<?php
-		}}
 	}
 	
 	
@@ -351,6 +326,7 @@ class ProjectManagerLoader
 						`order_by` tinyint( 1 ) NOT NULL default '0',
 						`show_on_startpage` tinyint( 1 ) NOT NULL default '0',
 						`show_in_profile` tinyint( 1 ) NOT NULL default '0',
+						`options` longtext NOT NULL default '',
 						`project_id` int( 11 ) NOT NULL,
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->projectmanager_projectmeta, $create_projectmeta_sql );
@@ -418,7 +394,7 @@ class ProjectManagerLoader
 		delete_option( 'projectmanager_widget' );
 		
 		// Delete Images
-		$dir = $projectmanager->getImagePath();
+		$dir = $projectmanager->getFilePath();
 		if ( $handle = opendir($dir) ) {
 			while (false !== ($file = readdir($handle))) {
 				if ($file != "." && $file != "..")

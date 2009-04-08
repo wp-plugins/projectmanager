@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
 "POT-Creation-Date: 2009-02-05 22:08+0000\n"
-"PO-Revision-Date: 2009-03-04 13:03+0100\n"
+"PO-Revision-Date: 2009-04-08 14:37+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -791,4 +791,7 @@ msgstr "Siehe <a href='http://de2.php.net/manual/de/function.chmod.php'>http://d
 
 msgid "File permissions"
 msgstr "Datei Zugriffsrechte"
+
+msgid "Display datasets from ProjectManager"
+msgstr "Datensätze vom ProjektManager anzeigen"
 

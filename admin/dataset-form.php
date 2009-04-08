@@ -10,7 +10,7 @@
 		<th scope="row"><label for="projectmanager_image"><?php _e( 'Image', 'projectmanager' ) ?></label></th>
 		<td>
 			<?php if ( '' != $img_filename ) : ?>
-				<img src="<?php echo $projectmanager->getImageUrl('tiny.'.$img_filename)?>" class="alignright" />
+				<img src="<?php echo $projectmanager->getFileURL('tiny.'.$img_filename)?>" class="alignright" />
 			<?php endif; ?>
 			<input type="file" name="projectmanager_image" id="projectmanager_image" size="45"/><p><?php _e( 'Supported file types', 'projectmanager' ) ?>: <?php echo implode( ',',$projectmanager->getSupportedImageTypes() ); ?></p>
 			<?php if ( '' != $img_filename ) : ?>
@@ -56,6 +56,16 @@
 						<option value="<?php echo $year ?>"<?php if ( $year == substr($meta_data[$form_field->id], 0, 4) ) echo ' selected="selected"' ?>><?php echo $year ?></option>
 					<?php endfor; ?>
 				</select>
+				<?php elseif ( 'file' == $form_field->type ) : ?>
+				<input type="file" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" size="40" />
+				<input type="hidden" name="form_field[<?php echo $form_field->id ?>]" value="" />
+				<?php if (!empty($meta_data[$form_field->id])) : ?>
+				<p>
+					<?php _e( 'Current File', 'projectmanager' ) ?>: <a href="<?php echo $projectmanager->getFileURL($meta_data[$form_field->id]) ?>"><?php echo $meta_data[$form_field->id] ?></a>&#160;
+					<input type="checkbox" name="del_file[<?php echo $form_field->id ?>]" value="1" id="delete_file_<?php echo $form_field->id ?>">&#160;<label for="delete_file_<?php echo $form_field->id ?>"><strong><?php _e( 'Delete File', 'projectmanager' ) ?></strong></label>&#160;
+					<input type="checkbox" name="overwrite_file[<?php echo $form_field->id ?>]" value="1" id="overwrite_file_<?php echo $form_field->id ?>">&#160;<label for="overwrite_file_<?php echo $form_field->id ?>"><strong><?php _e( 'Overwrite File', 'projectmanager' ) ?></strong></label>
+				</p>
+				<?php endif; ?>
 				<?php elseif ( 'select' == $form_field->type ) : $projectmanager->printFormFieldDropDown($form_field->id, $meta_data[$form_field->id], $dataset_id, "form_field[".$form_field->id."]"); ?>
 				<?php elseif ( 'checkbox' == $form_field->type ) : $projectmanager->printFormFieldCheckboxList($form_field->id, $meta_data[$form_field->id], $dataset_id, "form_field[".$form_field->id."][]"); ?>
 				<?php elseif ( 'radio' == $form_field->type ) : $projectmanager->printFormFieldRadioList($form_field->id, $meta_data[$form_field->id], $dataset_id, "form_field[".$form_field->id."]"); ?>

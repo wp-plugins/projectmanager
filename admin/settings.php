@@ -17,7 +17,7 @@ if ( isset($_POST['saveSettings']) ) {
 	$options['project_options'][$project_id]['dataset_order'] = $_POST['dataset_order'];
 	$options['project_options'][$project_id]['show_image'] = isset( $_POST['show_image']) ? 1 : 0;
 	$options['project_options'][$project_id]['show_image_profile'] = ( isset($_POST['show_image_profile']) && isset($_POST['show_image']) ) ? 1 : 0;
-	$options['project_options'][$project_id]['use_widget'] = isset( $_POST['use_widget'] ) ? 1 : 0;
+//	$options['project_options'][$project_id]['use_widget'] = isset( $_POST['use_widget'] ) ? 1 : 0;
 	$options['project_options'][$project_id]['thumb_size'] = array( "width" => $_POST['thumb_width'], "height" => $_POST['thumb_height'] );
     $options['project_options'][$project_id]['medium_size'] = array( "width" => $_POST['medium_width'], "height" => $_POST['medium_height'] );
     $options['project_options'][$project_id]['chmod'] = $_POST['chmod'];
@@ -34,8 +34,8 @@ if ( isset($_POST['saveSettings']) ) {
 }
 $settings = $options['project_options'][$project_id];
 
-if ( 1 == $settings['show_image'] && !wp_mkdir_p( $projectmanager->getImagePath() ) )
-	echo "<div class='error'><p>".sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $projectmanager->getImagePath() )."</p></div>";
+if ( 1 == $settings['show_image'] && !wp_mkdir_p( $projectmanager->getFilePath() ) )
+	echo "<div class='error'><p>".sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $projectmanager->getFilePath() )."</p></div>";
 
 ?>
 
@@ -65,9 +65,9 @@ if ( 1 == $settings['show_image'] && !wp_mkdir_p( $projectmanager->getImagePath(
 			</td>
 			
 		</tr>
-		<tr valign="top">
+		<!--<tr valign="top">
 			<th scope="row"><label for="use_widget"><?php _e( 'Use Widget', 'projectmanager' ) ?></label></th><td><input type="checkbox" name="use_widget" id="use_widget"<?php if ( 1 == $settings['use_widget']  ) echo ' checked="checked"'; ?> value="1" /></td>
-		</tr>
+		</tr>-->
 		<tr valign="top">
 			<th scope="row"><label for="navi_link"><?php _e( 'Navi Link', 'projectmanager' ) ?></th><td><input type="checkbox" name="navi_link" id="navi_link" value="1"<?php if ( 1 == $settings['navi_link']  ) echo ' checked="checked"'; ?> />&#160;<span class="setting-description"><?php _e( 'Set this option to add a direct link in the navigation panel.', 'projectmanager' ) ?></span></td>
 		</tr>

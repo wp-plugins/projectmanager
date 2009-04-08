@@ -189,7 +189,7 @@ $options = $options['project_options'][$project_id];
 	<script type='text/javascript'>
 	// <![CDATA[
 	    Sortable.create("the-list",
-	    {dropOnEmpty:true, tag: 'tr', ghosting:true, constraint:false, onUpdate: function() {Leaguemanager.saveStandings(Sortable.serialize('the-list'))} });
+	    {dropOnEmpty:true, tag: 'tr', ghosting:true, constraint:false, onUpdate: function() {ProjectManager.saveOrder(Sortable.serialize('the-list'))} });
 	    //")
 	// ]]>
 	</script>

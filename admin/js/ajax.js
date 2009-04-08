@@ -81,7 +81,6 @@ ProjectManager.ajaxSaveDataField = function( dataset_id, formfield_id, formfield
 	window.setTimeout("ProjectManager.dataFieldSpanFadeOut(" +  dataset_id  +  ","  + formfield_id + ",'" + newvalue + "','" + formfield_type + "')", 50);
 }
 ProjectManager.dataFieldSpanFadeOut = function( dataset_id, formfield_id, newvalue, formfield_type ) {
-	//newvalue = ProjectManager.addslashes(newvalue);
 	jQuery("span#datafield" + formfield_id + "_" + dataset_id).fadeIn('fast', function() {
 		var ajax = new sack(ProjectManagerAjaxL10n.requestUrl);
 		ajax.execute = 1;
