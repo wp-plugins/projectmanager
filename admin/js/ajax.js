@@ -2,6 +2,11 @@ ProjectManager.AJAXdeleteFile = function(file, dataset_id, formfield_id, formfie
 	var check = window.confirm('Delte File ' + ProjectManager.basename(file) + '?');
 	
 	if ( check == true ) {
+		var delfile = document.getElementById("delfile" + formfield_id + "_" + dataset_id);
+		var fileimage = document.getElementById("fileimage" + formfield_id + "_" + dataset_id);
+		delfile.style.display = "none";
+		fileimage.style.display = "none";
+		
 		var ajax = new sack(ProjectManagerAjaxL10n.requestUrl);
 		ajax.execute = 1;
 		ajax.method = 'POST';

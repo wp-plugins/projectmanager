@@ -377,7 +377,27 @@ class ProjectManager extends ProjectManagerLoader
 			$out .= "document_word.png";
 		elseif ( $type == 'xls' || $type == 'ods' )
 			$out .= "document_excel.png";
-		
+		elseif ( $type == 'csv' )
+			$out .= "document_excel_csv";
+		elseif ( $type == 'ppt' || $type == 'odp' || $type == 'pptx' )
+			$out .= "document_powerpoint.png";
+		elseif  ( $type == 'zip' || $type == 'rar' || $type == 'tar' ||  $type == 'gzip' || $type == 'tar.gz' || $type == 'bzip2' || $type == 'tar.bz2' )
+			$out .= "document_zipper";
+		elseif ( $type == 'divx' || $type == 'mpg' || $type == 'mp4' )
+			$out .= "film.png";
+		elseif ( $type == 'mp3' || $type == 'ogg' )
+			$out .= "document_music.png";
+		elseif ( $type == 'gif' || $type == 'png' || $type == 'jpg' || $type == 'jpeg' )
+			$out .= "image.png";
+		elseif ( $type == 'html' || $type == 'htm' || $type == 'php' )
+			$out .= "globe.png";
+		elseif ( $type == 'txt' )
+			$out .= "document_text.png";
+		elseif ( $type == 'pdf' )
+			$out .= "pdf.png";
+		else
+			$out .= "document.png";
+					
 		return $out;
 	}
 	
@@ -945,7 +965,7 @@ class ProjectManager extends ProjectManagerLoader
 				} elseif( 'image' == $meta->type && !empty($meta_value) ) {
 					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'><img class='projectmanager_image' src='".$meta_value."' alt='".__('Image', 'projectmanager')."' /></span>";
 				} elseif ( 'fileupload' == $meta->type && !empty($meta_value) ) {
-					$meta_value = "<img src='".$this->getFileImage($meta_value)."' alt='' />&#160;<span id='datafield".$meta->form_field_id."_".$dataset->id."'><a class='projectmanager_file ".$this->getFileType($meta_value)."' href='".$this->getFileURL($meta_value)."' target='_blank'>".$meta_value."</a></span>";
+					$meta_value = "<img id='fileimage".$meta->form_field_id."_".$dataset->id."' src='".$this->getFileImage($meta_value)."' alt='' />&#160;<span id='datafield".$meta->form_field_id."_".$dataset->id."'><a class='projectmanager_file ".$this->getFileType($meta_value)."' href='".$this->getFileURL($meta_value)."' target='_blank'>".$meta_value."</a></span>";
 				} elseif ( !empty($meta->type) && is_array($this->getFormFieldTypes($meta->type)) ) {
 					// Data is retried via callback function. Most likely a special field from LeagueManager
 					$field = $this->getFormFieldTypes($meta->type);
@@ -1014,7 +1034,7 @@ class ProjectManager extends ProjectManagerLoader
 				$out .= "&#160;<a class='thickbox' id='thickboxlink".$formfield_id."_".$dataset_id."' href='#TB_inline&height=".$dims['height']."&width=".$dims['width']."&inlineId=datafieldwrap".$formfield_id."_".$dataset_id."' title='".$title."'><img src='".PROJECTMANAGER_URL."/admin/icons/edit.gif' border='0' alt='".__('Edit')."' /></a>";
 			if ( 'fileupload' == $formfield_type ) {
 				if ( !empty($meta_value) )
-					$out .= "&#160;<a href='#' onClick='ProjectManager.AJAXdeleteFile(\"".$this->getFilePath($meta_value)."\", ".$dataset_id.", ".$formfield_id.", \"".$formfield_type."\")'><img src='".PROJECTMANAGER_URL."/admin/icons/cross.png' border='0' alt='".__('Delete')."' /></a>";
+					$out .= "&#160;<a href='#' id='delfile".$formfield_id."_".$dataset_id."' onClick='ProjectManager.AJAXdeleteFile(\"".$this->getFilePath($meta_value)."\", ".$dataset_id.", ".$formfield_id.", \"".$formfield_type."\")'><img src='".PROJECTMANAGER_URL."/admin/icons/cross.png' border='0' alt='".__('Delete')."' /></a>";
 			}
 		}
 		return $out;

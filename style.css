@@ -174,15 +174,16 @@ ul.categorychecklist li label, ul.categorychecklist li input, ul.children li lab
  */
 .projectmanager_slideshow {
 	background-image: none;
-	background-color: white;
+	background-color: transparent;
 	position: relative;
 	display: block;
 	text-align: center;
+	margin: 1em auto;
 }
 
 .projectmanager_slideshow a {
 	display: block;
-	margin: 8px 0;
+	margin: 8px auto;
 	}
 .projectmanager_slideshow img {
 	border: none;

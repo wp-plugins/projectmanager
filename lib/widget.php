@@ -202,8 +202,8 @@ class ProjectManagerWidget extends ProjectManager
 		echo '<p><label for="'.$this->prefix.'_'.$number.'_slideshow_width]">'.__( 'Width', 'projectmanager' ).'</label><input type="text" size="3" name="'.$this->prefix.'['.$number.'][slideshow][width]" id="'.$this->prefix.'_'.$number.'_slideshow_width" value="'.$opts['slideshow']['width'].'" /> px</p>';
 		echo '<p><label for="'.$this->prefix.'_'.$number.'_slideshow_height">'.__( 'Height', 'projectmanager' ).'</label><input type="text" size="3" name="'.$this->prefix.'['.$number.'][slideshow][height]" id="'.$this->prefix.'_'.$number.'_slideshow_height" value="'.$opts['slideshow']['height'].'" /> px</p>';
 		echo '<p><label for="'.$this->prefix.'_'.$number.'_slideshow_time">'.__( 'Time', 'projectmanager' ).'</label><input type="text" name="'.$this->prefix.'['.$number.'][slideshow][time]" id="'.$this->prefix.'_'.$number.'_slideshow_time" size="1" value="'.$opts['slideshow']['time'].'" /> '.__( 'seconds','projectmanager').'</p>';
-		echo '<p><label for="'.$this->prefix.'_'.$number.'_slideshow_fade">'.__( 'Fade Effect', 'projectmanager' ).'</label>'.$this->getSlideshowFadeEffects($opts['slideshow']['fade'], $project_id).'</p>';
-		echo '<p><label for="'.$this->prefix.'_'.$number.'_slideshow_order">'.__('Order','projectmanager').'</label>'.$this->getSlideshowOrder($opts['slideshow']['order'], $project_id).'</p>';
+		echo '<p><label for="'.$this->prefix.'_'.$number.'_slideshow_fade">'.__( 'Fade Effect', 'projectmanager' ).'</label>'.$this->getSlideshowFadeEffects($opts['slideshow']['fade'], $number).'</p>';
+		echo '<p><label for="'.$this->prefix.'_'.$number.'_slideshow_order">'.__('Order','projectmanager').'</label>'.$this->getSlideshowOrder($opts['slideshow']['order'], $number).'</p>';
 		echo '</fieldset>';
 		echo '</div>';
 	}
@@ -260,7 +260,7 @@ class ProjectManagerWidget extends ProjectManager
 	{
 		$effects = array(__('Fade','projectmanager') => 'fade', __('Zoom Fade','projectmanager') => 'zoomFade', __('Scroll Up','projectmanager') => 'scrollUp', __('Scroll Left','projectmanager') => 'scrollLeft', __('Scroll Right','projectmanager') => 'scrollRight', __('Scroll Down','projectmanager') => 'scrollDown', __( 'Zoom','projectmanager') => 'zoom', __('Grow X','projectmanager') => 'growX', __('Grow Y','projectmanager') => 'growY', __('Zoom BR','projectmanager') => 'zoomBR', __('Zoom TL','projectmanager') => 'zoomTL', __('Random','projectmanager') => 'random');
 		
-		$out = '<select size="1" name="'.$this->prefix.'['.$number.'][fade]" id="'.$this->prefix.'_'.$number.'_fade">';
+		$out = '<select size="1" name="'.$this->prefix.'['.$number.'][slideshow][fade]" id="'.$this->prefix.'_'.$number.'_slideshow_fade">';
 		foreach ( $effects AS $name => $effect ) {
 			$checked =  ( $selected == $effect ) ? " selected='selected'" : '';
 			$out .= '<option value="'.$effect.'"'.$checked.'>'.$name.'</option>';
@@ -280,7 +280,7 @@ class ProjectManagerWidget extends ProjectManager
 	function getSlideshowOrder( $selected, $number )
 	{
 		$order = array(__('Ordered','projectmanager') => 'false', __('Random','projectmanager') => 'true');
-		$out = '<select size="1" name="'.$this->prefix.'['.$number.'][order]" id="'.$this->prefix.'_'.$number.'_order">';
+		$out = '<select size="1" name="'.$this->prefix.'['.$number.'][slideshow][order]" id="'.$this->prefix.'_'.$number.'_slideshow_order">';
 		foreach ( $order AS $name => $value ) {
 			$checked =  ( $selected == $value ) ? " selected='selected'" : '';
 			$out .= '<option value="'.$value.'"'.$checked.'>'.$name.'</option>';
