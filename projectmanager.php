@@ -113,6 +113,8 @@ class ProjectManagerLoader
 		add_action( 'wp_ajax_projectmanager_save_form_field_data', 'projectmanager_save_form_field_data' );
 		add_action( 'wp_ajax_projectmanager_save_form_field_options', 'projectmanager_save_form_field_options' );
 		add_action( 'wp_ajax_projectmanager_save_dataset_order', 'projectmanager_save_dataset_order' );
+		add_action( 'wp_ajax_projectmanager_ajax_delete_file', 'projectmanager_ajax_delete_file' );
+		
 	}
 	
 	

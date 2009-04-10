@@ -350,6 +350,39 @@ class ProjectManager extends ProjectManagerLoader
 	
 	
 	/**
+	 * get file type
+	 * 
+	 * @param string $filename
+	 * @return string 
+	 */
+	function getFileType( $filename )
+	{
+		$file = $this->getFilePath($filename);
+		$file_info = pathinfo($file);
+		return strtolower($file_info['extension']);
+	}
+	
+	
+	/**
+	 * get file image depending on filetype
+	 * 
+	 * @param string $filename
+	 * @return string
+	 */
+	function getFileImage( $filename )
+	{
+		$type = $this->getFileType($filename);
+		$out .= PROJECTMANAGER_URL . "/admin/icons/files/";
+		if ( $type == 'ods' || $type == 'doc' || $type == 'docx' )
+			$out .= "document_word.png";
+		elseif ( $type == 'xls' || $type == 'ods' )
+			$out .= "document_excel.png";
+		
+		return $out;
+	}
+	
+	
+	/**
 	 * gets project ID
 	 *
 	 * @param none
@@ -912,7 +945,7 @@ class ProjectManager extends ProjectManagerLoader
 				} elseif( 'image' == $meta->type && !empty($meta_value) ) {
 					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'><img class='projectmanager_image' src='".$meta_value."' alt='".__('Image', 'projectmanager')."' /></span>";
 				} elseif ( 'fileupload' == $meta->type && !empty($meta_value) ) {
-					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'><a href='".$this->getFileURL($meta_value)."' target='_blank'>".$meta_value."</a></span>";
+					$meta_value = "<img src='".$this->getFileImage($meta_value)."' alt='' />&#160;<span id='datafield".$meta->form_field_id."_".$dataset->id."'><a class='projectmanager_file ".$this->getFileType($meta_value)."' href='".$this->getFileURL($meta_value)."' target='_blank'>".$meta_value."</a></span>";
 				} elseif ( !empty($meta->type) && is_array($this->getFormFieldTypes($meta->type)) ) {
 					// Data is retried via callback function. Most likely a special field from LeagueManager
 					$field = $this->getFormFieldTypes($meta->type);
@@ -931,7 +964,7 @@ class ProjectManager extends ProjectManagerLoader
 						} else {
 							$out .= "\n\t<".$output.">";
 							$out .= $this->getThickbox( $dataset->id, $meta->form_field_id, $meta->type, maybe_unserialize($meta->value), $dataset->user_id );
-							$out .= "\n\t\t".$meta_value . $this->getThickboxLink($dataset->id, $meta->form_field_id, $meta->type, sprintf(__('%s of %s','projectmanager'), $meta->label, $dataset->name), $dataset->user_id);
+							$out .= "\n\t\t".$meta_value . $this->getThickboxLink($dataset->id, $meta->form_field_id, $meta->type, sprintf(__('%s of %s','projectmanager'), $meta->label, $dataset->name), $dataset->user_id, maybe_unserialize($meta->value));
 							$out .= "\n\t</".$output.">";
 						}
 					} elseif ( 'td' == $output ) {
@@ -940,7 +973,7 @@ class ProjectManager extends ProjectManagerLoader
 							
 						$out .= "\n\t<td>";
 						$out .= $this->getThickbox( $dataset->id, $meta->form_field_id, $meta->type, maybe_unserialize($meta->value), $dataset->user_id );
-						$out .= $meta_value . $this->getThickboxLink($dataset->id, $meta->form_field_id, $meta->type, sprintf(__('%s of %s','projectmanager'), $meta->label, $dataset->name), $dataset->user_id);
+						$out .= $meta_value . $this->getThickboxLink($dataset->id, $meta->form_field_id, $meta->type, sprintf(__('%s of %s','projectmanager'), $meta->label, $dataset->name), $dataset->user_id, maybe_unserialize($meta->value));
 						$out .= "\n\t</td>";
 					}
 				}
@@ -962,21 +995,27 @@ class ProjectManager extends ProjectManagerLoader
 	 * @param int $formfield_type
 	 * @param string $title
 	 * @param int $dataset_owner
+	 * @param string $meta_value
 	 * @return string
 	 */
-	function getThickboxLink( $dataset_id, $formfield_id,  $formfield_type, $title, $dataset_owner )
+	function getThickboxLink( $dataset_id, $formfield_id,  $formfield_type, $title, $dataset_owner, $meta_value )
 	{
 		global $current_user;
 		
 		$out = '';
 		if ( is_admin() && current_user_can( 'manage_projects' ) ) {
 			$dims = array('width' => '300', 'height' => '100');
-			if ( 'textfield' == $formfield_type || 'fileupload' == $formfield_type )
+			if ( 'textfield' == $formfield_type )
 				$dims = array('width' => '400', 'height' => '400');
 			if ( 'checkbox' == $formfield_type || 'radio' == $formfield_type )
 				$dims = array('width' => '300', 'height' => '300');
-						
-			$out .= "&#160;<a class='thickbox' id='thickboxlink".$formfield_id."_".$dataset_id."' href='#TB_inline&height=".$dims['height']."&width=".$dims['width']."&inlineId=datafieldwrap".$formfield_id."_".$dataset_id."' title='".$title."'><img src='".PROJECTMANAGER_URL."/admin/icons/edit.gif' border='0' alt='".__('Edit')."' /></a>";
+
+			if ( 'fileupload' != $formfield_type )
+				$out .= "&#160;<a class='thickbox' id='thickboxlink".$formfield_id."_".$dataset_id."' href='#TB_inline&height=".$dims['height']."&width=".$dims['width']."&inlineId=datafieldwrap".$formfield_id."_".$dataset_id."' title='".$title."'><img src='".PROJECTMANAGER_URL."/admin/icons/edit.gif' border='0' alt='".__('Edit')."' /></a>";
+			if ( 'fileupload' == $formfield_type ) {
+				if ( !empty($meta_value) )
+					$out .= "&#160;<a href='#' onClick='ProjectManager.AJAXdeleteFile(\"".$this->getFilePath($meta_value)."\", ".$dataset_id.", ".$formfield_id.", \"".$formfield_type."\")'><img src='".PROJECTMANAGER_URL."/admin/icons/cross.png' border='0' alt='".__('Delete')."' /></a>";
+			}
 		}
 		return $out;
 	}
@@ -1002,7 +1041,7 @@ class ProjectManager extends ProjectManagerLoader
 			
 			$out .= "\n\t\t<div id='datafieldwrap".$formfield_id."_".$dataset_id."' style='overfow:auto;display:none;'>";
 			$out .= "\n\t\t<div id='datafieldbox".$formfield_id."_".$dataset_id."' class='projectmanager_thickbox'>";
-			$out .= "\n\t\t\t<form>";
+			$out .= "\n\t\t\t<form name='form_field_".$formfield_id."_".$dataset_id."'>";
 			if ( 'text' == $formfield_type || 'email' == $formfield_type || 'uri' == $formfield_type || 'image' == $formfield_type ) {
 				$out .= "\n\t\t\t<input type='text' name='form_field_".$formfield_id."_".$dataset_id."' id='form_field_".$formfield_id."_".$dataset_id."' value=\"".$value."\" size='30' />";
 			} elseif ( 'textfield' == $formfield_type ) {
@@ -1026,16 +1065,9 @@ class ProjectManager extends ProjectManagerLoader
 					$out .= "\n\t\t\t<option value='".$year."'".$selected.">".$year."</option>";
 				}
 				$out .= "\n\t\t\t</select>";
-			} elseif ( 'fileupload' == $formfield_type ) {
-				$out .= '
-				<input type="file" name="form_field'.$form_field_id.'['.$dataset_id.']" id="form_field_'.$form_field_id.'" size="20" />
-				<input type="hidden" name="form_field'.$form_field_id.']'.$dataset_id.'][current]" value="'.$value.'" />';
-				if (!empty($value)) {
-					$out .= '<p>'.__( "Current File", "projectmanager" ).': <a href="'.$this->getFileURL($value).'">'.$value .'</a>&#160;</p>
-					<p><input type="checkbox" name="form_field['.$form_field_id.']['.$dataset_id.'][del]" value="1" id="delete_file_'.$form_field_id.'_'.$dataset_id.'">&#160;<label for="delete_file_'.$form_field_id.'_'.$dataset_id.'"><strong>'.__( 'Delete File', 'projectmanager' ).'</strong></label>&#160;</p>
-					<p><input type="checkbox" name="form_field['.$form_field_id.']['.$dataset_id.'][overwrite]" value="1" id="overwrite_file_'.$form_field_id.'_'.$dataset_id.'">&#160;<label for="overwrite_file_'.$form_field_id.'_'.$dataset_id.'"><strong>'.__( 'Overwrite File', 'projectmanager' ).'</strong></label></p>';
-				}
-			}
+			} /*elseif ( 'fileupload' == $formfield_type ) {
+				$out .= '<input type="file" name="form_field['.$formfield_id.']['.$dataset_id.']" id="form_field_'.$formfield_id.'_'.$dataset_id.'" size="20" />';
+			}*/
 			elseif ( 'select' == $formfield_type )
 				$out .= $this->printFormFieldDropDown($formfield_id, $value, $dataset_id, "form_field_".$formfield_id."_".$dataset_id, false);
 			elseif ( 'checkbox' == $formfield_type )
@@ -1045,7 +1077,7 @@ class ProjectManager extends ProjectManagerLoader
 			
 				
 	
-			$out .= "\n\t\t\t<div style='text-align:center; margin-top: 1em;'><input type='button' value='".__('Save')."' class='button-secondary' onclick='ProjectManager.ajaxSaveDataField(".$dataset_id.",".$formfield_id.",\"".$formfield_type."\");return false;' />&#160;<input type='button' value='".__('Cancel')."' class='button' onclick='tb_remove();' /></div>";
+			$out .= "\n\t\t\t<div style='text-align:center; margin-top: 1em;'><input type='button' value='".__('Save')."' class='button-secondary' onclick='ProjectManager.ajaxSaveDataField(".$dataset_id.",".$formfield_id.",\"".$formfield_type."\"); return false;' />&#160;<input type='button' value='".__('Cancel')."' class='button' onclick='tb_remove();' /></div>";
 			$out .= "\n\t\t\t</form>";
 			$out .= "\n\t\t</div>";
 			$out .= "\n\t\t</div>";

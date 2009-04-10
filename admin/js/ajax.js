@@ -1,3 +1,19 @@
+ProjectManager.AJAXdeleteFile = function(file, dataset_id, formfield_id, formfield_type) {		
+	var check = window.confirm('Delte File ' + ProjectManager.basename(file) + '?');
+	
+	if ( check == true ) {
+		var ajax = new sack(ProjectManagerAjaxL10n.requestUrl);
+		ajax.execute = 1;
+		ajax.method = 'POST';
+		ajax.setVar( "action", "projectmanager_ajax_delete_file" );
+		ajax.setVar( "file", file );
+		ajax.onError = function() { alert('Ajax error on saving dataset order'); };
+		ajax.onCompletion = function() { return true; };
+		ajax.runAJAX();
+		ProjectManager.dataFieldSpanFadeOut(dataset_id, formfield_id, '', formfield_type);
+	}
+}
+
 ProjectManager.saveOrder = function(order) {
 	var ajax = new sack(ProjectManagerAjaxL10n.requestUrl);
 	ajax.execute = 1;

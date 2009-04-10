@@ -1,6 +1,18 @@
 <?php
 
 /**
+ * SACK response to delete file
+ * 
+ * @since 1.4
+ */
+function projectmanager_ajax_delete_file() {
+	$file = $_POST['file'];
+	@unlink($file);
+	die();
+}
+
+
+/**
  * SACK response for saving form field options
  *
  * @since 1.3
@@ -72,7 +84,7 @@ function projectmanager_save_categories() {
  * @since 1.2
  */
 function projectmanager_save_form_field_data() {
-	global $wpdb, $projectmanager;
+	global $wpdb, $projectmanager, $projectmanager_loader;
 	
 	$dataset_id = intval($_POST['dataset_id']);
 	$formfield_type = $_POST['formfield_type'];
@@ -85,7 +97,11 @@ function projectmanager_save_form_field_data() {
 	// Checkbox List
 	if ( 'checkbox' == $formfield_type )
 		$new_value = substr($new_value,0,-1);
-	
+/*	if ( 'fileupload' == $formfield_type ) {
+		$file = array('name' => $_FILES['form_field']['name'][$meta_id][$dataset_id], 'tmp_name' => $_FILES['form_field']['tmp_name'][$meta_id][$dataset_id], 'size' => $_FILES['form_field']['size'][$meta_id][$dataset_id], 'type' => $_FILES['form_field']['type'][$meta_id][$dataset_id]);
+		$projectmanager_loader->adminPanel->uploadFile($file);
+		$new_value = basename($file['name']);
+	}*/
 	
 	if ( 1 == $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_datasetmeta} WHERE `dataset_id` = '".$dataset_id."' AND `form_id` = '".$meta_id."'" ) )
 		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `value` = '%s' WHERE `dataset_id` = '%d' AND `form_id` = '%d'", $new_value, $dataset_id, $meta_id ) );
@@ -128,6 +144,19 @@ function projectmanager_save_dataset_order() {
 	foreach ( $order AS $order => $dataset_id ) {
 		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `order` = '%d' WHERE `id` = '%d'", $order, $dataset_id ) );
 	}
+}
+
+
+/**
+ * Dump contents in file
+ * 
+ * @param string $content
+ */
+function dumpFile($content) {
+	$file = "/var/www/dev/AJAX_Dump.txt";
+	$fh = fopen($file, 'w') or die("can't open file");
+	fwrite($fh, $content);
+	fclose($fh);	
 }
 
 ?>
