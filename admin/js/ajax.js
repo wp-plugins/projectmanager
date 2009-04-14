@@ -1,5 +1,5 @@
 ProjectManager.AJAXdeleteFile = function(file, dataset_id, formfield_id, formfield_type) {		
-	var check = window.confirm('Delte File ' + ProjectManager.basename(file) + '?');
+	var check = window.confirm(ProjectManagerAjaxL10n.delFile + " " + ProjectManager.basename(file) + '?');
 	
 	if ( check == true ) {
 		var delfile = document.getElementById("delfile" + formfield_id + "_" + dataset_id);
