@@ -1,13 +1,14 @@
 ProjectManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
-V2.3 - April , 2009
+V2.3 - April 14, 2009
 - NEW: URL and E-Mail with alternative text in format "www.example.com|Example Website"
 - NEW: multiple widget support
 - NEW: file-upload form field without AJAX uploading
 - BUGFIX: AJAX editing if datafield value is empty
 - BUGFIX: manual ordering of datasets
 - BUGFIX: options link for select, checkbox and radio form types
+- BUGFIX: save options for formfields
 - CHANGED: apply stripslashes in function getDatasetMeta instead of getDatasetMetaData
 
 V2.2 - March 11, 2009

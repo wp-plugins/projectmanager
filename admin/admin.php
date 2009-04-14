@@ -789,9 +789,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 		if ( null != $form_name ) {
 			foreach ( $wpdb->get_results( "SELECT `id`, `project_id` FROM {$wpdb->projectmanager_projectmeta}" ) AS $form_field) {
 				if ( !array_key_exists( $form_field->id, $form_name ) ) {
-					unset($options['form_field_options'][$form_field->id]);
-					
-					$wpdb->query( "DELETE FROM {$wpdb->projectmanager_projectmeta} WHERE `id` = {$form_field->id} AND `project_id` = {$project_id}"  );
+					$del = (bool) $wpdb->query( "DELETE FROM {$wpdb->projectmanager_projectmeta} WHERE `id` = {$form_field->id} AND `project_id` = {$project_id}"  );
+					if ( $del ) unset($options['form_field_options'][$form_field->id]);
 					if ( $project_id == $form_field->project_id )
 						$wpdb->query( "DELETE FROM {$wpdb->projectmanager_datasetmeta} wHERE `form_id` = {$form_field->id}" );
 				}
