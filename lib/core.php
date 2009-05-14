@@ -733,6 +733,8 @@ class ProjectManager extends ProjectManagerLoader
 		$sql .=  " ORDER BY ".$sql_order;
 		$sql .= ( $limit && $this->per_page ) ? " LIMIT ".$offset.",".$this->per_page.";" : ";";
 		
+		echo $this->orderby."<br>".$this->order;
+		
 		$datasets = $wpdb->get_results($sql);
 		
 		if ( $options['project_options'][$this->project_id]['dataset_orderby'] == 'formfields' || $formfield_id )

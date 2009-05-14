@@ -267,8 +267,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 	function getIconURL( $icon )
 	{
 		if ( file_exists(TEMPLATEPATH . "/projectmanager/icons/".$icon))
-			return TEMPLATEPATH . "/projectmanager/icons/".$icon;
-		elseif ( file_exists(get_template_directory_uri().'/admin/icons/menu/'.$icon) )
+			return get_template_directory_uri() . "/projectmanager/icons/".$icon;
+		elseif ( file_exists(PROJECTMANAGER_URL.'/admin/icons/menu/'.$icon) )
 			return PROJECTMANAGER_URL.'/admin/icons/menu/'.$icon;
 		else
 			return PROJECTMANAGER_URL.'/admin/icons/menu/databases.png';
