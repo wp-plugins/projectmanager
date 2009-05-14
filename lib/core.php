@@ -710,12 +710,12 @@ class ProjectManager extends ProjectManagerLoader
 		global $wpdb;
 		$options = get_option('projectmanager');
 		
-		if ( $orderby ) $this->orderby = $orderby;
-		if ( $order ) $this->order = $order;
-		
 		// Set ordering
 		if ( !$formfield_id )
 			$formfield_id = $this->setDatasetOrder();
+
+		if ( $orderby ) $this->orderby = $orderby;
+		if ( $order ) $this->order = $order;
 
 		if ( $orderby && $orderby != 'formfields' ) {
 			$sql_order = "`$orderby` $order";

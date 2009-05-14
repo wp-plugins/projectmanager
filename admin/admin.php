@@ -43,7 +43,11 @@ class ProjectManagerAdminPanel extends ProjectManager
 			foreach( $projects AS $project ) {
 				if ( 1 == $options['project_options'][$project->id]['navi_link'] ) {
 					$icon = $options['project_options'][$project->id]['menu_icon'];
-					add_menu_page( $project->title, $project->title, 'manage_projects', 'project_' . $project->id, array(&$this, 'display'), PROJECTMANAGER_URL.'/admin/icons/menu/'.$icon );
+					if ( function_exists('add_object_page') )
+						add_object_page( $project->title, $project->title, 'manage_projects', 'project_' . $project->id, array(&$this, 'display'), PROJECTMANAGER_URL.'/admin/icons/menu/'.$icon );
+					else
+						add_menu_page( $project->title, $project->title, 'manage_projects', 'project_' . $project->id, array(&$this, 'display'), PROJECTMANAGER_URL.'/admin/icons/menu/'.$icon );
+
 					add_submenu_page('project_' . $project->id, __($project->title, 'projectmanager'), __('Overview','projectmanager'),'manage_projects', 'project_' . $project->id, array(&$this, 'display'));
 					add_submenu_page('project_' . $project->id, __( 'Add Dataset', 'projectmanager' ), __( 'Add Dataset', 'projectmanager' ), 'manage_projects', 'project-dataset_' . $project->id, array(&$this, 'display'));
 					add_submenu_page('project_' . $project->id, __( 'Form Fields', 'projectmanager' ), __( 'Form Fields', 'projectmanager' ), 'manage_projects', 'project-formfields_' . $project->id, array(&$this, 'display'));
@@ -55,7 +59,11 @@ class ProjectManagerAdminPanel extends ProjectManager
 		}
 		
 		// Add global Projects Menu
-		add_menu_page(__('Projects', 'projectmanager'), __('Projects', 'projectmanager'), 'manage_projects', PROJECTMANAGER_PATH,array(&$this, 'display'), PROJECTMANAGER_URL.'/admin/icons/menu/databases.png');
+		if ( function_exists('add_object_page') )
+			add_object_page( __('Projects','projectmanager'), __('Projects', 'projectmanager'), 'manage_projects', PROJECTMANAGER_PATH, array(&$this, 'display'), PROJECTMANAGER_URL.'/admin/icons/menu/databases.png');
+		else
+			add_menu_page(__('Projects', 'projectmanager'), __('Projects', 'projectmanager'), 'manage_projects', PROJECTMANAGER_PATH,array(&$this, 'display'), PROJECTMANAGER_URL.'/admin/icons/menu/databases.png');
+
 		add_submenu_page(PROJECTMANAGER_PATH, __('Projects', 'projectmanager'), __('Overview','projectmanager'),'manage_projects', PROJECTMANAGER_PATH,array(&$this, 'display'));
 		add_submenu_page(PROJECTMANAGER_PATH, __( 'Settings'), __('Settings'), 'manage_projects', 'projectmanager-settings', array( &$this, 'display') );
 		
@@ -545,7 +553,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 			}
 		
 			if ( isset($_FILES['projectmanager_image']) && $_FILES['projectmanager_image']['name'] != ''  )
-				$this->uploadImage($team_id, $_FILES['projectmanager_image']);
+				$this->uploadImage($dataset_id, $_FILES['projectmanager_image']);
 				
 			$this->setMessage( __( 'New dataset added to the database.', 'projectmanager' ) );
 		} else {

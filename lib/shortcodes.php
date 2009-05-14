@@ -262,6 +262,8 @@ class ProjectManagerShortcodes extends ProjectManager
 				$project['dataset_width'] = ( !empty($options['gallery_num_cols']) ) ? floor(100/$options['gallery_num_cols'])."%" : false;
 				$project['single'] = ( $single == 'true' ) ? true : false;
 				$project['tablenav'] = ( $selections == 'true' ) ? true : false;
+
+				//$project['opts'] = array( 'orderby' =>
 				
 				$datasets[$i]->class = $class;
 				$datasets[$i]->URL = $url;

@@ -1,19 +1,2 @@
 - check "orderby" attribute in shortcode
-- check Zeile 548 in der admin.php (E-Mail von Patrick @ 10.5.09 )
 
-
-
----
-Patrick @ 10.5.09
-
-Hi Kolja,
-
-Zeile 548 in der admin.php sollte heissen:
-
-$this->uploadImage($dataset_id, $_FILES['projectmanager_image']);
-
-$dataset_id statt $team_id
-
-Grüße,
-
-Patrick
