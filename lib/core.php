@@ -795,7 +795,6 @@ class ProjectManager extends ProjectManagerLoader
 			$to_sort[] = $form_field_id;
 		}
 	
-		print_r($to_sort);
 		/*
 		* Only process datasets if there is anything to do
 		*/
@@ -840,6 +839,7 @@ class ProjectManager extends ProjectManagerLoader
 				array_push( $func_args, $sort );
 			}
 			
+			print_r($func_args);
 			/*
 			* sort datasets with array_multisort
 			*/
