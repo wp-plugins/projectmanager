@@ -44,9 +44,9 @@ class ProjectManagerAdminPanel extends ProjectManager
 				if ( 1 == $options['project_options'][$project->id]['navi_link'] ) {
 					$icon = $options['project_options'][$project->id]['menu_icon'];
 					if ( function_exists('add_object_page') )
-						add_object_page( $project->title, $project->title, 'manage_projects', 'project_' . $project->id, array(&$this, 'display'), PROJECTMANAGER_URL.'/admin/icons/menu/'.$icon );
+						add_object_page( $project->title, $project->title, 'manage_projects', 'project_' . $project->id, array(&$this, 'display'), $this->getIconURL($icon) );
 					else
-						add_menu_page( $project->title, $project->title, 'manage_projects', 'project_' . $project->id, array(&$this, 'display'), PROJECTMANAGER_URL.'/admin/icons/menu/'.$icon );
+						add_menu_page( $project->title, $project->title, 'manage_projects', 'project_' . $project->id, array(&$this, 'display'), $this->getIconURL($icon) );
 
 					add_submenu_page('project_' . $project->id, __($project->title, 'projectmanager'), __('Overview','projectmanager'),'manage_projects', 'project_' . $project->id, array(&$this, 'display'));
 					add_submenu_page('project_' . $project->id, __( 'Add Dataset', 'projectmanager' ), __( 'Add Dataset', 'projectmanager' ), 'manage_projects', 'project-dataset_' . $project->id, array(&$this, 'display'));
@@ -252,6 +252,26 @@ class ProjectManagerAdminPanel extends ProjectManager
 		} else {
 			echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
 		}
+	}
+	
+	
+	/**
+	 *  get icon URl
+	 *  
+	 *  First check if custom directory 'projectmanager/icons' exists in template directory
+	 *  If not load default dir.
+	 *  
+	 *  @param none
+	 *  @return directory
+	 */
+	function getIconURL( $icon )
+	{
+		if ( file_exists(TEMPLATEPATH . "/projectmanager/icons/".$icon))
+			return TEMPLATEPATH . "/projectmanager/icons/".$icon;
+		elseif ( file_exists(get_template_directory_uri().'/admin/icons/menu/'.$icon) )
+			return PROJECTMANAGER_URL.'/admin/icons/menu/'.$icon;
+		else
+			return PROJECTMANAGER_URL.'/admin/icons/menu/databases.png';
 	}
 	
 	

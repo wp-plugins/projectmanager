@@ -78,7 +78,7 @@ if ( 1 == $settings['show_image'] && !wp_mkdir_p( $projectmanager->getFilePath()
 			<th scope="row"><label for="menu_icon"><?php _e( 'Menu Icon', 'projectmanager' ) ?></label></th>
 			<td>
 				<select size="1" name="menu_icon" id="menu_icon">
-					<?php foreach ( $menu_icons = $projectmanager->readFolder(PROJECTMANAGER_PATH.'/admin/icons/menu') AS $icon ) : ?>
+					<?php foreach ( $menu_icons = $projectmanager->readFolder( array( PROJECTMANAGER_PATH.'/admin/icons/menu', TEMPLATEPATH . "/projectmanager/icons")) AS $icon ) : ?>
 					<option value="<?php echo $icon ?>" <?php if ( $icon == $settings['menu_icon'] ) echo ' selected="selected"' ?>><?php echo $icon ?></option>
 					<?php endforeach; ?>
 				</select>

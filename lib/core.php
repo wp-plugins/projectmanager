@@ -1306,19 +1306,33 @@ class ProjectManager extends ProjectManagerLoader
 	/**
 	 * read in contents from directory
 	 *
-	 * @param string $dir
+	 * @param string/array $dir
 	 * @return array of files
 	 */
 	function readFolder( $dir )
 	{
 		$files = array();
-		if ($handle = opendir($dir)) {
-			while (false !== ($file = readdir($handle))) {
-				if ( $file != '.' && $file != '..' && substr($file,0,1) != '.' )
-					$files[] = $file;
-			}
+		
+		if ( is_array($dir) ) {
+			foreach ( $dir AS $d ) {
+				if ($handle = opendir($d)) {
+					while (false !== ($file = readdir($handle))) {
+						if ( $file != '.' && $file != '..' && substr($file,0,1) != '.' )
+							$files[] = $file;
+					}
 			
-			closedir($handle);
+					closedir($handle);
+				}
+			}
+		} else {
+			if ($handle = opendir($dir)) {
+				while (false !== ($file = readdir($handle))) {
+					if ( $file != '.' && $file != '..' && substr($file,0,1) != '.' )
+						$files[] = $file;
+				}
+			
+				closedir($handle);
+			}
 		}
 		
 		return $files;
