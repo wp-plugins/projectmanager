@@ -737,7 +737,6 @@ class ProjectManager extends ProjectManagerLoader
 		
 		$datasets = $wpdb->get_results($sql);
 		
-		echo $options['project_options'][$this->project_id]['dataset_orderby'];
 		if ( $options['project_options'][$this->project_id]['dataset_orderby'] == 'formfields' || $formfield_id )
 			$datasets = $this->orderDatasetsByFormFields($datasets, $formfield_id);
 		
@@ -796,6 +795,7 @@ class ProjectManager extends ProjectManagerLoader
 			$to_sort[] = $form_field_id;
 		}
 	
+		print_r($to_sort);
 		/*
 		* Only process datasets if there is anything to do
 		*/
