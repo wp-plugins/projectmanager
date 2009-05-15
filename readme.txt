@@ -110,6 +110,11 @@ you can use this template to display with the following code
 
 It is possible to hook one project into the user profile to use it as extended profile. Thus it could be used to implement a player registration in combination with my [LeagueManager Plugin](http://wordpress.org/extend/plugins/leaguemanager/). Users need the capability `project_user_profile` to use this feature. By default only Administrators and Editors have this, but you can use [Role Manager](http://www.im-web-gefunden.de/wordpress-plugins/role-manager/) for finetuning.
 
+= Custom icons for Admin Menu =
+If you want to use custom icons for the admin menu put them in
+
+`yourthemedirectory/projectmanager/icons/`
+
 
 = Access control =
 

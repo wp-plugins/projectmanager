@@ -175,7 +175,6 @@ class ProjectManagerShortcodes extends ProjectManager
 		$options = $options['project_options'][$this->project_id];
 	
 		$category = $orderby = $order = false; 
-		var_dump($opts);
 		if ( $opts['orderby'] ) {
 			$orderby = array( '' => __('Order By', 'projectmanager'), 'name' => __('Name','projectmanager'), 'id' => __('ID','projectmanager') );
 			foreach ( $projectmanager->getFormFields() AS $form_field )
