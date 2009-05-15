@@ -1040,7 +1040,7 @@ class ProjectManager extends ProjectManagerLoader
 		if ( is_admin() && current_user_can( 'manage_projects' ) ) {
 			$dims = array('width' => '300', 'height' => '100');
 			if ( 'textfield' == $formfield_type )
-				$dims = array('width' => '400', 'height' => '400');
+				$dims = array('width' => '400', 'height' => '300');
 			if ( 'checkbox' == $formfield_type || 'radio' == $formfield_type )
 				$dims = array('width' => '300', 'height' => '300');
 

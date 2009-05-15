@@ -4,9 +4,12 @@ by Kolja Schleich <kolja.schleich@googlemail.com>
 V2.4 - May 16, 2009
 - NEW: custom icon directory in THEMEDIR/projectmanager/icons
 - BUGFIX: dataset ordering is overriden by dropdown selection
+- BUGFIX: IE Slideshow Bug fixed with new jQuery Cycle Plugin
+- BUGFIX: Popup Window for Formfield Options
 - CHANGED: exclude respective dropdown menu for category, orderby and order if
 shortcode attribute is used
 - CHANGED: use function add_object_page for menu if present
+- CHANGED: use of jQuery Cycle Plugin for Slideshow
 
 V2.3 - April 14, 2009
 - NEW: URL and E-Mail with alternative text in format "www.example.com|Example Website"
