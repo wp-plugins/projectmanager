@@ -6,6 +6,8 @@ V2.4 - May 16, 2009
 - BUGFIX: dataset ordering is overriden by dropdown selection
 - BUGFIX: IE Slideshow Bug fixed with new jQuery Cycle Plugin
 - BUGFIX: Popup Window for Formfield Options
+- BUGFIX: TinyMCE Button for searchform
+- BUGFIX: total number of datasets in search
 - CHANGED: exclude respective dropdown menu for category, orderby and order if
 shortcode attribute is used
 - CHANGED: use function add_object_page for menu if present

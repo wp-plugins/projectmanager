@@ -247,6 +247,7 @@ class ProjectManagerShortcodes extends ProjectManager
 			
 			$title = '';
 			if ( $projectmanager->isSearch() ) {
+				$num_datasets = $projectmanager->getNumDatasets($projectmanager->getProjectID(), true);
 				$title = "<h3 style='clear:both;'>".sprintf(__('Search: %d of %d', 'projectmanager'),  $projectmanager->getNumDatasets($projectmanager->getProjectID()), $num_datasets)."</h3>";
 			} elseif ( $projectmanager->isCategory() ) {
 				$title = "<h3 style='clear:both;'>".$projectmanager->getCatTitle($projectmanager->getCatID())."</h3>";
