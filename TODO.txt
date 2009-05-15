@@ -1,3 +1,8 @@
+CHANGES:
+
+- don't show order dropdown if orderby or order attributes are used
+- don't show category selection if cat_id attribute is used
+
 BUGFIXES:
 
 - ordering of datasets

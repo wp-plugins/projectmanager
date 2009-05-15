@@ -165,22 +165,29 @@ class ProjectManagerShortcodes extends ProjectManager
 	 *
 	 * This function is called via do_action('projectmanager_tablenav') and loads the template tablenav.php
 	 *
-	 * @param boolean $echo
+	 * @param array $opts
 	 * @return void the dropdown selections
 	 */
-	function displayTablenav()
+	function displayTablenav( $opts )
 	{
 		global $projectmanager;
 		$options = get_option( 'projectmanager' );
 		$options = $options['project_options'][$this->project_id];
+	
+		$category = $orderby = $order = false; 
+		var_dump($opts);
+		if ( $opts['orderby'] ) {
+			$orderby = array( '' => __('Order By', 'projectmanager'), 'name' => __('Name','projectmanager'), 'id' => __('ID','projectmanager') );
+			foreach ( $projectmanager->getFormFields() AS $form_field )
+				$orderby['formfields_'.$form_field->id] = $form_field->label;
+		}
+
+		if ( $opts['order'] )
+			$order = array( '' => __('Order','projectmanager'), 'ASC' => __('Ascending','projectmanager'), 'DESC' => __('Descending','projectmanager') );
 		
-		$orderby = array( '' => __('Order By', 'projectmanager'), 'name' => __('Name','projectmanager'), 'id' => __('ID','projectmanager') );
-		foreach ( $projectmanager->getFormFields() AS $form_field )
-			$orderby['formfields_'.$form_field->id] = $form_field->label;
-		
-		$order = array( '' => __('Order','projectmanager'), 'ASC' => __('Ascending','projectmanager'), 'DESC' => __('Descending','projectmanager') );
-		
-		$category = ( -1 != $options['category'] ) ? $options['category'] : false;
+		if ( $opts['category'] )
+			$category = ( -1 != $options['category'] ) ? $options['category'] : false;
+
 		$selected_cat = $projectmanager->getCatID();
 		
 		$out = $this->loadTemplate( 'tablenav', array( 'category' => $category, 'selected_cat' => $selected_cat, 'orderby' => $orderby, 'order' => $order) );
@@ -232,6 +239,7 @@ class ProjectManagerShortcodes extends ProjectManager
 				$orderby = $tmp[0];
 				$formfield_id = $tmp[1];
 			}
+
 			
 			if ( $projectmanager->isSearch() )
 				$datasets = $projectmanager->getSearchResults();
@@ -261,7 +269,12 @@ class ProjectManagerShortcodes extends ProjectManager
 				$project['num_cols'] = ( $options['gallery_num_cols'] == 0 ) ? 4 : $options['gallery_num_cols'];
 				$project['dataset_width'] = ( !empty($options['gallery_num_cols']) ) ? floor(100/$options['gallery_num_cols'])."%" : false;
 				$project['single'] = ( $single == 'true' ) ? true : false;
-				$project['tablenav'] = ( $selections == 'true' ) ? true : false;
+
+				$project['tableav'] = array();
+				$project['tablenav']['all'] = ( $selections == 'true' ) ? true : false;
+				$project['tablenav']['category'] = ( $cat_id ) ? false : true;
+				$project['tablenav']['orderby'] = ( $orderby ) ? false : true;
+				$project['tablenav']['order'] = ( $order ) ? false : true;
 
 				$datasets[$i]->class = $class;
 				$datasets[$i]->URL = $url;

@@ -222,11 +222,15 @@ class ProjectManager extends ProjectManagerLoader
 
 			$this->query_args['order'] = $this->order;
 			$this->query_args['orderby'] = $this->orderby;
+
+			$this->override_order = true;
 		} elseif ( isset($_GET['orderby']) && isset($_GET['order']) ) {
 			$orderby = explode('_', $_GET['orderby']);
 			$this->orderby = ( $_GET['orderby'] != '' ) ? $_GET['orderby'] : 'name';
 			$formfield_id = $orderby[1];
 			$this->order = ( $_GET['order'] != '' ) ? $_GET['order'] : 'ASC';
+			
+			$this->override_order = true;
 		} elseif ( isset($options['dataset_orderby']) && $options['dataset_orderby'] != 'formfields' && !empty($options['dataset_orderby']) ) {
 			$this->orderby = $options['dataset_orderby'];
 			$this->order = (isset($options['dataset_order']) && !empty($options['dataset_order'])) ? $options['dataset_order'] : 'ASC';
@@ -714,8 +718,14 @@ class ProjectManager extends ProjectManagerLoader
 		if ( !$formfield_id )
 			$formfield_id = $this->setDatasetOrder();
 
-		if ( $orderby ) $this->orderby = $orderby;
-		if ( $order ) $this->order = $order;
+		if ( $orderby ) {
+			$this->orderby = $orderby;
+			$this->override_order = true;
+		}
+		if ( $order ){
+			$this->order = $order;
+			$this->override_order = true;
+		}
 
 		if ( $orderby && $orderby != 'formfields' ) {
 			$sql_order = "`$orderby` $order";
@@ -735,7 +745,12 @@ class ProjectManager extends ProjectManagerLoader
 			
 		$datasets = $wpdb->get_results($sql);
 		
-		if ( $options['project_options'][$this->project_id]['dataset_orderby'] == 'formfields' || $formfield_id )
+		if ( ($options['project_options'][$this->projet_id]['databset_orderby'] == 'formfields' && !$this->override_order) || $formfield_id )
+			$orderby_formfields = true;
+		else
+			$orderby_formfields = false;
+		
+		if ( $orderby_formfields )
 			$datasets = $this->orderDatasetsByFormFields($datasets, $formfield_id);
 		
 		return $datasets;
