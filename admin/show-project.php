@@ -122,9 +122,9 @@ $options = $options['project_options'][$project_id];
 		<thead>
 		<tr>
 			<th scope="col" class="check-column"><input type="checkbox" onclick="ProjectManager.checkAll(document.getElementById('dataset-filter'));" /></th>
-			<th scope="col"><?php _e( 'Name', 'projectmanager' ) ?></th>
+			<th scope="col" class="name"><?php _e( 'Name', 'projectmanager' ) ?></th>
 			<?php if ( -1 != $options['category'] ) : ?>
-			<th scope="col"><?php _e( 'Categories', 'projectmanager' ) ?></th>
+			<th scope="col" class="categories"><?php _e( 'Categories', 'projectmanager' ) ?></th>
 			<?php endif; ?>
 			<?php $projectmanager->printTableHeader() ?>
 		</tr>
@@ -132,9 +132,9 @@ $options = $options['project_options'][$project_id];
 		<tfoot>
 		<tr>
 			<th scope="col" class="check-column"><input type="checkbox" onclick="ProjectManager.checkAll(document.getElementById('dataset-filter'));" /></th>
-			<th scope="col"><?php _e( 'Name', 'projectmanager' ) ?></th>
+			<th scope="col" class="name"><?php _e( 'Name', 'projectmanager' ) ?></th>
 			<?php if ( -1 != $options['category'] ) : ?>
-			<th scope="col"><?php _e( 'Categories', 'projectmanager' ) ?></th>
+			<th scope="col" class="categories"><?php _e( 'Categories', 'projectmanager' ) ?></th>
 			<?php endif; ?>
 			<?php $projectmanager->printTableHeader() ?>
 		</tr>

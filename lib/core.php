@@ -948,7 +948,7 @@ class ProjectManager extends ProjectManagerLoader
 		if ( $form_fields = $this->getFormFields() ) {
 			foreach ( $form_fields AS $form_field ) {
 				if ( 1 == $form_field->show_on_startpage )
-				$out .= "\n\t<th scope='col'>".stripslashes($form_field->label)."</th>";
+				$out .= "\n\t<th scope='col' class='tableheader'>".stripslashes($form_field->label)."</th>";
 			}
 		}
 		return $out;
@@ -1008,18 +1008,18 @@ class ProjectManager extends ProjectManagerLoader
 						if ( 'dl' == $output ) {
 							$out .= "\n\t<dt>".$meta->label."</dt><dd>".$meta_value."</dd>";
 						} elseif ( 'li' == $output ) {
-							$out .= "\n\t<".$output."><span class='dataset_label'>".$meta->label."</span>:&#160;".$meta_value."</".$output.">";
+							$out .= "\n\t<li class='".$meta->type."'><span class='dataset_label'>".$meta->label."</span>:&#160;".$meta_value."</li>";
 						} else {
-							$out .= "\n\t<".$output.">";
+							$out .= "\n\t<td class='".$meta->type."'>";
 							$out .= $this->getThickbox( $dataset->id, $meta->form_field_id, $meta->type, maybe_unserialize($meta->value), $dataset->user_id );
 							$out .= "\n\t\t".$meta_value . $this->getThickboxLink($dataset->id, $meta->form_field_id, $meta->type, sprintf(__('%s of %s','projectmanager'), $meta->label, $dataset->name), $dataset->user_id, maybe_unserialize($meta->value));
-							$out .= "\n\t</".$output.">";
+							$out .= "\n\t</td>";
 						}
 					} elseif ( 'td' == $output ) {
 						if (empty($meta_value))
 							$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>&#160;</span>";
 							
-						$out .= "\n\t<td>";
+						$out .= "\n\t<td class='".$meta->type."'>";
 						$out .= $this->getThickbox( $dataset->id, $meta->form_field_id, $meta->type, maybe_unserialize($meta->value), $dataset->user_id );
 						$out .= $meta_value . $this->getThickboxLink($dataset->id, $meta->form_field_id, $meta->type, sprintf(__('%s of %s','projectmanager'), $meta->label, $dataset->name), $dataset->user_id, maybe_unserialize($meta->value));
 						$out .= "\n\t</td>";
