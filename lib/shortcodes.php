@@ -263,12 +263,9 @@ class ProjectManagerShortcodes extends ProjectManager
 				$project['single'] = ( $single == 'true' ) ? true : false;
 				$project['tablenav'] = ( $selections == 'true' ) ? true : false;
 
-				//$project['opts'] = array( 'orderby' =>
-				
 				$datasets[$i]->class = $class;
 				$datasets[$i]->URL = $url;
 				$datasets[$i]->thumbURL = $projectmanager->getFileURL('/thumb.'.$dataset->image);
-				
 				$datasets[$i]->nameURL = ($projectmanager->hasDetails($single)) ? '<a href="'.$url.'">'.$dataset->name.'</a>' : $dataset->name;
 				
 				$i++;

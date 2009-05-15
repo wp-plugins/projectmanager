@@ -88,6 +88,7 @@ class ProjectManagerWidget extends ProjectManager
 			'widget_title' => $project->title,
 			'limit' => $opts['limit'],
 			'slideshow' => ( 1 == $opts['slideshow']['show'] ) ? true : false,
+			'slideshow_opts' => array( 'width' => $opts['slideshow']['width'], 'height' => $opts['slideshow']['height'], 'effect' => $opts['slideshow']['fade'], 'time' => $opts['slideshow']['time'], 'order' => $opts['slideshow']['order']) 
 		);
 		$args = array_merge( $defaults, $args );
 		extract( $args );
@@ -101,25 +102,28 @@ class ProjectManagerWidget extends ProjectManager
 		<script type='text/javascript'>
 		//<![CDATA[
 		jQuery(document).ready(function(){
-		   jQuery('#projectmanager_slideshow_<?php echo $project_id ?>').slideshow({
-			   width: <?php echo $opts['slideshow']['width'] ?>,
-			   height:<?php echo $opts['slideshow']['height']; ?>,
-			   time: <?php echo $opts['slideshow']['time']*1000; ?>,
-			   title:false,
-			   panel:false,
-			   loop:true,
-			   play:true,
-			   playframe: false,
-			   effect: '<?php echo $opts['slideshow']['fade'] ?>',
-			   random: <?php echo $opts['slideshow']['order'] ?>,
+		   jQuery('#projectmanager_slideshow_<?php echo $project_id ?>').cycle({
+			   fx: '<?php echo $slideshow_opts['effect'] ?>',
+			   timeout: <?php echo $slideshow_opts['time']*1000; ?>,
+			   random: <?php echo $slideshow_opts['order'] ?>,
+			   pause: 1
 		   });
 		});
-		   //]]>
+		//]]>
 		</script>
+		<style type="text/css">
+			div#projectmanager_slideshow_<?php echo $project_id ?> div {
+				width: <?php echo $slideshow_opts['width'] ?>px;
+				height: <?php echo $slideshow_opts['height'] ?>px;
+			}
+		</style>
 		<?php
 		}
 		
-		echo $before_widget . $before_title . $widget_title . $after_title;
+		echo $before_widget;
+		
+		if ( !empty($widget_title) ) echo $before_title . $widget_title . $after_title;
+
 		if ( $slideshow )
 			echo '<div id="projectmanager_slideshow_'.$project_id.'" class="projectmanager_slideshow">';
 		else
@@ -133,7 +137,7 @@ class ProjectManagerWidget extends ProjectManager
 				
 				if ( $slideshow ) {
 					if ( $dataset->image != '' )
-						echo $name;
+						echo "<div>".$name."</div>";
 				} else
 					echo "<li>".$name."</li>";
 			}
@@ -258,8 +262,9 @@ class ProjectManagerWidget extends ProjectManager
 	*/
 	function getSlideshowFadeEffects( $selected, $number )
 	{
-		$effects = array(__('Fade','projectmanager') => 'fade', __('Zoom Fade','projectmanager') => 'zoomFade', __('Scroll Up','projectmanager') => 'scrollUp', __('Scroll Left','projectmanager') => 'scrollLeft', __('Scroll Right','projectmanager') => 'scrollRight', __('Scroll Down','projectmanager') => 'scrollDown', __( 'Zoom','projectmanager') => 'zoom', __('Grow X','projectmanager') => 'growX', __('Grow Y','projectmanager') => 'growY', __('Zoom BR','projectmanager') => 'zoomBR', __('Zoom TL','projectmanager') => 'zoomTL', __('Random','projectmanager') => 'random');
 		
+		$effects = array(__('Blind X','projectmanager') => 'blindX', __('Blind Y','projectmanager') => 'blindY', __('Blind Z','projectmanager') => 'blindZ', __('Cover','projectmanager') => 'cover', __('Curtain X','projectmanager') => 'curtainX', __('Curtain Y','projectmanager') => 'curtain>', __('Fade','projectmanager') => 'fade', __('Fade Zoom','projectmanager') => 'fadeZoom', __('Scroll Up','projectmanager') => 'scrollUp', __('Scroll Left','projectmanager') => 'scrollLeft', __('Scroll Right','projectmanager') => 'scrollRight', __('Scroll Down','projectmanager') => 'scrollDown', __('Scroll Horizontal', 'projectmanager') => 'scrollHorz', __('Scroll Vertical', 'projectmanager') => 'scrotllVert', __('Shuffle','projectmanager') => 'shuffle', __('Slide X','projectmanager') => 'slideX', __('Slide Y','projectmanager') => 'slideY', __('Toss','projectmanager') => 'toss', __('Turn Up','projectmanager') => 'turnUp', __('Turn Down','projectmanager') => 'turnDown', __('Turn Left','projectmanager') => 'turnLeft', __('Turn Right','projectmanager') => 'turnRight', __('Uncover','projectmanager') => 'uncover', __('Wipe','projectmanager') => 'wipe', __( 'Zoom','projectmanager') => 'zoom', __('Grow X','projectmanager') => 'growX', __('Grow Y','projectmanager') => 'growY', __('Random','projectmanager') => 'all');
+
 		$out = '<select size="1" name="'.$this->prefix.'['.$number.'][slideshow][fade]" id="'.$this->prefix.'_'.$number.'_slideshow_fade">';
 		foreach ( $effects AS $name => $effect ) {
 			$checked =  ( $selected == $effect ) ? " selected='selected'" : '';
@@ -279,7 +284,7 @@ class ProjectManagerWidget extends ProjectManager
 	 */
 	function getSlideshowOrder( $selected, $number )
 	{
-		$order = array(__('Ordered','projectmanager') => 'false', __('Random','projectmanager') => 'true');
+		$order = array(__('Ordered','projectmanager') => '0', __('Random','projectmanager') => '1');
 		$out = '<select size="1" name="'.$this->prefix.'['.$number.'][slideshow][order]" id="'.$this->prefix.'_'.$number.'_slideshow_order">';
 		foreach ( $order AS $name => $value ) {
 			$checked =  ( $selected == $value ) ? " selected='selected'" : '';

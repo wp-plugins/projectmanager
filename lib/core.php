@@ -202,7 +202,7 @@ class ProjectManager extends ProjectManagerLoader
 	
 
 	/**
-	 * get dataset order
+	 * get dataset order - Needs to be FIXED
 	 *
 	 * @param boolean $orderby
 	 * @param boolean $order
@@ -697,7 +697,7 @@ class ProjectManager extends ProjectManagerLoader
 		
 	
 	/**
-	 * gets all datasets for a project
+	 * gets all datasets for a project - BUGFIX with ordering
 	 *
 	 * @param boolean $limit
 	 * @param string orderby field to orderby
@@ -771,7 +771,7 @@ class ProjectManager extends ProjectManagerLoader
 	
 	
 	/**
-	 * order datasets by chosen form fields
+	 * order datasets by chosen form fields - BUGFIX required
 	 *
 	 * @param array $datasets
 	 * @param int|false $form_field_id
@@ -944,7 +944,6 @@ class ProjectManager extends ProjectManagerLoader
 		if ( $dataset_meta = $this->getDatasetMeta( $dataset->id ) ) {
 			foreach ( $dataset_meta AS $meta ) {
 				$meta->label = stripslashes($meta->label);
-				//$meta_value = stripslashes_deep($meta->value);
 				$meta_value = is_string($meta->value) ? htmlspecialchars( $meta->value, ENT_QUOTES ) : $meta->value;
 				
 				if ( 'text' == $meta->type || 'select' == $meta->type || 'checkbox' == $meta->type || 'radio' == $meta->type ) {
