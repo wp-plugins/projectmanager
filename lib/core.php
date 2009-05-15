@@ -214,6 +214,7 @@ class ProjectManager extends ProjectManagerLoader
 		$options = $options['project_options'][$this->project_id];
 
 		$formfield_id = $this->override_order = false;
+		// Selection in Admin Panel
 		if ( isset($_POST['orderby']) && isset($_POST['order']) && !isset($_POST['doaction']) ) {
 			$orderby = explode('_', $_POST['orderby']);
 			$this->orderby = ( $_POST['orderby'] != '' ) ? $_POST['orderby'] : 'name';
@@ -224,17 +225,34 @@ class ProjectManager extends ProjectManagerLoader
 			$this->query_args['orderby'] = $this->orderby;
 
 			$this->override_order = true;
-		} elseif ( isset($_GET['orderby']) && isset($_GET['order']) ) {
+		}
+		// Selection in Frontend
+		elseif ( isset($_GET['orderby']) && isset($_GET['order']) ) {
 			$orderby = explode('_', $_GET['orderby']);
 			$this->orderby = ( $_GET['orderby'] != '' ) ? $_GET['orderby'] : 'name';
 			$formfield_id = $orderby[1];
 			$this->order = ( $_GET['order'] != '' ) ? $_GET['order'] : 'ASC';
 			
 			$this->override_order = true;
-		} elseif ( isset($options['dataset_orderby']) && $options['dataset_orderby'] != 'formfields' && !empty($options['dataset_orderby']) ) {
+		}
+		// Shortcode Attributes
+		elseif ( $orderby || $order ) {
+			if ( $orderby ) {
+				$tmp = explode("-",$orderby);
+				$this->orderby = $tmp[0];
+				$formfield_id = $tmp[1];
+			}
+			if ( $order ) $this->order = $order;
+
+			$this->override_order = true;
+		}
+		// Project Settings
+		elseif ( isset($options['dataset_orderby']) && $options['dataset_orderby'] != 'formfields' && !empty($options['dataset_orderby']) ) {
 			$this->orderby = $options['dataset_orderby'];
 			$this->order = (isset($options['dataset_order']) && !empty($options['dataset_order'])) ? $options['dataset_order'] : 'ASC';
-		} else {
+		}
+		// Default
+		else {
 			$this->orderby = 'name';
 			$this->order = 'ASC';
 		}
@@ -709,24 +727,16 @@ class ProjectManager extends ProjectManagerLoader
 	 * @param int $formfield_id FormField ID to order by
 	 * @return array
 	 */
-	function getDatasets( $limit = false, $orderby = false, $order = false, $formfield_id = false )
+	function getDatasets( $limit = false, $orderby = false, $order = false )
 	{
 		global $wpdb;
 		$options = get_option('projectmanager');
 	
 		// Set ordering
-		if ( !$formfield_id )
-			$formfield_id = $this->setDatasetOrder();
+		$formfield_id = $this->setDatasetOrder($orderby, $order);
 
-		if ( $orderby ) {
-			$this->orderby = $orderby;
-			$this->override_order = true;
-		}
-		if ( $order ){
-			$this->order = $order;
-			$this->override_order = true;
-		}
-
+		$tmp = explode("-",$orderby);
+		$orderby = $tmp[0];
 		if ( $orderby && $orderby != 'formfields' ) {
 			$sql_order = "`$orderby` $order";
 		} else {
@@ -744,7 +754,11 @@ class ProjectManager extends ProjectManagerLoader
 		$sql .= ( $limit && $this->per_page ) ? " LIMIT ".$offset.",".$this->per_page.";" : ";";
 			
 		$datasets = $wpdb->get_results($sql);
-		
+	
+		/*
+		* Determine wether to sort by formfields or not
+		* Selection Menus and Shortcode Attributes override Project Settings
+		*/
 		if ( ($options['project_options'][$this->project_id]['dataset_orderby'] == 'formfields' && !$this->override_order) || $formfield_id )
 			$orderby_formfields = true;
 		else
@@ -847,7 +861,7 @@ class ProjectManager extends ProjectManagerLoader
 			*/
 			$func_args = array();
 			foreach ( $order AS $key => $order_array ) {
-				$sort = ( $this->order == 'DESC' ) ? SORT_DESC : SORT_ASC;
+				$sort = ( $this->order == 'DESC' || $this->order == 'desc' ) ? SORT_DESC : SORT_ASC;
 				array_push( $func_args, $order_array );
 				array_push( $func_args, $sort );
 			}
