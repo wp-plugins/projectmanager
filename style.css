@@ -100,6 +100,10 @@ ul.projectmanager, ol.projectmanager {
 	clear: both;
 	}
 
+/* search form */
+form.search-form {
+	}
+
 /* Pages */
 p.page-numbers {
 	clear: both;
@@ -179,16 +183,17 @@ ul.categorychecklist li label, ul.categorychecklist li input, ul.children li lab
 	display: block;
 	text-align: center;
 	margin: 1em auto;
+	padding: 0;
 }
 
 .projectmanager_slideshow a {
 	display: block;
-	margin: 8px auto;
 	}
 .projectmanager_slideshow img {
 	border: none;
 	display: block;
 	margin: 0 auto;
+	padding: 0;
 }
 
 	

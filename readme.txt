@@ -3,8 +3,8 @@ Contributors: Kolja Schleich
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2329191
 Tags: datamanager, CMS, Content Management System
 Requires at least: 2.7
-Tested up to: 2.7
-Stable tag: 2.3
+Tested up to: 2.7.1
+Stable tag: 2.4
 
 This plugin can be used to manage any number of projects with recurrent datasets (e.g. portrait system, dvd collection)
 
@@ -109,6 +109,11 @@ you can use this template to display with the following code
 = Hook Project into user profile =
 
 It is possible to hook one project into the user profile to use it as extended profile. Thus it could be used to implement a player registration in combination with my [LeagueManager Plugin](http://wordpress.org/extend/plugins/leaguemanager/). Users need the capability `project_user_profile` to use this feature. By default only Administrators and Editors have this, but you can use [Role Manager](http://www.im-web-gefunden.de/wordpress-plugins/role-manager/) for finetuning.
+
+= Custom icons for Admin Menu =
+If you want to use custom icons for the admin menu put them in
+
+`yourthemedirectory/projectmanager/icons/`
 
 
 = Access control =
