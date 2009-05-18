@@ -1327,7 +1327,7 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function getSupportedImageTypes()
 	{
-		return array( "jpg", "jpeg", "png", "gif" );
+		return ProjectManagerImage::getSupportedImageTypes();	
 	}
 	
 	

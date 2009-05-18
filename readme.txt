@@ -31,7 +31,7 @@ See [Usage](http://wordpress.org/extend/plugins/projectmanager/other_notes/) for
 
 Due to the growing popularity of my plugins I have launched a [website](http://kolja.galerie-neander.de/)!
 
-[ChangeLog](http://svn.wp-plugins.org/leaguemanager/trunk/changelog.txt)
+[ChangeLog](http://svn.wp-plugins.org/projectmanager/trunk/changelog.txt)
 
 == Installation ==
 

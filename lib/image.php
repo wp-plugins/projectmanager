@@ -11,14 +11,6 @@
 class ProjectManagerImage extends ProjectManager
 {
 	/**
-	* supported image types
-	*
-	* @var array
-	*/
-	var $supported_image_types = array( "jpg", "jpeg", "png", "gif" );
-	
-	
-	/**
 	 * image filename
 	 *
 	 * @var string
@@ -53,7 +45,7 @@ class ProjectManagerImage extends ProjectManager
 	}
 	
 	
-		/**
+	/**
 	 * gets supported file types
 	 *
 	 * @param none
@@ -61,10 +53,10 @@ class ProjectManagerImage extends ProjectManager
 	 */
 	function getSupportedImageTypes()
 	{
-		return $this->supported_image_types;
+		return array( "jpg", "jpeg", "png", "gif" );
 	}
 	
-	
+
 	/**
 	 * checks if image type is supported
 	 *
