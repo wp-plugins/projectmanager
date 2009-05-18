@@ -8,8 +8,6 @@ V2.4 - May 15, 2009
 - BUGFIX: Popup Window for Formfield Options
 - BUGFIX: TinyMCE Button for searchform
 - BUGFIX: total number of datasets in search
-- CHANGED: exclude respective dropdown menu for category, orderby and order if
-shortcode attribute is used
 - CHANGED: use function add_object_page for menu if present
 - CHANGED: use of jQuery Cycle Plugin for Slideshow
 
