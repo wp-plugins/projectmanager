@@ -12,7 +12,7 @@ The following variables are usable:
 */
 ?>
 
-<?php if ( isset($_GET['show']) && $project['single'] ) : ?>
+<?php if ( isset($_GET['show']) ) : ?>
  	<?php do_action('projectmanager_dataset', array('id' => $_GET['show'], 'echo' => 1), true) ?>
 <?php else: ?>
 	

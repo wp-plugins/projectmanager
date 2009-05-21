@@ -16,8 +16,7 @@ if ( isset($_POST['saveSettings']) ) {
 	$options['project_options'][$project_id]['dataset_orderby'] = $_POST['dataset_orderby'];
 	$options['project_options'][$project_id]['dataset_order'] = $_POST['dataset_order'];
 	$options['project_options'][$project_id]['show_image'] = isset( $_POST['show_image']) ? 1 : 0;
-	$options['project_options'][$project_id]['show_image_profile'] = ( isset($_POST['show_image_profile']) && isset($_POST['show_image']) ) ? 1 : 0;
-//	$options['project_options'][$project_id]['use_widget'] = isset( $_POST['use_widget'] ) ? 1 : 0;
+	//$options['project_options'][$project_id]['show_image_profile'] = ( isset($_POST['show_image_profile']) && isset($_POST['show_image']) ) ? 1 : 0;
 	$options['project_options'][$project_id]['thumb_size'] = array( "width" => $_POST['thumb_width'], "height" => $_POST['thumb_height'] );
 	$options['project_options'][$project_id]['medium_size'] = array( "width" => $_POST['medium_width'], "height" => $_POST['medium_height'] );
 	$options['project_options'][$project_id]['chmod'] = $_POST['chmod'];
@@ -51,7 +50,7 @@ if ( 1 == $settings['show_image'] && !wp_mkdir_p( $projectmanager->getFilePath()
 			<th scope="row"><label for="project_title"><?php _e( 'Title', 'projectmanager' ) ?></label></td><td><input type="text" name="project_title" id="project_title" value="<?php echo $projectmanager->getProjectTitle( ) ?>" size="30" style="margin-bottom: 1em;" /></td>
 		</tr>
 		<tr valign="top">
-			<th scope="row"><label for="per_page"><?php _e( 'Datasets per page', 'projectmanager' ) ?></label></th><td><input type="text" name="per_page" id="per_page" size="2" value="<?php echo $settings['per_page'] ?>" /> <span class="setting-description"><?php _e( 'Leave empty for no limit', 'projectmanager' ) ?></td>
+			<th scope="row"><label for="per_page"><?php _e( 'Datasets per page', 'projectmanager' ) ?></label></th><td><input type="text" name="per_page" id="per_page" size="2" value="<?php echo $settings['per_page'] ?>" /> <span class="setting-description"><?php _e( 'Use <strong>NaN</strong> for no limit', 'projectmanager' ) ?></td>
 		</tr>
 		<tr valign="top">
 			<th scope="row"><label for="category"><?php _e( 'Category', 'projectmanager' ) ?></label></th><td><?php wp_dropdown_categories(array('hide_empty' => 0, 'name' => 'category', 'orderby' => 'name', 'selected' => $settings['category'], 'hierarchical' => true, 'show_option_none' => __('None'))); ?>&#160;<span class="setting-description"><?php _e( 'Child categories of this category are used for grouping of datasets', 'projectmanager' ) ?></span></td>
@@ -61,7 +60,7 @@ if ( 1 == $settings['show_image'] && !wp_mkdir_p( $projectmanager->getFilePath()
 			<td>
 				<select size="1" name="dataset_orderby" id="dataset_orderby"><?php $this->datasetOrderbyOptions($settings['dataset_orderby']) ?></select>
 				<select size="1" name="dataset_order" id="dataset_order"><?php $this->datasetOrderOptions($settings['dataset_order']) ?></select>
-				&#160;<span class="setting-description"><?php _e('To order datasets manually leave datasets per page empty for the time of ordering. Only works with Firefox.', 'projectmanager') ?></span>
+				&#160;<span class="setting-description"><?php _e('To order datasets manually there must be no limit on datasets.', 'projectmanager') ?></span>
 			</td>
 			
 		</tr>
@@ -88,7 +87,7 @@ if ( 1 == $settings['show_image'] && !wp_mkdir_p( $projectmanager->getFilePath()
 		<h3><?php _e( 'Images', 'projectmanager' ) ?></h3>
 		<table class="form-table">
 		<tr valign="top">
-			<th scope="row"><label for="show_image"><?php _e( 'Show Image', 'projectmanager' ) ?></label></th><td><input type="checkbox" name="show_image" id="show_image"<?php if ( 1 == $settings['show_image'] ) echo ' checked="checked"' ?> value="1">&#160;<input type="checkbox" name="show_image_profile" id="show_image_profile"<?php if ( 1 == $settings['show_image_profile'] ) echo ' checked="checked"' ?> value="1">&#160;<span class="setting-description"><?php _e( 'The second checkbox controls image display in user profile', 'projectmanager') ?></span></td>
+			<th scope="row"><label for="show_image"><?php _e( 'Show Image', 'projectmanager' ) ?></label></th><td><input type="checkbox" name="show_image" id="show_image"<?php if ( 1 == $settings['show_image'] ) echo ' checked="checked"' ?> value="1"><!--&#160;<input type="checkbox" name="show_image_profile" id="show_image_profile"<?php if ( 1 == $settings['show_image_profile'] ) echo ' checked="checked"' ?> value="1">&#160;<span class="setting-description"><?php _e( 'The second checkbox controls image display in user profile', 'projectmanager') ?></span>--></td>
 		</tr>
 		<tr valign="top">
 			<th scope="row"><label for="thumb_size"><?php _e( 'Thumbnail size', 'projectmanager' ) ?></label></th><td><label for="thumb_width"><?php _e( 'Width' ) ?>&#160;</label><input type="text" name="thumb_width" id="thumb_width" size="3" value="<?php echo $settings['thumb_size']['width'] ?>" />  <label for="thumb_height"><?php _e( 'Height' ) ?>&#160;</label><input type="text" name="thumb_height" id="thumb_height" size="3" value="<?php echo $settings['thumb_size']['height'] ?>" /></td>

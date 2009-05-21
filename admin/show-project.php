@@ -194,9 +194,8 @@ $options = $options['project_options'][$project_id];
 	// ]]>
 	</script>
 		
-	<!-- What's that?? -->
-	<?php elseif ( $projectmanager->getNumDatasets($project_id,true) > 0 )  : ?>
-		<div class="error" style="margin-top: 3em;"><p><?php _e( 'Nothing found', 'projectmanager') ?></p></div>
+	<?php else  : ?>
+		<div class="error" style="margin-top: 3em; text-align: center;"><p><?php _e( 'Nothing found', 'projectmanager') ?></p></div>
 	<?php endif ?>
 	<div class="tablenav">
 		<?php if ( $projectmanager->getPageLinks() ) echo "<div class='tablenav-pages'>$page_links_text</div>"; ?>

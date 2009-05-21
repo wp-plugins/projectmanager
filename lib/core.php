@@ -117,7 +117,7 @@ class ProjectManager extends ProjectManagerLoader
 		$options = $options['project_options'][$project_id];
 		
 		$this->project_id = $project_id;
-		$this->per_page = ( isset($options['per_page']) && !empty($options['per_page']) ) ? $options['per_page'] : false;
+		$this->per_page = ( isset($options['per_page']) && !empty($options['per_page']) ) ? $options['per_page'] : 15;
 
 		$this->num_items = $this->getNumDatasets($this->project_id);
 		$this->num_max_pages = ( 0 == $this->per_page || $this->isSearch() ) ? 1 : ceil( $this->num_items/$this->per_page );
@@ -743,7 +743,7 @@ class ProjectManager extends ProjectManagerLoader
 			$sql_order = ( $this->orderby != 'name' && $this->orderby != 'id' && $this->orderby != 'order' ) ? '`name` '.$this->order : $this->getDatasetOrder();
 		}
 		
-		if ( $limit && $this->per_page ) $offset = ( $this->getCurrentPage() - 1 ) * $this->per_page;
+		if ( $limit && $this->per_page != 'NaN' ) $offset = ( $this->getCurrentPage() - 1 ) * $this->per_page;
 
 		$sql = "SELECT `id`, `name`, `image`, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id}";
 		
@@ -751,7 +751,7 @@ class ProjectManager extends ProjectManagerLoader
 			$sql .= $this->getCategorySearchString();
 		
 		$sql .=  " ORDER BY ".$sql_order;
-		$sql .= ( $limit && $this->per_page ) ? " LIMIT ".$offset.",".$this->per_page.";" : ";";
+		$sql .= ( $limit && $this->per_page != 'NaN' ) ? " LIMIT ".$offset.",".$this->per_page.";" : ";";
 			
 		$datasets = $wpdb->get_results($sql);
 	

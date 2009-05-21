@@ -1,3 +1,9 @@
+<?php if ( $is_profile_page ) : ?>
+<script type="text/javascript">
+document.forms[0].encoding = "multipart/form-data";
+</script>
+<?php endif; ?>
+
 <table class="form-table">
 	<?php if (!$is_profile_page) : ?>
 	<tr valign="top">
@@ -5,7 +11,8 @@
 		<td><input type="text" name="name" id="name" value="<?php echo $name ?>" size="45" /></td>
 	</tr>
 	<?php endif; ?>
-	<?php if ( 1 == $options['show_image'] && ( !$is_profile_page || ($is_profile_page && $options['show_image_profile']) ) ) : ?>
+	<?php //if ( 1 == $options['show_image'] && ( !$is_profile_page || ($is_profile_page && $options['show_image_profile']) ) ) : ?>
+	<?php if ( 1 == $options['show_image'] ) : ?>
 	<tr valign="top">
 		<th scope="row"><label for="projectmanager_image"><?php _e( 'Image', 'projectmanager' ) ?></label></th>
 		<td>
