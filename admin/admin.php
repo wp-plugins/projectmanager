@@ -719,7 +719,6 @@ class ProjectManagerAdminPanel extends ProjectManager
 				
 				if ( file_exists($new_file) && !$overwrite ) {
 					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `image` = '%s' WHERE id = '%d'", basename($file['name']), $dataset_id ) );
-			
 					$this->setMessage( __('File exists and is not uploaded. Set the overwrite option if you want to replace it.','projectmanager'), true );
 				} else {
 					if ( move_uploaded_file($file['tmp_name'], $new_file) ) {
@@ -967,7 +966,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 			$this->addDataset( $_POST['project_id'], $_POST['display_name'], $_POST['post_category'], $_POST['form_field'] );
 		} else {
 			$del_image = isset( $_POST['del_old_image'] ) ? true : false;
-			$overwrite_image = isset( $_POST['overwrite_image'] ) ? true: false;
+			$overwrite_image = ( isset($_POST['overwrite_image']) && 1 == $_POST['overwrite_image'] ) ? true: false;
 			$this->editDataset( $_POST['project_id'], $_POST['display_name'], $_POST['post_category'], $_POST['dataset_id'], $_POST['form_field'], $user_id, $del_image, $_POST['image_file'], $overwrite_image );
 		}
 	}

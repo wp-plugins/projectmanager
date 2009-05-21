@@ -15,7 +15,7 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['doaction']) ) {
 		} else {
 			$dataset_owner = isset($_POST['owner']) ? $_POST['owner'] : false;
 			$del_image = isset( $_POST['del_old_image'] ) ? true : false;
-			$overwrite_image = isset( $_POST['overwrite_image'] ) ? true: false;
+			$overwrite_image = ( isset($_POST['overwrite_image']) && 1 == $_POST['overwrite_image'] ) ? true: false;
 			$this->editDataset( $_POST['project_id'], $_POST['name'], $_POST['post_category'], $_POST['dataset_id'], $_POST['form_field'], $_POST['user_id'], $del_image, $_POST['image_file'], $overwrite_image, $dataset_owner );
 		}
 	}
