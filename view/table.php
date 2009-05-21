@@ -28,7 +28,7 @@ The following variables are usable:
 </tr>
 
 <?php foreach ( $datasets AS $dataset ) : ?>
-	<tr class='<?php echo $dataset->class ?>'>
+	<tr class="<?php echo $dataset->class ?>">
 		<td class="name"><?php echo $dataset->nameURL ?></td>
 		<?php $projectmanager->printDatasetMetaData( $dataset, 'td' ); ?>
 	</tr>

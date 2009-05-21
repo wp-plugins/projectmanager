@@ -16,6 +16,7 @@ The following variables are usable:
 
 <div class='projectmanager_tablenav'>
 <form action='<?php the_permalink() ?>' method='get'>
+<div>
 	<input type='hidden' name='page_id' value='<?php the_ID() ?>' />
 	<?php if ( $category ) : ?>
 	<?php wp_dropdown_categories(array('echo' => 1, 'hide_empty' => 0, 'name' => 'cat_id', 'orderby' => 'name', 'selected' => $selected_cat, 'hierarchical' => true, 'child_of' => $category, 'show_option_all' => __('View all categories'))); ?>
@@ -35,6 +36,7 @@ The following variables are usable:
 	</select>
 	<?php endif; ?>
 	<input type='submit' value='<?php _e( 'Apply' ) ?>' class='button' />
+</div>
 </form>
 </div>
 

@@ -10,8 +10,10 @@ The following variables are usable:
 */
 ?>
 <form class='search-form alignright' action='' method='post'>
+<div>
 	<input type='text' class='search-input' name='search_string' value='<?php echo $search ?>' />
 	<input type='hidden' name='form_field' value='0' />
 	
 	<input type='submit' value='<?php _e('Search', 'projectmanager') ?> &raquo;' class='button' />
+</div>
 </form>

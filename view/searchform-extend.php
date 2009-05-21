@@ -12,6 +12,7 @@ The following variables are usable:
 */
 ?>
 <form class='search-form alignright' action='' method='post'>
+<div>
 	<input type='text' class='search-input' name='search_string' value='<?php echo $search ?>' />
 	
 	<select size='1' name='search_option'>
@@ -23,4 +24,5 @@ The following variables are usable:
 	</select>
 	
 	<input type='submit' value='<?php _e('Search', 'projectmanager') ?> &raquo;' class='button' />
+</div>
 </form>

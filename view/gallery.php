@@ -17,6 +17,7 @@ The following variables are usable:
 <?php else: ?>
 	
 <?php if ( $project['tablenav'] ) do_action('projectmanager_tablenav'); ?>
+
 <?php if ( $datasets ) : $i = 0; ?>
 <div class='dataset_gallery'>
 	<?php foreach ( $datasets AS $dataset ) : $i++; ?>
@@ -36,7 +37,6 @@ The following variables are usable:
 	<?php endif; ?>
 
 	<?php endforeach; ?>
-	</div>
 </div>
 
 <br style='clear: both;' />
