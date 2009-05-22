@@ -50,7 +50,23 @@ class ProjectManagerLoader
 	  */
 	 var $dbversion = '2.1';
 	 
+
+	 /**
+	  * project ID
+	  *
+	  * @var int
+	  */
+	 var $project_id;
+
+
+	 /**
+	  * admin panel object
+	  *
+	  * @var object
+	  */
+	 var $adminPanel = false;
 	 
+
 	 /**
 	  * constructor
 	  *
