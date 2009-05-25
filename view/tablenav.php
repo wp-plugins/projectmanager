@@ -11,24 +11,33 @@ The following variables are usable:
 	
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
 */
-?>		
+?>
+<?php if ( $category || $orderby || $order ) : ?>
+
 <div class='projectmanager_tablenav'>
 <form action='<?php the_permalink() ?>' method='get'>
+<div>
 	<input type='hidden' name='page_id' value='<?php the_ID() ?>' />
 	<?php if ( $category ) : ?>
 	<?php wp_dropdown_categories(array('echo' => 1, 'hide_empty' => 0, 'name' => 'cat_id', 'orderby' => 'name', 'selected' => $selected_cat, 'hierarchical' => true, 'child_of' => $category, 'show_option_all' => __('View all categories'))); ?>
 	<?php endif; ?>
+	<?php if ( $orderby ) : ?>
 	<select size='1' name='orderby'>
 		<?php foreach ( $orderby AS $key => $value ) : ?>
 		<option value='<?php echo $key ?>' <?php if ($_GET['orderby'] == $key) echo ' selected="selected"' ?>><?php echo $value ?></option>
 		<?php endforeach; ?>
 	</select>
+	<?php endif; ?>
+	<?php if ( $order ) : ?>
 	<select size='1' name='order'>
 		<?php foreach ( $order AS $key => $value ) : ?>
 		<option value='<?php echo $key ?>' <?php if ($_GET['order'] == $key) echo ' selected="selected"' ?>><?php echo $value ?></option>
 		<?php endforeach; ?>
 	</select>
-	
+	<?php endif; ?>
 	<input type='submit' value='<?php _e( 'Apply' ) ?>' class='button' />
+</div>
 </form>
 </div>
+
+<?php endif; ?>

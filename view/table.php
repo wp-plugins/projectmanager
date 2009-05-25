@@ -23,13 +23,13 @@ The following variables are usable:
 
 <table class='projectmanager'>
 <tr>
-	<th scope='col'><?php _e( 'Name', 'projectmanager' ) ?></th>
+	<th scope='col' class="tableheader"><?php _e( 'Name', 'projectmanager' ) ?></th>
 	<?php $projectmanager->printTableHeader(); ?>
 </tr>
 
 <?php foreach ( $datasets AS $dataset ) : ?>
-	<tr class='<?php echo $dataset->class ?>'>
-		<td><?php echo $dataset->nameURL ?></td>
+	<tr class="<?php echo $dataset->class ?>">
+		<td class="name"><?php echo $dataset->nameURL ?></td>
 		<?php $projectmanager->printDatasetMetaData( $dataset, 'td' ); ?>
 	</tr>
 <?php endforeach ; ?>
