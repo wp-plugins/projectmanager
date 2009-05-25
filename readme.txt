@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: datamanager, CMS, Content Management System
 Requires at least: 2.7
 Tested up to: 2.7.1
-Stable tag: 2.4
+Stable tag: 2.4./
 
 This plugin can be used to manage any number of projects with recurrent datasets (e.g. portrait system, dvd collection)
 
@@ -115,7 +115,6 @@ If you want to use custom icons for the admin menu put them in
 
 `yourthemedirectory/projectmanager/icons/`
 
-
 = Access control =
 
 ProjectManager has three different capabilities: 
@@ -125,6 +124,16 @@ ProjectManager has three different capabilities:
 *project_user_profile
 
 Users with the capability *projectmanager_admin* can edit settings, edit formfields and import datasets from CSV files. By default only Administrators have this privilege. Users with the capability *manage_projects* can add and edit datasets and those with the capability *project_user_profile* can use the profile hook feature. **Important**: The capabilities are not additive! Thus a user with capability *projectmanager_admin*, but not *manage_projects* will not be able to add and edit datasets.
+
+= Notes on Formfields =
+
+Currently there are two formfields that require a short statement: *numeric* and *currency*. The display of these two types varies among different countries. If the PHP Internationalization Functions (http://us3.php.net/manual/en//book.intl.php), requires at least PHP 5.2 (recommended is 5.2.4+), are installed you are all set. Otherwise there are two filters that can be used to manually control the format
+
+* projectmanager_numeric
+* projectmanager_currency
+
+Note that these filters are for some reasons not applied if you use the AJAX edit. After reloading the page the display is correct.
+
 
 == ChangeLog ==
 See [changelog.txt](http://svn.wp-plugins.org/projectmanager/trunk/changelog.txt).

@@ -549,6 +549,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 							$this->uploadFile($file);
 							
 						$meta_value = basename($file['name']);
+					} elseif ( 'numeric' == $formfield->type || 'currency' == $formfiel->type ) {
+						$meta_value += 0; // convert value to numeric type
 					}
 					
 					if ( is_array($meta_value) ) {
@@ -617,6 +619,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 						$file = array('name' => $_FILES['form_field']['name'][$meta_id], 'tmp_name' => $_FILES['form_field']['tmp_name'][$meta_id], 'size' => $_FILES['form_field']['size'][$meta_id], 'type' => $_FILES['form_field']['type'][$meta_id], 'current' => $meta_value['current']);
 						$delete = (1 == $meta_value['del']) ? true : false;
 						$meta_value = $this->editFile($file, $meta_value['overwrite'], $delete);
+					} elseif ( 'numeric' == $formfield->type || 'currency' == $formfield->type ) {
+						$meta_value += 0; // convert value to numeric type
 					}
 					
 					

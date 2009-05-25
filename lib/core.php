@@ -280,7 +280,7 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function getFormFieldTypes($index = false)
 	{
-		$form_field_types = array( 'text' => __('Text', 'projectmanager'), 'textfield' => __('Textfield', 'projectmanager'), 'email' => __('E-Mail', 'projectmanager'), 'date' => __('Date', 'projectmanager'), 'uri' => __('URL', 'projectmanager'), 'image' => __( 'Image', 'projectmanager' ), 'select' => __('Selection', 'projectmanager'), 'checkbox' => __( 'Checkbox List', 'projectmanager'), 'radio' => __( 'Radio List', 'projectmanager'), 'fileupload' => __('File Upload', 'projectmanager') );
+		$form_field_types = array( 'text' => __('Text', 'projectmanager'), 'textfield' => __('Textfield', 'projectmanager'), 'email' => __('E-Mail', 'projectmanager'), 'date' => __('Date', 'projectmanager'), 'uri' => __('URL', 'projectmanager'), 'image' => __( 'Image', 'projectmanager' ), 'select' => __('Selection', 'projectmanager'), 'checkbox' => __( 'Checkbox List', 'projectmanager'), 'radio' => __( 'Radio List', 'projectmanager'), 'fileupload' => __('File Upload', 'projectmanager'), 'numeric' => __( 'Numeric', 'projectmanager' ), 'currency' => __('Currency', 'projectmanager') );
 		
 		$form_field_types = apply_filters( 'projectmanager_formfields', $form_field_types );
 		
@@ -299,7 +299,7 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function getMonths()
 	{
-		$locale = !defined('WPLANG_WIN') ? WPLANG : WPLANG_WIN;
+		$locale = !defined('WPLANG_WIN') ? get_locale() : WPLANG_WIN;
 		setlocale(LC_TIME, $locale);
 		$months = array();
 		for ( $month = 1; $month <= 12; $month++ )
@@ -994,6 +994,23 @@ class ProjectManager extends ProjectManagerLoader
 					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'><img class='projectmanager_image' src='".$meta_value."' alt='".__('Image', 'projectmanager')."' /></span>";
 				} elseif ( 'fileupload' == $meta->type && !empty($meta_value) ) {
 					$meta_value = "<img id='fileimage".$meta->form_field_id."_".$dataset->id."' src='".$this->getFileImage($meta_value)."' alt='' />&#160;<span id='datafield".$meta->form_field_id."_".$dataset->id."'><a class='projectmanager_file ".$this->getFileType($meta_value)."' href='".$this->getFileURL($meta_value)."' target='_blank'>".$meta_value."</a></span>";
+				} elseif ( 'numeric' == $meta->type && !empty($meta_value) ) {
+					if ( class_exists('NumberFormatter') ) {
+						$fmt = new NumberFormatter( get_locale(), NumberFormatter::DECIMAL );
+						$meta_value = $fmt->format($meta_value);
+					} else {
+						$meta_value = apply_filters( 'projectmanager_numeric', $meta_value );
+					}
+					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span>";
+				} elseif ( 'currency' == $meta->type && !empty($meta_value) ) {
+					if ( class_exists('NumberFormatter') ) {
+						$fmt = new NumberFormatter( get_locale(), NumberFormatter::CURRENCY );
+						$meta_value = $fmt->format($meta_value);
+					} else {
+						$meta_value = money_format('%i', $meta_value);
+						$meta_value = apply_filters( 'projectmanager_currency', $meta_value );
+					}
+					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span>";
 				} elseif ( !empty($meta->type) && is_array($this->getFormFieldTypes($meta->type)) ) {
 					// Data is retried via callback function. Most likely a special field from LeagueManager
 					$field = $this->getFormFieldTypes($meta->type);
@@ -1090,7 +1107,7 @@ class ProjectManager extends ProjectManagerLoader
 			$out .= "\n\t\t<div id='datafieldwrap".$formfield_id."_".$dataset_id."' style='overfow:auto;display:none;'>";
 			$out .= "\n\t\t<div id='datafieldbox".$formfield_id."_".$dataset_id."' class='projectmanager_thickbox'>";
 			$out .= "\n\t\t\t<form name='form_field_".$formfield_id."_".$dataset_id."'>";
-			if ( 'text' == $formfield_type || 'email' == $formfield_type || 'uri' == $formfield_type || 'image' == $formfield_type ) {
+			if ( 'text' == $formfield_type || 'email' == $formfield_type || 'uri' == $formfield_type || 'image' == $formfield_type || 'numeric' == $formfield_type || 'currency' == $formfield_type ) {
 				$out .= "\n\t\t\t<input type='text' name='form_field_".$formfield_id."_".$dataset_id."' id='form_field_".$formfield_id."_".$dataset_id."' value=\"".$value."\" size='30' />";
 			} elseif ( 'textfield' == $formfield_type ) {
 				$out .= "\n\t\t\t<textarea name='form_field_".$formfield_id."_".$dataset_id."' id='form_field_".$formfield_id."_".$dataset_id."' rows='10' cols='40'>".$value."</textarea>";
