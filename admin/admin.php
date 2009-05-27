@@ -59,10 +59,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 		}
 		
 		// Add global Projects Menu
-		if ( function_exists('add_object_page') )
-			add_object_page( __('Projects','projectmanager'), __('Projects', 'projectmanager'), 'manage_projects', PROJECTMANAGER_PATH, array(&$this, 'display'), PROJECTMANAGER_URL.'/admin/icons/menu/databases.png');
-		else
-			add_menu_page(__('Projects', 'projectmanager'), __('Projects', 'projectmanager'), 'manage_projects', PROJECTMANAGER_PATH,array(&$this, 'display'), PROJECTMANAGER_URL.'/admin/icons/menu/databases.png');
+		add_menu_page(__('Projects', 'projectmanager'), __('Projects', 'projectmanager'), 'manage_projects', PROJECTMANAGER_PATH,array(&$this, 'display'), PROJECTMANAGER_URL.'/admin/icons/menu/databases.png');
 
 		add_submenu_page(PROJECTMANAGER_PATH, __('Projects', 'projectmanager'), __('Overview','projectmanager'),'manage_projects', PROJECTMANAGER_PATH,array(&$this, 'display'));
 		add_submenu_page(PROJECTMANAGER_PATH, __( 'Settings'), __('Settings'), 'manage_projects', 'projectmanager-settings', array( &$this, 'display') );
@@ -268,7 +265,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 	{
 		if ( file_exists(TEMPLATEPATH . "/projectmanager/icons/".$icon))
 			return get_template_directory_uri() . "/projectmanager/icons/".$icon;
-		elseif ( file_exists(PROJECTMANAGER_URL.'/admin/icons/menu/'.$icon) )
+		elseif ( file_exists(PROJECTMANAGER_PATH.'/admin/icons/menu/'.$icon) )
 			return PROJECTMANAGER_URL.'/admin/icons/menu/'.$icon;
 		else
 			return PROJECTMANAGER_URL.'/admin/icons/menu/databases.png';
@@ -549,6 +546,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 							$this->uploadFile($file);
 							
 						$meta_value = basename($file['name']);
+					} elseif ( 'numeric' == $formfield->type || 'currency' == $formfiel->type ) {
+						$meta_value += 0; // convert value to numeric type
 					}
 					
 					if ( is_array($meta_value) ) {
@@ -617,6 +616,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 						$file = array('name' => $_FILES['form_field']['name'][$meta_id], 'tmp_name' => $_FILES['form_field']['tmp_name'][$meta_id], 'size' => $_FILES['form_field']['size'][$meta_id], 'type' => $_FILES['form_field']['type'][$meta_id], 'current' => $meta_value['current']);
 						$delete = (1 == $meta_value['del']) ? true : false;
 						$meta_value = $this->editFile($file, $meta_value['overwrite'], $delete);
+					} elseif ( 'numeric' == $formfield->type || 'currency' == $formfield->type ) {
+						$meta_value += 0; // convert value to numeric type
 					}
 					
 					
@@ -719,7 +720,6 @@ class ProjectManagerAdminPanel extends ProjectManager
 				
 				if ( file_exists($new_file) && !$overwrite ) {
 					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `image` = '%s' WHERE id = '%d'", basename($file['name']), $dataset_id ) );
-			
 					$this->setMessage( __('File exists and is not uploaded. Set the overwrite option if you want to replace it.','projectmanager'), true );
 				} else {
 					if ( move_uploaded_file($file['tmp_name'], $new_file) ) {
@@ -967,7 +967,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 			$this->addDataset( $_POST['project_id'], $_POST['display_name'], $_POST['post_category'], $_POST['form_field'] );
 		} else {
 			$del_image = isset( $_POST['del_old_image'] ) ? true : false;
-			$overwrite_image = isset( $_POST['overwrite_image'] ) ? true: false;
+			$overwrite_image = ( isset($_POST['overwrite_image']) && 1 == $_POST['overwrite_image'] ) ? true: false;
 			$this->editDataset( $_POST['project_id'], $_POST['display_name'], $_POST['post_category'], $_POST['dataset_id'], $_POST['form_field'], $user_id, $del_image, $_POST['image_file'], $overwrite_image );
 		}
 	}

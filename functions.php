@@ -97,12 +97,7 @@ function projectmanager_save_form_field_data() {
 	// Checkbox List
 	if ( 'checkbox' == $formfield_type )
 		$new_value = substr($new_value,0,-1);
-/*	if ( 'fileupload' == $formfield_type ) {
-		$file = array('name' => $_FILES['form_field']['name'][$meta_id][$dataset_id], 'tmp_name' => $_FILES['form_field']['tmp_name'][$meta_id][$dataset_id], 'size' => $_FILES['form_field']['size'][$meta_id][$dataset_id], 'type' => $_FILES['form_field']['type'][$meta_id][$dataset_id]);
-		$projectmanager_loader->adminPanel->uploadFile($file);
-		$new_value = basename($file['name']);
-	}*/
-	
+
 	if ( 1 == $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_datasetmeta} WHERE `dataset_id` = '".$dataset_id."' AND `form_id` = '".$meta_id."'" ) )
 		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `value` = '%s' WHERE `dataset_id` = '%d' AND `form_id` = '%d'", $new_value, $dataset_id, $meta_id ) );
 	else
@@ -124,7 +119,23 @@ function projectmanager_save_form_field_data() {
 		$new_value = '<a class="projectmanager_url" href="http://'.$projectmanager->extractURL($new_value, 'url').'" target="_blank" title="'.$projectmanager->extractURL($new_value, 'title').'">'.$projectmanager->extractURL($new_value, 'title').'</a>';
 	elseif ( 'email' == $formfield_type )
 		$new_value = '<a href="mailto:'.$projectmanager->extractURL($new_value, 'url').'" class="projectmanager_email">'.$projectmanager->extractURL($new_value, 'title').'</a>';	
-			
+	elseif ( 'numeric' == $formfield_type ) {
+		if ( class_exists('NumberFormatter') ) {
+			$fmt = new NumberFormatter( get_locale(), NumberFormatter::DECIMAL );
+			$meta_value = $fmt->format($meta_value);
+		} else {
+			$meta_value = apply_filters( 'projectmanager_numeric', $meta_value );
+		}
+	} elseif ( 'currency' == $formfield_type ) {
+		if ( class_exists('NumberFormatter') ) {
+			$fmt = new NumberFormatter( get_locale(), NumberFormatter::CURRENCY );
+			$meta_value = $fmt->format($meta_value);
+		} else {
+			$meta_value = money_format('%i', $meta_value);
+			$meta_value = apply_filters( 'projectmanager_currency', $meta_value );
+		}
+	}
+
 	die( "ProjectManager.reInit();jQuery('span#datafield" . $meta_id . "_" . $dataset_id . "').fadeOut('fast', function() {
 		jQuery('a#thickboxlink" . $meta_id . "_" . $dataset_id . "').show();
 		jQuery('span#datafield" . $meta_id . "_" . $dataset_id . "').html('" . $new_value . "').fadeIn('fast');

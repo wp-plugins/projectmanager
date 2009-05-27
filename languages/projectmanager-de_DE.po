@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
 "POT-Creation-Date: 2009-02-05 22:08+0000\n"
-"PO-Revision-Date: 2009-04-08 21:49+0100\n"
+"PO-Revision-Date: 2009-05-26 21:09-0500\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -777,11 +777,11 @@ msgstr "Beginne für jede Option einen neue Zeile. Klicke auf <em>Speichern</em>
 msgid "Note: You will have to save the Formfields to finally save the otions to the database."
 msgstr "Achtung: Du musst die Formularfelder speichern, um die Optionen in der Datenbank zu speichern."
 
-msgid "Leave empty for no limit"
-msgstr "Lasse leer für kein Limit"
+msgid "Use <strong>NaN</strong> for no limit"
+msgstr "Benutze <strong>NaN</strong> für kein Limit"
 
-msgid "To order datasets manually leave datasets per page empty for the time of ordering. Only works with Firefox."
-msgstr "Um Datensätze manuell so ordnen, lasse Datensätze pro Seite leer währenddessen. Funktioniert nur mit Firefox."
+msgid "To order datasets manually there must be no limit on datasets."
+msgstr "Um Datensätze manuell so ordnen, darf kein Limit bei Datensätzen gesetzt sein."
 
 msgid "This Field has a callback attached which will get the data from somewhere else!"
 msgstr "Dieses Feld hat eine Callback Funktion angefügt, die die Daten von woanders holt!"
@@ -806,4 +806,67 @@ msgstr "Datei Löschen"
 
 msgid "Overwrite File"
 msgstr "Datei überschreiben"
+
+msgid "Numeric"
+msgstr "Numerisch"
+
+msgid "Currency"
+msgstr "Währung"
+
+msgid "Blind X"
+msgstr "Blende X"
+
+msgid "Blind Y"
+msgstr "Blende Y"
+
+msgid "Blind Z"
+msgstr "Blende Z"
+
+msgid "Cover"
+msgstr "Überziehen"
+
+msgid "Curtain X"
+msgstr "Rollo X"
+
+msgid "Curtain Y"
+msgstr "Rollo Y"
+
+msgid "Fade Zoom"
+msgstr "Fade Zoom"
+
+msgid "Scroll Horizontal"
+msgstr "Horizontal scrollen"
+
+msgid "Scroll Vertical"
+msgstr "Vertikal scrollen"
+
+msgid "Shuffle"
+msgstr "Mischen"
+
+msgid "Slide X"
+msgstr "Gleiten X"
+
+msgid "Slide Y"
+msgstr "Gleiten Y"
+
+msgid "Toss"
+msgstr "Schleudern"
+
+msgid "Turn Up"
+msgstr "Hoch wenden"
+
+msgid "Turn Down"
+msgstr "Runter wenden"
+
+msgid "Turn Left"
+msgstr "Links wenden"
+
+msgid "Turn Right"
+msgstr "Rechts wenden"
+
+msgid "Uncover"
+msgstr "Aufdecken"
+
+msgid "Wipe"
+msgstr "Wischen"
 

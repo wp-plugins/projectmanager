@@ -15,7 +15,7 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['doaction']) ) {
 		} else {
 			$dataset_owner = isset($_POST['owner']) ? $_POST['owner'] : false;
 			$del_image = isset( $_POST['del_old_image'] ) ? true : false;
-			$overwrite_image = isset( $_POST['overwrite_image'] ) ? true: false;
+			$overwrite_image = ( isset($_POST['overwrite_image']) && 1 == $_POST['overwrite_image'] ) ? true: false;
 			$this->editDataset( $_POST['project_id'], $_POST['name'], $_POST['post_category'], $_POST['dataset_id'], $_POST['form_field'], $_POST['user_id'], $del_image, $_POST['image_file'], $overwrite_image, $dataset_owner );
 		}
 	}
@@ -122,9 +122,9 @@ $options = $options['project_options'][$project_id];
 		<thead>
 		<tr>
 			<th scope="col" class="check-column"><input type="checkbox" onclick="ProjectManager.checkAll(document.getElementById('dataset-filter'));" /></th>
-			<th scope="col"><?php _e( 'Name', 'projectmanager' ) ?></th>
+			<th scope="col" class="name"><?php _e( 'Name', 'projectmanager' ) ?></th>
 			<?php if ( -1 != $options['category'] ) : ?>
-			<th scope="col"><?php _e( 'Categories', 'projectmanager' ) ?></th>
+			<th scope="col" class="categories"><?php _e( 'Categories', 'projectmanager' ) ?></th>
 			<?php endif; ?>
 			<?php $projectmanager->printTableHeader() ?>
 		</tr>
@@ -132,9 +132,9 @@ $options = $options['project_options'][$project_id];
 		<tfoot>
 		<tr>
 			<th scope="col" class="check-column"><input type="checkbox" onclick="ProjectManager.checkAll(document.getElementById('dataset-filter'));" /></th>
-			<th scope="col"><?php _e( 'Name', 'projectmanager' ) ?></th>
+			<th scope="col" class="name"><?php _e( 'Name', 'projectmanager' ) ?></th>
 			<?php if ( -1 != $options['category'] ) : ?>
-			<th scope="col"><?php _e( 'Categories', 'projectmanager' ) ?></th>
+			<th scope="col" class="categories"><?php _e( 'Categories', 'projectmanager' ) ?></th>
 			<?php endif; ?>
 			<?php $projectmanager->printTableHeader() ?>
 		</tr>
@@ -194,9 +194,8 @@ $options = $options['project_options'][$project_id];
 	// ]]>
 	</script>
 		
-	<!-- What's that?? -->
-	<?php elseif ( $projectmanager->getNumDatasets($project_id,true) > 0 )  : ?>
-		<div class="error" style="margin-top: 3em;"><p><?php _e( 'Nothing found', 'projectmanager') ?></p></div>
+	<?php else  : ?>
+		<div class="error" style="margin-top: 3em; text-align: center;"><p><?php _e( 'Nothing found', 'projectmanager') ?></p></div>
 	<?php endif ?>
 	<div class="tablenav">
 		<?php if ( $projectmanager->getPageLinks() ) echo "<div class='tablenav-pages'>$page_links_text</div>"; ?>

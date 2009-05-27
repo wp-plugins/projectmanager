@@ -24,12 +24,14 @@ The following variables are usable:
 <table class='projectmanager'>
 <tr>
 	<th scope='col' class="tableheader"><?php _e( 'Name', 'projectmanager' ) ?></th>
+	<th scope="col" class="tableheader">&#160;</th>
 	<?php $projectmanager->printTableHeader(); ?>
 </tr>
 
 <?php foreach ( $datasets AS $dataset ) : ?>
 	<tr class="<?php echo $dataset->class ?>">
 		<td class="name"><?php echo $dataset->nameURL ?></td>
+		<td><img src="<?php echo $projectmanager->getFileURL('tiny.'.$dataset->image)?>" class="alignright" /></td>
 		<?php $projectmanager->printDatasetMetaData( $dataset, 'td' ); ?>
 	</tr>
 <?php endforeach ; ?>

@@ -165,20 +165,20 @@ class ProjectManagerShortcodes extends ProjectManager
 	 *
 	 * This function is called via do_action('projectmanager_tablenav') and loads the template tablenav.php
 	 *
-	 * @param boolean $echo
+	 * @param array $opts
 	 * @return void the dropdown selections
 	 */
-	function displayTablenav()
+	function displayTablenav( )
 	{
 		global $projectmanager;
 		$options = get_option( 'projectmanager' );
 		$options = $options['project_options'][$this->project_id];
-		
+	
 		$orderby = array( '' => __('Order By', 'projectmanager'), 'name' => __('Name','projectmanager'), 'id' => __('ID','projectmanager') );
 		foreach ( $projectmanager->getFormFields() AS $form_field )
 			$orderby['formfields_'.$form_field->id] = $form_field->label;
-		
-		$order = array( '' => __('Order','projectmanager'), 'ASC' => __('Ascending','projectmanager'), 'DESC' => __('Descending','projectmanager') );
+
+		$order = array( '' => __('Order','projectmanager'), 'asc' => __('Ascending','projectmanager'), 'desc' => __('Descending','projectmanager') );
 		
 		$category = ( -1 != $options['category'] ) ? $options['category'] : false;
 		$selected_cat = $projectmanager->getCatID();
@@ -227,19 +227,15 @@ class ProjectManagerShortcodes extends ProjectManager
 			$datasets = $title = $pagination = $project = false;
 		} else {
 			$formfield_id = false;
-			if ( $orderby ) {
-				$tmp = explode("-",$orderby);
-				$orderby = $tmp[0];
-				$formfield_id = $tmp[1];
-			}
 			
 			if ( $projectmanager->isSearch() )
 				$datasets = $projectmanager->getSearchResults();
 			else
-				$datasets = $projectmanager->getDatasets( true, $orderby, $order, $formfield_id );
+				$datasets = $projectmanager->getDatasets( true, $orderby, $order );
 			
 			$title = '';
 			if ( $projectmanager->isSearch() ) {
+				$num_datasets = $projectmanager->getNumDatasets($projectmanager->getProjectID(), true);
 				$title = "<h3 style='clear:both;'>".sprintf(__('Search: %d of %d', 'projectmanager'),  $projectmanager->getNumDatasets($projectmanager->getProjectID()), $num_datasets)."</h3>";
 			} elseif ( $projectmanager->isCategory() ) {
 				$title = "<h3 style='clear:both;'>".$projectmanager->getCatTitle($projectmanager->getCatID())."</h3>";
@@ -263,12 +259,9 @@ class ProjectManagerShortcodes extends ProjectManager
 				$project['single'] = ( $single == 'true' ) ? true : false;
 				$project['tablenav'] = ( $selections == 'true' ) ? true : false;
 
-				//$project['opts'] = array( 'orderby' =>
-				
 				$datasets[$i]->class = $class;
 				$datasets[$i]->URL = $url;
 				$datasets[$i]->thumbURL = $projectmanager->getFileURL('/thumb.'.$dataset->image);
-				
 				$datasets[$i]->nameURL = ($projectmanager->hasDetails($single)) ? '<a href="'.$url.'">'.$dataset->name.'</a>' : $dataset->name;
 				
 				$i++;
