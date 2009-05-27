@@ -89,6 +89,7 @@ class ProjectManagerWidget extends ProjectManager
 			'after_widget' => '</li>',
 			'before_title' => '<h2 class="widgettitle">',
 			'after_title' => '</h2>',
+			'widget_number' => $number,
 			'widget_title' => $project->title,
 			'limit' => $options['limit'],
 			'slideshow' => ( 1 == $options['slideshow']['show'] ) ? true : false,
