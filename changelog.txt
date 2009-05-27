@@ -1,6 +1,10 @@
 ProjectManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
+V2.4.3 - May 27, 2009
+- BUGFIX: display of admin menu icons
+- CHANGED: moved main ProjectManager menu back down
+
 V2.4.2 - May 26, 2009
 - NEW: table template with tiny image
 - BUGFIX: unsetting of widget option if deleted

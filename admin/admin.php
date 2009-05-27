@@ -59,10 +59,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 		}
 		
 		// Add global Projects Menu
-		if ( function_exists('add_object_page') )
-			add_object_page( __('Projects','projectmanager'), __('Projects', 'projectmanager'), 'manage_projects', PROJECTMANAGER_PATH, array(&$this, 'display'), PROJECTMANAGER_URL.'/admin/icons/menu/databases.png');
-		else
-			add_menu_page(__('Projects', 'projectmanager'), __('Projects', 'projectmanager'), 'manage_projects', PROJECTMANAGER_PATH,array(&$this, 'display'), PROJECTMANAGER_URL.'/admin/icons/menu/databases.png');
+		add_menu_page(__('Projects', 'projectmanager'), __('Projects', 'projectmanager'), 'manage_projects', PROJECTMANAGER_PATH,array(&$this, 'display'), PROJECTMANAGER_URL.'/admin/icons/menu/databases.png');
 
 		add_submenu_page(PROJECTMANAGER_PATH, __('Projects', 'projectmanager'), __('Overview','projectmanager'),'manage_projects', PROJECTMANAGER_PATH,array(&$this, 'display'));
 		add_submenu_page(PROJECTMANAGER_PATH, __( 'Settings'), __('Settings'), 'manage_projects', 'projectmanager-settings', array( &$this, 'display') );
@@ -268,7 +265,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 	{
 		if ( file_exists(TEMPLATEPATH . "/projectmanager/icons/".$icon))
 			return get_template_directory_uri() . "/projectmanager/icons/".$icon;
-		elseif ( file_exists(PROJECTMANAGER_URL.'/admin/icons/menu/'.$icon) )
+		elseif ( file_exists(PROJECTMANAGER_PATH.'/admin/icons/menu/'.$icon) )
 			return PROJECTMANAGER_URL.'/admin/icons/menu/'.$icon;
 		else
 			return PROJECTMANAGER_URL.'/admin/icons/menu/databases.png';
