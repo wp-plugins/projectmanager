@@ -1,3 +1,9 @@
+<?php if ( $is_profile_page ) : ?>
+<script type="text/javascript">
+document.forms[0].encoding = "multipart/form-data";
+</script>
+<?php endif; ?>
+
 <table class="form-table">
 	<?php if (!$is_profile_page) : ?>
 	<tr valign="top">
@@ -5,7 +11,8 @@
 		<td><input type="text" name="name" id="name" value="<?php echo $name ?>" size="45" /></td>
 	</tr>
 	<?php endif; ?>
-	<?php if ( 1 == $options['show_image'] && ( !$is_profile_page || ($is_profile_page && $options['show_image_profile']) ) ) : ?>
+	<?php //if ( 1 == $options['show_image'] && ( !$is_profile_page || ($is_profile_page && $options['show_image_profile']) ) ) : ?>
+	<?php if ( 1 == $options['show_image'] ) : ?>
 	<tr valign="top">
 		<th scope="row"><label for="projectmanager_image"><?php _e( 'Image', 'projectmanager' ) ?></label></th>
 		<td>
@@ -28,7 +35,7 @@
 		<tr valign="top">
 			<th scope="row"><label for="form_field_<?php echo $form_field->id ?>"><?php echo $form_field->label ?></label></th>
 			<td>
-				<?php if ( 'text' == $form_field->type || 'email' == $form_field->type || 'uri' == $form_field->type || 'image' == $form_field->type ) : ?>
+				<?php if ( 'text' == $form_field->type || 'email' == $form_field->type || 'uri' == $form_field->type || 'image' == $form_field->type || 'numeric' == $form_field->type || 'currency' == $form_field->type ) : ?>
 				<input type="text" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" value="<?php echo $meta_data[$form_field->id] ?>" size="45" />
 				<?php elseif ( 'textfield' == $form_field->type ) : ?>
 				<div style="width: 60%;">
