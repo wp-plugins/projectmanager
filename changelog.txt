@@ -1,6 +1,10 @@
 ProjectManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
+V2.4.2 - May 26, 2009
+- NEW: table template with tiny image
+- BUGFIX: unsetting of widget option if deleted
+- UPDATED: german translation with slideshow effects
 
 V2.4.1 - May 25, 2009
 - NEW: numeric and currency formfield types (require NumberFormatter or WP

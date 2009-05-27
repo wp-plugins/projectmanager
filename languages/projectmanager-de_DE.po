@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
 "POT-Creation-Date: 2009-02-05 22:08+0000\n"
-"PO-Revision-Date: 2009-05-25 10:56-0500\n"
+"PO-Revision-Date: 2009-05-26 21:09-0500\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -812,4 +812,61 @@ msgstr "Numerisch"
 
 msgid "Currency"
 msgstr "Währung"
+
+msgid "Blind X"
+msgstr "Blende X"
+
+msgid "Blind Y"
+msgstr "Blende Y"
+
+msgid "Blind Z"
+msgstr "Blende Z"
+
+msgid "Cover"
+msgstr "Überziehen"
+
+msgid "Curtain X"
+msgstr "Rollo X"
+
+msgid "Curtain Y"
+msgstr "Rollo Y"
+
+msgid "Fade Zoom"
+msgstr "Fade Zoom"
+
+msgid "Scroll Horizontal"
+msgstr "Horizontal scrollen"
+
+msgid "Scroll Vertical"
+msgstr "Vertikal scrollen"
+
+msgid "Shuffle"
+msgstr "Mischen"
+
+msgid "Slide X"
+msgstr "Gleiten X"
+
+msgid "Slide Y"
+msgstr "Gleiten Y"
+
+msgid "Toss"
+msgstr "Schleudern"
+
+msgid "Turn Up"
+msgstr "Hoch wenden"
+
+msgid "Turn Down"
+msgstr "Runter wenden"
+
+msgid "Turn Left"
+msgstr "Links wenden"
+
+msgid "Turn Right"
+msgstr "Rechts wenden"
+
+msgid "Uncover"
+msgstr "Aufdecken"
+
+msgid "Wipe"
+msgstr "Wischen"
 

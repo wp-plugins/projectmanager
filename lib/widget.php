@@ -38,16 +38,15 @@ class ProjectManagerWidget extends ProjectManager
 	 */
 	function register()
 	{
-		if (!function_exists('wp_register_sidebar_widget')) {
+		if (!function_exists('wp_register_sidebar_widget')) 
 			return;
-		}
 			
+		$options = get_option('projectmanager_widget');
+
 		$name = __('Project', 'projectmanager');
 		$widget_ops = array('classname' => 'widget_projectmanager', 'description' => __('Display datasets from ProjectManager', 'projectmanager') );
 		$control_ops = array('width' => 200, 'height' => 200, 'id_base' => $this->prefix);
 		
-		$options = get_option('projectmanager_widget');
-		if (isset($options[0])) unset($options[0]);
 		
 		if ( !empty($options)) {
 			foreach(array_keys($options) AS $widget_number) {
@@ -55,10 +54,8 @@ class ProjectManagerWidget extends ProjectManager
 				wp_register_widget_control($this->prefix.'-'.$widget_number, $name, array(&$this, 'control'), $control_ops, array('number' => $widget_number));
 			}
 		} else {
-			$options = array();
-			$widget_number = 1;
-			wp_register_sidebar_widget($this->prefix.'-'.$widget_number, $name, array(&$this, 'display'), $widget_ops, array('number' => $widget_number));
-			wp_register_widget_control($this->prefix.'-'.$widget_number, $name, array(&$this, 'control'), $control_ops, array('number' => $widget_number));
+			wp_register_sidebar_widget($this->prefix.'-1', $name, array(&$this, 'display'), $widget_ops, array('number' => -1));
+			wp_register_widget_control($this->prefix.'-1', $name, array(&$this, 'control'), $control_ops, array('number' => -1));
 		}
 	}
 	
@@ -67,32 +64,38 @@ class ProjectManagerWidget extends ProjectManager
 	 * displays widget
 	 *
 	 * @param array $args
-	 * @param array $args1
+	 * @param array $widget_args
 	 *
 	 */
-	function display( $args, $args1 )
+	function display( $args, $widget_args = 1 )
 	{
 		global $wpdb;
+
+		if ( is_numeric($widget_args) )
+			$widget_args = array( 'number' => $widget_args );
+		$widget_args = wp_parse_args( $widget_args, array( 'number' => -1 ) );
+		extract($widget_args, EXTR_SKIP);
+
 		$options = get_option( 'projectmanager_widget' );
-		$opts = $options[$args1['number']];
-		$project_id = $opts['project_id'];
+		$options = $options[$number];
+
+		$project_id = $options['project_id'];
 		parent::initialize($project_id);
 		
 		$project = parent::getProject($project_id);
 		
 		$defaults = array(
-			'before_widget' => '<li id="projectmanager" class="widget '.get_class($this).'_'.__FUNCTION__.'">',
+			'before_widget' => '<li id="projectmanager-'.$number.'" class="widget '.get_class($this).'_'.__FUNCTION__.'">',
 			'after_widget' => '</li>',
 			'before_title' => '<h2 class="widgettitle">',
 			'after_title' => '</h2>',
 			'widget_title' => $project->title,
-			'limit' => $opts['limit'],
-			'slideshow' => ( 1 == $opts['slideshow']['show'] ) ? true : false,
-			'slideshow_opts' => array( 'width' => $opts['slideshow']['width'], 'height' => $opts['slideshow']['height'], 'effect' => $opts['slideshow']['fade'], 'time' => $opts['slideshow']['time'], 'order' => $opts['slideshow']['order']) 
+			'limit' => $options['limit'],
+			'slideshow' => ( 1 == $options['slideshow']['show'] ) ? true : false,
+			'slideshow_opts' => array( 'width' => $options['slideshow']['width'], 'height' => $options['slideshow']['height'], 'effect' => $options['slideshow']['fade'], 'time' => $options['slideshow']['time'], 'order' => $options['slideshow']['order']) 
 		);
 		$args = array_merge( $defaults, $args );
-		extract( $args );
-		
+		extract( $args, EXTR_SKIP );
 		
 		$limit = ( 0 != $limit ) ? "LIMIT 0,".$limit : '';
 		$datasets = $wpdb->get_results( "SELECT `id`, `name`, `image` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$project_id} ORDER BY `id` DESC ".$limit." " ); 
@@ -130,7 +133,7 @@ class ProjectManagerWidget extends ProjectManager
 			echo "<ul class='projectmanager_widget'>";
 				
 		if ( $datasets ) {
-			$url = get_permalink($opts['page_id']);
+			$url = get_permalink($options['page_id']);
 			foreach ( $datasets AS $dataset ) {
 				$url = add_query_arg('show', $dataset->id, $url);
 				$name = (parent::hasDetails()) ? '<a href="'.$url.'"><img src="'.parent::getFileURL($dataset->image).'" alt="'.$dataset->name.'" title="'.$dataset->name.'" /></a>' : '<img src="'.parent::getFileURL($dataset->image).'" alt="'.$dataset->name.'" title="'.$dataset->name.'" />';
@@ -153,38 +156,59 @@ class ProjectManagerWidget extends ProjectManager
 	/**
 	 * widget control panel
 	 *
-	 * @param none
+	 * @param int|array $widget_args
 	 */
-	function control( $args )
+	function control( $widget_args = 1 )
 	{
-		extract( $args );
+		global $wp_registered_widgets;
+		static $updated = false;
+
+		if ( is_numeric($widget_args) )
+			$widget_args = array( 'number' => $widget_args );
+		$widget_args = wp_parse_args( $widget_args, array( 'number' => -1 ) );
+		extract($widget_args, EXTR_SKIP);
+
 		$options = get_option( 'projectmanager_widget' );
 		if(empty($options)) $options = array();
-		if(isset($options[0])) unset($options[0]);
 		
-		if(isset($_POST) && !empty($_POST[$this->prefix]) && is_array($_POST)) {
+		if( !$updated && !empty($_POST['sidebar']) ) {
+			// Tells us what sidebar to put the data in
+			$sidebar = (string) $_POST['sidebar'];
+
+			$sidebars_widgets = wp_get_sidebars_widgets();
+			if ( isset($sidebars_widgets[$sidebar]) )
+				$this_sidebar =& $sidebars_widgets[$sidebar];
+			else
+				$this_sidebar = array();
+
+			// search unused options
+			foreach ( $this_sidebar as $_widget_id ) {
+				if(preg_match('/'.$this->prefix.'-([0-9]+)/i', $_widget_id, $match)){
+					$widget_number = $match[1];
+ 
+					// $_POST['widget-id'] contain current widgets set for current sidebar
+					// $this_sidebar is not updated yet, so we can determine which was deleted
+					if(!in_array($match[0], $_POST['widget-id']))
+						unset($options[$widget_number]);
+				}
+			}
+
+
 			foreach($_POST[$this->prefix] as $widget_number => $values){
 				if(empty($values) && isset($options[$widget_number])) // user clicked cancel
 					continue;
 			
-				if(!isset($options[$widget_number]) && $args['number'] == -1){
-					$args['number'] = $widget_number;
-					$options['last_number'] = $widget_number;
-				}
 				$options[$widget_number] = $values;	
 			}
-			// update number
-			if($args['number'] == -1 && !empty($options['last_number'])){
-				$args['number'] = $options['last_number'];
-			}
-			// clear unused options and update options in DB. return actual options array
-			$options = $this->updateOptions($this->prefix, $options, $_POST[$this->prefix], $_POST['sidebar'], 'projectmanager_widget');
+			update_option('projectmanager_widget', $options);
+			$updated = true;
 		}
+
 		/* $number - is dynamic number for multi widget, given by WP
 		 * by default $number = -1 (if no widgets activated). In this case we should use %i% for inputs
 		 * to allow WP generate number automatically
 		 */
-		$number = ($args['number'] == -1)? '%i%' : $args['number'];
+		if ( $number == -1 ) $number = '%i%';
  
 		// now we can output control
 		$opts = @$options[$number];
@@ -210,46 +234,6 @@ class ProjectManagerWidget extends ProjectManager
 		echo '<p><label for="'.$this->prefix.'_'.$number.'_slideshow_order">'.__('Order','projectmanager').'</label>'.$this->getSlideshowOrder($opts['slideshow']['order'], $number).'</p>';
 		echo '</fieldset>';
 		echo '</div>';
-	}
-	
-	
-	/**
-	 * Universal update helper
-	 *
-	 */
-	function updateOptions($id_prefix, $options, $post, $sidebar, $option_name = '')
-	{
-		global $wp_registered_widgets;
-		static $updated = false;
-		
-		// get active sidebar
-		$sidebars_widgets = wp_get_sidebars_widgets();
-		if ( isset($sidebars_widgets[$sidebar]) )
-			$this_sidebar =& $sidebars_widgets[$sidebar];
-		else
-			$this_sidebar = array();
-
-		// search unused options
-		foreach ( $this_sidebar as $_widget_id ) {
-			if(preg_match('/'.$id_prefix.'-([0-9]+)/i', $_widget_id, $match)){
-				$widget_number = $match[1];
- 
-				// $_POST['widget-id'] contain current widgets set for current sidebar
-				// $this_sidebar is not updated yet, so we can determine which was deleted
-				if(!in_array($match[0], $_POST['widget-id'])){
-					unset($options[$widget_number]);
-				}
-			}
-		}
-			
-		// update database
-		if(!empty($option_name)){
-			update_option($option_name, $options);
-			$updated = true;
-		}
-		
-		// return updated array
-		return $options;
 	}
 	
 	
@@ -315,5 +299,4 @@ class ProjectManagerWidget extends ProjectManager
 		return $out;
 	}
 }
-
 ?>
