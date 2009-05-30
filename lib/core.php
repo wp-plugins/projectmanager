@@ -113,11 +113,9 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function initialize( $project_id )
 	{
-		$options = get_option( 'projectmanager' );
-		$options = $options['project_options'][$project_id];
-		
 		$this->project_id = $project_id;
-		$this->per_page = ( isset($options['per_page']) && !empty($options['per_page']) ) ? $options['per_page'] : 15;
+		$project = $this->getProject($project_id);
+		$this->per_page = ( isset($project->per_page) && !empty($project->per_page) ) ? $project->per_page : 15;
 
 		$this->num_items = $this->getNumDatasets($this->project_id);
 		$this->num_max_pages = ( 0 == $this->per_page || $this->isSearch() ) ? 1 : ceil( $this->num_items/$this->per_page );
@@ -210,8 +208,7 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function setDatasetOrder( $orderby = false, $order = false )
 	{	
-		$options = get_option('projectmanager');
-		$options = $options['project_options'][$this->project_id];
+		$project = $this->getProject();
 
 		$formfield_id = $this->override_order = false;
 		// Selection in Admin Panel
@@ -247,9 +244,9 @@ class ProjectManager extends ProjectManagerLoader
 			$this->override_order = true;
 		}
 		// Project Settings
-		elseif ( isset($options['dataset_orderby']) && $options['dataset_orderby'] != 'formfields' && !empty($options['dataset_orderby']) ) {
-			$this->orderby = $options['dataset_orderby'];
-			$this->order = (isset($options['dataset_order']) && !empty($options['dataset_order'])) ? $options['dataset_order'] : 'ASC';
+		elseif ( isset($project->dataset_orderby) && $project->dataset_orderby != 'formfields' && !empty($project->dataset_orderby) ) {
+			$this->orderby = $project->dataset_orderby;
+			$this->order = (isset($project->dataset_order) && !empty($project->dataset_order)) ? $project->dataset_order : 'ASC';
 		}
 		// Default
 		else {
@@ -741,8 +738,8 @@ class ProjectManager extends ProjectManagerLoader
 	function getDatasets( $limit = false, $orderby = false, $order = false )
 	{
 		global $wpdb;
-		$options = get_option('projectmanager');
-	
+		$project = $this->getProject();
+
 		// Set ordering
 		$formfield_id = $this->setDatasetOrder($orderby, $order);
 
@@ -770,7 +767,7 @@ class ProjectManager extends ProjectManagerLoader
 		* Determine wether to sort by formfields or not
 		* Selection Menus and Shortcode Attributes override Project Settings
 		*/
-		if ( ($options['project_options'][$this->project_id]['dataset_orderby'] == 'formfields' && !$this->override_order) || $formfield_id )
+		if ( ($project->dataset_orderby == 'formfields' && !$this->override_order) || $formfield_id )
 			$orderby_formfields = true;
 		else
 			$orderby_formfields = false;

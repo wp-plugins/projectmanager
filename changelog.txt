@@ -1,7 +1,10 @@
 ProjectManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
-V2.4.4 - May , 2009
+V2.4.5 - May 29, 2009
+- BUGFIX: options
+
+V2.4.4 - May 29, 2009
 - CHANGED: moved project settings into project table
 
 V2.4.3 - May 27, 2009
