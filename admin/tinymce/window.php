@@ -1,7 +1,6 @@
 <?php
 
 $root = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))));
-$root = '/var/www/dev/wordpress';
 
 if (file_exists($root.'/wp-load.php')) {
 	// WP 2.6
@@ -21,8 +20,6 @@ require_once(ABSPATH.'/wp-admin/admin.php');
 if(!current_user_can('edit_posts')) die;
 
 global $wpdb;
-
-$options = get_option('projectmanager');
 
 ?>
 
@@ -152,7 +149,7 @@ $options = get_option('projectmanager');
 	<tr>
 		<td nowrap="nowrap" valign="top"><label><?php _e( 'Display', 'projectmanager' ) ?></label></td>
 		<td>
-			<input type="radio" name="search_display" id="search_display_extend" value="extended" checked="ckecked" /><label for="search_display_extended"><?php _e( 'Extended Version', 'projectmanager' ) ?></label><br />
+			<input type="radio" name="search_display" id="search_display_extend" value="extend" checked="ckecked" /><label for="search_display_extended"><?php _e( 'Extended Version', 'projectmanager' ) ?></label><br />
 			<input type="radio" name="search_display" id="search_display_compact" value="compact" /><label for="search-display_compact"><?php _e( 'Compact Version', 'projectmanager' ) ?></label><br />
 		</td>
 	</tr>

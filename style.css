@@ -47,6 +47,7 @@ table.projectmanager td img {
 }
 .dataset_gallery .gallery-item {
 	float: left;
+	margin-right: 1.5em;
 	}
 .dataset_gallery .gallery-image img {
 	display: block;
@@ -98,6 +99,10 @@ fieldset.dataset dd {
 	
 ul.projectmanager, ol.projectmanager {
 	clear: both;
+	}
+
+/* search form */
+form.search-form {
 	}
 
 /* Pages */
@@ -179,16 +184,17 @@ ul.categorychecklist li label, ul.categorychecklist li input, ul.children li lab
 	display: block;
 	text-align: center;
 	margin: 1em auto;
+	padding: 0;
 }
 
 .projectmanager_slideshow a {
 	display: block;
-	margin: 8px auto;
 	}
 .projectmanager_slideshow img {
 	border: none;
 	display: block;
 	margin: 0 auto;
+	padding: 0;
 }
 
 	

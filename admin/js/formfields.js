@@ -43,10 +43,10 @@ ProjectManager.removeFormField = function(id,form_id) {
 ProjectManager.toggleOptions = function(form_id, value, button_save, button_cancel, title, textarea_value) {
 	textarea_value = textarea_value.split(',').join("\n");
 	new_element_contents = "";
-	new_element_contents += "<div id='form_field_options_div" + form_id + "' style='width: 150px; height: 80px; overflow: auto; display: none;'><div class='projectmanager_thickbox'>";
+	new_element_contents += "<div id='form_field_options_div" + form_id + "' style='width: 450px; height: 350px; overflow: auto; display: none;'><div class='projectmanager_thickbox'>";
 	new_element_contents += "<form><textarea cols='40' rows='10' id='form_field_options" + form_id + "'>" + textarea_value + "</textarea><div style='text-align:center; margin-top: 1em;'><input type='button' value='" + button_save + "' class='button-secondary' onclick='ProjectManager.ajaxSaveFormFieldOptions(" + form_id + ");return false;' />&#160;<input type='button' value='" + button_cancel + "' class='button' onclick='tb_remove();' /></div></form></div></div>";
 
-	new_element_contents += "<span>&#160;<a href='#TB_inline?width=150&heigth=100&inlineId=form_field_options_div" + form_id + "' id='options_link" + form_id + "' class='thickbox' title='" + title + "' style='display: inline;'>" + title + "</a></span>";
+	new_element_contents += "<span>&#160;<a href='#TB_inline&width=450&height=350&inlineId=form_field_options_div" + form_id + "' id='options_link" + form_id + "' class='thickbox' title='" + title + "' style='display: inline;'>" + title + "</a></span>";
 	
 	new_element = document.createElement('div');
 	new_element_id = 'form_field_options_container'+form_id;
