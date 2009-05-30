@@ -21,8 +21,6 @@ if(!current_user_can('edit_posts')) die;
 
 global $wpdb;
 
-$options = get_option('projectmanager');
-
 ?>
 
 <html xmlns="http://www.w3.org/1999/xhtml">

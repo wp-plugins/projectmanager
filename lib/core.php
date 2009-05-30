@@ -580,7 +580,14 @@ class ProjectManager extends ProjectManagerLoader
 	function getProjects()
 	{
 		global $wpdb;
-		return $wpdb->get_results( "SELECT `title`, `id` FROM {$wpdb->projectmanager_projects} ORDER BY `id` ASC" );
+		$projects = $wpdb->get_results( "SELECT `title`, `settings`, `id` FROM {$wpdb->projectmanager_projects} ORDER BY `id` ASC" );
+		$i = 0;
+		foreach ( $projects AS $project ) {
+			$projects[$i] = (object) array_merge( (array)$project, (array)maybe_unserialize($project->settings) );
+			unset($projects[$i]->settings);
+			$i++;
+		}
+		return $projects;
 	}
 	
 	
@@ -595,9 +602,13 @@ class ProjectManager extends ProjectManagerLoader
 		global $wpdb;
 
 		if ( !$project_id ) $project_id = $this->project_id;
-		$projects = $wpdb->get_results( "SELECT `title`, `id` FROM {$wpdb->projectmanager_projects} WHERE `id` = {$project_id} ORDER BY `id` ASC" );
-		$this->project = $projects[0];
-		return $projects[0];
+		$project = $wpdb->get_results( "SELECT `title`, `settings`, `id` FROM {$wpdb->projectmanager_projects} WHERE `id` = {$project_id} ORDER BY `id` ASC" );
+		$project = $project[0];
+		$project = (object) array_merge( (array)$project, (array)maybe_unserialize($project->settings) );
+		unset($project->settings);
+
+		$this->project = $project;
+		return $project;
 	}
 	
 	

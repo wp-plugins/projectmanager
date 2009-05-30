@@ -3,9 +3,8 @@ if ( !current_user_can( 'manage_projects' ) && !current_user_can( 'projectmanage
      echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
 
 else :
-$options = get_option( 'projectmanager' );
 $project_id = $projectmanager->getProjectID();
-$projectmanager->getProject($project_id);
+$project = $projectmanager->getProject($project_id);
 
 if ( isset($_POST['updateProjectManager']) AND !isset($_POST['doaction']) ) {
 	if ( 'dataset' == $_POST['updateProjectManager'] ) {
@@ -38,7 +37,6 @@ if ( $projectmanager->isSearch() )
 else
 	$datasets = $projectmanager->getDatasets( true );
 
-$options = $options['project_options'][$project_id];
 ?>
 <div class="wrap">
 	<?php $this->printBreadcrumb( $projectmanager->getProjectTitle(), true ) ?>
@@ -63,7 +61,7 @@ $options = $options['project_options'][$project_id];
 		<input type='submit' value='<? _e( 'Search', 'projectmanager' ) ?>' class='button-secondary action' />
 	</form>
 	
-	<?php if ( $options['navi_link'] != 1 || isset($_GET['subpage']) ) : ?>
+	<?php if ( $project->navi_link != 1 || isset($_GET['subpage']) ) : ?>
 	<ul class="subsubsub">
 		<li><a href="admin.php?page=projectmanager&amp;subpage=settings&amp;project_id=<?php echo $project_id ?>"><?php _e( 'Settings', 'projectmanager' ) ?></a></li> |
 		<li><a href="admin.php?page=projectmanager&amp;subpage=formfields&amp;project_id=<?php echo $project_id ?>"><?php _e( 'Form Fields', 'projectmanager' ) ?></a></li> |
@@ -86,9 +84,9 @@ $options = $options['project_options'][$project_id];
 			</select>
 			<input type="submit" value="<?php _e('Apply'); ?>" name="doaction" id="doaction" class="button-secondary action" />
 			
-			<?php if ( -1 != $options['category'] ) : ?>
+			<?php if ( -1 != $project->category ) : ?>
 			<!-- Category Filter -->
-			<?php wp_dropdown_categories(array('echo' => 1, 'hide_empty' => 0, 'name' => 'cat_id', 'orderby' => 'name', 'selected' => $projectmanager->getCatID(), 'hierarchical' => true, 'child_of' => $options['category'], 'show_option_all' => __('View all categories'))); ?>
+			<?php wp_dropdown_categories(array('echo' => 1, 'hide_empty' => 0, 'name' => 'cat_id', 'orderby' => 'name', 'selected' => $projectmanager->getCatID(), 'hierarchical' => true, 'child_of' => $project->category, 'show_option_all' => __('View all categories'))); ?>
 			<input type='hidden' name='page' value='<?php echo $_GET['page'] ?>' />
 			<input type='hidden' name='project_id' value='<?php echo $project_id ?>' />
 			<?php endif; ?>
@@ -123,7 +121,7 @@ $options = $options['project_options'][$project_id];
 		<tr>
 			<th scope="col" class="check-column"><input type="checkbox" onclick="ProjectManager.checkAll(document.getElementById('dataset-filter'));" /></th>
 			<th scope="col" class="name"><?php _e( 'Name', 'projectmanager' ) ?></th>
-			<?php if ( -1 != $options['category'] ) : ?>
+			<?php if ( -1 != $project->category ) : ?>
 			<th scope="col" class="categories"><?php _e( 'Categories', 'projectmanager' ) ?></th>
 			<?php endif; ?>
 			<?php $projectmanager->printTableHeader() ?>
@@ -133,7 +131,7 @@ $options = $options['project_options'][$project_id];
 		<tr>
 			<th scope="col" class="check-column"><input type="checkbox" onclick="ProjectManager.checkAll(document.getElementById('dataset-filter'));" /></th>
 			<th scope="col" class="name"><?php _e( 'Name', 'projectmanager' ) ?></th>
-			<?php if ( -1 != $options['category'] ) : ?>
+			<?php if ( -1 != $project->category ) : ?>
 			<th scope="col" class="categories"><?php _e( 'Categories', 'projectmanager' ) ?></th>
 			<?php endif; ?>
 			<?php $projectmanager->printTableHeader() ?>
@@ -163,14 +161,14 @@ $options = $options['project_options'][$project_id];
 					</div>
 					<a href="admin.php?page=<?php if($_GET['page'] == 'projectmanager') echo 'projectmanager&subpage=dataset'; else echo 'project-dataset_'.$project_id ?>&amp;edit=<?php echo $dataset->id ?>&amp;project_id=<?php echo $project_id ?>"><span id="dataset_name_text<?php echo $dataset->id ?>"><?php echo $dataset->name ?></span></a>&#160;<a class="thickbox" id="thickboxlink_name<?php echo $dataset->id ?>" href="#TB_inline&amp;height=100&amp;width=300&amp;inlineId=datasetnamewrap<?php echo $dataset->id ?>" title="<?php _e('Name','projectmanager') ?>"><img src="<?php echo PROJECTMANAGER_URL ?>/admin/icons/edit.gif" border="0" alt="<?php _e('Edit') ?>" /></a>
 				</td>
-				<?php if ( -1 != $options['category'] ) : ?>
+				<?php if ( -1 != $project->category ) : ?>
 				<td>
 					<!-- Popup Window for Ajax group editing -->
 					<div id="groupchoosewrap<?php echo $dataset->id; ?>" style="overflow:auto;display:none;">
 						<div id="groupchoose<?php echo $dataset->id; ?>" class='projectmanager_thickbox'>
 							<form>
 								<ul class="categorychecklist" id="categorychecklist<?php echo $dataset->id ?>">
-								<?php $this->categoryChecklist( $options['category'], $projectmanager->getSelectedCategoryIDs($dataset) ) ?>
+								<?php $this->categoryChecklist( $project->category, $projectmanager->getSelectedCategoryIDs($dataset) ) ?>
 								</ul>
 								<div style="text-align:center; margin-top: 1em;"><input type="button" value="<?php _e('Save') ?>" class="button-secondary" onclick="ProjectManager.ajaxSaveCategories(<?php echo $dataset->id; ?>);return false;" />&#160;<input type="button" value="<?php _e('Cancel') ?>" class="button" onclick="tb_remove();" /></div>
 							</form>

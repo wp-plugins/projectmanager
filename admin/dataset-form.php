@@ -11,8 +11,7 @@ document.forms[0].encoding = "multipart/form-data";
 		<td><input type="text" name="name" id="name" value="<?php echo $name ?>" size="45" /></td>
 	</tr>
 	<?php endif; ?>
-	<?php //if ( 1 == $options['show_image'] && ( !$is_profile_page || ($is_profile_page && $options['show_image_profile']) ) ) : ?>
-	<?php if ( 1 == $options['show_image'] ) : ?>
+	<?php if ( 1 == $project->show_image ) : ?>
 	<tr valign="top">
 		<th scope="row"><label for="projectmanager_image"><?php _e( 'Image', 'projectmanager' ) ?></label></th>
 		<td>
@@ -86,14 +85,14 @@ document.forms[0].encoding = "multipart/form-data";
 		
 		<?php endforeach; ?>
 	<?php endif; ?>
-	<?php if ( -1 != $options['category'] && current_user_can('projectmanager_admin') ) : ?>
+	<?php if ( -1 != $project->category && current_user_can('projectmanager_admin') ) : ?>
 	<!-- category selection form -->
 	<tr valign="top">
 		<th scope="row"><label for="post_category"><?php _e( 'Categories', 'projectmanager' ) ?></label></th>
 		<td>
 			<div id="projectmanager-category-adder">
 			<ul class="categorychecklist">
-				<?php $this->categoryChecklist( $options['category'], $cat_ids ) ?>
+				<?php $this->categoryChecklist( $project->category, $cat_ids ) ?>
 			</ul>
 			</div>
 		</td>

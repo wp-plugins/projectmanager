@@ -114,6 +114,17 @@ function projectmanager_upgrade() {
 		$wpdb->query( "ALTER TABLE {$wpdb->projectmanager_dataset} CHANGE `name` `name` varchar( 255 ) NOT NULL default ''" );
 		$wpdb->query( "ALTER TABLE {$wpdb->projectmanager_dataset} CHANGE `cat_ids` `cat_ids` longtext NOT NULL default ''" );
 	}
+	
+
+	if (version_compare($installed, '2.4.4', '<')) {
+		$wpdb->query( "ALTER TABLE {$wpdb->projectmanager_projects} ADD `settings` LONGTEXT NOT NULL default ''" );
+		foreach ( $projectmanager->getProjects() AS $project ) {
+			$settings = $options['project_options'][$project->id];
+			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projects} SET `settings` = '%s' WHERE `id` = '%d'", maybe_serialize($settings), $project_id ) );
+		}
+		unset($options['project_options']);
+	}
+
 
 
 	// Update dbversion

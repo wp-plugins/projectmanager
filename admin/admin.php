@@ -38,11 +38,16 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 */
 	function menu()
 	{
-		if ( $projects = parent::getProjects() ) {
-			$options = get_option( 'projectmanager' );
+		$options = get_option('projectmanager');
+		if( !isset($options['dbversion']) || $options['dbversion'] != PROJECTMANAGER_DBVERSION )
+			$update = true;
+		else
+			$update = false;
+
+		if ( !$update && $projects = parent::getProjects() ) {
 			foreach( $projects AS $project ) {
-				if ( 1 == $options['project_options'][$project->id]['navi_link'] ) {
-					$icon = $options['project_options'][$project->id]['menu_icon'];
+				if ( 1 == $project->navi_link ) {
+					$icon = $project->menu_icon;
 					if ( function_exists('add_object_page') )
 						add_object_page( $project->title, $project->title, 'manage_projects', 'project_' . $project->id, array(&$this, 'display'), $this->getIconURL($icon) );
 					else
@@ -280,11 +285,10 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 */
 	function isSingle()
 	{
-		$options = get_option( 'projectmanager' );
 		$this->single = false;
 		$projects = parent::getProjects();
 		foreach ( $projects AS $project ) {
-			if ( 1 == $options['project_options'][$project->id]['navi_link'] && parent::getNumProjects() == 1) {
+			if ( 1 == $project->navi_link && parent::getNumProjects() == 1) {
 				$this->single = true;
 				break;
 			}
@@ -427,6 +431,21 @@ class ProjectManagerAdminPanel extends ProjectManager
 
 	
 	/**
+	 * save Project Settings
+	 *
+	 * @param array $settings
+	 * @param int $project_id
+	 * @return void
+	 */
+	function saveSettings( $settings, $project_id )
+	{
+		global $wpdb;
+
+		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projects} SET `settings` = '%s' WHERE `id` = '%d'", maybe_serialize($settings), $project_id ) );
+	}
+
+
+	/**
 	 * import datasets from CSV file
 	 *
 	 * @param int $project_id
@@ -528,8 +547,9 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 */
 	function addDataset( $project_id, $name, $cat_ids, $dataset_meta = false )
 	{
-		global $wpdb, $current_user;
+		global $wpdb, $current_user, $projectmanager;
 		$this->project_id = $project_id;
+		$this->project = $projectmanager->getProject($project_id);
 
 		if ( current_user_can( 'manage_projects') ) {
 			$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_dataset} (name, cat_ids, project_id, user_id) VALUES ('%s', '%s', '%d', '%d')", $name, maybe_serialize($cat_ids), $project_id, $current_user->ID ) );
@@ -597,8 +617,9 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 */
 	function editDataset( $project_id, $name, $cat_ids, $dataset_id, $dataset_meta = false, $user_id, $del_image = false, $image_file = '', $overwrite_image = false, $owner = false )
 	{
-		global $wpdb, $current_user;
+		global $wpdb, $current_user, $projectmanager;
 		$this->project_id = $project_id;
+		$this->project = $projectmanager->getProject($this->project_id);
 
 		if ( current_user_can( 'manage_projects') ) {
 			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `name` = '%s', `cat_ids` = '%s' WHERE `id` = '%d'", $name, maybe_serialize($cat_ids), $dataset_id ) );
@@ -711,13 +732,12 @@ class ProjectManagerAdminPanel extends ProjectManager
 	{
 		global $wpdb;
 		
+		$project = $this->project;
+
 		$new_file = parent::getFilePath().'/'.basename($file['name']);
 		$image = new ProjectManagerImage($new_file);
 		if ( $image->supported($file['name']) ) {
 			if ( $file['size'] > 0 ) {
-				$options = get_option('projectmanager');
-				$options = $options['project_options'][$this->project_id];
-				
 				if ( file_exists($new_file) && !$overwrite ) {
 					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `image` = '%s' WHERE id = '%d'", basename($file['name']), $dataset_id ) );
 					$this->setMessage( __('File exists and is not uploaded. Set the overwrite option if you want to replace it.','projectmanager'), true );
@@ -729,14 +749,14 @@ class ProjectManagerAdminPanel extends ProjectManager
 						$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `image` = '%s' WHERE id = '%d'", basename($file['name']), $dataset_id ) );
 			
 						// Resize original file and create thumbnails
-						$dims = array( 'width' => $options['medium_size']['width'], 'height' => $options['medium_size']['height'] );
-						$image->createThumbnail( $dims, $new_file, $options['chmod'] );
+						$dims = array( 'width' => $project->medium_size['width'], 'height' => $project->medium_size['height'] );
+						$image->createThumbnail( $dims, $new_file, $project->chmod );
 						
-						$dims = array( 'width' => $options['thumb_size']['width'], 'height' => $options['thumb_size']['height'] );
-						$image->createThumbnail( $dims, parent::getFilePath().'/thumb.'.basename($file['name']), $options['chmod'] );
+						$dims = array( 'width' => $project->thumb_size['width'], 'height' => $project->thumb_size['height'] );
+						$image->createThumbnail( $dims, parent::getFilePath().'/thumb.'.basename($file['name']), $project->chmod );
 						
 						$dims = array( 'width' => 80, 'height' => 50 );
-						$image->createThumbnail( $dims, parent::getFilePath().'/tiny.'.basename($file['name']), $options['chmod'] );
+						$image->createThumbnail( $dims, parent::getFilePath().'/tiny.'.basename($file['name']), $project->chmod );
 					} else {
 						$this->setMessage( sprintf( __('The uploaded file could not be moved to %s.' ), parent::getFilePath() ), true );
 					}
@@ -886,14 +906,15 @@ class ProjectManagerAdminPanel extends ProjectManager
 	function printBreadcrumb( $page_title, $start=false )
 	{
 		global $projectmanager;
-		$options = get_option('projectmanager');
-		if ( 1 != $options['project_options'][$projectmanager->getProjectID()]['navi_link'] ) {
+		$project = $projectmanager->getProject($projectmanager->getProjectID());
+
+		if ( 1 != $project->navi_link ) {
 			echo '<p class="projectmanager_breadcrumb">';
 			if ( !$this->single )
 				echo '<a href="admin.php?page=projectmanager">'.__( 'Projectmanager', 'projectmanager' ).'</a> &raquo; ';
 			
-			if ( $page_title != $projectmanager->getProjectTitle() )
-				echo '<a href="admin.php?page=projectmanager&subpage=show-project&amp;project_id='.$projectmanager->getProjectID().'">'.$projectmanager->getProjectTitle().'</a> &raquo; ';
+			if ( $page_title != $project->title )
+				echo '<a href="admin.php?page=projectmanager&subpage=show-project&amp;project_id='.$project->id.'">'.$project->title.'</a> &raquo; ';
 			
 			if ( !$start || ($start && !$this->single) ) echo $page_title;
 			
@@ -912,20 +933,16 @@ class ProjectManagerAdminPanel extends ProjectManager
 		global $current_user, $wpdb, $projectmanager;
 		
 		if ( current_user_can('project_user_profile') ) {
-			$options = get_option('projectmanager');
-			$options = $options['project_options'];
-			
 			$this->project_id = 0;
-			foreach ( $options AS $project_id => $settings ) {
-				if ( 1 == $settings['profile_hook'] ) {
-					$this->project_id = $project_id;
+			foreach ( $projectmanager->getProjects() AS $project ) {
+				if ( 1 == $project->profile_hook ) {
+					$this->project_id = $project->id;
 					break;
 				}
 			}
 			$projectmanager->initialize($this->project_id);
-			$options = $options[$this->project_id];
 			if ( $this->project_id != 0 ) {
-				$projectmanager->getProject();
+				$project = $projectmanager->getProject();
 				
 				$is_profile_page = true;
 				$dataset = $wpdb->get_results( "SELECT `id`, `name`, `image`, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id} AND `user_id` = '".$current_user->ID."' LIMIT 0,1" );

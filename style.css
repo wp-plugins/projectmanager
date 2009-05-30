@@ -47,6 +47,7 @@ table.projectmanager td img {
 }
 .dataset_gallery .gallery-item {
 	float: left;
+	margin-right: 1.5em;
 	}
 .dataset_gallery .gallery-image img {
 	display: block;
