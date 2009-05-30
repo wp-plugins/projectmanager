@@ -693,12 +693,17 @@ class ProjectManager extends ProjectManagerLoader
 		if ( !is_array($datasets) ) $datasets = array($datasets);
 		
 		$selected_datasets = array();
-		foreach ( $datasets AS $dataset )
+		foreach ( $datasets AS $dataset ) {
 			if ( in_array($this->getCatID(), $this->getSelectedCategoryIDs($dataset)) )
 				$selected_datasets[] = '`id` = '.$dataset->id;
-		
-		$sql = ' AND ('.implode(' OR ', $selected_datasets).')';
-		return $sql;
+		}
+
+		if ( !empty($selected_datasets) ) {
+			$sql = ' AND ('.implode(' OR ', $selected_datasets).')';
+			return $sql;
+		}
+
+		return false;
 	}
 	
 		
