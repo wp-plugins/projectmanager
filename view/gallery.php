@@ -12,16 +12,17 @@ The following variables are usable:
 */
 ?>
 
-<?php if ( isset($_GET['show']) && $project['single'] ) : ?>
+<?php if ( isset($_GET['show']) ) : ?>
  	<?php do_action('projectmanager_dataset', array('id' => $_GET['show'], 'echo' => 1), true) ?>
 <?php else: ?>
 	
-<?php if ( $project['tablenav'] ) do_action('projectmanager_tablenav'); ?>
+<?php if ( $project->tablenav ) do_action('projectmanager_tablenav'); ?>
+
 <?php if ( $datasets ) : $i = 0; ?>
 <div class='dataset_gallery'>
 	<?php foreach ( $datasets AS $dataset ) : $i++; ?>
 	
-	<div class='gallery-item' style='width: <?php echo $project['dataset_width'] ?>;'>
+	<div class='gallery-item' style='width: <?php echo $project->dataset_width ?>;'>
 		<div class="gallery-image">
 			<?php if ( !empty($dataset->image) ) : ?>
 			<a href="<?php echo $dataset->URL ?>"><img src="<?php echo $dataset->thumbURL ?>" alt="<?php echo $dataset->name ?>" title="<?php echo $dataset->name ?>" /></a>
@@ -31,12 +32,11 @@ The following variables are usable:
 		</div>
 	</div>
 	
-	<?php if ( 0 == $i % $project['num_cols'] ) : ?>
+	<?php if ( 0 == $i % $project->gallery_num_cols ) : ?>
 	<br style="clear: both;" />
 	<?php endif; ?>
 
 	<?php endforeach; ?>
-	</div>
 </div>
 
 <br style='clear: both;' />
