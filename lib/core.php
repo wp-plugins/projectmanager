@@ -117,7 +117,7 @@ class ProjectManager extends ProjectManagerLoader
 		$options = $options['project_options'][$project_id];
 		
 		$this->project_id = $project_id;
-		$this->per_page = ( isset($options['per_page']) && !empty($options['per_page']) ) ? $options['per_page'] : false;
+		$this->per_page = ( isset($options['per_page']) && !empty($options['per_page']) ) ? $options['per_page'] : 15;
 
 		$this->num_items = $this->getNumDatasets($this->project_id);
 		$this->num_max_pages = ( 0 == $this->per_page || $this->isSearch() ) ? 1 : ceil( $this->num_items/$this->per_page );
@@ -202,7 +202,7 @@ class ProjectManager extends ProjectManagerLoader
 	
 
 	/**
-	 * get dataset order
+	 * get dataset order - Needs to be FIXED
 	 *
 	 * @param boolean $orderby
 	 * @param boolean $order
@@ -213,7 +213,8 @@ class ProjectManager extends ProjectManagerLoader
 		$options = get_option('projectmanager');
 		$options = $options['project_options'][$this->project_id];
 
-		$formfield_id = false;
+		$formfield_id = $this->override_order = false;
+		// Selection in Admin Panel
 		if ( isset($_POST['orderby']) && isset($_POST['order']) && !isset($_POST['doaction']) ) {
 			$orderby = explode('_', $_POST['orderby']);
 			$this->orderby = ( $_POST['orderby'] != '' ) ? $_POST['orderby'] : 'name';
@@ -222,15 +223,36 @@ class ProjectManager extends ProjectManagerLoader
 
 			$this->query_args['order'] = $this->order;
 			$this->query_args['orderby'] = $this->orderby;
-		} elseif ( isset($_GET['orderby']) && isset($_GET['order']) ) {
+
+			$this->override_order = true;
+		}
+		// Selection in Frontend
+		elseif ( isset($_GET['orderby']) && isset($_GET['order']) ) {
 			$orderby = explode('_', $_GET['orderby']);
 			$this->orderby = ( $_GET['orderby'] != '' ) ? $_GET['orderby'] : 'name';
 			$formfield_id = $orderby[1];
 			$this->order = ( $_GET['order'] != '' ) ? $_GET['order'] : 'ASC';
-		} elseif ( isset($options['dataset_orderby']) && $options['dataset_orderby'] != 'formfields' && !empty($options['dataset_orderby']) ) {
+			
+			$this->override_order = true;
+		}
+		// Shortcode Attributes
+		elseif ( $orderby || $order ) {
+			if ( $orderby ) {
+				$tmp = explode("-",$orderby);
+				$this->orderby = $tmp[0];
+				$formfield_id = $tmp[1];
+			}
+			if ( $order ) $this->order = $order;
+
+			$this->override_order = true;
+		}
+		// Project Settings
+		elseif ( isset($options['dataset_orderby']) && $options['dataset_orderby'] != 'formfields' && !empty($options['dataset_orderby']) ) {
 			$this->orderby = $options['dataset_orderby'];
 			$this->order = (isset($options['dataset_order']) && !empty($options['dataset_order'])) ? $options['dataset_order'] : 'ASC';
-		} else {
+		}
+		// Default
+		else {
 			$this->orderby = 'name';
 			$this->order = 'ASC';
 		}
@@ -258,7 +280,7 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function getFormFieldTypes($index = false)
 	{
-		$form_field_types = array( 'text' => __('Text', 'projectmanager'), 'textfield' => __('Textfield', 'projectmanager'), 'email' => __('E-Mail', 'projectmanager'), 'date' => __('Date', 'projectmanager'), 'uri' => __('URL', 'projectmanager'), 'image' => __( 'Image', 'projectmanager' ), 'select' => __('Selection', 'projectmanager'), 'checkbox' => __( 'Checkbox List', 'projectmanager'), 'radio' => __( 'Radio List', 'projectmanager'), 'fileupload' => __('File Upload', 'projectmanager') );
+		$form_field_types = array( 'text' => __('Text', 'projectmanager'), 'textfield' => __('Textfield', 'projectmanager'), 'email' => __('E-Mail', 'projectmanager'), 'date' => __('Date', 'projectmanager'), 'uri' => __('URL', 'projectmanager'), 'image' => __( 'Image', 'projectmanager' ), 'select' => __('Selection', 'projectmanager'), 'checkbox' => __( 'Checkbox List', 'projectmanager'), 'radio' => __( 'Radio List', 'projectmanager'), 'fileupload' => __('File Upload', 'projectmanager'), 'numeric' => __( 'Numeric', 'projectmanager' ), 'currency' => __('Currency', 'projectmanager') );
 		
 		$form_field_types = apply_filters( 'projectmanager_formfields', $form_field_types );
 		
@@ -277,7 +299,7 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function getMonths()
 	{
-		$locale = !defined('WPLANG_WIN') ? WPLANG : WPLANG_WIN;
+		$locale = !defined('WPLANG_WIN') ? get_locale() : WPLANG_WIN;
 		setlocale(LC_TIME, $locale);
 		$months = array();
 		for ( $month = 1; $month <= 12; $month++ )
@@ -558,7 +580,14 @@ class ProjectManager extends ProjectManagerLoader
 	function getProjects()
 	{
 		global $wpdb;
-		return $wpdb->get_results( "SELECT `title`, `id` FROM {$wpdb->projectmanager_projects} ORDER BY `id` ASC" );
+		$projects = $wpdb->get_results( "SELECT `title`, `settings`, `id` FROM {$wpdb->projectmanager_projects} ORDER BY `id` ASC" );
+		$i = 0;
+		foreach ( $projects AS $project ) {
+			$projects[$i] = (object) array_merge( (array)$project, (array)maybe_unserialize($project->settings) );
+			unset($projects[$i]->settings);
+			$i++;
+		}
+		return $projects;
 	}
 	
 	
@@ -573,9 +602,13 @@ class ProjectManager extends ProjectManagerLoader
 		global $wpdb;
 
 		if ( !$project_id ) $project_id = $this->project_id;
-		$projects = $wpdb->get_results( "SELECT `title`, `id` FROM {$wpdb->projectmanager_projects} WHERE `id` = {$project_id} ORDER BY `id` ASC" );
-		$this->project = $projects[0];
-		return $projects[0];
+		$project = $wpdb->get_results( "SELECT `title`, `settings`, `id` FROM {$wpdb->projectmanager_projects} WHERE `id` = {$project_id} ORDER BY `id` ASC" );
+		$project = $project[0];
+		$project = (object) array_merge( (array)$project, (array)maybe_unserialize($project->settings) );
+		unset($project->settings);
+
+		$this->project = $project;
+		return $project;
 	}
 	
 	
@@ -697,7 +730,7 @@ class ProjectManager extends ProjectManagerLoader
 		
 	
 	/**
-	 * gets all datasets for a project
+	 * gets all datasets for a project - BUGFIX with ordering
 	 *
 	 * @param boolean $limit
 	 * @param string orderby field to orderby
@@ -705,25 +738,23 @@ class ProjectManager extends ProjectManagerLoader
 	 * @param int $formfield_id FormField ID to order by
 	 * @return array
 	 */
-	function getDatasets( $limit = false, $orderby = false, $order = false, $formfield_id = false )
+	function getDatasets( $limit = false, $orderby = false, $order = false )
 	{
 		global $wpdb;
 		$options = get_option('projectmanager');
-		
+	
 		// Set ordering
-		if ( !$formfield_id )
-			$formfield_id = $this->setDatasetOrder();
+		$formfield_id = $this->setDatasetOrder($orderby, $order);
 
-		if ( $orderby ) $this->orderby = $orderby;
-		if ( $order ) $this->order = $order;
-
+		$tmp = explode("-",$orderby);
+		$orderby = $tmp[0];
 		if ( $orderby && $orderby != 'formfields' ) {
 			$sql_order = "`$orderby` $order";
 		} else {
 			$sql_order = ( $this->orderby != 'name' && $this->orderby != 'id' && $this->orderby != 'order' ) ? '`name` '.$this->order : $this->getDatasetOrder();
 		}
 		
-		if ( $limit && $this->per_page ) $offset = ( $this->getCurrentPage() - 1 ) * $this->per_page;
+		if ( $limit && $this->per_page != 'NaN' ) $offset = ( $this->getCurrentPage() - 1 ) * $this->per_page;
 
 		$sql = "SELECT `id`, `name`, `image`, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id}";
 		
@@ -731,11 +762,20 @@ class ProjectManager extends ProjectManagerLoader
 			$sql .= $this->getCategorySearchString();
 		
 		$sql .=  " ORDER BY ".$sql_order;
-		$sql .= ( $limit && $this->per_page ) ? " LIMIT ".$offset.",".$this->per_page.";" : ";";
+		$sql .= ( $limit && $this->per_page != 'NaN' ) ? " LIMIT ".$offset.",".$this->per_page.";" : ";";
 			
 		$datasets = $wpdb->get_results($sql);
-		
-		if ( $options['project_options'][$this->project_id]['dataset_orderby'] == 'formfields' || $formfield_id )
+	
+		/*
+		* Determine wether to sort by formfields or not
+		* Selection Menus and Shortcode Attributes override Project Settings
+		*/
+		if ( ($options['project_options'][$this->project_id]['dataset_orderby'] == 'formfields' && !$this->override_order) || $formfield_id )
+			$orderby_formfields = true;
+		else
+			$orderby_formfields = false;
+	
+		if ( $orderby_formfields )
 			$datasets = $this->orderDatasetsByFormFields($datasets, $formfield_id);
 		
 		return $datasets;
@@ -771,7 +811,7 @@ class ProjectManager extends ProjectManagerLoader
 	
 	
 	/**
-	 * order datasets by chosen form fields
+	 * order datasets by chosen form fields - BUGFIX required
 	 *
 	 * @param array $datasets
 	 * @param int|false $form_field_id
@@ -832,7 +872,7 @@ class ProjectManager extends ProjectManagerLoader
 			*/
 			$func_args = array();
 			foreach ( $order AS $key => $order_array ) {
-				$sort = ( $this->order == 'DESC' ) ? SORT_DESC : SORT_ASC;
+				$sort = ( $this->order == 'DESC' || $this->order == 'desc' ) ? SORT_DESC : SORT_ASC;
 				array_push( $func_args, $order_array );
 				array_push( $func_args, $sort );
 			}
@@ -919,7 +959,7 @@ class ProjectManager extends ProjectManagerLoader
 		if ( $form_fields = $this->getFormFields() ) {
 			foreach ( $form_fields AS $form_field ) {
 				if ( 1 == $form_field->show_on_startpage )
-				$out .= "\n\t<th scope='col'>".stripslashes($form_field->label)."</th>";
+				$out .= "\n\t<th scope='col' class='tableheader'>".stripslashes($form_field->label)."</th>";
 			}
 		}
 		return $out;
@@ -944,7 +984,6 @@ class ProjectManager extends ProjectManagerLoader
 		if ( $dataset_meta = $this->getDatasetMeta( $dataset->id ) ) {
 			foreach ( $dataset_meta AS $meta ) {
 				$meta->label = stripslashes($meta->label);
-				//$meta_value = stripslashes_deep($meta->value);
 				$meta_value = is_string($meta->value) ? htmlspecialchars( $meta->value, ENT_QUOTES ) : $meta->value;
 				
 				if ( 'text' == $meta->type || 'select' == $meta->type || 'checkbox' == $meta->type || 'radio' == $meta->type ) {
@@ -966,6 +1005,23 @@ class ProjectManager extends ProjectManagerLoader
 					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'><img class='projectmanager_image' src='".$meta_value."' alt='".__('Image', 'projectmanager')."' /></span>";
 				} elseif ( 'fileupload' == $meta->type && !empty($meta_value) ) {
 					$meta_value = "<img id='fileimage".$meta->form_field_id."_".$dataset->id."' src='".$this->getFileImage($meta_value)."' alt='' />&#160;<span id='datafield".$meta->form_field_id."_".$dataset->id."'><a class='projectmanager_file ".$this->getFileType($meta_value)."' href='".$this->getFileURL($meta_value)."' target='_blank'>".$meta_value."</a></span>";
+				} elseif ( 'numeric' == $meta->type && !empty($meta_value) ) {
+					if ( class_exists('NumberFormatter') ) {
+						$fmt = new NumberFormatter( get_locale(), NumberFormatter::DECIMAL );
+						$meta_value = $fmt->format($meta_value);
+					} else {
+						$meta_value = apply_filters( 'projectmanager_numeric', $meta_value );
+					}
+					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span>";
+				} elseif ( 'currency' == $meta->type && !empty($meta_value) ) {
+					if ( class_exists('NumberFormatter') ) {
+						$fmt = new NumberFormatter( get_locale(), NumberFormatter::CURRENCY );
+						$meta_value = $fmt->format($meta_value);
+					} else {
+						$meta_value = money_format('%i', $meta_value);
+						$meta_value = apply_filters( 'projectmanager_currency', $meta_value );
+					}
+					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span>";
 				} elseif ( !empty($meta->type) && is_array($this->getFormFieldTypes($meta->type)) ) {
 					// Data is retried via callback function. Most likely a special field from LeagueManager
 					$field = $this->getFormFieldTypes($meta->type);
@@ -980,18 +1036,18 @@ class ProjectManager extends ProjectManagerLoader
 						if ( 'dl' == $output ) {
 							$out .= "\n\t<dt>".$meta->label."</dt><dd>".$meta_value."</dd>";
 						} elseif ( 'li' == $output ) {
-							$out .= "\n\t<".$output."><span class='dataset_label'>".$meta->label."</span>:&#160;".$meta_value."</".$output.">";
+							$out .= "\n\t<li class='".$meta->type."'><span class='dataset_label'>".$meta->label."</span>:&#160;".$meta_value."</li>";
 						} else {
-							$out .= "\n\t<".$output.">";
+							$out .= "\n\t<td class='".$meta->type."'>";
 							$out .= $this->getThickbox( $dataset->id, $meta->form_field_id, $meta->type, maybe_unserialize($meta->value), $dataset->user_id );
 							$out .= "\n\t\t".$meta_value . $this->getThickboxLink($dataset->id, $meta->form_field_id, $meta->type, sprintf(__('%s of %s','projectmanager'), $meta->label, $dataset->name), $dataset->user_id, maybe_unserialize($meta->value));
-							$out .= "\n\t</".$output.">";
+							$out .= "\n\t</td>";
 						}
 					} elseif ( 'td' == $output ) {
 						if (empty($meta_value))
 							$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>&#160;</span>";
 							
-						$out .= "\n\t<td>";
+						$out .= "\n\t<td class='".$meta->type."'>";
 						$out .= $this->getThickbox( $dataset->id, $meta->form_field_id, $meta->type, maybe_unserialize($meta->value), $dataset->user_id );
 						$out .= $meta_value . $this->getThickboxLink($dataset->id, $meta->form_field_id, $meta->type, sprintf(__('%s of %s','projectmanager'), $meta->label, $dataset->name), $dataset->user_id, maybe_unserialize($meta->value));
 						$out .= "\n\t</td>";
@@ -1026,7 +1082,7 @@ class ProjectManager extends ProjectManagerLoader
 		if ( is_admin() && current_user_can( 'manage_projects' ) ) {
 			$dims = array('width' => '300', 'height' => '100');
 			if ( 'textfield' == $formfield_type )
-				$dims = array('width' => '400', 'height' => '400');
+				$dims = array('width' => '400', 'height' => '300');
 			if ( 'checkbox' == $formfield_type || 'radio' == $formfield_type )
 				$dims = array('width' => '300', 'height' => '300');
 
@@ -1062,7 +1118,7 @@ class ProjectManager extends ProjectManagerLoader
 			$out .= "\n\t\t<div id='datafieldwrap".$formfield_id."_".$dataset_id."' style='overfow:auto;display:none;'>";
 			$out .= "\n\t\t<div id='datafieldbox".$formfield_id."_".$dataset_id."' class='projectmanager_thickbox'>";
 			$out .= "\n\t\t\t<form name='form_field_".$formfield_id."_".$dataset_id."'>";
-			if ( 'text' == $formfield_type || 'email' == $formfield_type || 'uri' == $formfield_type || 'image' == $formfield_type ) {
+			if ( 'text' == $formfield_type || 'email' == $formfield_type || 'uri' == $formfield_type || 'image' == $formfield_type || 'numeric' == $formfield_type || 'currency' == $formfield_type ) {
 				$out .= "\n\t\t\t<input type='text' name='form_field_".$formfield_id."_".$dataset_id."' id='form_field_".$formfield_id."_".$dataset_id."' value=\"".$value."\" size='30' />";
 			} elseif ( 'textfield' == $formfield_type ) {
 				$out .= "\n\t\t\t<textarea name='form_field_".$formfield_id."_".$dataset_id."' id='form_field_".$formfield_id."_".$dataset_id."' rows='10' cols='40'>".$value."</textarea>";
@@ -1299,7 +1355,7 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function getSupportedImageTypes()
 	{
-		return array( "jpg", "jpeg", "png", "gif" );
+		return ProjectManagerImage::getSupportedImageTypes();	
 	}
 	
 	

@@ -4,7 +4,7 @@ Plugin Name: ProjectManager
 Description: This Plugin can be used to manage several different types of projects with redundant data. This could be athlet portraits, DVD database, architect projects. You can define different form field types and groups to sort your project entries.
 Author URI: http://kolja.galerie-neander.de/
 Plugin URI: http://kolja.galerie-neander.de/plugins/projectmanager/
-Version: 2.3
+Version: 2.4.4
 Author: Kolja Schleich
 
 
@@ -40,7 +40,7 @@ class ProjectManagerLoader
 	 *
 	 * @var string
 	 */
-	 var $version = '2.3';
+	 var $version = '2.4.4';
 	 
 	 
 	 /**
@@ -48,9 +48,25 @@ class ProjectManagerLoader
 	  *
 	  * @var string
 	  */
-	 var $dbversion = '2.1';
+	 var $dbversion = '2.4.4';
 	 
+
+	 /**
+	  * project ID
+	  *
+	  * @var int
+	  */
+	 var $project_id;
+
+
+	 /**
+	  * admin panel object
+	  *
+	  * @var object
+	  */
+	 var $adminPanel = false;
 	 
+
 	 /**
 	  * constructor
 	  *
@@ -61,6 +77,8 @@ class ProjectManagerLoader
 	 {
 	 	global $projectmanager;
 		
+		setlocale( LC_ALL, get_locale() );
+
 		// Load language file
 		$this->loadTextdomain();
 
@@ -229,7 +247,7 @@ class ProjectManagerLoader
 		if ( !$options = get_option( 'projectmanager_widget' ) )
 			$options = array();
 		
-		wp_register_script( 'jquery_slideshow', PROJECTMANAGER_URL.'/js/jquery.aslideshow.js', array('jquery'), '0.5.3' );
+		wp_register_script( 'jquery_slideshow', PROJECTMANAGER_URL.'/js/jquery.cycle.all.js', array('jquery'), '2.65' );
 		wp_print_scripts( 'jquery_slideshow' );
 	}
 	
@@ -317,6 +335,7 @@ class ProjectManagerLoader
 		$create_projects_sql = "CREATE TABLE {$wpdb->projectmanager_projects} (
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT ,
 						`title` varchar( 255 ) NOT NULL default '',
+						`settings` longtext NOT NULL default '',
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->projectmanager_projects, $create_projects_sql );
 			

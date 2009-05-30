@@ -2,8 +2,8 @@
 if ( !current_user_can( 'manage_projects' ) && !current_user_can( 'projectmanager_admin' ) ) : 
 	echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
 else :
-$options = get_option( 'projectmanager' );
 $project_id = $projectmanager->getProjectID();
+$project = $projectmanager->getProject($project_id);
 	
 if ( isset($_GET['edit']) ) {
 	$form_title = __('Edit Dataset','projectmanager');
@@ -26,11 +26,10 @@ if ( isset($_GET['edit']) ) {
 	$dataset_id = ''; $cat_ids = array(); $img_filename = ''; $name = ''; $meta_data = array();
 }
 $is_profile_page = false;
-$options = $options['project_options'][$project_id];
 $page = ($_GET['page'] == 'projectmanager') ? 'projectmanager&subpage=show-project&project_id='.$project_id : 'project_'.$project_id;
 
 // Try to create image directory
-if ( 1 == $options['show_image'] && !wp_mkdir_p( $projectmanager->getFilePath() ) )
+if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) )
 	echo "<div class='error'><p>".sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $projectmanager->getFilePath() )."</p></div>";
 ?>
 <form name="post" id="post" action="admin.php?page=<?php echo $page ?>" method="post" enctype="multipart/form-data">

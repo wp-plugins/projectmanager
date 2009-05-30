@@ -11,7 +11,8 @@ The following variables are usable:
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
 */
 ?>
-<form class='search-form alignleft' action='' method='post'>
+<form class='search-form alignright' action='' method='post'>
+<div>
 	<input type='text' class='search-input' name='search_string' value='<?php echo $search ?>' />
 	
 	<select size='1' name='search_option'>
@@ -23,4 +24,5 @@ The following variables are usable:
 	</select>
 	
 	<input type='submit' value='<?php _e('Search', 'projectmanager') ?> &raquo;' class='button' />
+</div>
 </form>
