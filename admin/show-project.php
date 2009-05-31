@@ -120,6 +120,7 @@ else
 		<thead>
 		<tr>
 			<th scope="col" class="check-column"><input type="checkbox" onclick="ProjectManager.checkAll(document.getElementById('dataset-filter'));" /></th>
+			<th scope="col"><?php _e( 'ID', 'leaguemanager' ) ?></th>
 			<th scope="col" class="name"><?php _e( 'Name', 'projectmanager' ) ?></th>
 			<?php if ( -1 != $project->category ) : ?>
 			<th scope="col" class="categories"><?php _e( 'Categories', 'projectmanager' ) ?></th>
@@ -130,6 +131,7 @@ else
 		<tfoot>
 		<tr>
 			<th scope="col" class="check-column"><input type="checkbox" onclick="ProjectManager.checkAll(document.getElementById('dataset-filter'));" /></th>
+			<th scope="col"><?php _e( 'ID', 'leaguemanager' ) ?></th>
 			<th scope="col" class="name"><?php _e( 'Name', 'projectmanager' ) ?></th>
 			<?php if ( -1 != $project->category ) : ?>
 			<th scope="col" class="categories"><?php _e( 'Categories', 'projectmanager' ) ?></th>
@@ -151,6 +153,7 @@ else
 		?>
 			<tr class="<?php echo $class ?>" id="dataset_<?php echo $dataset->id ?>">
 				<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $dataset->id ?>" name="dataset[<?php echo $dataset->id ?>]" /></th>
+				<td><?php echo $dataset->id ?></td>
 				<td>
 					<!-- Popup Window for Ajax name editing -->
 					<div id="datasetnamewrap<?php echo $dataset->id; ?>" style="overflow:auto;display:none;">
