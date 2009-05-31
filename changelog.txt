@@ -1,6 +1,48 @@
 ProjectManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
+V2.4.7 - May 30, 2009
+- NEW: display ID of dataset in admin overview
+
+V2.4.6 - May 30, 2009
+- BUGFIX: MySQL string to get datasets of certain category
+
+V2.4.5 - May 29, 2009
+- BUGFIX: options
+
+V2.4.4 - May 29, 2009
+- CHANGED: moved project settings into project table
+
+V2.4.3 - May 27, 2009
+- BUGFIX: display of admin menu icons
+- CHANGED: moved main ProjectManager menu back down
+
+V2.4.2 - May 26, 2009
+- NEW: table template with tiny image
+- BUGFIX: unsetting of widget option if deleted
+- UPDATED: german translation with slideshow effects
+
+V2.4.1 - May 25, 2009
+- NEW: numeric and currency formfield types (require NumberFormatter or WP
+filter)
+- NEW: filters projectmanager_numeric and projectmanager_currency for display
+- BUGFIX: popup window size for newly added formfield options
+- BUGFIX: image upload in user profile
+- BUGFIX: single view in gallery template
+- CHANGED: took out separate option for displaying image form in
+profile
+- CHANGED: default limit on datasets of 15, use "NaN" for no limit
+
+V2.4 - May 15, 2009
+- NEW: custom icon directory in THEMEDIR/projectmanager/icons
+- BUGFIX: dataset ordering is overriden by dropdown selection
+- BUGFIX: IE Slideshow Bug fixed with new jQuery Cycle Plugin
+- BUGFIX: Popup Window for Formfield Options
+- BUGFIX: TinyMCE Button for searchform
+- BUGFIX: total number of datasets in search
+- CHANGED: use function add_object_page for menu if present
+- CHANGED: use of jQuery Cycle Plugin for Slideshow
+
 V2.3 - April 14, 2009
 - NEW: URL and E-Mail with alternative text in format "www.example.com|Example Website"
 - NEW: multiple widget support
