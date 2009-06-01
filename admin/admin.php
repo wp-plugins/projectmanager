@@ -30,7 +30,25 @@ class ProjectManagerAdminPanel extends ProjectManager
 		$this->__construct();
 	}
 	
-	
+
+	/**
+	 * get admin menu for subpage
+	 *
+	 * @param none
+	 * @return array
+	 */
+	function getMenu()
+	{
+		$menu = array();
+		$menu['settings'] = array( 'title' => __( 'Settings', 'projectmanager' ), 'cap' => 'edit_projects_settings' );
+		$menu['formfields'] = array( 'title' => __( 'Form Fields', 'projectmanager' ), 'cap' => 'edit_formfields' );
+		$menu['dataset'] = array( 'title' => __( 'Add Dataset', 'projectmanager' ), 'cap' => 'edit_datasets' );
+		$menu['import'] = array( 'title' => __( 'Import/Export', 'projectmanager' ), 'cap' => 'import_datasets' );
+
+		return $menu;
+	}
+
+
 	/**
 	 * adds menu to the admin interface
 	 *
@@ -49,25 +67,25 @@ class ProjectManagerAdminPanel extends ProjectManager
 				if ( 1 == $project->navi_link ) {
 					$icon = $project->menu_icon;
 					if ( function_exists('add_object_page') )
-						add_object_page( $project->title, $project->title, 'manage_projects', 'project_' . $project->id, array(&$this, 'display'), $this->getIconURL($icon) );
+						add_object_page( $project->title, $project->title, 'view_projects', 'project_' . $project->id, array(&$this, 'display'), $this->getIconURL($icon) );
 					else
-						add_menu_page( $project->title, $project->title, 'manage_projects', 'project_' . $project->id, array(&$this, 'display'), $this->getIconURL($icon) );
+						add_menu_page( $project->title, $project->title, 'view_projects', 'project_' . $project->id, array(&$this, 'display'), $this->getIconURL($icon) );
 
-					add_submenu_page('project_' . $project->id, __($project->title, 'projectmanager'), __('Overview','projectmanager'),'manage_projects', 'project_' . $project->id, array(&$this, 'display'));
-					add_submenu_page('project_' . $project->id, __( 'Add Dataset', 'projectmanager' ), __( 'Add Dataset', 'projectmanager' ), 'manage_projects', 'project-dataset_' . $project->id, array(&$this, 'display'));
-					add_submenu_page('project_' . $project->id, __( 'Form Fields', 'projectmanager' ), __( 'Form Fields', 'projectmanager' ), 'manage_projects', 'project-formfields_' . $project->id, array(&$this, 'display'));
-					add_submenu_page('project_' . $project->id, __( 'Settings', 'projectmanager' ), __( 'Settings', 'projectmanager' ), 'manage_projects', 'project-settings_' . $project->id, array(&$this, 'display'));
+					add_submenu_page('project_' . $project->id, __($project->title, 'projectmanager'), __('Overview','projectmanager'),'view_projects', 'project_' . $project->id, array(&$this, 'display'));
+					add_submenu_page('project_' . $project->id, __( 'Add Dataset', 'projectmanager' ), __( 'Add Dataset', 'projectmanager' ), 'edit_datasets', 'project-dataset_' . $project->id, array(&$this, 'display'));
+					add_submenu_page('project_' . $project->id, __( 'Form Fields', 'projectmanager' ), __( 'Form Fields', 'projectmanager' ), 'edit_formfields', 'project-formfields_' . $project->id, array(&$this, 'display'));
+					add_submenu_page('project_' . $project->id, __( 'Settings', 'projectmanager' ), __( 'Settings', 'projectmanager' ), 'edit_projects_settings', 'project-settings_' . $project->id, array(&$this, 'display'));
 					add_submenu_page('project_' . $project->id, __('Categories'), __('Categories'), 'manage_projects', 'categories.php');
-					add_submenu_page('project_' . $project->id, __('Import/Export', 'projectmanager'), __('Import/Export', 'projectmanager'), 'manage_projects', 'project-import_' . $project->id, array(&$this, 'display'));
+					add_submenu_page('project_' . $project->id, __('Import/Export', 'projectmanager'), __('Import/Export', 'projectmanager'), 'import_datasets', 'project-import_' . $project->id, array(&$this, 'display'));
 				}
 			}
 		}
 		
 		// Add global Projects Menu
-		add_menu_page(__('Projects', 'projectmanager'), __('Projects', 'projectmanager'), 'manage_projects', PROJECTMANAGER_PATH,array(&$this, 'display'), PROJECTMANAGER_URL.'/admin/icons/menu/databases.png');
+		add_menu_page(__('Projects', 'projectmanager'), __('Projects', 'projectmanager'), 'view_projects', PROJECTMANAGER_PATH,array(&$this, 'display'), PROJECTMANAGER_URL.'/admin/icons/menu/databases.png');
 
-		add_submenu_page(PROJECTMANAGER_PATH, __('Projects', 'projectmanager'), __('Overview','projectmanager'),'manage_projects', PROJECTMANAGER_PATH,array(&$this, 'display'));
-		add_submenu_page(PROJECTMANAGER_PATH, __( 'Settings'), __('Settings'), 'manage_projects', 'projectmanager-settings', array( &$this, 'display') );
+		add_submenu_page(PROJECTMANAGER_PATH, __('Projects', 'projectmanager'), __('Overview','projectmanager'),'view_projects', PROJECTMANAGER_PATH,array(&$this, 'display'));
+		add_submenu_page(PROJECTMANAGER_PATH, __( 'Settings'), __('Settings'), 'projectmanager_settings', 'projectmanager-settings', array( &$this, 'display') );
 		
 		$plugin = 'projectmanager/projectmanager.php';
 		add_filter( 'plugin_action_links_' . $plugin, array( &$this, 'pluginActions' ) );
@@ -240,7 +258,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 	{
 		$options = get_option('projectmanager');
 		
-		if ( current_user_can( 'projectmanager_admin' ) ) {
+		if ( current_user_can( 'projectmanager_settings' ) ) {
 			if ( isset($_POST['updateProjectManager']) ) {
 				check_admin_referer('projetmanager_manage-global-league-options');
 				$options['colors']['headers'] = $_POST['color_headers'];
@@ -392,6 +410,11 @@ class ProjectManagerAdminPanel extends ProjectManager
 	{
 		global $wpdb;
 	
+		if ( !current_user_can('edit_projects') ) {
+			$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
+			return;
+		}
+
 		$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_projects} (title) VALUES ('%s')", $title ) );
 		$this->setMessage( __('Project added','projectmanager') );
 	}
@@ -407,6 +430,12 @@ class ProjectManagerAdminPanel extends ProjectManager
 	function editProject( $title, $project_id )
 	{
 		global $wpdb;
+
+		if ( !current_user_can('edit_projects') ) {
+			$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
+			return;
+		}
+		
 		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projects} SET `title` = '%s' WHERE `id` = '%d'", $title, $project_id ) );
 		$this->setMessage( __('Project updated','projectmanager') );
 	}
@@ -420,9 +449,13 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 */
 	function delProject( $project_id )
 	{
-		global $wpdb;
+		global $wpdb, $projectmanager;
 		
-		foreach ( parent::getDatasets() AS $dataset )
+		if ( !current_user_can('delete_projects') ) 
+			return;
+
+		$projectmanager->initialize($project_id);
+		foreach ( $projectmanager->getDatasets() AS $dataset )
 			$this->delDataset( $dataset->id );
 		
 		$wpdb->query( "DELETE FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = {$project_id}" );
@@ -441,7 +474,13 @@ class ProjectManagerAdminPanel extends ProjectManager
 	{
 		global $wpdb;
 
+		if ( !current_user_can('edit_projects_settings') ) {
+			$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
+			return;
+		}
+
 		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projects} SET `settings` = '%s' WHERE `id` = '%d'", maybe_serialize($settings), $project_id ) );
+		$this->setMessage(__('Settings saved', 'projectmanager'));
 	}
 
 
@@ -456,6 +495,12 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 */
 	function importDatasets( $project_id, $file, $delimiter, $cols )
 	{
+		if ( !current_user_can('import_datasets') ) {
+			$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
+			return;
+		}
+
+
 		if ( $file['size'] > 0 ) {
 			/*
 			* Upload CSV file to image directory, temporarily
@@ -507,6 +552,11 @@ class ProjectManagerAdminPanel extends ProjectManager
 	{
 		global $projectmanager;
 		
+		if ( !current_user_can('import_datasets') ) {
+			$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
+			return;
+		}
+
 		$this->project_id = $project_id;
 		$projectmanager->initialize($project_id);
 		$project = $projectmanager->getProject();
@@ -551,53 +601,54 @@ class ProjectManagerAdminPanel extends ProjectManager
 		$this->project_id = $project_id;
 		$this->project = $projectmanager->getProject($project_id);
 
-		if ( current_user_can( 'manage_projects') ) {
-			$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_dataset} (name, cat_ids, project_id, user_id) VALUES ('%s', '%s', '%d', '%d')", $name, maybe_serialize($cat_ids), $project_id, $current_user->ID ) );
-			$dataset_id = $wpdb->insert_id;
-				
-			if ( $dataset_meta ) {
-				foreach ( $dataset_meta AS $meta_id => $meta_value ) {
-					$formfield = parent::getFormFields($meta_id);
-					
-					// Manage file upload
-					if ( 'fileupload' == $formfield->type ) {
-						$file = array('name' => $_FILES['form_field']['name'][$meta_id], 'tmp_name' => $_FILES['form_field']['tmp_name'][$meta_id], 'size' => $_FILES['form_field']['size'][$meta_id], 'type' => $_FILES['form_field']['type'][$meta_id]);
-						if ( !empty($file['name']) )
-							$this->uploadFile($file);
-							
-						$meta_value = basename($file['name']);
-					} elseif ( 'numeric' == $formfield->type || 'currency' == $formfiel->type ) {
-						$meta_value += 0; // convert value to numeric type
-					}
-					
-					if ( is_array($meta_value) ) {
-						// form field value is a date
-						if ( array_key_exists('day', $meta_value) && array_key_exists('month', $meta_value) && array_key_exists('year', $meta_value) )
-							$meta_value = $meta_value['year'].'-'.str_pad($meta_value['month'], 2, 0, STR_PAD_LEFT).'-'.str_pad($meta_value['day'], 2, 0, STR_PAD_LEFT);
-						else
-							$meta_value = implode(",", $meta_value);
-					}
-
-					$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ('%d', '%d', '%s')", $meta_id, $dataset_id, $meta_value ) );
-				}
-			}
-			
-			// Check for unsubmitted form data, e.g. checkbox list
-			if ($form_fields = parent::getFormFields()) {
-				foreach ( $form_fields AS $form_field ) {
-					if ( !array_key_exists($form_field->id, $dataset_meta) ) {
-						$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `value` = '' WHERE `dataset_id` = '%d' AND `form_id` = '%d'", $dataset_id, $form_field->id ) );
-					}
-				}
-			}
-		
-			if ( isset($_FILES['projectmanager_image']) && $_FILES['projectmanager_image']['name'] != ''  )
-				$this->uploadImage($dataset_id, $_FILES['projectmanager_image']);
-				
-			$this->setMessage( __( 'New dataset added to the database.', 'projectmanager' ) );
-		} else {
-			$this->setmessage( __( "You don't have the permission to add datasets", "projectmanager" ), true );
+		if ( !current_user_can('edit_datasets') && !current_user_can('projectmanager_user') ) {
+			$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
+			return;
 		}
+
+		$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_dataset} (name, cat_ids, project_id, user_id) VALUES ('%s', '%s', '%d', '%d')", $name, maybe_serialize($cat_ids), $project_id, $current_user->ID ) );
+		$dataset_id = $wpdb->insert_id;
+				
+		if ( $dataset_meta ) {
+			foreach ( $dataset_meta AS $meta_id => $meta_value ) {
+				$formfield = parent::getFormFields($meta_id);
+					
+				// Manage file upload
+				if ( 'fileupload' == $formfield->type ) {
+					$file = array('name' => $_FILES['form_field']['name'][$meta_id], 'tmp_name' => $_FILES['form_field']['tmp_name'][$meta_id], 'size' => $_FILES['form_field']['size'][$meta_id], 'type' => $_FILES['form_field']['type'][$meta_id]);
+					if ( !empty($file['name']) )
+						$this->uploadFile($file);
+							
+					$meta_value = basename($file['name']);
+				} elseif ( 'numeric' == $formfield->type || 'currency' == $formfiel->type ) {
+					$meta_value += 0; // convert value to numeric type
+				}
+					
+				if ( is_array($meta_value) ) {
+					// form field value is a date
+					if ( array_key_exists('day', $meta_value) && array_key_exists('month', $meta_value) && array_key_exists('year', $meta_value) )
+						$meta_value = $meta_value['year'].'-'.str_pad($meta_value['month'], 2, 0, STR_PAD_LEFT).'-'.str_pad($meta_value['day'], 2, 0, STR_PAD_LEFT);
+					else
+						$meta_value = implode(",", $meta_value);
+				}
+
+				$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ('%d', '%d', '%s')", $meta_id, $dataset_id, $meta_value ) );
+			}
+		}
+			
+		// Check for unsubmitted form data, e.g. checkbox list
+		if ($form_fields = parent::getFormFields()) {
+			foreach ( $form_fields AS $form_field ) {
+				if ( !array_key_exists($form_field->id, $dataset_meta) ) {
+					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `value` = '' WHERE `dataset_id` = '%d' AND `form_id` = '%d'", $dataset_id, $form_field->id ) );
+				}
+			}
+		}
+		
+		if ( isset($_FILES['projectmanager_image']) && $_FILES['projectmanager_image']['name'] != ''  )
+			$this->uploadImage($dataset_id, $_FILES['projectmanager_image']);
+				
+		$this->setMessage( __( 'New dataset added to the database.', 'projectmanager' ) );
 	}
 		
 		
@@ -620,65 +671,67 @@ class ProjectManagerAdminPanel extends ProjectManager
 		global $wpdb, $current_user, $projectmanager;
 		$this->project_id = $project_id;
 		$this->project = $projectmanager->getProject($this->project_id);
+		$dataset = $projectmanager->getDataset($dataset_id);
 
-		if ( current_user_can( 'manage_projects') ) {
-			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `name` = '%s', `cat_ids` = '%s' WHERE `id` = '%d'", $name, maybe_serialize($cat_ids), $dataset_id ) );
-			
-			// Change Dataset owner if supplied
-			if ( $owner )
-				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `user_id` = '%d' WHERE `id` = '%d'", $owner, $dataset_id ) );
-			
-			if ( $dataset_meta ) {
-				foreach ( $dataset_meta AS $meta_id => $meta_value ) {
-					$formfield = parent::getFormFields($meta_id);
-					
-					// Manage file upload
-					if ( 'fileupload' == $formfield->type ) {
-						$file = array('name' => $_FILES['form_field']['name'][$meta_id], 'tmp_name' => $_FILES['form_field']['tmp_name'][$meta_id], 'size' => $_FILES['form_field']['size'][$meta_id], 'type' => $_FILES['form_field']['type'][$meta_id], 'current' => $meta_value['current']);
-						$delete = (1 == $meta_value['del']) ? true : false;
-						$meta_value = $this->editFile($file, $meta_value['overwrite'], $delete);
-					} elseif ( 'numeric' == $formfield->type || 'currency' == $formfield->type ) {
-						$meta_value += 0; // convert value to numeric type
-					}
-					
-					
-					if ( is_array($meta_value) ) {
-						// form field value is a date
-						if ( array_key_exists('day', $meta_value) && array_key_exists('month', $meta_value) && array_key_exists('year', $meta_value) )
-							$meta_value = $meta_value['year'].'-'.str_pad($meta_value['month'], 2, 0, STR_PAD_LEFT).'-'.str_pad($meta_value['day'], 2, 0, STR_PAD_LEFT);
-						else
-							$meta_value = implode(",", $meta_value);
-					}
-					
-					if ( 1 == $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_datasetmeta} WHERE `dataset_id` = '".$dataset_id."' AND `form_id` = '".$meta_id."'" ) )
-						$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `value` = '%s' WHERE `dataset_id` = '%d' AND `form_id` = '%d'", $meta_value, $dataset_id, $meta_id ) );
-					else
-						$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ( '%d', '%d', '%s' )", $meta_id, $dataset_id, $meta_value ) );
-				}
-			}
-			
-			// Check for unsbumitted form data, e.g. checkbox lis
-			if ($form_fields = parent::getFormFields()) {
-				foreach ( $form_fields AS $form_field ) {
-					if ( !array_key_exists($form_field->id, $dataset_meta) ) {
-						$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `value` = '' WHERE `dataset_id` = '%d' AND `form_id` = '%d'", $dataset_id, $form_field->id ) );
-					}
-				}
-			}
-			
-			// Delete Image if option is checked
-			if ($del_image) {
-				$wpdb->query("UPDATE {$wpdb->projectmanager_dataset} SET `image` = '' WHERE `id` = {$dataset_id}");
-				$this->delImage( $image_file );
-			}
-				
-			if ( isset($_FILES['projectmanager_image']) && $_FILES['projectmanager_image']['name'] != '' )
-				$this->uploadImage($dataset_id, $_FILES['projectmanager_image'], $overwrite_image);
-			
-			$this->setmessage( __('Dataset updated.', 'projectmanager') );
-		} else {
-			$this->setmessage( __( "You don't have the permission to edit this dataset", "projectmanager" ), true );
+		if ( ( !current_user_can('edit_datasets') && !current_user_can('projectmanager_user') ) || ( !current_user_can('edit_other_datasets') && $dataset->user_id != $current_user->ID ) ) {
+			$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
+			return;
 		}
+
+		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `name` = '%s', `cat_ids` = '%s' WHERE `id` = '%d'", $name, maybe_serialize($cat_ids), $dataset_id ) );
+			
+		// Change Dataset owner if supplied
+		if ( $owner )
+			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `user_id` = '%d' WHERE `id` = '%d'", $owner, $dataset_id ) );
+			
+		if ( $dataset_meta ) {
+			foreach ( $dataset_meta AS $meta_id => $meta_value ) {
+				$formfield = parent::getFormFields($meta_id);
+					
+				// Manage file upload
+				if ( 'fileupload' == $formfield->type ) {
+					$file = array('name' => $_FILES['form_field']['name'][$meta_id], 'tmp_name' => $_FILES['form_field']['tmp_name'][$meta_id], 'size' => $_FILES['form_field']['size'][$meta_id], 'type' => $_FILES['form_field']['type'][$meta_id], 'current' => $meta_value['current']);
+					$delete = (1 == $meta_value['del']) ? true : false;
+					$meta_value = $this->editFile($file, $meta_value['overwrite'], $delete);
+				} elseif ( 'numeric' == $formfield->type || 'currency' == $formfield->type ) {
+					$meta_value += 0; // convert value to numeric type
+				}
+					
+					
+				if ( is_array($meta_value) ) {
+					// form field value is a date
+					if ( array_key_exists('day', $meta_value) && array_key_exists('month', $meta_value) && array_key_exists('year', $meta_value) )
+						$meta_value = $meta_value['year'].'-'.str_pad($meta_value['month'], 2, 0, STR_PAD_LEFT).'-'.str_pad($meta_value['day'], 2, 0, STR_PAD_LEFT);
+					else
+						$meta_value = implode(",", $meta_value);
+				}
+					
+				if ( 1 == $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_datasetmeta} WHERE `dataset_id` = '".$dataset_id."' AND `form_id` = '".$meta_id."'" ) )
+					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `value` = '%s' WHERE `dataset_id` = '%d' AND `form_id` = '%d'", $meta_value, $dataset_id, $meta_id ) );
+				else
+					$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ( '%d', '%d', '%s' )", $meta_id, $dataset_id, $meta_value ) );
+			}
+		}
+			
+		// Check for unsbumitted form data, e.g. checkbox lis
+		if ($form_fields = parent::getFormFields()) {
+			foreach ( $form_fields AS $form_field ) {
+				if ( !array_key_exists($form_field->id, $dataset_meta) ) {
+					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `value` = '' WHERE `dataset_id` = '%d' AND `form_id` = '%d'", $dataset_id, $form_field->id ) );
+				}
+			}
+		}
+			
+		// Delete Image if option is checked
+		if ($del_image) {
+			$wpdb->query("UPDATE {$wpdb->projectmanager_dataset} SET `image` = '' WHERE `id` = {$dataset_id}");
+			$this->delImage( $image_file );
+		}
+				
+		if ( isset($_FILES['projectmanager_image']) && $_FILES['projectmanager_image']['name'] != '' )
+			$this->uploadImage($dataset_id, $_FILES['projectmanager_image'], $overwrite_image);
+			
+		$this->setmessage( __('Dataset updated.', 'projectmanager') );
 	}
 		
 		
@@ -690,12 +743,15 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 */
 	function delDataset( $dataset_id )
 	{
-		global $wpdb;
+		global $wpdb, $current_user, $projectmanager;
 			
-		if ( $dataset = $wpdb->get_results( "SELECT `image` FROM {$wpdb->projectmanager_dataset} WHERE `id` = {$dataset_id}" ) )
-			$img = $dataset[0]->image;
+		$dataset = $projectmanager->getDataset($dataset_id); 
+
+		if ( !current_user_can('delete_datasets') || ( !current_user_can('delete_other_datasets') && $dataset->user_id != $current_user->ID ) ) 
+			return;
+		
 			
-		$this->delImage( $img );
+		$this->delImage( $dataset->image );
 		foreach ( parent::getDatasetMeta($dataset_id) AS $dataset_meta ) {
 			if ( 'fileupload' == $dataset_meta->type )
 				@unlink(parent::getFilePath($dataset_meta->value));
@@ -833,6 +889,11 @@ class ProjectManagerAdminPanel extends ProjectManager
 	{
 		global $wpdb;
 		
+		if ( !current_user_can('edit_formfields') ) {
+			$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
+			return;
+		}
+
 		$options = get_option('projectmanager');
 		if ( null != $form_name ) {
 			foreach ( $wpdb->get_results( "SELECT `id`, `project_id` FROM {$wpdb->projectmanager_projectmeta}" ) AS $form_field) {
@@ -932,40 +993,41 @@ class ProjectManagerAdminPanel extends ProjectManager
 	{
 		global $current_user, $wpdb, $projectmanager;
 		
-		if ( current_user_can('project_user_profile') ) {
-			$this->project_id = 0;
-			foreach ( $projectmanager->getProjects() AS $project ) {
-				if ( 1 == $project->profile_hook ) {
-					$this->project_id = $project->id;
-					break;
-				}
+		if ( !current_user_can('projectmanager_user') )
+			return;
+
+		$this->project_id = 0;
+		foreach ( $projectmanager->getProjects() AS $project ) {
+			if ( 1 == $project->profile_hook ) {
+				$this->project_id = $project->id;
+				break;
 			}
-			$projectmanager->initialize($this->project_id);
-			if ( $this->project_id != 0 ) {
-				$project = $projectmanager->getProject();
+		}
+		$projectmanager->initialize($this->project_id);
+		if ( $this->project_id != 0 ) {
+			$project = $projectmanager->getProject();
+			
+			$is_profile_page = true;
+			$dataset = $wpdb->get_results( "SELECT `id`, `name`, `image`, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id} AND `user_id` = '".$current_user->ID."' LIMIT 0,1" );
+			$dataset = $dataset[0];
 				
-				$is_profile_page = true;
-				$dataset = $wpdb->get_results( "SELECT `id`, `name`, `image`, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id} AND `user_id` = '".$current_user->ID."' LIMIT 0,1" );
-				$dataset = $dataset[0];
-				
-				if ( $dataset ) {
-					$dataset_id = $dataset->id;
-					$cat_ids = $projectmanager->getSelectedCategoryIDs($dataset);
-					$dataset_meta = $projectmanager->getDatasetMeta( $dataset_id );
+			if ( $dataset ) {
+				$dataset_id = $dataset->id;
+				$cat_ids = $projectmanager->getSelectedCategoryIDs($dataset);
+				$dataset_meta = $projectmanager->getDatasetMeta( $dataset_id );
 		
-					$img_filename = $dataset->image;
-					$meta_data = array();
-					foreach ( $dataset_meta AS $meta )
-						$meta_data[$meta->form_field_id] = htmlspecialchars(stripslashes_deep($meta->value),ENT_QUOTES);
-				} else {
-					$dataset_id = ''; $cat_ids = array(); $img_filename = ''; $meta_data = array();
-				}
-				
-				echo '<h3>'.$projectmanager->getProjectTitle().'</h3>';
-				echo '<input type="hidden" name="project_id" value="'.$this->project_id.'" /><input type="hidden" name="dataset_id" value="'.$dataset_id.'" /><input type="hidden" name="dataset_user_id" value="'.$current_user->ID.'" />';
-				
-				include( dirname(__FILE__). '/dataset-form.php' );
+				$img_filename = $dataset->image;
+				$meta_data = array();
+				foreach ( $dataset_meta AS $meta )
+					$meta_data[$meta->form_field_id] = htmlspecialchars(stripslashes_deep($meta->value),ENT_QUOTES);
+			} else {
+				$dataset_id = ''; $cat_ids = array(); $img_filename = ''; $meta_data = array();
 			}
+			
+			echo '<h3>'.$projectmanager->getProjectTitle().'</h3>';
+			echo '<input type="hidden" name="project_id" value="'.$this->project_id.'" /><input type="hidden" name="dataset_id" value="'.$dataset_id.'" /><input type="hidden" name="dataset_user_id" value="'.$current_user->ID.'" />';
+				
+			include( dirname(__FILE__). '/dataset-form.php' );
 		}
 	}
 	

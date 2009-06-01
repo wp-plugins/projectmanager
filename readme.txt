@@ -117,13 +117,21 @@ If you want to use custom icons for the admin menu put them in
 
 = Access control =
 
-ProjectManager has three different capabilities: 
+Since Version 2.5 ProjectManager has fine grained access control: 
 
-*projectmanager_admin
-*manage_projects
-*project_user_profile
+* edit_projects: add and edit projects
+* delete_projects:  delete projects
+* projectmanager_settings: grants access to global settings page
+* edit_formfields: grant editing of formfields
+* edit_projects_settings: grant access to settings page of individual projects
+* import_datasets: grant import/export of datasets
+* edit_datasets: add datasets and edit own datasets
+* edit_other_datasets: add and edit any datasets (needs also edit_datasets)
+* delete_datasets: delete own datasets
+* delete_other_datasets: delete any dataset (needs also delete_datasets)
+* view_projects: grant read access to projects and dataset overview
+* projectmanager_user: grants permission to use profile hook feature
 
-Users with the capability *projectmanager_admin* can edit settings, edit formfields and import datasets from CSV files. By default only Administrators have this privilege. Users with the capability *manage_projects* can add and edit datasets and those with the capability *project_user_profile* can use the profile hook feature. **Important**: The capabilities are not additive! Thus a user with capability *projectmanager_admin*, but not *manage_projects* will not be able to add and edit datasets.
 
 = Notes on Formfields =
 

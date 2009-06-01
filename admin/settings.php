@@ -1,5 +1,5 @@
 <?php
-if ( !current_user_can( 'projectmanager_admin' ) ) : 
+if ( !current_user_can( 'edit_projects_settings' ) ) : 
      echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
 else :
 
@@ -23,7 +23,6 @@ if ( isset($_POST['saveSettings']) ) {
 	$this->editProject( $_POST['project_title'], $_POST['project_id'] );
 	$this->saveSettings( $settings, $_POST['project_id'] );
 
-	$this->setMessage(__( 'Settings saved', 'projectmanager' ));
      	$this->printMessage();
 }
 $project = $projectmanager->getProject( $projectmanager->getProjectID());

@@ -4,7 +4,7 @@ Plugin Name: ProjectManager
 Description: This Plugin can be used to manage several different types of projects with redundant data. This could be athlet portraits, DVD database, architect projects. You can define different form field types and groups to sort your project entries.
 Author URI: http://kolja.galerie-neander.de/
 Plugin URI: http://kolja.galerie-neander.de/plugins/projectmanager/
-Version: 2.4.7
+Version: 2.5
 Author: Kolja Schleich
 
 
@@ -40,7 +40,7 @@ class ProjectManagerLoader
 	 *
 	 * @var string
 	 */
-	 var $version = '2.4.7';
+	 var $version = '2.5';
 	 
 	 
 	 /**
@@ -48,7 +48,7 @@ class ProjectManagerLoader
 	  *
 	  * @var string
 	  */
-	 var $dbversion = '2.4.4';
+	 var $dbversion = '2.5';
 	 
 
 	 /**
@@ -381,14 +381,28 @@ class ProjectManagerLoader
 		* Add Capabilities
 		*/
 		$role = get_role('administrator');
-		$role->add_cap('projectmanager_admin');
-		$role->add_cap('manage_projects');
-		$role->add_cap('project_user_profile');
-		
+		$role->add_cap('edit_projects');
+		$role->add_cap('delete_projects');
+		$role->add_cap('projectmanager_settings');
+		$role->add_cap('edit_formfields');
+		$role->add_cap('edit_projects_settings');
+		$role->add_cap('import_datasets');
+		$role->add_cap('edit_datasets');
+		$role->add_cap('edit_other_datasets');
+		$role->add_cap('delete_datasets');
+		$role->add_cap('delete_other_datasets');
+		$role->add_cap('view_projects');
+		$role->add_cap('projectmanager_user');
+
 		$role = get_role('editor');
-		$role->add_cap('manage_projects');
-		$role->add_cap('project_user_profile');
-		
+		$role->add_cap('import_datasets');
+		$role->add_cap('edit_datasets');
+		$role->add_cap('edit_other_datasets');
+		$role->add_cap('delete_datasets');
+		$role->add_cap('delete_other_datasets');
+		$role->add_cap('view_projects');
+		$role->add_cap('projectmanager_user');
+
 		/*
 		* Add widget options
 		*/
