@@ -102,6 +102,13 @@ class ProjectManagerAdminPanel extends ProjectManager
 		global $projectmanager;
 		
 		$options = get_option('projectmanager');
+
+		// Update Plugin Version
+		if ( $options['version'] != PROJECTMANAGER_VERSION ) {
+			$options['version'] = PROJECTMANAGER_VERSION;
+			update_option('projectmanager', $options);
+		}
+
 		if( !isset($options['dbversion']) || $options['dbversion'] != PROJECTMANAGER_DBVERSION ) {
 			include_once ( dirname (__FILE__) . '/upgrade.php' );
 			projectmanager_upgrade_page();
