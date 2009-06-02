@@ -3,6 +3,10 @@ by Kolja Schleich <kolja.schleich@googlemail.com>
 
 V2.5 - April , 2009
 - NEW: fine grained access control
+- NEW: thickbox box for adding WP Users
+- NEW: add dataset upon user registration if user has capablity
+- NEW: profile Hook for any number of projects
+- CHANGED: only users with matching datasets are shown form in profile
 
 V2.4.7 - May 30, 2009
 - NEW: display ID of dataset in admin overview

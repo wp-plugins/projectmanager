@@ -99,7 +99,8 @@ class ProjectManagerLoader
 		
 		$this->project_id = isset($_GET['project_id']) ? (int)$_GET['project_id'] : false;
 		$projectmanager = new ProjectManager($this->project_id);
-		
+	
+		add_action( 'user_register', array(&$this->adminPanel, 'registerUser') );
 		add_action( 'show_user_profile', array(&$this->adminPanel, 'profileHook') );
 		add_action( 'profile_update', array(&$this->adminPanel, 'updateProfile') );
 	}
@@ -132,7 +133,7 @@ class ProjectManagerLoader
 		add_action( 'wp_ajax_projectmanager_save_form_field_options', 'projectmanager_save_form_field_options' );
 		add_action( 'wp_ajax_projectmanager_save_dataset_order', 'projectmanager_save_dataset_order' );
 		add_action( 'wp_ajax_projectmanager_ajax_delete_file', 'projectmanager_ajax_delete_file' );
-		
+		add_action( 'wp_ajax_projectmanager_insert_wp_user', 'projectmanager_insert_wp_user' );
 	}
 	
 	
@@ -401,6 +402,9 @@ class ProjectManagerLoader
 		$role->add_cap('delete_datasets');
 		$role->add_cap('delete_other_datasets');
 		$role->add_cap('view_projects');
+		$role->add_cap('projectmanager_user');
+
+		$role = get_role('subscriber');
 		$role->add_cap('projectmanager_user');
 
 		/*

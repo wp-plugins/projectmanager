@@ -550,6 +550,25 @@ class ProjectManagerAdminPanel extends ProjectManager
 	
 	
 	/**
+	 * check if dataset with given user ID exists
+	 *
+	 * @param int $user_id
+	 * @return boolean
+	 */
+	function datasetExists( $user_id )
+	{
+		global $wpdb;
+
+		$count= $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_dataset} WHERE `user_id` = '".$user_id."'" );
+
+		if ( $count > 0 )
+			return true;
+		
+		return false;
+	}
+
+
+	/**
 	 * export datasets to CSV
 	 *
 	 * @param int $project_id
@@ -600,20 +619,29 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 * @param string $name
 	 * @param array $cat_ids
 	 * @param array $dataset_meta
+	 * @param false|int $user_id
 	 * @return string
 	 */
-	function addDataset( $project_id, $name, $cat_ids, $dataset_meta = false )
+	function addDataset( $project_id, $name, $cat_ids, $dataset_meta = false, $user_id = false )
 	{
 		global $wpdb, $current_user, $projectmanager;
+
+		if ( $user_id && $this->datasetExists($user_id) ) {
+			$this->setMessage( __( 'You cannot add two datasets with same User ID.', 'projectmanager' ), true );
+			return false;
+		}
+
+		$projectmanager->initialize($project_id);
 		$this->project_id = $project_id;
 		$this->project = $projectmanager->getProject($project_id);
+		if ( !$user_id ) $user_id = $current_user->ID;
 
 		if ( !current_user_can('edit_datasets') && !current_user_can('projectmanager_user') ) {
 			$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
 			return;
 		}
 
-		$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_dataset} (name, cat_ids, project_id, user_id) VALUES ('%s', '%s', '%d', '%d')", $name, maybe_serialize($cat_ids), $project_id, $current_user->ID ) );
+		$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_dataset} (name, cat_ids, project_id, user_id) VALUES ('%s', '%s', '%d', '%d')", $name, maybe_serialize($cat_ids), $project_id, $user_id ) );
 		$dataset_id = $wpdb->insert_id;
 				
 		if ( $dataset_meta ) {
@@ -641,17 +669,23 @@ class ProjectManagerAdminPanel extends ProjectManager
 
 				$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ('%d', '%d', '%s')", $meta_id, $dataset_id, $meta_value ) );
 			}
-		}
 			
-		// Check for unsubmitted form data, e.g. checkbox list
-		if ($form_fields = parent::getFormFields()) {
-			foreach ( $form_fields AS $form_field ) {
-				if ( !array_key_exists($form_field->id, $dataset_meta) ) {
-					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `value` = '' WHERE `dataset_id` = '%d' AND `form_id` = '%d'", $dataset_id, $form_field->id ) );
+			// Check for unsubmitted form data, e.g. checkbox list
+			if ($form_fields = parent::getFormFields()) {
+				foreach ( $form_fields AS $form_field ) {
+					if ( !array_key_exists($form_field->id, $dataset_meta) ) {
+						$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ('%d', '%d', '')", $dataset_id, $form_field->id ) );
+					}
 				}
 			}
+		} else {
+			// Populate empty meta value for new registered user
+			foreach ( $projectmanager->getFormFields() AS $formfield ) {
+				$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ('%d', '%d', '')", $formfield->id, $dataset_id ) );
+			}
 		}
-		
+
+
 		if ( isset($_FILES['projectmanager_image']) && $_FILES['projectmanager_image']['name'] != ''  )
 			$this->uploadImage($dataset_id, $_FILES['projectmanager_image']);
 				
@@ -1003,38 +1037,38 @@ class ProjectManagerAdminPanel extends ProjectManager
 		if ( !current_user_can('projectmanager_user') )
 			return;
 
-		$this->project_id = 0;
+		$projects = array();
 		foreach ( $projectmanager->getProjects() AS $project ) {
-			if ( 1 == $project->profile_hook ) {
-				$this->project_id = $project->id;
-				break;
-			}
+			if ( 1 == $project->profile_hook ) 
+				$projects[] = $project->id;
 		}
-		$projectmanager->initialize($this->project_id);
-		if ( $this->project_id != 0 ) {
-			$project = $projectmanager->getProject();
+
+		if ( !empty($projects) ) {
+			foreach ( $projects AS $project_id ) {
+				$this->project_id = $project_id;
+				$projectmanager->initialize($this->project_id);
+				$project = $projectmanager->getProject();
 			
-			$is_profile_page = true;
-			$dataset = $wpdb->get_results( "SELECT `id`, `name`, `image`, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id} AND `user_id` = '".$current_user->ID."' LIMIT 0,1" );
-			$dataset = $dataset[0];
-				
-			if ( $dataset ) {
-				$dataset_id = $dataset->id;
-				$cat_ids = $projectmanager->getSelectedCategoryIDs($dataset);
-				$dataset_meta = $projectmanager->getDatasetMeta( $dataset_id );
+				$is_profile_page = true;
+				$dataset = $wpdb->get_results( "SELECT `id`, `name`, `image`, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id} AND `user_id` = '".$current_user->ID."' LIMIT 0,1" );
+				$dataset = $dataset[0];
+					
+				if ( $dataset ) {
+					$dataset_id = $dataset->id;
+					$cat_ids = $projectmanager->getSelectedCategoryIDs($dataset);
+					$dataset_meta = $projectmanager->getDatasetMeta( $dataset_id );
 		
-				$img_filename = $dataset->image;
-				$meta_data = array();
-				foreach ( $dataset_meta AS $meta )
-					$meta_data[$meta->form_field_id] = htmlspecialchars(stripslashes_deep($meta->value),ENT_QUOTES);
-			} else {
-				$dataset_id = ''; $cat_ids = array(); $img_filename = ''; $meta_data = array();
-			}
+					$img_filename = $dataset->image;
+					$meta_data = array();
+					foreach ( $dataset_meta AS $meta )
+						$meta_data[$meta->form_field_id] = htmlspecialchars(stripslashes_deep($meta->value),ENT_QUOTES);
 			
-			echo '<h3>'.$projectmanager->getProjectTitle().'</h3>';
-			echo '<input type="hidden" name="project_id" value="'.$this->project_id.'" /><input type="hidden" name="dataset_id" value="'.$dataset_id.'" /><input type="hidden" name="dataset_user_id" value="'.$current_user->ID.'" />';
+					echo '<h3>'.$projectmanager->getProjectTitle().'</h3>';
+					echo '<input type="hidden" name="project_id" value="'.$this->project_id.'" /><input type="hidden" name="dataset_id" value="'.$dataset_id.'" /><input type="hidden" name="dataset_user_id" value="'.$current_user->ID.'" />';
 				
-			include( dirname(__FILE__). '/dataset-form.php' );
+					include( dirname(__FILE__). '/dataset-form.php' );
+				}
+			}
 		}
 	}
 	
@@ -1049,12 +1083,28 @@ class ProjectManagerAdminPanel extends ProjectManager
 	{
 		$user_id = $_POST['dataset_user_id'];
 		check_admin_referer('update-user_' . $user_id);
-		if ( '' == $_POST['dataset_id'] ) {
-			$this->addDataset( $_POST['project_id'], $_POST['display_name'], $_POST['post_category'], $_POST['form_field'] );
-		} else {
-			$del_image = isset( $_POST['del_old_image'] ) ? true : false;
-			$overwrite_image = ( isset($_POST['overwrite_image']) && 1 == $_POST['overwrite_image'] ) ? true: false;
-			$this->editDataset( $_POST['project_id'], $_POST['display_name'], $_POST['post_category'], $_POST['dataset_id'], $_POST['form_field'], $user_id, $del_image, $_POST['image_file'], $overwrite_image );
+		$del_image = isset( $_POST['del_old_image'] ) ? true : false;
+		$overwrite_image = ( isset($_POST['overwrite_image']) && 1 == $_POST['overwrite_image'] ) ? true: false;
+		$this->editDataset( $_POST['project_id'], $_POST['display_name'], $_POST['post_category'], $_POST['dataset_id'], $_POST['form_field'], $user_id, $del_image, $_POST['image_file'], $overwrite_image );
+	}
+
+
+	/**
+	 * registrer new user
+	 *
+	 * @param int $user_id
+	 * @return void
+	 */
+	function registerUser( $user_id )
+	{
+		global $projectmanager;
+
+		$user = new WP_User($user_id);
+		if ( $user->has_cap('projectmanager_user') ) {
+			foreach ( $projectmanager->getProjects() AS $project ) {
+				if ( 1 == $project->profile_hook ) 
+					$this->addDataset( $project->id, $user->first_name, array(), false, $user_id );
+			}
 		}
 	}
 }

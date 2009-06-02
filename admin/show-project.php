@@ -11,7 +11,8 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['doaction']) ) {
 	if ( 'dataset' == $_POST['updateProjectManager'] ) {
 		check_admin_referer( 'projectmanager_edit-dataset' );
 		if ( '' == $_POST['dataset_id'] ) {
-			$this->addDataset( $_POST['project_id'], $_POST['name'], $_POST['post_category'], $_POST['form_field'] );
+			$user_id = !empty($_POST['user_id']) ? (int)$_POST['user_id'] : false;
+			$this->addDataset( $_POST['project_id'], $_POST['name'], $_POST['post_category'], $_POST['form_field'], $user_id );
 		} else {
 			$dataset_owner = isset($_POST['owner']) ? $_POST['owner'] : false;
 			$del_image = isset( $_POST['del_old_image'] ) ? true : false;
