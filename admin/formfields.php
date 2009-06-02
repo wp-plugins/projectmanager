@@ -1,5 +1,5 @@
 <?php
-if ( !current_user_can( 'projectmanager_admin' ) ) : 
+if ( !current_user_can( 'edit_formfields' ) ) : 
      echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
 else :
 
