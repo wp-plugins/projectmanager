@@ -172,16 +172,8 @@ ul.categorychecklist li label, ul.categorychecklist li input, ul.children li lab
 	margin: 0 3px;
 	padding: 0;
 	}
-div#wp_users form {
-	display: block;
-	margin: auto;
-	text-align: center;
-	}
-div#wp_users form select {
-	display: block;
-	margin: 1em auto;
-	}
 	
+
 /**
  * @section Widget
  */

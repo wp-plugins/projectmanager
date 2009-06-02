@@ -36,9 +36,10 @@ if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) 
 ?>
 
 <?php if ( current_user_can('edit_other_datasets') && !$editt ) : ?>
-<div id="wp_users" style="display: none; overflow: auto;">
+<div id="wp_users" style="display: none; overflow: auto;" class="projectmanager_thickbox">
 	<form>
-		<?php wp_dropdown_users( array('name' => 'wp_user_id') ) ?>
+		<div style="display: block; margin: 0.7em auto; text-align: center;"><?php wp_dropdown_users( array('name' => 'wp_user_id') ) ?></div>
+
 		<div style="text-align:center; margin-top: 1em;"><input type="button" value="<?php _e('Insert') ?>" class="button-secondary" onclick="ProjectManager.addWPUser();return false;" />&#160;<input type="button" value="<?php _e('Cancel') ?>" class="button" onclick="tb_remove();" /></div>
 	</form>
 </div>

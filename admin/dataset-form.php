@@ -11,7 +11,7 @@ document.forms[0].encoding = "multipart/form-data";
 		<td>
 			<input type="text" name="name" id="name" value="<?php echo $name ?>" size="45" />
 			<?php if ( current_user_can('edit_other_datasets') && !$edit ) : ?>
-				<span><a class="thickbox" title="<?php _e( 'Add WP User', 'projectmanager' ) ?>" href="#TB_inline&width=200&height=100&inlineId=wp_users"><img src="<?php echo PROJECTMANAGER_URL ?>/admin/icons/menu/user.png" alt="<?php _e( 'Add WP User', 'projectmanager' ) ?>" /></a></span>
+				<span><a class="thickbox" title="<?php _e( 'Add WP User', 'projectmanager' ) ?>" href="#TB_inline&width=200&height=100&inlineId=wp_users"><img src="<?php echo PROJECTMANAGER_URL ?>/admin/icons/menu/user.png" alt="<?php _e( 'Add WP User', 'projectmanager' ) ?>" style="vertical-align: middle;" /></a></span>
 			<?php endif; ?>
 		</td>
 	</tr>
