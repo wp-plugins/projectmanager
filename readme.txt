@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: datamanager, CMS, Content Management System
 Requires at least: 2.7
 Tested up to: 2.7.1
-Stable tag: 2.4.7
+Stable tag: 2.5
 
 This plugin can be used to manage any number of projects with recurrent datasets (e.g. portrait system, dvd collection)
 
@@ -24,7 +24,7 @@ This plugin is a datamanager for any recurrent datasets. It can be used to manag
 * change colorscheme for output tables via admin panel
 * dataset sorting by any form field
 * import and export of datasets from/to CSV file
-* hook one project into user profile
+* hook projects into user profile
 * manual drag & drop sorting of datasets
 
 See [Usage](http://wordpress.org/extend/plugins/projectmanager/other_notes/) for details on shortcodes and the template system.
@@ -106,9 +106,10 @@ you can use this template to display with the following code
 `[project id=x template=**gallery-custom** cat_id=y]`
 
 
-= Hook Project into user profile =
+= Extend User Profile =
 
-It is possible to hook one project into the user profile to use it as extended profile. Thus it could be used to implement a player registration in combination with my [LeagueManager Plugin](http://wordpress.org/extend/plugins/leaguemanager/). Users need the capability `project_user_profile` to use this feature. By default only Administrators and Editors have this, but you can use [Role Manager](http://www.im-web-gefunden.de/wordpress-plugins/role-manager/) for finetuning.
+Projects can be linked with the user profile. Any usr with capability *projectmanager_user* can use this feature. If the default role has this capability users get added to each project that has the hook activated and can edit data through their profile. To subsequently add a Wordpress user to a project, use the *Add WP User* Link in the dataset form, located next to the name field. The added dataset will be linked to this user.
+
 
 = Custom icons for Admin Menu =
 If you want to use custom icons for the admin menu put them in

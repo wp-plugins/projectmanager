@@ -1,7 +1,7 @@
 ProjectManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
-V2.5 - April , 2009
+V2.5 - June 2 , 2009
 - NEW: fine grained access control
 - NEW: thickbox box for adding WP Users
 - NEW: add dataset upon user registration if user has capablity
