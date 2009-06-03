@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
 "POT-Creation-Date: 2009-02-05 22:08+0000\n"
-"PO-Revision-Date: 2009-05-26 21:09-0500\n"
+"PO-Revision-Date: 2009-06-02 15:00-0500\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -869,4 +869,16 @@ msgstr "Aufdecken"
 
 msgid "Wipe"
 msgstr "Wischen"
+
+msgid "WP User"
+msgstr "WP Benutzer"
+
+msgid "Add WP User"
+msgstr "WP Benutzer hinzufügen"
+
+msgid "You cannot add two datasets with same User ID"
+msgstr "Du kannst nicht zwei Datensätze mit gleicher Benutzer ID hinzufügen"
+
+msgid "You don't have permission to perform this task"
+msgstr "Du hast nicht die Berechtigung diese Aufgabe auszuführen"
 

@@ -4,7 +4,7 @@ Plugin Name: ProjectManager
 Description: This Plugin can be used to manage several different types of projects with redundant data. This could be athlet portraits, DVD database, architect projects. You can define different form field types and groups to sort your project entries.
 Author URI: http://kolja.galerie-neander.de/
 Plugin URI: http://kolja.galerie-neander.de/plugins/projectmanager/
-Version: 2.4.6
+Version: 2.5.2
 Author: Kolja Schleich
 
 
@@ -40,7 +40,7 @@ class ProjectManagerLoader
 	 *
 	 * @var string
 	 */
-	 var $version = '2.4.6';
+	 var $version = '2.5.2';
 	 
 	 
 	 /**
@@ -48,7 +48,7 @@ class ProjectManagerLoader
 	  *
 	  * @var string
 	  */
-	 var $dbversion = '2.4.4';
+	 var $dbversion = '2.5.1';
 	 
 
 	 /**
@@ -99,7 +99,8 @@ class ProjectManagerLoader
 		
 		$this->project_id = isset($_GET['project_id']) ? (int)$_GET['project_id'] : false;
 		$projectmanager = new ProjectManager($this->project_id);
-		
+	
+		add_action( 'user_register', array(&$this->adminPanel, 'registerUser') );
 		add_action( 'show_user_profile', array(&$this->adminPanel, 'profileHook') );
 		add_action( 'profile_update', array(&$this->adminPanel, 'updateProfile') );
 	}
@@ -132,7 +133,7 @@ class ProjectManagerLoader
 		add_action( 'wp_ajax_projectmanager_save_form_field_options', 'projectmanager_save_form_field_options' );
 		add_action( 'wp_ajax_projectmanager_save_dataset_order', 'projectmanager_save_dataset_order' );
 		add_action( 'wp_ajax_projectmanager_ajax_delete_file', 'projectmanager_ajax_delete_file' );
-		
+		add_action( 'wp_ajax_projectmanager_insert_wp_user', 'projectmanager_insert_wp_user' );
 	}
 	
 	
@@ -381,14 +382,31 @@ class ProjectManagerLoader
 		* Add Capabilities
 		*/
 		$role = get_role('administrator');
-		$role->add_cap('projectmanager_admin');
-		$role->add_cap('manage_projects');
-		$role->add_cap('project_user_profile');
-		
+		$role->add_cap('edit_projects');
+		$role->add_cap('delete_projects');
+		$role->add_cap('projectmanager_settings');
+		$role->add_cap('edit_formfields');
+		$role->add_cap('edit_projects_settings');
+		$role->add_cap('import_datasets');
+		$role->add_cap('edit_datasets');
+		$role->add_cap('edit_other_datasets');
+		$role->add_cap('delete_datasets');
+		$role->add_cap('delete_other_datasets');
+		$role->add_cap('view_projects');
+		$role->add_cap('projectmanager_user');
+
 		$role = get_role('editor');
-		$role->add_cap('manage_projects');
-		$role->add_cap('project_user_profile');
-		
+		$role->add_cap('import_datasets');
+		$role->add_cap('edit_datasets');
+		$role->add_cap('edit_other_datasets');
+		$role->add_cap('delete_datasets');
+		$role->add_cap('delete_other_datasets');
+		$role->add_cap('view_projects');
+		$role->add_cap('projectmanager_user');
+
+		$role = get_role('subscriber');
+		$role->add_cap('projectmanager_user');
+
 		/*
 		* Add widget options
 		*/

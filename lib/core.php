@@ -1032,7 +1032,6 @@ class ProjectManager extends ProjectManagerLoader
 					$meta_value = call_user_func_array($field['callback'], $field['args']);
 				}
 				
-					
 				if ( 1 == $meta->show_on_startpage || $show_all ) {
 					if ( $meta_value != '' ) {
 						if ( 'dl' == $output ) {
@@ -1042,7 +1041,8 @@ class ProjectManager extends ProjectManagerLoader
 						} else {
 							$out .= "\n\t<td class='".$meta->type."'>";
 							$out .= $this->getThickbox( $dataset->id, $meta->form_field_id, $meta->type, maybe_unserialize($meta->value), $dataset->user_id );
-							$out .= "\n\t\t".$meta_value . $this->getThickboxLink($dataset->id, $meta->form_field_id, $meta->type, sprintf(__('%s of %s','projectmanager'), $meta->label, $dataset->name), $dataset->user_id, maybe_unserialize($meta->value));
+							$out .= "\n\t\t".$meta_value;
+							$out .= $this->getThickboxLink($dataset->id, $meta->form_field_id, $meta->type, sprintf(__('%s of %s','projectmanager'), $meta->label, $dataset->name), $dataset->user_id, maybe_unserialize($meta->value));
 							$out .= "\n\t</td>";
 						}
 					} elseif ( 'td' == $output ) {
@@ -1051,7 +1051,8 @@ class ProjectManager extends ProjectManagerLoader
 							
 						$out .= "\n\t<td class='".$meta->type."'>";
 						$out .= $this->getThickbox( $dataset->id, $meta->form_field_id, $meta->type, maybe_unserialize($meta->value), $dataset->user_id );
-						$out .= $meta_value . $this->getThickboxLink($dataset->id, $meta->form_field_id, $meta->type, sprintf(__('%s of %s','projectmanager'), $meta->label, $dataset->name), $dataset->user_id, maybe_unserialize($meta->value));
+						$out .= $meta_value;
+						$out .= $this->getThickboxLink($dataset->id, $meta->form_field_id, $meta->type, sprintf(__('%s of %s','projectmanager'), $meta->label, $dataset->name), $dataset->user_id, maybe_unserialize($meta->value));
 						$out .= "\n\t</td>";
 					}
 				}
@@ -1081,7 +1082,7 @@ class ProjectManager extends ProjectManagerLoader
 		global $current_user;
 		
 		$out = '';
-		if ( is_admin() && current_user_can( 'manage_projects' ) ) {
+		if ( is_admin() && ( ( current_user_can('edit_datasets') && $current_user->ID == $dataset_owner ) || ( current_user_can('edit_other_datasets') ) ) ) {
 			$dims = array('width' => '300', 'height' => '100');
 			if ( 'textfield' == $formfield_type )
 				$dims = array('width' => '400', 'height' => '300');
@@ -1115,7 +1116,7 @@ class ProjectManager extends ProjectManagerLoader
 		
 		$value = htmlspecialchars(stripslashes_deep($value), ENT_QUOTES);
 		$out = '';
-		if ( is_admin() && current_user_can( 'manage_projects' ) ) {
+		if ( is_admin() && ( ( current_user_can('edit_datasets') && $current_user->ID == $dataset_owner ) || ( current_user_can('edit_other_datasets') ) ) ) {
 			
 			$out .= "\n\t\t<div id='datafieldwrap".$formfield_id."_".$dataset_id."' style='overfow:auto;display:none;'>";
 			$out .= "\n\t\t<div id='datafieldbox".$formfield_id."_".$dataset_id."' class='projectmanager_thickbox'>";
