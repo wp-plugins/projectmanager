@@ -632,14 +632,26 @@ class ProjectManagerAdminPanel extends ProjectManager
 			return false;
 		}
 
+		
 		$projectmanager->initialize($project_id);
 		$this->project_id = $project_id;
 		$this->project = $projectmanager->getProject($project_id);
 		if ( !$user_id ) $user_id = $current_user->ID;
 
+		// Negative check on capability: user can't edit datasets
 		if ( !current_user_can('edit_datasets') && !current_user_can('projectmanager_user') ) {
-			$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
-			return;
+			// user has cap 'projectmanager_user'
+			if ( current_user_can('projectmanager_user') && !current_user_can('edit_other_datasets') ) {
+				// and dataset with this user ID already exists
+				if ( $this->datasetExists($project_id, $user_id) ) {
+					$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
+					return;
+				}
+			} else {
+				// he doesn't have capability 'projctmanager_user'
+				$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
+				return;
+			}
 		}
 
 		$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_dataset} (name, cat_ids, project_id, user_id) VALUES ('%s', '%s', '%d', '%d')", $name, maybe_serialize($cat_ids), $project_id, $user_id ) );
@@ -715,9 +727,16 @@ class ProjectManagerAdminPanel extends ProjectManager
 		$this->project = $projectmanager->getProject($this->project_id);
 		$dataset = $projectmanager->getDataset($dataset_id);
 
-		if ( ( !current_user_can('edit_datasets') && !current_user_can('projectmanager_user') ) || ( !current_user_can('edit_other_datasets') && $dataset->user_id != $current_user->ID ) ) {
-			$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
-			return;
+		if ( !current_user_can('edit_datasets') && !current_user_can('projectmanager_user') ) {
+			if ( current_user_can('projectmanager_user') && !current_user_can('edit_other_datasets') ) {
+				if ( $dataset->user_id != $current_user->ID ) {
+					$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
+					return;
+				}
+			} else {
+				$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
+				return;
+			}
 		}
 
 		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `name` = '%s', `cat_ids` = '%s' WHERE `id` = '%d'", $name, maybe_serialize($cat_ids), $dataset_id ) );
@@ -770,8 +789,21 @@ class ProjectManagerAdminPanel extends ProjectManager
 			$this->delImage( $image_file );
 		}
 				
-		if ( isset($_FILES['projectmanager_image']) && $_FILES['projectmanager_image']['name'] != '' )
-			$this->uploadImage($dataset_id, $_FILES['projectmanager_image'], $overwrite_image);
+		if ( isset($_FILES['projectmanager_image']) ) {
+			if ( is_array($_FILES['projectmanager_image']['name']) ) {
+				$file = array(
+					'name' => $_FILES['projectmanager_image']['name'][$dataset_id],
+					'tmp_name' => $_FILES['projectmanager_image']['tmp_name'][$dataset_id],
+					'size' => $_FILES['projectmanager_image']['size'][$dataset_id],
+					'type' => $_FILES['projectmanager_image']['type'][$dataset_id],
+					);
+			} else {
+				$file = $_FILES['projectmanager_image'];
+			}
+
+			if ( !empty($file['name']) ) 
+				$this->uploadImage($dataset_id, $file, $overwrite_image);
+		}
 			
 		$this->setmessage( __('Dataset updated.', 'projectmanager') );
 	}
@@ -1065,9 +1097,9 @@ class ProjectManagerAdminPanel extends ProjectManager
 						$meta_data[$meta->form_field_id] = htmlspecialchars(stripslashes_deep($meta->value),ENT_QUOTES);
 			
 					echo '<h3>'.$projectmanager->getProjectTitle().'</h3>';
-					echo '<input type="hidden" name="project_id" value="'.$this->project_id.'" /><input type="hidden" name="dataset_id" value="'.$dataset_id.'" /><input type="hidden" name="dataset_user_id" value="'.$current_user->ID.'" />';
+					echo '<input type="hidden" name="project_id['.$dataset_id.']" value="'.$project_id.'" /><input type="hidden" name="dataset_id[]" value="'.$dataset_id.'" /><input type="hidden" name="dataset_user_id" value="'.$current_user->ID.'" />';
 				
-					include( dirname(__FILE__). '/dataset-form.php' );
+					include( dirname(__FILE__). '/dataset-form-profile.php' );
 				}
 			}
 		}
@@ -1083,10 +1115,13 @@ class ProjectManagerAdminPanel extends ProjectManager
 	function updateProfile()
 	{
 		$user_id = $_POST['dataset_user_id'];
-		check_admin_referer('update-user_' . $user_id);
-		$del_image = isset( $_POST['del_old_image'] ) ? true : false;
-		$overwrite_image = ( isset($_POST['overwrite_image']) && 1 == $_POST['overwrite_image'] ) ? true: false;
-		$this->editDataset( $_POST['project_id'], $_POST['display_name'], $_POST['post_category'], $_POST['dataset_id'], $_POST['form_field'], $user_id, $del_image, $_POST['image_file'], $overwrite_image );
+//		check_admin_referer('update-user_' . $user_id);
+
+		foreach ( $_POST['dataset_id'] AS $id ) {
+			$del_image = isset( $_POST['del_old_image'][$id] ) ? true : false;
+			$overwrite_image = ( isset($_POST['overwrite_image'][$id]) && 1 == $_POST['overwrite_image'][$id] ) ? true: false;
+			$this->editDataset( $_POST['project_id'][$id], $_POST['display_name'], $_POST['post_category'][$id], $id, $_POST['form_field'][$id], $user_id, $del_image, $_POST['image_file'][$id], $overwrite_image );
+		}
 	}
 
 
