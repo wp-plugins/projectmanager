@@ -552,14 +552,15 @@ class ProjectManagerAdminPanel extends ProjectManager
 	/**
 	 * check if dataset with given user ID exists
 	 *
+	 * @param int $project_id
 	 * @param int $user_id
 	 * @return boolean
 	 */
-	function datasetExists( $user_id )
+	function datasetExists( $project_id, $user_id )
 	{
 		global $wpdb;
 
-		$count= $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_dataset} WHERE `user_id` = '".$user_id."'" );
+		$count= $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$project_id} AND `user_id` = '".$user_id."'" );
 
 		if ( $count > 0 )
 			return true;
@@ -626,7 +627,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 	{
 		global $wpdb, $current_user, $projectmanager;
 
-		if ( $user_id && $this->datasetExists($user_id) ) {
+		if ( $user_id && $this->datasetExists($project_id, $user_id) ) {
 			$this->setMessage( __( 'You cannot add two datasets with same User ID.', 'projectmanager' ), true );
 			return false;
 		}

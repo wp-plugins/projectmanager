@@ -1,6 +1,9 @@
 ProjectManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
+V2.5.1 - June 3, 2009
+- BUGFIX: check for double datasets
+
 V2.5 - June 2 , 2009
 - NEW: fine grained access control
 - NEW: thickbox box for adding WP Users
