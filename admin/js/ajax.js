@@ -1,3 +1,18 @@
+ProjectManager.addWPUser = function() {
+	var user_id = document.getElementById('wp_user_id').value;
+	var ajax = new sack(ProjectManagerAjaxL10n.requestUrl);
+	ajax.execute = 1;
+	ajax.method = 'POST';
+	ajax.setVar( "action", "projectmanager_insert_wp_user" );
+	ajax.setVar( "wp_user_id", user_id  );
+	ajax.onError = function() { alert('Ajax error on saving dataset order'); };
+	ajax.onCompletion = function() { return true; };
+	ajax.runAJAX();
+
+	tb_remove();
+}
+
+
 ProjectManager.AJAXdeleteFile = function(file, dataset_id, formfield_id, formfield_type) {		
 	var check = window.confirm(ProjectManagerAjaxL10n.delFile + " " + ProjectManager.basename(file) + '?');
 	

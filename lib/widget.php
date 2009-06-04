@@ -6,7 +6,7 @@
 * @copyright 	Copyright 2008-2009
 */
 
-class ProjectManagerWidget extends ProjectManager
+class ProjectManagerWidget
 {
 	/**
 	 * prefix of widget
@@ -69,7 +69,7 @@ class ProjectManagerWidget extends ProjectManager
 	 */
 	function display( $args, $widget_args = 1 )
 	{
-		global $wpdb;
+		global $wpdb, $projectmanager;
 
 		if ( is_numeric($widget_args) )
 			$widget_args = array( 'number' => $widget_args );
@@ -80,9 +80,9 @@ class ProjectManagerWidget extends ProjectManager
 		$options = $options[$number];
 
 		$project_id = $options['project_id'];
-		parent::initialize($project_id);
+		$projectmanager->initialize($project_id);
 		
-		$project = parent::getProject($project_id);
+		$project = $projectmanager->getCurrentProject();
 		
 		$defaults = array(
 			'before_widget' => '<li id="projectmanager-'.$number.'" class="widget '.get_class($this).'_'.__FUNCTION__.'">',
@@ -137,7 +137,7 @@ class ProjectManagerWidget extends ProjectManager
 			$url = get_permalink($options['page_id']);
 			foreach ( $datasets AS $dataset ) {
 				$url = add_query_arg('show', $dataset->id, $url);
-				$name = (parent::hasDetails()) ? '<a href="'.$url.'"><img src="'.parent::getFileURL($dataset->image).'" alt="'.$dataset->name.'" title="'.$dataset->name.'" /></a>' : '<img src="'.parent::getFileURL($dataset->image).'" alt="'.$dataset->name.'" title="'.$dataset->name.'" />';
+				$name = ($projectmanager->hasDetails()) ? '<a href="'.$url.'"><img src="'.$projectmanager->getFileURL($dataset->image).'" alt="'.$dataset->name.'" title="'.$dataset->name.'" /></a>' : '<img src="'.$projectmanager->getFileURL($dataset->image).'" alt="'.$dataset->name.'" title="'.$dataset->name.'" />';
 				
 				if ( $slideshow ) {
 					if ( $dataset->image != '' )
@@ -289,7 +289,8 @@ class ProjectManagerWidget extends ProjectManager
 	 */
 	function getProjectsDropdown($current, $number)
 	{
-		$projects = parent::getProjects();
+		global $projectmanager;
+		$projects = $projectmanager->getProjects();
 		
 		$out = "<select size='1' name='".$this->prefix."[".$number."][project_id]' id='".$this->prefix."_".$number."_project_id'>";
 		foreach ( $projects AS $project ) {

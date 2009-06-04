@@ -8,7 +8,7 @@
 * @copyright 	Copyright 2008-2009
 */
 
-class ProjectManagerImage extends ProjectManager
+class ProjectManagerImage 
 {
 	/**
 	 * image filename
@@ -29,6 +29,8 @@ class ProjectManagerImage extends ProjectManager
 	/**
 	* Initializes plugin
 	*
+	* Load thumbnail class and store image in class
+	*
 	* @param none
 	* @return void
 	*/
@@ -46,7 +48,7 @@ class ProjectManagerImage extends ProjectManager
 	
 	
 	/**
-	 * gets supported file types
+	 * get supported file types
 	 *
 	 * @param none
 	 * @return array
@@ -58,22 +60,22 @@ class ProjectManagerImage extends ProjectManager
 	
 
 	/**
-	 * checks if image type is supported
+	 * check if image type is supported
 	 *
-	 * @param string $filename image file
+	 * @param none
 	 * @return boolean
 	 */
 	function supported()
 	{
 		if ( in_array($this->getImageType(), $this->getSupportedImageTypes()) )
 			return true;
-		else
-			return false;
+		
+		return false;
 	}
 	
 	
 	/**
-	 * gets image type of supplied image
+	 * get image type of supplied image
 	 *
 	 * @param none
 	 * @return file extension
@@ -88,7 +90,7 @@ class ProjectManagerImage extends ProjectManager
 	/**
 	 * create Thumbnail of Image
 	 *
-	 * @param array $dims
+	 * @param array $dims assoziative array of image dimension
 	 * @param string $new_image
 	 * @param string $chmod chmod of uploaded image file. ignored if empty
 	 */
