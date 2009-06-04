@@ -4,7 +4,7 @@ Plugin Name: ProjectManager
 Description: This Plugin can be used to manage several different types of projects with redundant data. This could be athlet portraits, DVD database, architect projects. You can define different form field types and groups to sort your project entries.
 Author URI: http://kolja.galerie-neander.de/
 Plugin URI: http://kolja.galerie-neander.de/plugins/projectmanager/
-Version: 2.5.5
+Version: 2.5.6
 Author: Kolja Schleich
 
 
@@ -40,7 +40,7 @@ class ProjectManagerLoader
 	 *
 	 * @var string
 	 */
-	 var $version = '2.5.5';
+	 var $version = '2.5.6';
 	 
 	 
 	 /**
@@ -114,15 +114,6 @@ class ProjectManagerLoader
 		// Add TinyMCE Button
 		add_action( 'init', array(&$this, 'addTinyMCEButton') );
 		add_filter( 'tiny_mce_version', array(&$this, 'changeTinyMCEVersion') );
-		
-		// Ajax Actions
-		add_action( 'wp_ajax_projectmanager_save_name', 'projectmanager_save_name' );
-		add_action( 'wp_ajax_projectmanager_save_categories', 'projectmanager_save_categories' );
-		add_action( 'wp_ajax_projectmanager_save_form_field_data', 'projectmanager_save_form_field_data' );
-		add_action( 'wp_ajax_projectmanager_save_form_field_options', 'projectmanager_save_form_field_options' );
-		add_action( 'wp_ajax_projectmanager_save_dataset_order', 'projectmanager_save_dataset_order' );
-		add_action( 'wp_ajax_projectmanager_ajax_delete_file', 'projectmanager_ajax_delete_file' );
-		add_action( 'wp_ajax_projectmanager_insert_wp_user', 'projectmanager_insert_wp_user' );
 	}
 	
 	
@@ -178,11 +169,14 @@ class ProjectManagerLoader
 
 		// Global libraries
 		require_once (dirname (__FILE__) . '/lib/core.php');
+		require_once (dirname (__FILE__) . '/lib/ajax.php');
 		require_once (dirname (__FILE__) . '/lib/widget.php');
 		require_once (dirname (__FILE__) . '/functions.php');
 		
 		$project_id = isset($_GET['project_id']) ? (int)$_GET['project_id'] : false;
 		$projectmanager = new ProjectManager($project_id);
+
+		$ajax = new ProjectManagerAJAX();
 
 		if ( is_admin() ) {
 			require_once (dirname (__FILE__) . '/lib/image.php');
