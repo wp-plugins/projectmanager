@@ -1,5 +1,5 @@
 <?php
-if ( !current_user_can( 'projectmanager_admin' ) ) : 
+if ( !current_user_can( 'edit_projects_settings' ) ) : 
      echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
 else :
 
@@ -23,10 +23,9 @@ if ( isset($_POST['saveSettings']) ) {
 	$this->editProject( $_POST['project_title'], $_POST['project_id'] );
 	$this->saveSettings( $settings, $_POST['project_id'] );
 
-	$this->setMessage(__( 'Settings saved', 'projectmanager' ));
      	$this->printMessage();
 }
-$project = $projectmanager->getProject( $projectmanager->getProjectID());
+$project = $projectmanager->getCurrentProject();
 
 if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) )
 	echo "<div class='error'><p>".sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $projectmanager->getFilePath() )."</p></div>";
@@ -63,7 +62,7 @@ if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) 
 			<th scope="row"><label for="navi_link"><?php _e( 'Navi Link', 'projectmanager' ) ?></th><td><input type="checkbox" name="navi_link" id="navi_link" value="1"<?php if ( 1 == $project->navi_link  ) echo ' checked="checked"'; ?> />&#160;<span class="setting-description"><?php _e( 'Set this option to add a direct link in the navigation panel.', 'projectmanager' ) ?></span></td>
 		</tr>
 		<tr valign="top">
-			<th scope="row"><label for="profile_hook"><?php _e( 'Hook into Profile', 'projectmanager' ) ?></th><td><input type="checkbox" name="profile_hook" id="profile_hook" value="1" <?php if ( 1 == $project->profile_hook ) echo 'checked="checked"' ?> />&#160;<span class="setting-description"><?php _e( 'Only one project can be hooked into the profile!', 'projectmanager' ) ?></span></td>
+			<th scope="row"><label for="profile_hook"><?php _e( 'Hook into Profile', 'projectmanager' ) ?></th><td><input type="checkbox" name="profile_hook" id="profile_hook" value="1" <?php if ( 1 == $project->profile_hook ) echo 'checked="checked"' ?> /></td>
 		</tr>
 		<tr valign="top">
 			<th scope="row"><label for="menu_icon"><?php _e( 'Menu Icon', 'projectmanager' ) ?></label></th>
