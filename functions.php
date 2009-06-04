@@ -90,7 +90,7 @@ function projectmanager_save_form_field_data() {
 	$formfield_type = $_POST['formfield_type'];
 	$meta_id = intval($_POST['formfield_id']);
 	$new_value = $_POST['new_value'];
-	
+
 	// Textarea
 	if ( 'textfield' == $formfield_type )
 		$new_value = str_replace('\n', "\n", $new_value);
@@ -98,7 +98,8 @@ function projectmanager_save_form_field_data() {
 	if ( 'checkbox' == $formfield_type )
 		$new_value = substr($new_value,0,-1);
 
-	if ( 1 == $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_datasetmeta} WHERE `dataset_id` = '".$dataset_id."' AND `form_id` = '".$meta_id."'" ) )
+	$count = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_datasetmeta} WHERE `dataset_id` = '".$dataset_id."' AND `form_id` = '".$meta_id."'" );
+	if ( !empty($count) )
 		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `value` = '%s' WHERE `dataset_id` = '%d' AND `form_id` = '%d'", $new_value, $dataset_id, $meta_id ) );
 	else
 		$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ( '%d', '%d', '%s' )", $meta_id, $dataset_id, $new_value ) );
@@ -158,16 +159,20 @@ function projectmanager_save_dataset_order() {
 }
 
 
-/**
- * Dump contents in file
- * 
- * @param string $content
- */
-function dumpFile($content) {
-	$file = "/var/www/dev/AJAX_Dump.txt";
-	$fh = fopen($file, 'w') or die("can't open file");
-	fwrite($fh, $content);
-	fclose($fh);	
-}
 
+/**
+ * SACK response to insert user data from database
+ *
+ * @since 2.5
+ */
+function projectmanager_insert_wp_user() {
+	$user_id = (int)$_POST['wp_user_id'];
+	$user = new WP_User($user_id);
+	$user = $user->data;
+
+	die("
+		document.getElementById('name').value = '".$user->display_name."';
+		document.getElementById('user_id').value = '".$user_id."';
+	");
+}
 ?>

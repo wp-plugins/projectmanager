@@ -7,7 +7,7 @@
 * @copyright 	Copyright 2008-2009
 */
 
-class ProjectManagerShortcodes extends ProjectManager
+class ProjectManagerShortcodes
 {
 	/**
 	 * initialize shortcodes
@@ -36,16 +36,15 @@ class ProjectManagerShortcodes extends ProjectManager
 		add_shortcode( 'dataset', array(&$this, 'displayDataset') );
 		add_shortcode( 'project', array(&$this, 'displayProject') );
 		add_shortcode( 'project_search', array(&$this, 'displaySearchForm') );
-		
 		add_action( 'projectmanager_tablenav', array(&$this, 'displayTablenav') );
 		add_action( 'projectmanager_dataset', array(&$this, 'displayDataset') );
-		
-		add_filter( 'the_content', array(&$this, 'convert') );
 	}
 	
 	
 	/**
-	 * Load template for user display. First the current theme directory is checked for a template
+	 * Load template for user display.
+	 * 
+	 * Checks firrst the current theme directory for a template
 	 * before defaulting to the plugin
 	 *
 	 * @param string $template Name of the template file (without extension)
@@ -63,8 +62,8 @@ class ProjectManagerShortcodes extends ProjectManager
 		} elseif ( file_exists(PROJECTMANAGER_PATH . "/view/$template.php") ) {
 			include(PROJECTMANAGER_PATH . "/view/$template.php");
 		} else {
-			parent::setMessage( sprintf(__('Could not load template %s.php', 'projectmanager'), $template), true );
-			parent::printMessage();
+			$projectmanager->setMessage( sprintf(__('Could not load template %s.php', 'projectmanager'), $template), true );
+			$projectmanager->printMessage();
 		}
 		$output = ob_get_contents();
 		ob_end_clean();
@@ -73,63 +72,6 @@ class ProjectManagerShortcodes extends ProjectManager
 	}
 	
 	
-	/**
-	 * replace old shortcodes with new ones
-	 *
-	 * @param string $content
-	 * @return string
-	 */
-	function convert( $content )
-	{
-		if ( stristr( $content, '[prjctmngr_search' )) {
-			$search = "@\[prjctmngr_search_form\s*=\s*(\w+),(|right|center|left|),(|extend|compact|)\]@i";
-	
-			if ( preg_match_all($search, $content , $matches) ) {
-				if (is_array($matches)) {
-					foreach($matches[1] AS $key => $v0) {
-						$project_id = $v0;
-						$search = $matches[0][$key];
-						$replace = '[project_search project_id='.$project_id.' template='.$matches[3][$key].']';
-						$content = str_replace($search, $replace, $content);
-					}
-				}
-			}
-		}
-		if ( stristr( $content, '[dataset_list' )) {
-			$search = "@\[dataset_list\s*=\s*(\w+),(|\d+),(|table|ul|ol|)\]@i";
-		
-			if ( preg_match_all($search, $content , $matches) ) {
-				if (is_array($matches)) {
-					foreach($matches[1] AS $key => $v0) {
-						$project_id = $v0;
-						$search = $matches[0][$key];
-						$replace = "[project id=".$project_id." template=table cat_id=".$matches[2][$key]."]";
-						$content = str_replace($search, $replace, $content);
-					}
-				}
-			}
-		}
-		
-		if ( stristr( $content, '[dataset_gallery' )) {
-			$search = "@\[dataset_gallery\s*=\s*(\w+),(\d+),(|\d+)\]@i";
-		
-			if ( preg_match_all($search, $content , $matches) ) {
-				if (is_array($matches)) {
-					foreach($matches[1] AS $key => $v0) {
-						$project_id = $v0;
-						$search = $matches[0][$key];
-						$replace =  "[project id=".$project_id." template=gallery cat_id=".$matches[3][$key]." ]";
-			
-						$content = str_replace($search, $replace, $content);
-					}
-				}
-			}
-		}
-
-		return $content;
-	}
-	
-
 	/**
 	 * Function to display search formular
 	 *
@@ -171,7 +113,7 @@ class ProjectManagerShortcodes extends ProjectManager
 	function displayTablenav( )
 	{
 		global $projectmanager;
-		$project = $projectmanager->getProject($this->project_id);
+		$project = $projectmanager->getCurrentProject();
 	
 		$orderby = array( '' => __('Order By', 'projectmanager'), 'name' => __('Name','projectmanager'), 'id' => __('ID','projectmanager') );
 		foreach ( $projectmanager->getFormFields() AS $form_field )
@@ -191,11 +133,18 @@ class ProjectManagerShortcodes extends ProjectManager
 	/**
 	 * Function to display the project in a page or post as list.
 	 *
-	 *	[project id="x" template="table|gallery" cat_id="3"]
+	 *	[project id="x" template="table|gallery"]
 	 *
-	 * - project_id is the ID of the project to display
+	 * - id is the ID of the project to display
 	 * - template is the template file without extension. Default values are "table" or "gallery".
+	 *
+	 * It follows a list of optional attributes
+	 *
 	 * - cat_id: specify a category to only display those datasets. all datasets will be displayed if missing
+	 * - orderby: 'name', 'id' or 'formfield-X' where x is the formfield ID (default 'name')
+	 * - order: 'asc' or 'desc' (default 'asc')
+	 * - single: control if link to sigle dataset is displayed. Either 'true' or 'false' (default 'true')
+	 * - selections: control wether or not selection panel is dislayed (default 'true')
 	 *
 	 * @param array $atts
 	 * @return the content
@@ -214,9 +163,8 @@ class ProjectManagerShortcodes extends ProjectManager
 			'selections' => 'true',
 		), $atts ));
 		$projectmanager->initialize($id);
-		$project = $projectmanager->getProject($id);
+		$project = $projectmanager->getCurrentProject();
 
-		$this->project_id = $id;
 		$single = ( $single == 'true' ) ? true : false;
 		if ( $cat_id ) $projectmanager->setCatID($cat_id);
 	
@@ -302,7 +250,7 @@ class ProjectManagerShortcodes extends ProjectManager
 			$url = false;
 		}
 
-		if ( $dataset = parent::getDataset( $id ) ) {
+		if ( $dataset = $projectmanager->getDataset( $id ) ) {
 			$dataset->imgURL = $projectmanager->getFileURL($dataset->image);
 			$dataset->name = stripslashes($dataset->name);
 		}
