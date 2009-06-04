@@ -643,7 +643,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 		}
 
 		// user has cap 'projectmanager_user' but not 'edit_other_datasets'
-		if ( current_user_can('projectmanager_user') && !current_user_can('edit_other_datasets') ) {
+		if ( current_user_can('projectmanager_user') && !current_user_can('edit_other_datasets') && !current_user_can('edit_dataset') ) {
 			// and dataset with this user ID already exists
 			if ( $this->datasetExists($project_id, $user_id) ) {
 				$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
@@ -730,7 +730,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 			return;
 		}
 
-		if ( current_user_can('projectmanager_user') && !current_user_can('edit_other_datasets') ) {
+		if ( current_user_can('projectmanager_user') && !current_user_can('edit_other_datasets') && !current_user_can('edit_dataset') ) {
 			if ( $dataset->user_id != $current_user->ID ) {
 				$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
 				return;
