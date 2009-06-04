@@ -4,7 +4,7 @@ if ( !current_user_can( 'edit_formfields' ) ) :
 else :
 
 $project_id = $projectmanager->getProjectID();
-$projectmanager->getProject();
+$project = $projectmanager->getCurrentProject();
 
 if ( isset($_POST['saveFormFields']) ) {
 	check_admin_referer('projectmanager_manage-formfields');

@@ -3,7 +3,7 @@ if ( !current_user_can( 'edit_datasets' ) ) :
 	echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
 else :
 $project_id = $projectmanager->getProjectID();
-$project = $projectmanager->getProject($project_id);
+$project = $projectmanager->getCurrentProject();
 	
 if ( isset($_GET['edit']) ) {
 	$edit = true;

@@ -4,11 +4,11 @@ Plugin Name: ProjectManager
 Description: This Plugin can be used to manage several different types of projects with redundant data. This could be athlet portraits, DVD database, architect projects. You can define different form field types and groups to sort your project entries.
 Author URI: http://kolja.galerie-neander.de/
 Plugin URI: http://kolja.galerie-neander.de/plugins/projectmanager/
-Version: 2.5.2
+Version: 2.5.3
 Author: Kolja Schleich
 
 
-Copyright 2008-2008  Kolja Schleich  (email : kolja.schleich@googlemail.com)
+Copyright 2008-2009  Kolja Schleich  (email : kolja.schleich@googlemail.com)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ class ProjectManagerLoader
 	 *
 	 * @var string
 	 */
-	 var $version = '2.5.2';
+	 var $version = '2.5.3';
 	 
 	 
 	 /**
@@ -50,14 +50,6 @@ class ProjectManagerLoader
 	  */
 	 var $dbversion = '2.5.1';
 	 
-
-	 /**
-	  * project ID
-	  *
-	  * @var int
-	  */
-	 var $project_id;
-
 
 	 /**
 	  * admin panel object
@@ -97,9 +89,6 @@ class ProjectManagerLoader
 		// Start this plugin once all other plugins are fully loaded
 		add_action( 'plugins_loaded', array(&$this, 'initialize') );
 		
-		$this->project_id = isset($_GET['project_id']) ? (int)$_GET['project_id'] : false;
-		$projectmanager = new ProjectManager($this->project_id);
-	
 		add_action( 'user_register', array(&$this->adminPanel, 'registerUser') );
 		add_action( 'show_user_profile', array(&$this->adminPanel, 'profileHook') );
 		add_action( 'profile_update', array(&$this->adminPanel, 'updateProfile') );
@@ -185,15 +174,20 @@ class ProjectManagerLoader
 	 */
 	function loadLibraries()
 	{
+		global $projectmanager;
+
 		// Global libraries
 		require_once (dirname (__FILE__) . '/lib/core.php');
 		require_once (dirname (__FILE__) . '/lib/widget.php');
 		require_once (dirname (__FILE__) . '/functions.php');
 		
+		$project_id = isset($_GET['project_id']) ? (int)$_GET['project_id'] : false;
+		$projectmanager = new ProjectManager($project_id);
+
 		if ( is_admin() ) {
 			require_once (dirname (__FILE__) . '/lib/image.php');
 			require_once (dirname (__FILE__) . '/admin/admin.php');	
-			$this->adminPanel = new ProjectManagerAdminPanel($this->project_id);
+			$this->adminPanel = new ProjectManagerAdminPanel();
 		} else {
 			require_once (dirname (__FILE__) . '/lib/shortcodes.php');
 			$this->shortcodes = new ProjectManagerShortcodes();
@@ -373,9 +367,7 @@ class ProjectManagerLoader
 		maybe_create_table( $wpdb->projectmanager_datasetmeta, $create_datasetmeta_sql );
 
 
-		/*
-		* Set default options
-		*/
+		// Set default options
 		add_option( 'projectmanager', $options, 'ProjectManager Options', 'yes' );
 
 		/*

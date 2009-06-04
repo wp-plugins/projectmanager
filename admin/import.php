@@ -4,7 +4,7 @@ if ( !current_user_can( 'import_datasets' ) ) :
 else :
 
 $project_id = $projectmanager->getProjectID();
-$projectmanager->getProject();
+$project = $projectmanager->getCurrentProject();
 
 if ( isset($_POST['import']) ) {
 	$this->importDatasets( $project_id, $_FILES['projectmanager_import'], $_POST['delimiter'], $_POST['cols'] );

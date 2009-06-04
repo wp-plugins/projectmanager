@@ -15,15 +15,13 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 * @param none
 	 * @return void
 	 */
-	function __construct($project_id)
+	function __construct()
 	{
 		require_once( ABSPATH . 'wp-admin/includes/template.php' );
 		add_action( 'admin_menu', array(&$this, 'menu') );
 		
 		add_action('admin_print_scripts', array(&$this, 'loadScripts') );
 		add_action('admin_print_styles', array(&$this, 'loadStyles') );
-		
-		$this->project_id = $project_id;
 	}
 	function LeagueManagerAdmin()
 	{
@@ -640,19 +638,19 @@ class ProjectManagerAdminPanel extends ProjectManager
 
 		// Negative check on capability: user can't edit datasets
 		if ( !current_user_can('edit_datasets') && !current_user_can('projectmanager_user') ) {
-			// user has cap 'projectmanager_user'
-			if ( current_user_can('projectmanager_user') && !current_user_can('edit_other_datasets') ) {
-				// and dataset with this user ID already exists
-				if ( $this->datasetExists($project_id, $user_id) ) {
-					$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
-					return;
-				}
-			} else {
-				// he doesn't have capability 'projctmanager_user'
+			$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
+			return;
+		}
+
+		// user has cap 'projectmanager_user' but not 'edit_other_datasets'
+		if ( current_user_can('projectmanager_user') && !current_user_can('edit_other_datasets') ) {
+			// and dataset with this user ID already exists
+			if ( $this->datasetExists($project_id, $user_id) ) {
 				$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
 				return;
 			}
 		}
+
 
 		$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_dataset} (name, cat_ids, project_id, user_id) VALUES ('%s', '%s', '%d', '%d')", $name, maybe_serialize($cat_ids), $project_id, $user_id ) );
 		$dataset_id = $wpdb->insert_id;
@@ -728,12 +726,12 @@ class ProjectManagerAdminPanel extends ProjectManager
 		$dataset = $projectmanager->getDataset($dataset_id);
 
 		if ( !current_user_can('edit_datasets') && !current_user_can('projectmanager_user') ) {
-			if ( current_user_can('projectmanager_user') && !current_user_can('edit_other_datasets') ) {
-				if ( $dataset->user_id != $current_user->ID ) {
-					$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
-					return;
-				}
-			} else {
+			$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
+			return;
+		}
+
+		if ( current_user_can('projectmanager_user') && !current_user_can('edit_other_datasets') ) {
+			if ( $dataset->user_id != $current_user->ID ) {
 				$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
 				return;
 			}
@@ -1115,7 +1113,6 @@ class ProjectManagerAdminPanel extends ProjectManager
 	function updateProfile()
 	{
 		$user_id = $_POST['dataset_user_id'];
-//		check_admin_referer('update-user_' . $user_id);
 
 		foreach ( $_POST['dataset_id'] AS $id ) {
 			$del_image = isset( $_POST['del_old_image'][$id] ) ? true : false;

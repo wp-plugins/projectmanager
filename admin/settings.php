@@ -25,7 +25,7 @@ if ( isset($_POST['saveSettings']) ) {
 
      	$this->printMessage();
 }
-$project = $projectmanager->getProject( $projectmanager->getProjectID());
+$project = $projectmanager->getCurrentProject();
 
 if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) )
 	echo "<div class='error'><p>".sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $projectmanager->getFilePath() )."</p></div>";

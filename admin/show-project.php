@@ -5,7 +5,7 @@ if ( !current_user_can( 'view_projects' ) ) :
 else :
 global $current_user;
 $project_id = $projectmanager->getProjectID();
-$project = $projectmanager->getProject($project_id);
+$project = $projectmanager->getCurrentProject();
 
 if ( isset($_POST['updateProjectManager']) AND !isset($_POST['doaction']) ) {
 	if ( 'dataset' == $_POST['updateProjectManager'] ) {

@@ -175,18 +175,4 @@ function projectmanager_insert_wp_user() {
 		document.getElementById('user_id').value = '".$user_id."';
 	");
 }
-
-
-/**
- * Dump contents in file
- * 
- * @param string $content
- */
-function dumpFile($content) {
-	$file = "/var/www/dev/AJAX_Dump.txt";
-	$fh = fopen($file, 'w') or die("can't open file");
-	fwrite($fh, $content);
-	fclose($fh);	
-}
-
 ?>

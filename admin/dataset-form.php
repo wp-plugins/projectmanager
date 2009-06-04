@@ -1,11 +1,4 @@
-<?php if ( $is_profile_page ) : ?>
-<script type="text/javascript">
-document.forms[0].encoding = "multipart/form-data";
-</script>
-<?php endif; ?>
-
 <table class="form-table">
-	<?php if (!$is_profile_page) : ?>
 	<tr valign="top">
 		<th scope="row"><label for="name"><?php _e( 'Name', 'projectmanager' ) ?></label></th>
 		<td>
@@ -15,7 +8,6 @@ document.forms[0].encoding = "multipart/form-data";
 			<?php endif; ?>
 		</td>
 	</tr>
-	<?php endif; ?>
 	<?php if ( 1 == $project->show_image ) : ?>
 	<tr valign="top">
 		<th scope="row"><label for="projectmanager_image"><?php _e( 'Image', 'projectmanager' ) ?></label></th>
@@ -90,7 +82,7 @@ document.forms[0].encoding = "multipart/form-data";
 		
 		<?php endforeach; ?>
 	<?php endif; ?>
-	<?php if ( -1 != $project->category && current_user_can('projectmanager_admin') ) : ?>
+	<?php if ( -1 != $project->category && current_user_can('edit_other_datasets') ) : ?>
 	<!-- category selection form -->
 	<tr valign="top">
 		<th scope="row"><label for="post_category"><?php _e( 'Categories', 'projectmanager' ) ?></label></th>

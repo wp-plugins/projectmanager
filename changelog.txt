@@ -1,6 +1,10 @@
 ProjectManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
+V2.5.3 - June 3, 2009
+- BUGFIX: access control for adding/editing of datasets
+- code cleaning
+
 V2.5.2 - June 3, 2009
 - BUGFIX: profile hook
 
