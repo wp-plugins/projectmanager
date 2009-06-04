@@ -1,6 +1,10 @@
 ProjectManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
+V2.5.5 - June , 2009
+- BUGFIX: access to dataset editing page with only cap 'projectmanager_user'
+- BUGFIX: profile update
+
 V2.5.4 - June 3, 2009
 - BUGFIX: access control for adding/editing of datasets
 

@@ -1114,7 +1114,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 	{
 		$user_id = $_POST['dataset_user_id'];
 
-		foreach ( $_POST['dataset_id'] AS $id ) {
+		foreach ( (array)$_POST['dataset_id'] AS $id ) {
 			$del_image = isset( $_POST['del_old_image'][$id] ) ? true : false;
 			$overwrite_image = ( isset($_POST['overwrite_image'][$id]) && 1 == $_POST['overwrite_image'][$id] ) ? true: false;
 			$this->editDataset( $_POST['project_id'][$id], $_POST['display_name'], $_POST['post_category'][$id], $id, $_POST['form_field'][$id], $user_id, $del_image, $_POST['image_file'][$id], $overwrite_image );
