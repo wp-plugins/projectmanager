@@ -637,13 +637,13 @@ class ProjectManagerAdminPanel extends ProjectManager
 		if ( !$user_id ) $user_id = $current_user->ID;
 
 		// Negative check on capability: user can't edit datasets
-		if ( !current_user_can('edit_datasets') && !current_user_can('projectmanager_user') ) {
+		if ( !current_user_can('edit_datasets') && !current_user_can('projectmanager_user') && !current_user_can('import_datasets') ) {
 			$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
 			return;
 		}
 
-		// user has cap 'projectmanager_user' but not 'edit_other_datasets'
-		if ( current_user_can('projectmanager_user') && !current_user_can('edit_other_datasets') && !current_user_can('edit_dataset') ) {
+		// user has only cap 'projectmanager_user' but not 'edit_other_datasets' and 'edit_datasets'
+		if ( current_user_can('projectmanager_user') && !current_user_can('edit_other_datasets') && !current_user_can('edit_datasets') && !current_user_can('import_datasets') ) {
 			// and dataset with this user ID already exists
 			if ( $this->datasetExists($project_id, $user_id) ) {
 				$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
@@ -725,12 +725,14 @@ class ProjectManagerAdminPanel extends ProjectManager
 		$this->project = $projectmanager->getProject($this->project_id);
 		$dataset = $projectmanager->getDataset($dataset_id);
 
+		// Check if user has either cap 'edit_datasets' or 'projectmanager_user'
 		if ( !current_user_can('edit_datasets') && !current_user_can('projectmanager_user') ) {
 			$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
 			return;
 		}
 
-		if ( current_user_can('projectmanager_user') && !current_user_can('edit_other_datasets') && !current_user_can('edit_dataset') ) {
+		// check if user has cap 'edit_other_datasets'
+		if ( !current_user_can('edit_other_datasets') ) {
 			if ( $dataset->user_id != $current_user->ID ) {
 				$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
 				return;
@@ -879,7 +881,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 						// Resize original file and create thumbnails
 						$dims = array( 'width' => $project->medium_size['width'], 'height' => $project->medium_size['height'] );
 						$image->createThumbnail( $dims, $new_file, $project->chmod );
-						
+
 						$dims = array( 'width' => $project->thumb_size['width'], 'height' => $project->thumb_size['height'] );
 						$image->createThumbnail( $dims, parent::getFilePath().'/thumb.'.basename($file['name']), $project->chmod );
 						

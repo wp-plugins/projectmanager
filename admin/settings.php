@@ -24,6 +24,7 @@ if ( isset($_POST['saveSettings']) ) {
 	$this->saveSettings( $settings, $_POST['project_id'] );
 
      	$this->printMessage();
+	$projectmanager->getProject($_POST['project_id']);
 }
 $project = $projectmanager->getCurrentProject();
 

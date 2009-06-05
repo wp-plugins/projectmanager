@@ -99,8 +99,11 @@ class ProjectManagerImage
 		$thumbnail = new Thumbnail($this->image);
 		$thumbnail->resize( $dims['width'], $dims['heigth'] );
 		$thumbnail->save($new_image);
-		
-		if ( !empty($chmod) ) chmod( $new_image, $chmod );
+
+		if ( empty($chmod) ) $chmod = '0644';
+		$chmod = intval($chmod);
+		$chmod = octdec("0".$chmod);
+		chmod( $new_image, $chmod );
 	}
 }
 
