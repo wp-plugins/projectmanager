@@ -85,9 +85,8 @@ class ProjectManager extends ProjectManagerLoader
 		//Save selected group. NULL if none is selected
 		$this->setCatID();
 
-		if ( $project_id )
-			$this->initialize($project_id);
-		
+		if ( $project_id ) $this->initialize($project_id);
+
 		$this->admin = parent::getAdminPanel();
 		return;
 	}
@@ -113,12 +112,13 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function initialize( $project_id )
 	{
-		$this->project_id = $project_id;
-		$project = $this->getProject($project_id);
-		$this->per_page = ( isset($project->per_page) && !empty($project->per_page) ) ? $project->per_page : 15;
+		$this->setProjectID($project_id);
+		$this->project = $this->getProject($this->getProjectID());
 
-		$this->num_items = $this->getNumDatasets($this->project_id);
-		$this->num_max_pages = ( 0 == $this->per_page || $this->isSearch() ) ? 1 : ceil( $this->num_items/$this->per_page );
+		$this->setPerPage();
+
+		$this->num_items = $this->getNumDatasets($this->getProjectID());
+		$this->num_max_pages = ( 0 == $this->getPerPage() || $this->isSearch() ) ? 1 : ceil( $this->num_items/$this->getPerPage() );
 	}
 	
 	
@@ -155,6 +155,21 @@ class ProjectManager extends ProjectManagerLoader
 
 	
 	/**
+	 * sets number of objects per page
+	 *
+	 * @param int|false
+	 * @return void
+	 */
+	function setPerPage( $per_page = false )
+	{
+		if ( $per_page )
+			$this->per_page = $per_page;
+		else
+			$this->per_page = ( isset($this->project->per_page) && !empty($this->project->per_page) ) ? $this->project->per_page : 15;
+	}
+
+
+	/**
 	 * gets object limit per page
 	 *
 	 * @param none
@@ -167,17 +182,117 @@ class ProjectManager extends ProjectManagerLoader
 		
 		
 	/**
-	 * sets number of objects per page
+	 * save current project ID
 	 *
 	 * @param int
 	 * @return void
 	 */
-	function setPerPage( $per_page )
+	function setProjectID( $id )
 	{
-		$this->per_page = $per_page;
+		$this->project_id = $id;
+	}
+
+
+	/**
+	 * gets project ID
+	 *
+	 * @param none
+	 * @return int
+	 */
+	function getProjectID()
+	{
+		return $this->project_id;
 	}
 	
 	
+	/**
+	 * gets current project object
+	 *
+	 * @param none
+	 * @return object
+	 */
+	function getCurrentProject()
+	{
+		return $this->project;
+	}
+
+
+	/**
+	 * gets project title
+	 *
+	 * @param none
+	 * @return string
+	 */
+	function getProjectTitle( )
+	{
+		return $this->project->title;
+	}
+
+
+	/**
+ 	 * sets current category
+	 *
+	 * @param int $cat_id
+	 * @return void
+	 */
+	function setCatID( $cat_id = false )
+	{
+		if ( $cat_id ) {
+			$this->cat_id = $cat_id;
+		} elseif ( isset($_POST['cat_id']) ) {
+			$this->cat_id = (int)$_POST['cat_id'];
+			$this->query_args['cat_id'] = $this->cat_id;
+		} elseif ( isset($_GET['cat_id']) ) {
+			$this->cat_id = (int)$_GET['cat_id'];
+		} else {
+			$this->cat_id = null;
+		}
+			
+		return;
+	}
+	
+	
+	/**
+	 * gets current category
+	 * 
+	 * @param none
+	 * @return int
+	 */
+	function getCatID()
+	{
+		return $this->cat_id;
+	}
+		
+	
+	/**
+	 *  gets category title
+	 *
+	 * @param int $cat_id
+	 * @return string
+	 */
+	function getCatTitle( $cat_id = false )
+	{
+		if ( !$cat_id ) $cat_id = $this->getCatID();
+		$c = get_category($cat_id);
+		return $c->name;
+	}
+	
+	
+	/**
+	 * check if category is selected
+	 * 
+	 * @param none
+	 * @return boolean
+	 */
+	function isCategory()
+	{
+		if ( null != $this->getCatID() )
+			return true;
+		
+		return false;
+	}
+
+
 	/**
 	 * display pagination
 	 *
@@ -200,7 +315,7 @@ class ProjectManager extends ProjectManagerLoader
 	
 
 	/**
-	 * get dataset order - Needs to be FIXED
+	 * get dataset order
 	 *
 	 * @param boolean $orderby
 	 * @param boolean $order
@@ -208,7 +323,7 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function setDatasetOrder( $orderby = false, $order = false )
 	{	
-		$project = $this->getProject();
+		$project = $this->getCurrentProject();
 
 		$formfield_id = $this->override_order = false;
 		// Selection in Admin Panel
@@ -271,6 +386,8 @@ class ProjectManager extends ProjectManagerLoader
 
 	/**
 	 * returns array of form field types
+	 *
+	 * The Form Field Types can be extended via Wordpress filter <em>projectmanager_formfields</em>
 	 *
 	 * @param mixed $index
 	 * @return array
@@ -342,7 +459,7 @@ class ProjectManager extends ProjectManagerLoader
 	 * returns upload directory
 	 *
 	 * @param string | false $file
-	 * @return string
+	 * @return string upload path
 	 */
 	function getFilePath( $file = false )
 	{
@@ -357,7 +474,7 @@ class ProjectManager extends ProjectManagerLoader
 	 * returns url of upload directory
 	 *
 	 * @param string | false $file image file
-	 * @return string
+	 * @return string upload url
 	 */
 	function getFileURL( $file = false )
 	{
@@ -372,7 +489,7 @@ class ProjectManager extends ProjectManagerLoader
 	 * get file type
 	 * 
 	 * @param string $filename
-	 * @return string 
+	 * @return string file type
 	 */
 	function getFileType( $filename )
 	{
@@ -386,114 +503,75 @@ class ProjectManager extends ProjectManagerLoader
 	 * get file image depending on filetype
 	 * 
 	 * @param string $filename
-	 * @return string
+	 * @return string image name
 	 */
 	function getFileImage( $filename )
 	{
 		$type = $this->getFileType($filename);
 		$out .= PROJECTMANAGER_URL . "/admin/icons/files/";
-		if ( $type == 'ods' || $type == 'doc' || $type == 'docx' )
-			$out .= "document_word.png";
-		elseif ( $type == 'xls' || $type == 'ods' )
-			$out .= "document_excel.png";
-		elseif ( $type == 'csv' )
-			$out .= "document_excel_csv";
-		elseif ( $type == 'ppt' || $type == 'odp' || $type == 'pptx' )
-			$out .= "document_powerpoint.png";
-		elseif  ( $type == 'zip' || $type == 'rar' || $type == 'tar' ||  $type == 'gzip' || $type == 'tar.gz' || $type == 'bzip2' || $type == 'tar.bz2' )
-			$out .= "document_zipper";
-		elseif ( $type == 'divx' || $type == 'mpg' || $type == 'mp4' )
-			$out .= "film.png";
-		elseif ( $type == 'mp3' || $type == 'ogg' )
-			$out .= "document_music.png";
-		elseif ( $type == 'gif' || $type == 'png' || $type == 'jpg' || $type == 'jpeg' )
-			$out .= "image.png";
-		elseif ( $type == 'html' || $type == 'htm' || $type == 'php' )
-			$out .= "globe.png";
-		elseif ( $type == 'txt' )
-			$out .= "document_text.png";
-		elseif ( $type == 'pdf' )
-			$out .= "pdf.png";
-		else
-			$out .= "document.png";
-					
+
+		switch ( $type ) {
+			case'ods':
+			case 'doc':
+			case'docx':
+				$out .= "document_word.png";
+				break;
+			case 'xls':
+			case 'ods':
+				$out .= "document_excel.png";
+				break;
+			case 'csv':
+				$out .= "document_excel_csv";
+				break;
+			case 'ppt':
+			case 'odp':
+			case 'pptx':
+				$out .= "document_powerpoint.png";
+				break;
+			case 'zip':
+			case 'rar':
+			case 'tar':
+			case 'gzip':
+			case 'tar.gz':
+			case 'bzip2':
+			case 'tar.bz2':
+				$out .= "document_zipper";
+				break;
+			case 'divx':
+			case 'mpg':
+			case 'mp4':
+				$out .= "film.png";
+				break;
+			case 'mp3':
+			case 'ogg':
+				$out .= "document_music.png";
+				break;
+			case 'gif':
+			case 'png':
+			case 'jpg':
+			case 'jpeg':
+				$out .= "image.png";
+				break;
+			case 'html':
+			case 'htm':
+			case 'php':
+				$out .= "globe.png";
+				break;
+			case 'txt':
+				$out .= "document_text.png";
+				break;
+			case 'pdf':
+				$out .= "pdf.png";
+				break;
+			default:
+				$out .= "document.png";
+				break;
+		}
+
 		return $out;
 	}
 	
 	
-	/**
-	 * gets project ID
-	 *
-	 * @param none
-	 * @return int
-	 */
-	function getProjectID()
-	{
-		return $this->project_id;
-	}
-	
-	
-	/**
- 	 * sets current category
-	 *
-	 * @param int $cat_id
-	 * @return void
-	 */
-	function setCatID( $cat_id = false )
-	{
-		if ( $cat_id )
-			$this->cat_id = $cat_id;
-		elseif ( isset($_POST['cat_id']) ) {
-			$this->cat_id = (int)$_POST['cat_id'];
-			$this->query_args['cat_id'] = $this->cat_id;
-		} elseif ( isset($_GET['cat_id']) )
-			$this->cat_id = (int)$_GET['cat_id'];
-		 else
-			$this->cat_id = null;
-			
-		return;
-	}
-	
-	
-	/**
-	 * gets current category
-	 * 
-	 * @param none
-	 * @return int
-	 */
-	function getCatID()
-	{
-		return $this->cat_id;
-	}
-		
-	
-	/**
-	 *  gets category title
-	 *
-	 * @param int $cat_id
-	 * @return string
-	 */
-	function getCatTitle( $cat_id = false )
-	{
-		if ( !$cat_id ) $cat_id = $this->getCatID();
-		$c = get_category($cat_id);
-		return $c->name;
-	}
-	
-	
-	/**
-	 * check if category is selected
-	 * 
-	 * @param none
-	 * @return boolean
-	 */
-	function isCategory()
-	{
-		if ( null != $this->getCatID() )
-			return true;
-		
-		return false;
-	}
 	
 
 	/**
@@ -520,7 +598,7 @@ class ProjectManager extends ProjectManagerLoader
 	function getSearchString()
 	{
 		if ( $this->isSearch() )
-			return $_POST['search_string'];
+			return (string)$_POST['search_string'];
 
 		return '';
 	}
@@ -538,18 +616,6 @@ class ProjectManager extends ProjectManagerLoader
 			return $_POST['search_option'];
 		
 		return 0;
-	}
-	
-	
-	/**
-	 * gets project title
-	 *
-	 * @param none
-	 * @return string
-	 */
-	function getProjectTitle( )
-	{
-		return $this->project->title;
 	}
 	
 	
@@ -598,7 +664,7 @@ class ProjectManager extends ProjectManagerLoader
 	{
 		global $wpdb;
 
-		if ( !$project_id ) $project_id = $this->project_id;
+		if ( !$project_id ) $project_id = $this->getProjectID();
 		$project = $wpdb->get_results( "SELECT `title`, `settings`, `id` FROM {$wpdb->projectmanager_projects} WHERE `id` = {$project_id} ORDER BY `id` ASC" );
 		$project = $project[0];
 		$project = (object) array_merge( (array)$project, (array)maybe_unserialize($project->settings) );
@@ -619,7 +685,7 @@ class ProjectManager extends ProjectManagerLoader
 	{
 		global $wpdb;
 	
-		$search = ( $id ) ? "`id` = {$id}" : "`project_id` = {$this->project_id}"; 
+		$search = ( $id ) ? "`id` = {$id}" : "`project_id` = {$this->getProjectID()}"; 
 		$sql = "SELECT `label`, `type`, `order`, `order_by`, `show_on_startpage`, `show_in_profile`, `id` FROM {$wpdb->projectmanager_projectmeta} WHERE $search ORDER BY `order` ASC;";
 		$formfields = $wpdb->get_results( $sql );
 		
@@ -640,7 +706,7 @@ class ProjectManager extends ProjectManagerLoader
 	{
 		global $wpdb;
 	
-		$num_form_fields = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = {$this->project_id}" );
+		$num_form_fields = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = {$this->getProjectID()}" );
 		return $num_form_fields;
 	}
 	
@@ -668,10 +734,8 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function getSelectedCategoryTitles( $cat_ids )
 	{
-		if ( !is_array($cat_ids) ) $cat_ids = array();
-		
 		$categories = array();
-		foreach ( $cat_ids AS $cat_id )
+		foreach ( (array)$cat_ids AS $cat_id )
 			$categories[] = $this->getCatTitle($cat_id);
 
 		return implode(", ", $categories);
@@ -690,11 +754,9 @@ class ProjectManager extends ProjectManagerLoader
 		
 		$datasets = $wpdb->get_results( "SELECT `id`, `cat_ids` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id} ORDER BY `name` ASC" );
 								
-		if ( !is_array($datasets) ) $datasets = array($datasets);
-		
 		$selected_datasets = array();
-		foreach ( $datasets AS $dataset ) {
-			if ( in_array($this->getCatID(), $this->getSelectedCategoryIDs($dataset)) )
+		foreach ( (array)$datasets AS $dataset ) {
+			if ( in_array($this->getCatID(), $this->getSelectedCategoryIDs(&$dataset)) )
 				$selected_datasets[] = '`id` = '.$dataset->id;
 		}
 
@@ -743,7 +805,7 @@ class ProjectManager extends ProjectManagerLoader
 	function getDatasets( $limit = false, $orderby = false, $order = false )
 	{
 		global $wpdb;
-		$project = $this->getProject();
+		$project = $this->getCurrentProject();
 
 		// Set ordering
 		$formfield_id = $this->setDatasetOrder($orderby, $order);
@@ -797,23 +859,10 @@ class ProjectManager extends ProjectManagerLoader
 			
 		return $dataset[0];
 	}
-		
 	
+
 	/**
-	 * get datasets by date
-	 *
-	 * @param string $year
-	 * @param string $month
-	 * @param string $day
-	 * @return array of datasets
-	 */
-	function getDatasetsByDate()
-	{
-	}
-	
-	
-	/**
-	 * order datasets by chosen form fields - BUGFIX required
+	 * order datasets by chosen form fields
 	 *
 	 * @param array $datasets
 	 * @param int|false $form_field_id
@@ -984,7 +1033,7 @@ class ProjectManager extends ProjectManagerLoader
 	{
 		$out = '';
 		if ( $dataset_meta = $this->getDatasetMeta( $dataset->id ) ) {
-			foreach ( $dataset_meta AS $meta ) {
+			foreach ( (array)$dataset_meta AS $meta ) {
 				$meta->label = stripslashes($meta->label);
 				$meta_value = is_string($meta->value) ? htmlspecialchars( $meta->value, ENT_QUOTES ) : $meta->value;
 				
@@ -1032,7 +1081,7 @@ class ProjectManager extends ProjectManagerLoader
 					$meta_value = call_user_func_array($field['callback'], $field['args']);
 				}
 				
-					
+				// Generate the output
 				if ( 1 == $meta->show_on_startpage || $show_all ) {
 					if ( $meta_value != '' ) {
 						if ( 'dl' == $output ) {
@@ -1041,8 +1090,9 @@ class ProjectManager extends ProjectManagerLoader
 							$out .= "\n\t<li class='".$meta->type."'><span class='dataset_label'>".$meta->label."</span>:&#160;".$meta_value."</li>";
 						} else {
 							$out .= "\n\t<td class='".$meta->type."'>";
-							$out .= $this->getThickbox( $dataset->id, $meta->form_field_id, $meta->type, maybe_unserialize($meta->value), $dataset->user_id );
-							$out .= "\n\t\t".$meta_value . $this->getThickboxLink($dataset->id, $meta->form_field_id, $meta->type, sprintf(__('%s of %s','projectmanager'), $meta->label, $dataset->name), $dataset->user_id, maybe_unserialize($meta->value));
+							$out .= $this->getThickbox( &$dataset, &$meta );
+							$out .= "\n\t\t".$meta_value;
+							$out .= $this->getThickboxLink( &$dataset, &$meta, sprintf(__('%s of %s','projectmanager'), $meta->label, $dataset->name) );
 							$out .= "\n\t</td>";
 						}
 					} elseif ( 'td' == $output ) {
@@ -1050,8 +1100,9 @@ class ProjectManager extends ProjectManagerLoader
 							$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>&#160;</span>";
 							
 						$out .= "\n\t<td class='".$meta->type."'>";
-						$out .= $this->getThickbox( $dataset->id, $meta->form_field_id, $meta->type, maybe_unserialize($meta->value), $dataset->user_id );
-						$out .= $meta_value . $this->getThickboxLink($dataset->id, $meta->form_field_id, $meta->type, sprintf(__('%s of %s','projectmanager'), $meta->label, $dataset->name), $dataset->user_id, maybe_unserialize($meta->value));
+						$out .= $this->getThickbox( &$dataset, &$meta );
+						$out .= $meta_value;
+						$out .= $this->getThickboxLink( &$dataset, &$meta, sprintf(__('%s of %s','projectmanager'), $meta->label, $dataset->name) );
 						$out .= "\n\t</td>";
 					}
 				}
@@ -1068,31 +1119,30 @@ class ProjectManager extends ProjectManagerLoader
 	/**
 	 * get Thickbox Link for Ajax editing
 	 *
-	 * @param ing $dataset_id
-	 * @param int $formfield_id
-	 * @param int $formfield_type
+	 * @param object $dataset
+	 * @param object $meta
 	 * @param string $title
-	 * @param int $dataset_owner
-	 * @param string $meta_value
 	 * @return string
 	 */
-	function getThickboxLink( $dataset_id, $formfield_id,  $formfield_type, $title, $dataset_owner, $meta_value )
+	function getThickboxLink( $dataset, $meta, $title )
 	{
 		global $current_user;
 		
+		$meta_value = maybe_unserialize($meta->value);
+
 		$out = '';
-		if ( is_admin() && current_user_can( 'manage_projects' ) ) {
+		if ( is_admin() && ( ( current_user_can('edit_datasets') && $current_user->ID == $dataset->user_id ) || ( current_user_can('edit_other_datasets') ) ) ) {
 			$dims = array('width' => '300', 'height' => '100');
-			if ( 'textfield' == $formfield_type )
+			if ( 'textfield' == $meta->type )
 				$dims = array('width' => '400', 'height' => '300');
-			if ( 'checkbox' == $formfield_type || 'radio' == $formfield_type )
+			if ( 'checkbox' == $meta->type || 'radio' == $meta->type )
 				$dims = array('width' => '300', 'height' => '300');
 
-			if ( 'fileupload' != $formfield_type )
-				$out .= "&#160;<a class='thickbox' id='thickboxlink".$formfield_id."_".$dataset_id."' href='#TB_inline&height=".$dims['height']."&width=".$dims['width']."&inlineId=datafieldwrap".$formfield_id."_".$dataset_id."' title='".$title."'><img src='".PROJECTMANAGER_URL."/admin/icons/edit.gif' border='0' alt='".__('Edit')."' /></a>";
-			if ( 'fileupload' == $formfield_type ) {
+			if ( 'fileupload' != $meta->type )
+				$out .= "&#160;<a class='thickbox' id='thickboxlink".$meta->form_field_id."_".$dataset->id."' href='#TB_inline&height=".$dims['height']."&width=".$dims['width']."&inlineId=datafieldwrap".$meta->form_field_id."_".$dataset->id."' title='".$title."'><img src='".PROJECTMANAGER_URL."/admin/icons/edit.gif' border='0' alt='".__('Edit')."' /></a>";
+			if ( 'fileupload' == $meta->type ) {
 				if ( !empty($meta_value) )
-					$out .= "&#160;<a href='#' id='delfile".$formfield_id."_".$dataset_id."' onClick='ProjectManager.AJAXdeleteFile(\"".$this->getFilePath($meta_value)."\", ".$dataset_id.", ".$formfield_id.", \"".$formfield_type."\")'><img src='".PROJECTMANAGER_URL."/admin/icons/cross.png' border='0' alt='".__('Delete')."' /></a>";
+					$out .= "&#160;<a href='#' id='delfile".$meta->form_field_id."_".$dataset->id."' onClick='ProjectManager.AJAXdeleteFile(\"".$this->getFilePath($meta_value)."\", ".$dataset->id.", ".$meta->form_field_id.", \"".$meta->type."\")'><img src='".PROJECTMANAGER_URL."/admin/icons/cross.png' border='0' alt='".__('Delete')."' /></a>";
 			}
 		}
 		return $out;
@@ -1102,60 +1152,55 @@ class ProjectManager extends ProjectManagerLoader
 	/**
 	 *  get Ajax Thickbox
 	 *
-	 * @param int $dataset_id
-	 * @param int $formfield_id
-	 * @param int $formfield_type
-	 * @param string $value
-	 * @param int $dataset_owner
+	 * @param object $dataset
+	 * @param object $meta
 	 * @return string
 	 */
-	function getThickbox( $dataset_id, $formfield_id, $formfield_type, $value, $dataset_owner )
+	function getThickbox( $dataset, $meta )
 	{
 		global $current_user;
 		
-		$value = htmlspecialchars(stripslashes_deep($value), ENT_QUOTES);
+		$value = htmlspecialchars(stripslashes_deep(maybe_unserialize($meta->value)), ENT_QUOTES);
 		$out = '';
-		if ( is_admin() && current_user_can( 'manage_projects' ) ) {
+		if ( is_admin() && ( ( current_user_can('edit_datasets') && $current_user->ID == $dataset->user_id ) || ( current_user_can('edit_other_datasets') ) ) ) {
 			
-			$out .= "\n\t\t<div id='datafieldwrap".$formfield_id."_".$dataset_id."' style='overfow:auto;display:none;'>";
-			$out .= "\n\t\t<div id='datafieldbox".$formfield_id."_".$dataset_id."' class='projectmanager_thickbox'>";
-			$out .= "\n\t\t\t<form name='form_field_".$formfield_id."_".$dataset_id."'>";
-			if ( 'text' == $formfield_type || 'email' == $formfield_type || 'uri' == $formfield_type || 'image' == $formfield_type || 'numeric' == $formfield_type || 'currency' == $formfield_type ) {
-				$out .= "\n\t\t\t<input type='text' name='form_field_".$formfield_id."_".$dataset_id."' id='form_field_".$formfield_id."_".$dataset_id."' value=\"".$value."\" size='30' />";
-			} elseif ( 'textfield' == $formfield_type ) {
-				$out .= "\n\t\t\t<textarea name='form_field_".$formfield_id."_".$dataset_id."' id='form_field_".$formfield_id."_".$dataset_id."' rows='10' cols='40'>".$value."</textarea>";
-			} elseif  ( 'date' == $formfield_type ) {
-				$out .= "\n\t\t\t<select size='1' name='form_field_".$formfield_id."_".$dataset_id."_day' id='form_field_".$formfield_id."_".$dataset_id."_day'>\n\t\t\t<option value=''>Tag</option>\n\t\t\t<option value=''>&#160;</option>";
+			$out .= "\n\t\t<div id='datafieldwrap".$meta->form_field_id."_".$dataset->id."' style='overfow:auto;display:none;'>";
+			$out .= "\n\t\t<div id='datafieldbox".$meta->form_field_id."_".$dataset->id."' class='projectmanager_thickbox'>";
+			$out .= "\n\t\t\t<form name='form_field_".$meta->form_field_id."_".$dataset->id."'>";
+			if ( 'text' == $meta->type || 'email' == $meta->type || 'uri' == $meta->type || 'image' == $meta->type || 'numeric' == $meta->type || 'currency' == $meta->type ) {
+				$out .= "\n\t\t\t<input type='text' name='form_field_".$meta->form_field_id."_".$dataset->id."' id='form_field_".$meta->form_field_id."_".$dataset->id."' value=\"".$value."\" size='30' />";
+			} elseif ( 'textfield' == $meta->type ) {
+				$out .= "\n\t\t\t<textarea name='form_field_".$meta->form_field_id."_".$dataset->id."' id='form_field_".$meta->form_field_id."_".$dataset->id."' rows='10' cols='40'>".$value."</textarea>";
+			} elseif  ( 'date' == $meta->type ) {
+				$out .= "\n\t\t\t<select size='1' name='form_field_".$meta->form_field_id."_".$dataset->id."_day' id='form_field_".$meta->form_field_id."_".$dataset->id."_day'>\n\t\t\t<option value=''>Tag</option>\n\t\t\t<option value=''>&#160;</option>";
 				for ( $day = 1; $day <= 30; $day++ ) {
 					$selected = ( $day == substr($value, 8, 2) ) ? ' selected="selected"' : '';
 					$out .= "\n\t\t\t<option value='".str_pad($day, 2, 0, STR_PAD_LEFT)."'".$selected.">".$day."</option>";
 				}
 				$out .= "\n\t\t\t</select>";
-				$out .= "\n\t\t\t<select size='1' name='form_field_".$formfield_id."_".$dataset_id."_month' id='form_field_".$formfield_id."_".$dataset_id."_month'>\n\t\t\t<option value=''>Monat</option>\n\t\t\t<option value=''>&#160;</option>";
+				$out .= "\n\t\t\t<select size='1' name='form_field_".$meta->form_field_id."_".$dataset->id."_month' id='form_field_".$meta->form_field_id."_".$dataset->id."_month'>\n\t\t\t<option value=''>Monat</option>\n\t\t\t<option value=''>&#160;</option>";
 				foreach ( $this->getMonths() AS $key => $month ) {
 					$selected = ( $key == substr($value, 5, 2) ) ? ' selected="selected"' : '';
 					$out .= "\n\t\t\t<option value='".str_pad($key, 2, 0, STR_PAD_LEFT)."'".$selected.">".$month."</option>";
 				}
 				$out .= "\n\t\t\t</select>";
-				$out .= "\n\t\t\t<select size='1' name='form_field_".$formfield_id."_".$dataset_id."_year' id='form_field_".$formfield_id."_".$dataset_id."_year'>\n\t\t\t<option value=''>Jahr</option>\n\t\t\t<option value=''>&#160;</option>";
+				$out .= "\n\t\t\t<select size='1' name='form_field_".$meta->form_field_id."_".$dataset->id."_year' id='form_field_".$meta->form_field_id."_".$dataset->id."_year'>\n\t\t\t<option value=''>Jahr</option>\n\t\t\t<option value=''>&#160;</option>";
 				for ( $year = date('Y')-50; $year <= date('Y')+10; $year++ ) {
 					$selected = ( $year == substr($value, 0, 4) ) ? ' selected="selected"' : '';
 					$out .= "\n\t\t\t<option value='".$year."'".$selected.">".$year."</option>";
 				}
 				$out .= "\n\t\t\t</select>";
-			} /*elseif ( 'fileupload' == $formfield_type ) {
-				$out .= '<input type="file" name="form_field['.$formfield_id.']['.$dataset_id.']" id="form_field_'.$formfield_id.'_'.$dataset_id.'" size="20" />';
-			}*/
-			elseif ( 'select' == $formfield_type )
-				$out .= $this->printFormFieldDropDown($formfield_id, $value, $dataset_id, "form_field_".$formfield_id."_".$dataset_id, false);
-			elseif ( 'checkbox' == $formfield_type )
-				$out .= $this->printFormFieldCheckboxList($formfield_id, $value, 0, "form_field_".$formfield_id."_".$dataset_id, false);
-			elseif ( 'radio' == $formfield_type )
-				$out .= $this->printFormFieldRadioList($formfield_id, $value, 0, "form_field_".$formfield_id."_".$dataset_id, false);
+			}
+			elseif ( 'select' == $meta->type )
+				$out .= $this->printFormFieldDropDown($meta->form_field_id, $value, $dataset->id, "form_field_".$meta->form_field_id."_".$dataset->id, false);
+			elseif ( 'checkbox' == $meta->type )
+				$out .= $this->printFormFieldCheckboxList($meta->form_field_id, $value, 0, "form_field_".$meta->form_field_id."_".$dataset->id, false);
+			elseif ( 'radio' == $meta->type )
+				$out .= $this->printFormFieldRadioList($meta->form_field_id, $value, 0, "form_field_".$meta->form_field_id."_".$dataset->id, false);
 			
 				
 	
-			$out .= "\n\t\t\t<div style='text-align:center; margin-top: 1em;'><input type='button' value='".__('Save')."' class='button-secondary' onclick='ProjectManager.ajaxSaveDataField(".$dataset_id.",".$formfield_id.",\"".$formfield_type."\"); return false;' />&#160;<input type='button' value='".__('Cancel')."' class='button' onclick='tb_remove();' /></div>";
+			$out .= "\n\t\t\t<div style='text-align:center; margin-top: 1em;'><input type='button' value='".__('Save')."' class='button-secondary' onclick='ProjectManager.ajaxSaveDataField(".$dataset->id.",".$meta->form_field_id.",\"".$meta->type."\"); return false;' />&#160;<input type='button' value='".__('Cancel')."' class='button' onclick='tb_remove();' /></div>";
 			$out .= "\n\t\t\t</form>";
 			$out .= "\n\t\t</div>";
 			$out .= "\n\t\t</div>";
@@ -1279,7 +1324,7 @@ class ProjectManager extends ProjectManagerLoader
 
 
 	/**
-	 * hasDetails() - check if datasets have details
+	 * check if datasets have details
 	 * 
 	 * @param boolean $single
 	 * @return boolean
@@ -1300,7 +1345,7 @@ class ProjectManager extends ProjectManagerLoader
 
 	
 	/**
-	 * getSearchResults() - gets search results
+	 * gets search results
 	 *
 	 * @param none
 	 * @return array
