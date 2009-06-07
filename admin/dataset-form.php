@@ -1,16 +1,13 @@
-<?php if ( $is_profile_page ) : ?>
-<script type="text/javascript">
-document.forms[0].encoding = "multipart/form-data";
-</script>
-<?php endif; ?>
-
 <table class="form-table">
-	<?php if (!$is_profile_page) : ?>
 	<tr valign="top">
 		<th scope="row"><label for="name"><?php _e( 'Name', 'projectmanager' ) ?></label></th>
-		<td><input type="text" name="name" id="name" value="<?php echo $name ?>" size="45" /></td>
+		<td>
+			<input type="text" name="name" id="name" value="<?php echo $name ?>" size="45" />
+			<?php if ( current_user_can('edit_other_datasets') && !$edit ) : ?>
+				<span><a class="thickbox" title="<?php _e( 'Add WP User', 'projectmanager' ) ?>" href="#TB_inline&width=200&height=100&inlineId=wp_users"><img src="<?php echo PROJECTMANAGER_URL ?>/admin/icons/menu/user.png" alt="<?php _e( 'Add WP User', 'projectmanager' ) ?>" style="vertical-align: middle;" /></a></span>
+			<?php endif; ?>
+		</td>
 	</tr>
-	<?php endif; ?>
 	<?php if ( 1 == $project->show_image ) : ?>
 	<tr valign="top">
 		<th scope="row"><label for="projectmanager_image"><?php _e( 'Image', 'projectmanager' ) ?></label></th>
@@ -85,7 +82,7 @@ document.forms[0].encoding = "multipart/form-data";
 		
 		<?php endforeach; ?>
 	<?php endif; ?>
-	<?php if ( -1 != $project->category && current_user_can('projectmanager_admin') ) : ?>
+	<?php if ( -1 != $project->category && current_user_can('edit_other_datasets') ) : ?>
 	<!-- category selection form -->
 	<tr valign="top">
 		<th scope="row"><label for="post_category"><?php _e( 'Categories', 'projectmanager' ) ?></label></th>
@@ -98,9 +95,9 @@ document.forms[0].encoding = "multipart/form-data";
 		</td>
 	</tr>
 	<?php endif; ?>
-	<?php if ( isset($_GET['edit']) && current_user_can('projectmanager_admin') && !$is_profile_page ) : ?>
+	<?php if ( isset($_GET['edit']) && current_user_can('edit_other_datasets') && !$is_profile_page ) : ?>
 	<tr valign="top">
-		<th scope="row"><label for="owner"><?php _e( 'Owner', 'projectmanager' ) ?></label></th>
+		<th scope="row"><label for="owner"><?php _e( 'WP User', 'projectmanager' ) ?></label></th>
 		<td><?php wp_dropdown_users( array('selected' => $dataset->user_id, 'name' => 'owner') ) ?></td>
 	</tr>
 	<?php endif; ?>
