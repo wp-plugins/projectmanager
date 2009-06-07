@@ -1,6 +1,9 @@
 ProjectManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
+V2.5.7 - June 6, 2009
+- BUGFIX: parse error
+
 V2.5.6 - June 5, 2009
 - CHANGED: moved AJAX functions to separate class in lib/ajax.php
 - BUGFIX: chmod of image uploads

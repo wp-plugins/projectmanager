@@ -685,7 +685,7 @@ class ProjectManager extends ProjectManagerLoader
 	{
 		global $wpdb;
 	
-		$search = ( $id ) ? "`id` = {$id}" : "`project_id` = {$this->getProjectID()}"; 
+		$search = $id? "`id` = {$id}" : "`project_id` = {$this->getProjectID()}"; 
 		$sql = "SELECT `label`, `type`, `order`, `order_by`, `show_on_startpage`, `show_in_profile`, `id` FROM {$wpdb->projectmanager_projectmeta} WHERE $search ORDER BY `order` ASC;";
 		$formfields = $wpdb->get_results( $sql );
 		
