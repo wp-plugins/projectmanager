@@ -1,6 +1,9 @@
 ProjectManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
+V2.5.8 - June 8, 2009
+- BUGIFX: call-time pass-by-reference deprecated
+
 V2.5.7 - June 6, 2009
 - BUGFIX: parse error
 

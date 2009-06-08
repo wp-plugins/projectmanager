@@ -756,7 +756,7 @@ class ProjectManager extends ProjectManagerLoader
 								
 		$selected_datasets = array();
 		foreach ( (array)$datasets AS $dataset ) {
-			if ( in_array($this->getCatID(), $this->getSelectedCategoryIDs(&$dataset)) )
+			if ( in_array($this->getCatID(), $this->getSelectedCategoryIDs($dataset)) )
 				$selected_datasets[] = '`id` = '.$dataset->id;
 		}
 
@@ -1090,9 +1090,9 @@ class ProjectManager extends ProjectManagerLoader
 							$out .= "\n\t<li class='".$meta->type."'><span class='dataset_label'>".$meta->label."</span>:&#160;".$meta_value."</li>";
 						} else {
 							$out .= "\n\t<td class='".$meta->type."'>";
-							$out .= $this->getThickbox( &$dataset, &$meta );
+							$out .= $this->getThickbox( $dataset, $meta );
 							$out .= "\n\t\t".$meta_value;
-							$out .= $this->getThickboxLink( &$dataset, &$meta, sprintf(__('%s of %s','projectmanager'), $meta->label, $dataset->name) );
+							$out .= $this->getThickboxLink( $dataset, $meta, sprintf(__('%s of %s','projectmanager'), $meta->label, $dataset->name) );
 							$out .= "\n\t</td>";
 						}
 					} elseif ( 'td' == $output ) {
@@ -1100,9 +1100,9 @@ class ProjectManager extends ProjectManagerLoader
 							$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>&#160;</span>";
 							
 						$out .= "\n\t<td class='".$meta->type."'>";
-						$out .= $this->getThickbox( &$dataset, &$meta );
+						$out .= $this->getThickbox( $dataset, $meta );
 						$out .= $meta_value;
-						$out .= $this->getThickboxLink( &$dataset, &$meta, sprintf(__('%s of %s','projectmanager'), $meta->label, $dataset->name) );
+						$out .= $this->getThickboxLink( $dataset, $meta, sprintf(__('%s of %s','projectmanager'), $meta->label, $dataset->name) );
 						$out .= "\n\t</td>";
 					}
 				}
