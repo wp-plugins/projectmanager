@@ -1,10 +1,10 @@
 <?php
-if ( !current_user_can( 'manage_projects' ) && !current_user_can( 'projectmanager_admin' ) ) : 
+if ( !current_user_can( 'import_datasets' ) ) : 
      echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
 else :
 
 $project_id = $projectmanager->getProjectID();
-$projectmanager->getProject();
+$project = $projectmanager->getCurrentProject();
 
 if ( isset($_POST['import']) ) {
 	$this->importDatasets( $project_id, $_FILES['projectmanager_import'], $_POST['delimiter'], $_POST['cols'] );

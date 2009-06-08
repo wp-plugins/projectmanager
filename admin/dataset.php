@@ -1,11 +1,12 @@
 <?php
-if ( !current_user_can( 'manage_projects' ) && !current_user_can( 'projectmanager_admin' ) ) : 
+if ( !current_user_can( 'edit_datasets' ) && !current_user_can( 'projectmanager_user') ) : 
 	echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
 else :
 $project_id = $projectmanager->getProjectID();
-$project = $projectmanager->getProject($project_id);
+$project = $projectmanager->getCurrentProject();
 	
 if ( isset($_GET['edit']) ) {
+	$edit = true;
 	$form_title = __('Edit Dataset','projectmanager');
 	$dataset_id = $_GET['edit'];
 	$dataset = $projectmanager->getDataset( $dataset_id );
@@ -22,6 +23,7 @@ if ( isset($_GET['edit']) ) {
 		//$meta_data[$meta->form_field_id] = str_replace("\"", "&quot;", str_replace("\'", "&#039;", $meta->value));
 	}
 }  else {
+	$edit = false;
 	$form_title = __('Add Dataset','projectmanager');
 	$dataset_id = ''; $cat_ids = array(); $img_filename = ''; $name = ''; $meta_data = array();
 }
@@ -32,6 +34,18 @@ $page = ($_GET['page'] == 'projectmanager') ? 'projectmanager&subpage=show-proje
 if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) )
 	echo "<div class='error'><p>".sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $projectmanager->getFilePath() )."</p></div>";
 ?>
+
+<?php if ( current_user_can('edit_other_datasets') && !$editt ) : ?>
+<div id="wp_users" style="display: none; overflow: auto;" class="projectmanager_thickbox">
+	<form>
+		<div style="display: block; margin: 0.7em auto; text-align: center;"><?php wp_dropdown_users( array('name' => 'wp_user_id') ) ?></div>
+
+		<div style="text-align:center; margin-top: 1em;"><input type="button" value="<?php _e('Insert') ?>" class="button-secondary" onclick="ProjectManager.addWPUser();return false;" />&#160;<input type="button" value="<?php _e('Cancel') ?>" class="button" onclick="tb_remove();" /></div>
+	</form>
+</div>
+<?php endif; ?>
+
+
 <form name="post" id="post" action="admin.php?page=<?php echo $page ?>" method="post" enctype="multipart/form-data">
 	
 <?php wp_nonce_field( 'projectmanager_edit-dataset' ) ?>
@@ -45,7 +59,7 @@ if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) 
 	
 	<input type="hidden" name="project_id" value="<?php echo $project_id ?>" />
 	<input type="hidden" name="dataset_id" value="<?php echo $dataset_id ?>" />
-	<input type="hidden" name="user_id" value="<?php echo $dataset->user_id ?>" />
+	<input type="hidden" name="user_id" id="user_id"  value="<?php echo $dataset->user_id ?>" />
 	<input type="hidden" name="updateProjectManager" value="dataset" />
 			
 	<p class="submit"><input type="submit" name="addportrait" value="<?php echo $form_title ?> &raquo;" class="button" /></p>

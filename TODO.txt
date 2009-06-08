@@ -1,0 +1,2 @@
+- call-time pass-by-reference deprecated 
+- Parse error unexpected '(', expecting '}' in lib/core on lin 688

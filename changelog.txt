@@ -1,6 +1,44 @@
 ProjectManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
+V2.5.8 - June 8, 2009
+- BUGIFX: call-time pass-by-reference deprecated
+
+V2.5.7 - June 6, 2009
+- BUGFIX: parse error
+
+V2.5.6 - June 5, 2009
+- CHANGED: moved AJAX functions to separate class in lib/ajax.php
+- BUGFIX: chmod of image uploads
+- BUGFIX: access control for editing datasets
+
+V2.5.5 - June 4, 2009
+- BUGFIX: access to dataset editing page with only cap 'projectmanager_user'
+- BUGFIX: profile update
+
+V2.5.4 - June 3, 2009
+- BUGFIX: access control for adding/editing of datasets
+
+V2.5.3 - June 3, 2009
+- BUGFIX: access control for adding/editing of datasets
+- code cleaning
+
+V2.5.2 - June 3, 2009
+- BUGFIX: profile hook
+
+V2.5.1 - June 3, 2009
+- BUGFIX: check for double datasets
+
+V2.5 - June 2 , 2009
+- NEW: fine grained access control
+- NEW: thickbox box for adding WP Users
+- NEW: add dataset upon user registration if user has capablity
+- NEW: profile Hook for any number of projects
+- CHANGED: only users with matching datasets are shown form in profile
+
+V2.4.7 - May 30, 2009
+- NEW: display ID of dataset in admin overview
+
 V2.4.6 - May 30, 2009
 - BUGFIX: MySQL string to get datasets of certain category
 
