@@ -161,11 +161,16 @@ class ProjectManagerShortcodes
 			'order' => false,
 			'single' => 'true',
 			'selections' => 'true',
+			'results' => true,
+			'field_id' => false,
+			'field_value' => false,
 		), $atts ));
 		$projectmanager->initialize($id);
 		$project = $projectmanager->getCurrentProject();
 
 		$single = ( $single == 'true' ) ? true : false;
+		$random = ( $orderby == 'rand' ) ? true : false;
+
 		if ( $cat_id ) $projectmanager->setCatID($cat_id);
 	
 		if ( isset($_GET['show']) ) {
@@ -176,7 +181,7 @@ class ProjectManagerShortcodes
 			if ( $projectmanager->isSearch() )
 				$datasets = $projectmanager->getSearchResults();
 			else
-				$datasets = $projectmanager->getDatasets( true, $orderby, $order );
+				$datasets = $projectmanager->getDatasets( array( 'limit' => $results, 'orderby' => $orderby, 'order' => $order, 'random' => $random, 'meta_key' => $field_id, 'meta_value' => $field_value) );
 			
 			$title = '';
 			if ( $projectmanager->isSearch() ) {

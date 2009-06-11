@@ -1,6 +1,12 @@
 ProjectManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
+V2.6 - June , 2009
+- NEW: shortcode attribute to limit number of results
+- NEW: shortcode attribute to get datasets with specific meta key and meta
+value
+- NEW: shortcode attribute to get random datasets with limit of results
+
 V2.5.8 - June 8, 2009
 - BUGIFX: call-time pass-by-reference deprecated
 

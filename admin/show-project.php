@@ -43,7 +43,7 @@ $order = array( '' => __('Order','projectmanager'), 'ASC' => __('Ascending','pro
 if ( $projectmanager->isSearch() )
 	$datasets = $projectmanager->getSearchResults();
 else
-	$datasets = $projectmanager->getDatasets( true );
+	$datasets = $projectmanager->getDatasets(array('limit' => true));
 
 ?>
 <div class="wrap">

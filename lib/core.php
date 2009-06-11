@@ -685,7 +685,11 @@ class ProjectManager extends ProjectManagerLoader
 	{
 		global $wpdb;
 	
-		$search = $id? "`id` = {$id}" : "`project_id` = {$this->getProjectID()}"; 
+		if ( $id )
+			$search = "`id` = {$id}";
+		else
+			$search = "`project_id` = {$this->getProjectID()}"; 
+
 		$sql = "SELECT `label`, `type`, `order`, `order_by`, `show_on_startpage`, `show_in_profile`, `id` FROM {$wpdb->projectmanager_projectmeta} WHERE $search ORDER BY `order` ASC;";
 		$formfields = $wpdb->get_results( $sql );
 		
@@ -796,52 +800,85 @@ class ProjectManager extends ProjectManagerLoader
 	/**
 	 * gets all datasets for a project - BUGFIX with ordering
 	 *
-	 * @param boolean $limit
-	 * @param string orderby field to orderby
-	 * @param string $order ASC|DESC
-	 * @param int $formfield_id FormField ID to order by
+	 * @param array $args
 	 * @return array
 	 */
-	function getDatasets( $limit = false, $orderby = false, $order = false )
+	function getDatasets( $args = array() )
 	{
 		global $wpdb;
+		$defaults = array( 'limit' => false, 'orderby' => false, 'order' => false, 'random' => false );
+		$args = array_merge($defaults, $args);
+		extract($args, EXTR_SKIP);
+
 		$project = $this->getCurrentProject();
 
-		// Set ordering
-		$formfield_id = $this->setDatasetOrder($orderby, $order);
+		// Start basic MySQL Query
+		$sql = "SELECT dataset.`id` AS id, dataset.`name` AS name, dataset.`image` AS image, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} AS dataset  WHERE dataset.`project_id` = {$this->project_id}";
 
-		$tmp = explode("-",$orderby);
-		$orderby = $tmp[0];
-		if ( $orderby && $orderby != 'formfields' ) {
-			$sql_order = "`$orderby` $order";
-		} else {
-			$sql_order = ( $this->orderby != 'name' && $this->orderby != 'id' && $this->orderby != 'order' ) ? '`name` '.$this->order : $this->getDatasetOrder();
-		}
-		
-		if ( $limit && $this->per_page != 'NaN' ) $offset = ( $this->getCurrentPage() - 1 ) * $this->per_page;
+		if ( $random ) {
+			// get all datasets of project
+			$results = $wpdb->get_results($sql);
+			$all = array();
+			foreach ( $results AS $result ) {
+				$all[] = $result;
+			}
 
-		$sql = "SELECT `id`, `name`, `image`, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id}";
-		
-		if ( $this->isCategory() )
-			$sql .= $this->getCategorySearchString();
-		
-		$sql .=  " ORDER BY ".$sql_order;
-		$sql .= ( $limit && $this->per_page != 'NaN' ) ? " LIMIT ".$offset.",".$this->per_page.";" : ";";
+			$datasets = array();
+			while ( count($datasets) < intval($limit) ) {
+				$id = mt_rand(0, count($all)-1);
+				if ( $all[$id] && !array_key_exists($all[$id]->id, $datasets) )
+					$datasets[$all[$id]->id] = $all[$id];
+			}
 			
-		$datasets = $wpdb->get_results($sql);
-	
-		/*
-		* Determine wether to sort by formfields or not
-		* Selection Menus and Shortcode Attributes override Project Settings
-		*/
-		if ( ($project->dataset_orderby == 'formfields' && !$this->override_order) || $formfield_id )
-			$orderby_formfields = true;
-		else
-			$orderby_formfields = false;
-	
-		if ( $orderby_formfields )
-			$datasets = $this->orderDatasetsByFormFields($datasets, $formfield_id);
+			$datasets = array_values($datasets);
+		} else {
+			// Set ordering
+			$formfield_id = $this->setDatasetOrder($orderby, $order);
+
+			// get MySQL Ordering String
+			$tmp = explode("-",$orderby);
+			$orderby = $tmp[0];
+			if ( $orderby && $orderby != 'formfields' ) {
+				$sql_order = "`$orderby` $order";
+			} else {
+				$sql_order = ( $this->orderby != 'name' && $this->orderby != 'id' && $this->orderby != 'order' ) ? '`name` '.$this->order : $this->getDatasetOrder();
+			}
+
+			if ( $limit && $this->per_page != 'NaN' ) $offset = ( $this->getCurrentPage() - 1 ) * $this->per_page;
+
+			if( $meta_key && $meta_key != 'name' && !empty($meta_value) )
+				$sql .= " AND `id` IN ( SELECT `dataset_id` FROM {$wpdb->projectmanager_datasetmeta} AS meta WHERE meta.form_id = '".intval($meta_key)."' AND meta.value = '".$meta_value."' )";
+
+			if ( 'name' == $meta_key && !empty($meta_value) ) $sql .= " AND `name` = '".$meta_value."'";
 		
+			if ( $this->isCategory() )
+				$sql .= $this->getCategorySearchString();
+		
+			$sql .=  " ORDER BY ".$sql_order;
+
+			if ( is_numeric($limit) && $limit > 0 ) 
+				$sql .= " LIMIT 0, ".$limit.";";
+			elseif ( $limit && $this->per_page != 'NaN' )
+				$sql .= " LIMIT ".$offset.",".$this->per_page.";";
+			else
+				$sql .= ";";	
+
+			$datasets = $wpdb->get_results($sql);
+
+			/*
+			* Determine wether to sort by formfields or not
+			* Selection Menus and Shortcode Attributes override Project Settings
+			*/
+			if ( ($project->dataset_orderby == 'formfields' && !$this->override_order) || $formfield_id )
+				$orderby_formfields = true;
+			else
+				$orderby_formfields = false;
+	
+			if ( $orderby_formfields )
+				$datasets = $this->orderDatasetsByFormFields($datasets, $formfield_id);
+		}
+
+
 		return $datasets;
 	}
 	
