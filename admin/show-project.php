@@ -69,16 +69,19 @@ else
 		<input type='submit' value='<? _e( 'Search', 'projectmanager' ) ?>' class='button-secondary action' />
 	</form>
 	
-	<?php if ( $project->navi_link != 1 || isset($_GET['subpage']) ) : ?>
 	<ul class="subsubsub">
 		<?php foreach ( $this->getMenu() AS $key => $item ) : ?>
 		<?php if ( current_user_can($item['cap']) ) : ?>
+
+		<?php if ( $project->navi_link != 1 || isset($_GET['subpage']) ) : ?>
 		<li><a href="admin.php?page=projectmanager&amp;subpage=<?php echo $key ?>&amp;project_id=<?php echo $project_id ?>"><?php echo $item['title'] ?></a></li> |
+		<?php else : ?>
+		<li><a href="admin.php?page=<? printf($item['page'], $project_id) ?>"><?php echo $item['title'] ?></a></li>
+		<?php endif; ?>
 		<?php endif; ?>
 		<?php endforeach; ?>
 		<li><a href="categories.php"><?php _e( 'Categories' ) ?></a></li>
 	</ul>
-	<?php endif; ?>
 	
 	<?php if ( $datasets ) : ?>
 	
@@ -172,7 +175,7 @@ else
 							<div style="text-align:center; margin-top: 1em;"><input type="button" value="<?php _e('Save') ?>" class="button-secondary" onclick="ProjectManager.ajaxSaveDatasetName(<?php echo $dataset->id; ?>);return false;" />&#160;<input type="button" value="<?php _e('Cancel') ?>" class="button" onclick="tb_remove();" /></div></form>
 						</div>
 					</div>
-					<span><a href="admin.php?page=<?php if($_GET['page'] == 'projectmanager') echo 'projectmanager&subpage=dataset'; else echo 'project-dataset_'.$project_id ?>&amp;edit=<?php echo $dataset->id ?>&amp;project_id=<?php echo $project_id ?>"><span id="dataset_name_text<?php echo $dataset->id ?>"><?php echo $dataset->name ?></span></a></span>
+					<span><a href="admin.php?page=<?php if($_GET['page'] == 'projectmanager') echo 'projectmanager&subpage=dataset'; else echo 'project-dataset_'.$project_id ?>&amp;edit=<?php echo $dataset->id ?>&amp;project_id=<?php echo $project_id ?>"><span id="dataset_name_text<?php echo $dataset->id ?>"><?php echo $dataset->name ?></span></a></span><span id="loading_name_<?php echo $dataset->id ?>"></span>
 					<?php else : ?>
 						<?php echo $dataset->name ?>
 					<?php endif; ?>
@@ -196,14 +199,14 @@ else
 						</div>
 					</div>
 					<?php endif; ?>
-					<span id="dataset_category_text<?php echo $dataset->id ?>"><?php echo $categories ?></span>
+					<span id="dataset_category_text<?php echo $dataset->id ?>"><?php echo $categories ?></span><span id="loading_category_<?php echo $dataset->id ?>"></span>
 					
 					<?php if ( ( current_user_can('edit_datasets') && $current_user->ID == $dataset->user_id ) || ( current_user_can('edit_other_datasets') ) ) : ?>
 					<span>&#160;<a class="thickbox" id="thickboxlink_category<?php echo $dataset->id ?>" href="#TB_inline&amp;height=300&amp;width=300&amp;inlineId=groupchoosewrap<?php echo $dataset->id ?>" title="<?php printf(__('Categories of %s','projectmanager'),$dataset->name) ?>"><img src="<?php echo PROJECTMANAGER_URL ?>/admin/icons/edit.gif" border="0" alt="<?php _e('Edit') ?>" /></a></span>
 					<?php endif; ?>
 				</td>
 				<?php endif; ?>
-				<?php $projectmanager->printDatasetMetaData( $dataset, 'td', false ) ?>
+				<?php $projectmanager->printDatasetMetaData( $dataset ) ?>
 			</tr>
 		<?php endforeach ?>
 		</tbody>

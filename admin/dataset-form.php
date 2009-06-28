@@ -31,7 +31,7 @@
 		<tr valign="top">
 			<th scope="row"><label for="form_field_<?php echo $form_field->id ?>"><?php echo $form_field->label ?></label></th>
 			<td>
-				<?php if ( 'text' == $form_field->type || 'email' == $form_field->type || 'uri' == $form_field->type || 'image' == $form_field->type || 'numeric' == $form_field->type || 'currency' == $form_field->type ) : ?>
+				<?php if ( 'text' == $form_field->type || 'email' == $form_field->type || 'uri' == $form_field->type || 'numeric' == $form_field->type || 'currency' == $form_field->type ) : ?>
 				<input type="text" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" value="<?php echo $meta_data[$form_field->id] ?>" size="45" />
 				<?php elseif ( 'textfield' == $form_field->type ) : ?>
 				<div style="width: 60%;">
@@ -39,36 +39,44 @@
 				</div>
 				<?php elseif ( 'date' == $form_field->type ) : ?>
 				<select size="1" name="form_field[<?php echo $form_field->id ?>][day]">
-					<option value="">Tag</option>
+					<option value=""><?php _e( 'Day', 'projectmanager' ) ?></option>
 					<option value="">&#160;</option>
 					<?php for ( $day = 1; $day <= 31; $day++ ) : ?>
 						<option value="<?php echo $day ?>"<?php if ( $day == substr($meta_data[$form_field->id], 8, 2) ) echo ' selected="selected"'; ?>><?php echo $day ?></option>
 					<?php endfor; ?>
 				</select>
 				<select size="1" name="form_field[<?php echo $form_field->id ?>][month]">
-					<option value="">Monat</option>
+					<option value=""><?php _e( 'Month', 'projectmanager' ) ?></option>
 					<option value="">&#160;</option>
 					<?php foreach ( $projectmanager->getMonths() AS $key => $month ) : ?>
 						<option value="<?php echo $key ?>"<?php if ( $key == substr($meta_data[$form_field->id], 5, 2) ) echo ' selected="selected"'; ?>><?php echo $month ?></option>
 					<?php endforeach; ?>
 				</select>
 				<select size="1" name="form_field[<?php echo $form_field->id ?>][year]">
-					<option value="0000">Jahr</option>
+					<option value="0000"><?php _e('Year', 'projectmanager') ?></option>
 					<option value="0000">&#160;</option>
 					<?php for ( $year = date('Y')-100; $year <= date('Y')+10; $year++ ) : ?>
 						<option value="<?php echo $year ?>"<?php if ( $year == substr($meta_data[$form_field->id], 0, 4) ) echo ' selected="selected"' ?>><?php echo $year ?></option>
 					<?php endfor; ?>
 				</select>
-				<?php elseif ( 'fileupload' == $form_field->type ) : ?>
-				<input type="file" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" size="40" />
-				<input type="hidden" name="form_field[<?php echo $form_field->id ?>][current]" value="<?php echo $meta_data[$form_field->id] ?>" />
-				<?php if (!empty($meta_data[$form_field->id])) : ?>
-				<p>
-					<?php _e( 'Current File', 'projectmanager' ) ?>: <a href="<?php echo $projectmanager->getFileURL($meta_data[$form_field->id]) ?>"><?php echo $meta_data[$form_field->id] ?></a>&#160;
-					<input type="checkbox" name="form_field[<?php echo $form_field->id ?>][del]" value="1" id="delete_file_<?php echo $form_field->id ?>">&#160;<label for="delete_file_<?php echo $form_field->id ?>"><strong><?php _e( 'Delete File', 'projectmanager' ) ?></strong></label>&#160;
-					<input type="checkbox" name="form_field[<?php echo $form_field->id ?>][overwrite]" value="1" id="overwrite_file_<?php echo $form_field->id ?>">&#160;<label for="overwrite_file_<?php echo $form_field->id ?>"><strong><?php _e( 'Overwrite File', 'projectmanager' ) ?></strong></label>
-				</p>
-				<?php endif; ?>
+				<?php elseif ( 'file' == $form_field->type || 'image' == $form_field->type || 'video' == $form_fiel->type ) : ?>
+					<input type="file" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" size="40" />
+					<input type="hidden" name="form_field[<?php echo $form_field->id ?>][current]" value="<?php echo $meta_data[$form_field->id] ?>" />
+					<?php if (!empty($meta_data[$form_field->id])) : ?>
+					<p>
+						<?php if ( 'file' == $form_field->type ) : ?>
+							<?php _e( 'Current File', 'projectmanager' ) ?>: <a href="<?php echo $projectmanager->getFileURL($meta_data[$form_field->id]) ?>"><?php echo $meta_data[$form_field->id] ?></a>&#160;
+						<?php elseif( 'image' == $form_field->type ) : ?>
+							<img src="<?php echo $projectmanager->getFileURL('tiny.'.$meta_data[$form_field->id])?>" class="alignright" style="margin-top: -1em;" />
+						<?php elseif ( 'video' == $form_field->type ) : ?>
+							<embed src="<?php $projectmanager->getFileURL($meta_data[$form_field->id]) ?>" width="150" class="alignright" style="margin-top: -1em;" />
+						<?php endif; ?>
+						<input type="checkbox" name="form_field[<?php echo $form_field->id ?>][del]" value="1" id="delete_file_<?php echo $form_field->id ?>">&#160;<label for="delete_file_<?php echo $form_field->id ?>"><strong><?php _e( 'Delete File', 'projectmanager' ) ?></strong></label>&#160;
+						<input type="checkbox" name="form_field[<?php echo $form_field->id ?>][overwrite]" value="1" id="overwrite_file_<?php echo $form_field->id ?>">&#160;<label for="overwrite_file_<?php echo $form_field->id ?>"><strong><?php _e( 'Overwrite File', 'projectmanager' ) ?></strong></label>
+					</p>
+					<?php endif; ?>
+				<?php elseif ( 'project' == $form_field->type || 'datasets' == $form_field->type ) : ?>
+					<?php echo $projectmanager->getDatasetCheckboxList($options['form_field_options'][$form_field->id], 'form_field['.$form_field->id.'][]', $meta_data[$form_field->id]); ?>
 				<?php elseif ( 'select' == $form_field->type ) : $projectmanager->printFormFieldDropDown($form_field->id, $meta_data[$form_field->id], $dataset_id, "form_field[".$form_field->id."]"); ?>
 				<?php elseif ( 'checkbox' == $form_field->type ) : $projectmanager->printFormFieldCheckboxList($form_field->id, $meta_data[$form_field->id], $dataset_id, "form_field[".$form_field->id."][]"); ?>
 				<?php elseif ( 'radio' == $form_field->type ) : $projectmanager->printFormFieldRadioList($form_field->id, $meta_data[$form_field->id], $dataset_id, "form_field[".$form_field->id."]"); ?>

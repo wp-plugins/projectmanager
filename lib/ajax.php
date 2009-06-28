@@ -25,6 +25,10 @@ class ProjectManagerAJAX
 			add_action( 'wp_ajax_projectmanager_save_dataset_order', array(&$this, 'saveDatasetOrder') );
 			add_action( 'wp_ajax_projectmanager_ajax_delete_file', array(&$this, 'deleteFile') ); 
 			add_action( 'wp_ajax_projectmanager_insert_wp_user', array(&$this, 'insertWpUser') );
+
+			add_action( 'wp_ajax_projectmanager_toggle_formfield_options', array(&$this, 'toggleFormfieldOptions') );
+			add_action( 'wp_ajax_projectmanager_get_cat_dropdown', array(&$this, 'getCategoryDropdown') );
+			add_action( 'wp_ajax_projectmanager_save_project_link', array(&$this, 'saveProjectLink') );
 		}
 	}
 	function ProjectManagerAJAX()
@@ -54,9 +58,28 @@ class ProjectManagerAJAX
 		$options = get_option('projectmanager');
 	
 		$form_id = $_POST['form_id'];
-		$form_options = explode("\n", $_POST['options']);
+		$form_options = explode("|", $_POST['options']);
 		
 		$options['form_field_options'][$form_id] = $form_options;
+		update_option('projectmanager', $options);
+	
+		die("ProjectManager.reInit();");
+	}
+
+	
+	/**
+	 * save Project Link
+	 *
+	 * @since 2.7
+	 */
+	function saveProjectLink()
+	{
+		$project_id = (int)$_POST['project_id'];
+		$formfield_id = (int)$_POST['formfield_id'];
+
+		$options = get_option('projectmanager');
+		$options['form_field_options'][$formfield_id] = $project_id;
+
 		update_option('projectmanager', $options);
 	
 		die("ProjectManager.reInit();");
@@ -82,6 +105,7 @@ class ProjectManagerAJAX
 		die( "ProjectManager.reInit();jQuery('span#dataset_name_text" . $dataset_id . "').fadeOut('fast', function() {
 			jQuery('a#thickboxlink_name" . $dataset_id . "').show();
 			jQuery('span#dataset_name_text" . $dataset_id . "').html('" . addslashes_gpc( $new_name ) . "').fadeIn('fast');
+			ProjectManager.doneLoading('loading_name_".$dataset_id."');
 		});");
 	}
 
@@ -108,6 +132,7 @@ class ProjectManagerAJAX
 		die( "ProjectManager.reInit();jQuery('span#dataset_category_text" . $dataset_id . "').fadeOut('fast', function() {
 			jQuery('a#thickboxlink_category" . $dataset_id . "').show();
 			jQuery('span#dataset_category_text" . $dataset_id . "').html('" . $cat_name . "').fadeIn('fast');
+			ProjectManager.doneLoading('loading_category_".$dataset_id."');
 		});");
 	}
 
@@ -129,14 +154,16 @@ class ProjectManagerAJAX
 		if ( 'textfield' == $formfield_type )
 			$new_value = str_replace('\n', "\n", $new_value);
 		// Checkbox List
-		if ( 'checkbox' == $formfield_type )
+		if ( 'checkbox' == $formfield_type || 'project' == $formfield_type ) {
 			$new_value = substr($new_value,0,-1);
+			$new_value = explode(",",$new_value);
+		}
 
 		$count = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_datasetmeta} WHERE `dataset_id` = '".$dataset_id."' AND `form_id` = '".$meta_id."'" );
 		if ( !empty($count) )
-			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `value` = '%s' WHERE `dataset_id` = '%d' AND `form_id` = '%d'", $new_value, $dataset_id, $meta_id ) );
+			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `value` = '%s' WHERE `dataset_id` = '%d' AND `form_id` = '%d'", maybe_serialize($new_value), $dataset_id, $meta_id ) );
 		else
-			$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ( '%d', '%d', '%s' )", $meta_id, $dataset_id, $new_value ) );
+			$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ( '%d', '%d', '%s' )", $meta_id, $dataset_id, maybe_serialize($new_value) ) );
 	
 		// Textarea
 		if ( 'textfield' == $formfield_type ) {
@@ -157,23 +184,37 @@ class ProjectManagerAJAX
 		elseif ( 'numeric' == $formfield_type ) {
 			if ( class_exists('NumberFormatter') ) {
 				$fmt = new NumberFormatter( get_locale(), NumberFormatter::DECIMAL );
-				$meta_value = $fmt->format($meta_value);
+				$new_value = $fmt->format($new_value);
 			} else {
-				$meta_value = apply_filters( 'projectmanager_numeric', $meta_value );
+				$new_value = apply_filters( 'projectmanager_numeric', $new_value );
 			}
 		} elseif ( 'currency' == $formfield_type ) {
 			if ( class_exists('NumberFormatter') ) {
 				$fmt = new NumberFormatter( get_locale(), NumberFormatter::CURRENCY );
-				$meta_value = $fmt->format($meta_value);
+				$new_value = $fmt->format($new_value);
 			} else {
-				$meta_value = money_format('%i', $meta_value);
-				$meta_value = apply_filters( 'projectmanager_currency', $meta_value );
+				$new_value = money_format('%i', $new_value);
+				$new_value = apply_filters( 'projectmanager_currency', $new_value );
 			}
+		} elseif ( 'checkbox' == $formfield_type || 'project' == $formfield_type ) {
+			$list = '<ul class="'.$formfield_type.'" id="form_field_'.$meta_id.'">';
+			foreach ( (array)$new_value AS $item ) {
+				if ( 'project' == $formfield_type && is_numeric($item) ) {
+					$item = $projectmanager->getDataset($item);
+					$item = $item->name;
+				}
+				$list .= '<li>'.$item.'</li>';
+			}
+			$list .= '</ul>';
+			$new_value = $list;
 		}
 
-		die( "ProjectManager.reInit();jQuery('span#datafield" . $meta_id . "_" . $dataset_id . "').fadeOut('fast', function() {
+		die( "
+			jQuery('span#datafield" . $meta_id . "_" . $dataset_id . "').fadeOut('fast', function() {
 			jQuery('a#thickboxlink" . $meta_id . "_" . $dataset_id . "').show();
 			jQuery('span#datafield" . $meta_id . "_" . $dataset_id . "').html('" . $new_value . "').fadeIn('fast');
+			ProjectManager.doneLoading('loading_".$meta_id."_".$dataset_id."');
+			ProjectManager.reInit();
 		});");
 	}
 
@@ -206,6 +247,113 @@ class ProjectManagerAJAX
 		die("
 			document.getElementById('name').value = '".$user->display_name."';
 			document.getElementById('user_id').value = '".$user_id."';
+		");
+	}
+
+
+	/**
+	 * get category dropdown
+	 *
+	 * @param none
+	 * @since 2.7
+	 */
+	function getCategoryDropdown()
+	{
+		global $projectmanager;
+
+		$project_id = (int)$_POST['project_id'];
+		$formfield_id = (int)$_POST['formfield_id'];
+
+		if ( !empty($project_id) ) {
+			$p = $projectmanager->getProject($project_id);
+
+			if ( !empty($p->category) && $p->category != -1 ) {
+				$html = wp_dropdown_categories(array('hide_empty' => 0, 'name' => "form_field[".$formfield_id."][category]", 'orderby' => 'name', 'echo' => 0, 'show_option_none' => __('Select Categoy (Optional)', 'projectmanager'), 'child_of' => $p->category));
+				$html = str_replace("\n", "", $html);
+				die("jQuery('span#project_cat_".$formfield_id."').fadeOut('fast', function () {
+					jQuery('span#project_cat_".$formfield_id."').html('".addslashes_gpc($html)."').fadeIn('fast');
+				})");
+			} else {
+				die("jQuery('span#project_cat_".$formfield_id."').fadeOut('fast');");
+			}
+		} else {
+			die("jQuery('span#project_cat_".$formfield_id."').fadeOut('fast');");
+		}
+	}
+
+
+	/**
+	 * toggle Formfield Options
+	 *
+	 * @since 2.7
+	 */
+	function toggleFormfieldOptions()
+	{
+		global $projectmanager_loader, $projectmanager;
+
+		$project_id = (int)$_POST['project_id'];
+		$formfield_id = (int)$_POST['formfield_id'];
+		$formfield_type = (string)$_POST['formfield_type'];
+		$options = (string)$_POST['options'];
+
+		$admin = $projectmanager_loader->getAdminPanel();
+
+		$html = '';
+
+		if ( 'project' == $formfield_type || 'checkbox' == $formfield_type || 'radio' == $formfield_type || 'select' == $formfield_type ) {
+			$html = '<div id="form_field_options_container'.$formfield_id.'" style="display: inline;">';
+			$html .= '<div id="form_field_options_div'.$formfield_id.'" style="overflow: auto; display: none;"><div class="projectmanager_thickbox">';
+			$html .= '<form>';
+			if ( 'project' == $formfield_type ) {
+				$dims = array( 'width' => 300, 'height' => 100 );
+				$thickbox_title = __( 'Choose Project to Link', 'projectmanager' );
+				$icon = 'databases.png';
+
+				$html .= '<select size="1" id="form_field_project_'.$formfield_id.'">';
+				$html .= '<option value="0">'.__( 'Choose Project', 'projectmanager' ).'</option>';
+				foreach ( $projectmanager->getProjects() AS $p ) {
+					if ( $p->id != $project_id )
+						$html .= '<option value="'.$p->id.'">'.$p->title.'</option>';
+				}
+				$html .= '</select>';
+				$html .= '<div style="text-align:center; margin-top: 1em;"><input type="button" value="'.__('Save').'" class="button-secondary" onclick="ProjectManager.saveProjectLink('.$formfield_id.');return false;" />&#160;<input type="button" value="'.__('Cancel').'" class="button" onclick="tb_remove();" /></div>';
+			} elseif ( 'checkbox' == $formfield_type || 'radio' == $formfield_type || 'select' == $formfield_type ) {
+				$dims = array( 'width' => 450, 'height' => 100 );
+				$thickbox_title = __( 'Options', 'projectmanager' );
+				$icon = 'application_list.png';
+
+				$html .= '<input type="text" size="30" id="form_field_options'.$formfield_id.'" value="'.$options.'" /><div style="text-align:center; margin-top: 1em;"><input type="button" value="'.__('Save').'" class="button-secondary" onclick="ProjectManager.ajaxSaveFormFieldOptions('.$formfield_id.');return false;" />&#160;<input type="button" value="'.__('Cancel').'" class="button" onclick="tb_remove();" /><p>'.__('Separate Options by <strong>|</strong>', 'projectmanager' ).'</p></div>';
+			}
+
+			$html .= '</form>';
+			$html .= '</div></div>';
+			$html .= '<span>&#160;<a href="#TB_inline&width='.$dims['width'].'&height='.$dims['height'].'&inlineId=form_field_options_div'.$formfield_id.'" style="display: inline;" id="options_link'.$formfield_id.'" class="thickbox" title="'.$thickbox_title.'"><img src="'.$admin->getIconURL($icon).'" alt="'.__('Options','projectmanager').'" /></a></span>';
+			$html .= '</div>';
+		}
+
+		die("
+			var type = '".$formfield_type."';
+			new_element = document.createElement('div');
+			new_element_id = 'form_field_options_container".$formfield_id."';
+			new_element.id= new_element_id;
+			new_element.style.display = 'inline';
+			// Check if selected form type is selection, checkbox, or radio
+			if ( type == 'project' || type == 'select' || type == 'checkbox' || type == 'radio' ) {
+				if ( document.getElementById(new_element_id) ) {
+					jQuery('div#form_field_options_container".$formfield_id."').fadeOut('fast');
+				} {
+					document.getElementById('form_field_options_box".$formfield_id."').appendChild(new_element);
+				}
+				jQuery('div#form_field_options_container".$formfield_id."').html(\"".addslashes_gpc($html)."\").fadeIn('fast');
+				ProjectManager.reInit();
+			} else {
+				jQuery('div#form_field_options_container".$formfield_id."').fadeOut('fast');
+				if (target_element = document.getElementById(new_element_id)) {;
+					document.getElementById('form_field_options_box".$formfield_id."').removeChild(target_element);
+				}
+			}
+
+			ProjectManager.doneLoading('loading_formfield_options_".$formfield_id."');
 		");
 	}
 }

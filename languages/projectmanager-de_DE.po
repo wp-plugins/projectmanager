@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
 "POT-Creation-Date: 2009-02-05 22:08+0000\n"
-"PO-Revision-Date: 2009-06-02 15:00-0500\n"
+"PO-Revision-Date: 2009-06-25 13:56-0500\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -243,8 +243,8 @@ msgstr "Typ"
 
 #: admin/formfields.php:31
 #: admin/formfields.php:41
-msgid "Show on startpage"
-msgstr "Zeige auf Startseite"
+msgid "Startpage"
+msgstr "Startseite"
 
 #: admin/formfields.php:32
 #: admin/formfields.php:42
@@ -762,8 +762,11 @@ msgstr "Kind Kategorien dieser Kategorie werden zur Gruppierung der Datensätze 
 msgid "Default"
 msgstr "Standard"
 
-msgid "Show in Profile"
-msgstr "Zeige im Profil"
+msgid "Profile"
+msgstr "Profil"
+
+msgid "Image Upload"
+msgstr "Bild Upload"
 
 msgid "The second checkbox controls image display in user profile"
 msgstr "Die zweite Checkbox kontrolliert die Bild-Anzeige im Benutzerprofil"

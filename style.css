@@ -29,6 +29,9 @@ table.projectmanager {
 table.projectmanager th, table.projectmanager td {
 	padding: 3px 5px;
 	}
+table.projectmanager th.image, table.projectmanager td.image {
+	text-align: center;
+	}
 table.projectmanager ul {
 	list-style-type: none;
 	}
@@ -147,13 +150,14 @@ div.projectmanager_thickbox ul { margin: 1em auto auto 1em; }
 div.projectmanager_thickbox p { text-align: left; margin: 0; padding: 0}
 	
 div#projectmanager-category-adder {
-	height: 180px;
+/*	height: 180px;*/
 	background-color: #ffffff;
 	padding: 5px;
-	width: 30%;
+	width: 400px;
 	overflow: auto;
 	}
-	
+div#projectmanager-category-adder li { float: left; margin-left 0.5em; }
+
 ul.checkboxlist, ul.radiolist, ul.categorychecklist, ul.children {
 	margin-left: 0;
 	padding-left: 0;

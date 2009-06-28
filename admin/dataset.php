@@ -4,7 +4,8 @@ if ( !current_user_can( 'edit_datasets' ) && !current_user_can( 'projectmanager_
 else :
 $project_id = $projectmanager->getProjectID();
 $project = $projectmanager->getCurrentProject();
-	
+
+$options = get_option('projectmanager');
 if ( isset($_GET['edit']) ) {
 	$edit = true;
 	$form_title = __('Edit Dataset','projectmanager');
@@ -19,8 +20,10 @@ if ( isset($_GET['edit']) ) {
 	$img_filename = $dataset->image;
 	$meta_data = array();
 	foreach ( $dataset_meta AS $meta ) {
-		$meta_data[$meta->form_field_id] = htmlspecialchars(stripslashes_deep($meta->value), ENT_QUOTES);
-		//$meta_data[$meta->form_field_id] = str_replace("\"", "&quot;", str_replace("\'", "&#039;", $meta->value));
+		if ( is_string($meta_data[$meta->form_field_id] ) )
+			$meta_data[$meta->form_field_id] = htmlspecialchars(stripslashes_deep($meta->value), ENT_QUOTES);
+		else
+			$meta_data[$meta->form_field_id] = stripslashes_deep($meta->value);
 	}
 }  else {
 	$edit = false;

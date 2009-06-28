@@ -38,10 +38,10 @@ class ProjectManagerAdminPanel extends ProjectManager
 	function getMenu()
 	{
 		$menu = array();
-		$menu['settings'] = array( 'title' => __( 'Settings', 'projectmanager' ), 'cap' => 'edit_projects_settings' );
-		$menu['formfields'] = array( 'title' => __( 'Form Fields', 'projectmanager' ), 'cap' => 'edit_formfields' );
-		$menu['dataset'] = array( 'title' => __( 'Add Dataset', 'projectmanager' ), 'cap' => 'edit_datasets' );
-		$menu['import'] = array( 'title' => __( 'Import/Export', 'projectmanager' ), 'cap' => 'import_datasets' );
+		$menu['settings'] = array( 'title' => __( 'Settings', 'projectmanager' ), 'cap' => 'edit_projects_settings', 'page' => 'project-settings_%d' );
+		$menu['formfields'] = array( 'title' => __( 'Form Fields', 'projectmanager' ), 'cap' => 'edit_formfields', 'page' => 'project-formfields_%d' );
+		$menu['dataset'] = array( 'title' => __( 'Add Dataset', 'projectmanager' ), 'cap' => 'edit_datasets', 'page' => 'project-dataset_%d' );
+		$menu['import'] = array( 'title' => __( 'Import/Export', 'projectmanager' ), 'cap' => 'import_datasets', 'page' => 'project-import_%d' );
 
 		return $menu;
 	}
@@ -62,7 +62,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 
 		if ( !$update && $projects = parent::getProjects() ) {
 			foreach( $projects AS $project ) {
-				if ( 1 == $project->navi_link ) {
+				if ( isset($project->navi_link) && 1 == $project->navi_link ) {
 					$icon = $project->menu_icon;
 					if ( function_exists('add_object_page') )
 						add_object_page( $project->title, $project->title, 'view_projects', 'project_' . $project->id, array(&$this, 'display'), $this->getIconURL($icon) );
@@ -289,14 +289,14 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 *  @param none
 	 *  @return directory
 	 */
-	function getIconURL( $icon )
+	function getIconURL( $icon, $dir = 'menu' )
 	{
 		if ( file_exists(TEMPLATEPATH . "/projectmanager/icons/".$icon))
 			return get_template_directory_uri() . "/projectmanager/icons/".$icon;
-		elseif ( file_exists(PROJECTMANAGER_PATH.'/admin/icons/menu/'.$icon) )
-			return PROJECTMANAGER_URL.'/admin/icons/menu/'.$icon;
+		elseif ( file_exists(PROJECTMANAGER_PATH.'/admin/icons/'.$dir.'/'.$icon) )
+			return PROJECTMANAGER_URL.'/admin/icons/'.$dir.'/'.$icon;
 		else
-			return PROJECTMANAGER_URL.'/admin/icons/menu/databases.png';
+			return PROJECTMANAGER_URL.'/admin/icons/'.$dir.'/databases.png';
 	}
 	
 	
@@ -370,7 +370,9 @@ class ProjectManagerAdminPanel extends ProjectManager
 		echo call_user_func_array(array(&$walker, 'walk'), array($categories, 0, $args));
 	}
 	
-	
+
+
+
 	/**
 	 * get possible sorting options for datasets
 	 *
@@ -633,7 +635,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 		
 		$projectmanager->initialize($project_id);
 		$this->project_id = $project_id;
-		$this->project = $projectmanager->getProject($project_id);
+		$project = $this->project = $projectmanager->getProject($project_id);
 		if ( !$user_id ) $user_id = $current_user->ID;
 
 		// Negative check on capability: user can't edit datasets
@@ -660,12 +662,27 @@ class ProjectManagerAdminPanel extends ProjectManager
 				$formfield = parent::getFormFields($meta_id);
 					
 				// Manage file upload
-				if ( 'fileupload' == $formfield->type ) {
+				if ( 'file' == $formfield->type || 'image' == $formfield->type || 'video' == $formfield->type ) {
 					$file = array('name' => $_FILES['form_field']['name'][$meta_id], 'tmp_name' => $_FILES['form_field']['tmp_name'][$meta_id], 'size' => $_FILES['form_field']['size'][$meta_id], 'type' => $_FILES['form_field']['type'][$meta_id]);
 					if ( !empty($file['name']) )
 						$this->uploadFile($file);
-							
+
 					$meta_value = basename($file['name']);
+
+					// Create Thumbails for Image
+					if ( 'image' == $formfield->type && !empty($meta_value) ) {
+						$new_file = parent::getFilePath().'/'.$meta_value;
+						$image = new ProjectManagerImage($new_file);
+						// Resize original file and create thumbnails
+						$dims = array( 'width' => $project->medium_size['width'], 'height' => $project->medium_size['height'] );
+						$image->createThumbnail( $dims, $new_file, $project->chmod );
+
+						$dims = array( 'width' => $project->thumb_size['width'], 'height' => $project->thumb_size['height'] );
+						$image->createThumbnail( $dims, parent::getFilePath().'/thumb.'.$meta_value, $project->chmod );
+						
+						$dims = array( 'width' => 80, 'height' => 50 );
+						$image->createThumbnail( $dims, parent::getFilePath().'/tiny.'.$meta_value, $project->chmod );
+					}		
 				} elseif ( 'numeric' == $formfield->type || 'currency' == $formfiel->type ) {
 					$meta_value += 0; // convert value to numeric type
 				}
@@ -674,11 +691,9 @@ class ProjectManagerAdminPanel extends ProjectManager
 					// form field value is a date
 					if ( array_key_exists('day', $meta_value) && array_key_exists('month', $meta_value) && array_key_exists('year', $meta_value) )
 						$meta_value = $meta_value['year'].'-'.str_pad($meta_value['month'], 2, 0, STR_PAD_LEFT).'-'.str_pad($meta_value['day'], 2, 0, STR_PAD_LEFT);
-					else
-						$meta_value = implode(",", $meta_value);
 				}
 
-				$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ('%d', '%d', '%s')", $meta_id, $dataset_id, $meta_value ) );
+				$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ('%d', '%d', '%s')", $meta_id, $dataset_id, maybe_serialize($meta_value) ) );
 			}
 			
 			// Check for unsubmitted form data, e.g. checkbox list
@@ -722,7 +737,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 	{
 		global $wpdb, $current_user, $projectmanager;
 		$this->project_id = $project_id;
-		$this->project = $projectmanager->getProject($this->project_id);
+		$project = $this->project = $projectmanager->getProject($this->project_id);
 		$dataset = $projectmanager->getDataset($dataset_id);
 
 		// Check if user has either cap 'edit_datasets' or 'projectmanager_user'
@@ -750,10 +765,25 @@ class ProjectManagerAdminPanel extends ProjectManager
 				$formfield = parent::getFormFields($meta_id);
 					
 				// Manage file upload
-				if ( 'fileupload' == $formfield->type ) {
+				if ( 'file' == $formfield->type || 'image' == $formfield->type || 'video' == $formfield->type ) {
 					$file = array('name' => $_FILES['form_field']['name'][$meta_id], 'tmp_name' => $_FILES['form_field']['tmp_name'][$meta_id], 'size' => $_FILES['form_field']['size'][$meta_id], 'type' => $_FILES['form_field']['type'][$meta_id], 'current' => $meta_value['current']);
 					$delete = (1 == $meta_value['del']) ? true : false;
 					$meta_value = $this->editFile($file, $meta_value['overwrite'], $delete);
+					
+					// Create Thumbnails for Image
+					if ( 'image' == $formfield->type && !empty($meta_value) ) {
+						$new_file = parent::getFilePath().'/'.$meta_value;
+						$image = new ProjectManagerImage($new_file);
+						// Resize original file and create thumbnails
+						$dims = array( 'width' => $project->medium_size['width'], 'height' => $project->medium_size['height'] );
+						$image->createThumbnail( $dims, $new_file, $project->chmod );
+
+						$dims = array( 'width' => $project->thumb_size['width'], 'height' => $project->thumb_size['height'] );
+						$image->createThumbnail( $dims, parent::getFilePath().'/thumb.'.$meta_value, $project->chmod );
+						
+						$dims = array( 'width' => 80, 'height' => 50 );
+						$image->createThumbnail( $dims, parent::getFilePath().'/tiny.'.$meta_value, $project->chmod );
+					}		
 				} elseif ( 'numeric' == $formfield->type || 'currency' == $formfield->type ) {
 					$meta_value += 0; // convert value to numeric type
 				}
@@ -763,14 +793,12 @@ class ProjectManagerAdminPanel extends ProjectManager
 					// form field value is a date
 					if ( array_key_exists('day', $meta_value) && array_key_exists('month', $meta_value) && array_key_exists('year', $meta_value) )
 						$meta_value = $meta_value['year'].'-'.str_pad($meta_value['month'], 2, 0, STR_PAD_LEFT).'-'.str_pad($meta_value['day'], 2, 0, STR_PAD_LEFT);
-					else
-						$meta_value = implode(",", $meta_value);
 				}
 					
 				if ( 1 == $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_datasetmeta} WHERE `dataset_id` = '".$dataset_id."' AND `form_id` = '".$meta_id."'" ) )
-					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `value` = '%s' WHERE `dataset_id` = '%d' AND `form_id` = '%d'", $meta_value, $dataset_id, $meta_id ) );
+					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `value` = '%s' WHERE `dataset_id` = '%d' AND `form_id` = '%d'", maybe_serialize($meta_value), $dataset_id, $meta_id ) );
 				else
-					$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ( '%d', '%d', '%s' )", $meta_id, $dataset_id, $meta_value ) );
+					$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ( '%d', '%d', '%s' )", $meta_id, $dataset_id, maybe_serialize($meta_value) ) );
 			}
 		}
 			
@@ -827,8 +855,13 @@ class ProjectManagerAdminPanel extends ProjectManager
 			
 		$this->delImage( $dataset->image );
 		foreach ( parent::getDatasetMeta($dataset_id) AS $dataset_meta ) {
-			if ( 'fileupload' == $dataset_meta->type )
+			if ( 'file' == $dataset_meta->type || 'video' == $dataset_meta->type) {
 				@unlink(parent::getFilePath($dataset_meta->value));
+			} elseif ( 'image' == $dataset_meta->type ) {
+				@unlink(parent::getFilePath($dataset_meta->value));
+				@unlink(parent::getFilePath("thumb.".$dataset_meta->value));
+				@unlink(parent::getFilePath("tiny.".$dataset_meta->value));
+			}
 		}
 		$wpdb->query("DELETE FROM {$wpdb->projectmanager_datasetmeta} WHERE `dataset_id` = {$dataset_id}");
 		$wpdb->query("DELETE FROM {$wpdb->projectmanager_dataset} WHERE `id` = {$dataset_id}");
@@ -945,21 +978,12 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 * save Form Fields
 	 *
 	 * @param int $project_id
-	 * @param array $form_name
-	 * @param array $form_type
-	 * @param array $form_show_on_startpage
-	 * @param array $form_show_in_profile
-	 * @param array $form_order
-	 * @param array $form_order_by
-	 * @param array $new_form_name
-	 * @param array $new_form_type
-	 * @param array $new_show_in_profile
-	 * @param array $new_form_order
-	 * @param array $new_form_order_by
+	 * @param array $formfields
+	 * @param array $new_formfields
 	 *
 	 * @return string
 	 */
-	function setFormFields( $project_id, $form_name, $form_type, $form_show_on_startpage, $form_show_in_profile, $form_order, $form_order_by, $new_form_name, $new_form_type, $new_form_show_on_startpage, $new_form_show_in_profile, $new_form_order, $new_form_order_by )
+	function setFormFields( $project_id, $formfields, $new_formfields )
 	{
 		global $wpdb;
 		
@@ -969,50 +993,47 @@ class ProjectManagerAdminPanel extends ProjectManager
 		}
 
 		$options = get_option('projectmanager');
-		if ( null != $form_name ) {
+		if ( null != $formfields ) {
 			foreach ( $wpdb->get_results( "SELECT `id`, `project_id` FROM {$wpdb->projectmanager_projectmeta}" ) AS $form_field) {
-				if ( !array_key_exists( $form_field->id, $form_name ) ) {
+				if ( !array_key_exists( $form_field->id, $formfields ) ) {
 					$del = (bool) $wpdb->query( "DELETE FROM {$wpdb->projectmanager_projectmeta} WHERE `id` = {$form_field->id} AND `project_id` = {$project_id}"  );
 					if ( $del ) unset($options['form_field_options'][$form_field->id]);
 					if ( $project_id == $form_field->project_id )
-						$wpdb->query( "DELETE FROM {$wpdb->projectmanager_datasetmeta} wHERE `form_id` = {$form_field->id}" );
+						$wpdb->query( "DELETE FROM {$wpdb->projectmanager_datasetmeta} WHERE `form_id` = {$form_field->id}" );
 				}
 			}
 				
-			foreach ( $form_name AS $form_id => $form_label ) {
-				$type = $form_type[$form_id];
-				$order = $form_order[$form_id];
-				$order_by = isset($form_order_by[$form_id]) ? 1 : 0;
-				$show_on_startpage = isset($form_show_on_startpage[$form_id]) ? 1 : 0;
-				$show_in_profile = isset($form_show_in_profile[$form_id]) ? 1 : 0;
+			foreach ( $formfields AS $id => $formfield ) {
+				$order_by = isset($formfield['orderby']) ? 1 : 0;
+				$show_on_startpage = isset($formfield['show_on_startpage']) ? 1 : 0;
+				$show_in_profile = isset($formfield['show_in_profile']) ? 1 : 0;
 					
-				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projectmeta} SET `label` = '%s', `type` = '%s', `show_on_startpage` = '%d', `show_in_profile` = '%d', `order` = '%d', `order_by` = '%d' WHERE `id` = '%d' LIMIT 1 ;", $form_label, $type, $show_on_startpage, $show_in_profile, $order, $order_by, $form_id ) );
-				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `form_id` = '%d' WHERE `form_id` = '%d'", $form_id, $form_id ) );
+				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projectmeta} SET `label` = '%s', `type` = '%s', `show_on_startpage` = '%d', `show_in_profile` = '%d', `order` = '%d', `order_by` = '%d' WHERE `id` = '%d' LIMIT 1 ;", $formfield['name'], $formfield['type'], $show_on_startpage, $show_in_profile, $formfield['order'], $order_by, $id ) );
+				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `form_id` = '%d' WHERE `form_id` = '%d'", $id, $id ) );
 			}
 		}
 			
-		if ( null != $new_form_name ) {
-			foreach ($new_form_name AS $tmp_form_id => $form_label) {
-				$type = $new_form_type[$tmp_form_id];
-				$order_by = isset($new_form_order_by[$tmp_form_id]) ? 1 : 0;
-				$show_on_startpage = isset($new_form_show_on_startpage[$tmp_form_id]) ? 1 : 0;
-				$show_in_profile = isset($new_form_show_in_profile[$tmp_form_id]) ? 1 : 0;
+		if ( null != $new_formfields ) {
+			foreach ($new_formfields AS $tmp_id => $formfield) {
+				$order_by = isset($formfield['orderby']) ? 1 : 0;
+				$show_on_startpage = isset($formfield['show_on_startpage']) ? 1 : 0;
+				$show_in_profile = isset($formfield['show_in_profile']) ? 1 : 0;
 				
 				$max_order_sql = "SELECT MAX(`order`) AS `order` FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = {$project_id};";
-				if ($new_form_order[$tmp_form_id] != '') {
-					$order = $new_form_order[$tmp_form_id];
+				if ($formfield['order'] != '') {
+					$order = $formfield['order'];
 				} else {
 					$max_order_sql = $wpdb->get_results($max_order_sql, ARRAY_A);
 					$order = $max_order_sql[0]['order'] +1;
 				}
 				
-				$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_projectmeta} (`label`, `type`, `show_on_startpage`, `show_in_profile`, `order`, `order_by`, `project_id`) VALUES ( '%s', '%s', '%d', '%d', '%d', '%d', '%d');", $form_label, $type, $show_on_startpage, $show_in_profile, $order, $order_by, $project_id ) );
-				$form_id = mysql_insert_id();
+				$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_projectmeta} (`label`, `type`, `show_on_startpage`, `show_in_profile`, `order`, `order_by`, `project_id`) VALUES ( '%s', '%s', '%d', '%d', '%d', '%d', '%d');", $formfield['name'], $formfield['type'], $show_on_startpage, $show_in_profile, $order, $order_by, $project_id ) );
+				$id = mysql_insert_id();
 					
 				// Redirect form field options to correct $form_id if present
-				if ( isset($options['form_field_options'][$tmp_form_id]) ) {
-					$options['form_field_options'][$form_id] = $options['form_field_options'][$tmp_form_id];
-					unset($options['form_field_options'][$tmp_form_id]);
+				if ( isset($options['form_field_options'][$tmp_id]) ) {
+					$options['form_field_options'][$id] = $options['form_field_options'][$tmp_id];
+					unset($options['form_field_options'][$tmp_id]);
 				}
 				
 				/*
@@ -1020,7 +1041,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 				*/
 				if ( $datasets = $wpdb->get_results( "SELECT `id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$project_id}" ) ) {
 					foreach ( $datasets AS $dataset ) {
-						$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ( '%d', '%d', '' );", $form_id, $dataset->id ) );
+						$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ( '%d', '%d', '' );", $id, $dataset->id ) );
 					}
 				}
 			}
@@ -1072,7 +1093,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 
 		$projects = array();
 		foreach ( $projectmanager->getProjects() AS $project ) {
-			if ( 1 == $project->profile_hook ) 
+			if ( isset($project->profile_hook) && 1 == $project->profile_hook ) 
 				$projects[] = $project->id;
 		}
 

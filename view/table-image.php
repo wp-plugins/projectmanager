@@ -32,7 +32,7 @@ The following variables are usable:
 	<tr class="<?php echo $dataset->class ?>">
 		<td class="name"><?php echo $dataset->nameURL ?></td>
 		<td><img src="<?php echo $projectmanager->getFileURL('tiny.'.$dataset->image)?>" class="alignright" /></td>
-		<?php $projectmanager->printDatasetMetaData( $dataset, 'td' ); ?>
+		<?php $projectmanager->printDatasetMetaData( $dataset ); ?>
 	</tr>
 <?php endforeach ; ?>
 

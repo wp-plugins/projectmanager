@@ -273,9 +273,6 @@ class ProjectManagerLoader
 		// Don't bother doing this stuff if the current user lacks permissions
 		if ( !current_user_can('edit_posts') && !current_user_can('edit_pages') ) return;
 		
-		// Check for LeagueManager capability
-		if ( !current_user_can('manage_projects') ) return;
-		
 		// Add only in Rich Editor mode
 		if ( get_user_option('rich_editing') == 'true') {
 			add_filter("mce_external_plugins", array(&$this, 'addTinyMCEPlugin'));
