@@ -892,7 +892,7 @@ class ProjectManager extends ProjectManagerLoader
 	function getDataset( $dataset_id )
 	{
 		global $wpdb;
-		$dataset = $wpdb->get_results( "SELECT `id`, `name`, `image`, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} WHERE `id` = {$dataset_id}" );
+		$dataset = $wpdb->get_results( "SELECT `id`, `name`, `image`, `cat_ids`, `user_id`, `project_id` FROM {$wpdb->projectmanager_dataset} WHERE `id` = {$dataset_id}" );
 			
 		return $dataset[0];
 	}
@@ -1019,14 +1019,20 @@ class ProjectManager extends ProjectManagerLoader
 	 * gets meta data for dataset
 	 *
 	 * @param int $dataset_id
-	 * @param false|int $meta_id
+	 * @param array $args extra arguments possible keys are 'meta_id', 'type' or 'label' to get meta data
 	 * @return array
 	 */
-	function getDatasetMeta( $dataset_id, $meta_id = false )
+	function getDatasetMeta( $dataset_id, $args = array() )
 	{
 	 	global $wpdb;
 		$sql = "SELECT form.id AS form_field_id, form.label AS label, data.value AS value, form.type AS type, form.show_on_startpage AS show_on_startpage FROM {$wpdb->projectmanager_datasetmeta} AS data LEFT JOIN {$wpdb->projectmanager_projectmeta} AS form ON form.id = data.form_id WHERE data.dataset_id = {$dataset_id}";
-		if ( $meta_id ) $sql .= " AND form.`id` = {$meta_id}";
+
+		if ( !empty($args) ) {
+			if ( isset($args['meta_id']) && is_numeric($args['meta_id']) ) $sql .= " AND form.`id` = {$args['meta_id']}";
+			elseif ( isset($args['type']) && is_string($args['type']) ) $sql .= " AND form.type = '".$args['type']."'";
+			elseif ( isset($args['label']) && is_string($args['label']) ) $sql .= " AND form.label = '".$args['label']."'";
+		}
+
 		$sql .= " ORDER BY form.order ASC";
 		$meta = $wpdb->get_results( $sql );
 		$i = 0;
@@ -1113,7 +1119,15 @@ class ProjectManager extends ProjectManagerLoader
 					foreach ( (array)$meta_value AS $item ) {
 						if ( 'project' == $meta->type && is_numeric($item) ) { 
 							$item = $projectmanager->getDataset($item);
-							$item = $item->name;
+							if ( is_admin() ) {
+								if ( $_GET['page'] == 'projectmanager' )
+									$url_pattern = "<a href='admin.php?page=projectmanager&subpage=dataset&edit=".$item->id."&project_id=".$item->project_id."'>%s</a>";
+								else
+									$url_pattern = "<a href='admin.php?page=project-dataset_".$item->project_id."&edit=".$item->id."&project_id=".$item->project_id."'>%s</a>";
+							} else {
+								$url_pattern = "%s";
+							}
+							$item = sprintf($url_pattern, $item->name);
 						}
 						$list .= "<li>".$item."</li>";
 					}
