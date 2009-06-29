@@ -32,6 +32,7 @@ table.projectmanager th, table.projectmanager td {
 table.projectmanager th.image, table.projectmanager td.image {
 	text-align: center;
 	}
+table.projectmanager img { width: 40px; }
 table.projectmanager ul {
 	list-style-type: none;
 	}
@@ -140,7 +141,9 @@ p.error {
  */
 #datasets tr { cursor: move; }
 
-a.image_link { border-bottom: none !important; }
+img.middle { vertical-align: middle; }
+
+a.image_link { margin-left: 0.5em; border-bottom: none !important; }
 	
 p.projectmanager_breadcrumb { float: right; margin: 1.5em 1.5em 0em auto; }
 

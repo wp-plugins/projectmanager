@@ -1019,12 +1019,15 @@ class ProjectManager extends ProjectManagerLoader
 	 * gets meta data for dataset
 	 *
 	 * @param int $dataset_id
+	 * @param false|int $meta_id
 	 * @return array
 	 */
-	function getDatasetMeta( $dataset_id )
+	function getDatasetMeta( $dataset_id, $meta_id = false )
 	{
 	 	global $wpdb;
-		$sql = "SELECT form.id AS form_field_id, form.label AS label, data.value AS value, form.type AS type, form.show_on_startpage AS show_on_startpage FROM {$wpdb->projectmanager_datasetmeta} AS data LEFT JOIN {$wpdb->projectmanager_projectmeta} AS form ON form.id = data.form_id WHERE data.dataset_id = {$dataset_id} ORDER BY form.order ASC";
+		$sql = "SELECT form.id AS form_field_id, form.label AS label, data.value AS value, form.type AS type, form.show_on_startpage AS show_on_startpage FROM {$wpdb->projectmanager_datasetmeta} AS data LEFT JOIN {$wpdb->projectmanager_projectmeta} AS form ON form.id = data.form_id WHERE data.dataset_id = {$dataset_id}";
+		if ( $meta_id ) $sql .= " AND form.`id` = {$meta_id}";
+		$sql .= " ORDER BY form.order ASC";
 		$meta = $wpdb->get_results( $sql );
 		$i = 0;
 		foreach ( $meta AS $item ) {
@@ -1034,7 +1037,7 @@ class ProjectManager extends ProjectManagerLoader
 		return $meta;
 	}
 		
-	
+
 	/**
 	 * gets form field labels as table header
 	 *
@@ -1088,13 +1091,14 @@ class ProjectManager extends ProjectManagerLoader
 				"output" => "td",
 				"show_all" => false,
 				"class" => "",
+				"image" => "tiny",
 			);
 
 		$args = array_merge( $defaults, $args );
 		extract( $args, EXTR_SKIP );
 		
-		if ( !empty($exclude) ) $exclude = explode(',', $exclude);
-		if ( !empty($include) ) $include = explode(',', $include);
+		$exclude = !empty($exclude) ? (array) explode(',', $exclude) : array();
+		$include = !empty($include) ? (array) explode(',', $include) : array();
 
 		$out = '';
 		if ( $dataset_meta = $this->getDatasetMeta( $dataset->id ) ) {
@@ -1116,26 +1120,28 @@ class ProjectManager extends ProjectManagerLoader
 					$list .= "</ul>";
 					$meta_value = $list;
 				}
+				
+				$pattern = is_admin() ? "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>%s</span>" : "%s";
 
 				if ( 'text' == $meta->type || 'select' == $meta->type || 'checkbox' == $meta->type || 'radio' == $meta->type || 'project' == $meta->type ) {
-					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span>";
+					$meta_value = sprintf($pattern, $meta_value);
 				} elseif ( 'textfield' == $meta->type ) {
-					if ( strlen($meta_value) > 150 && !$show_all )
+					if ( strlen($meta_value) > 150 && !$show_all && !empty($include) )
 						$meta_value = substr($meta_value, 0, 150)."...";
 					$meta_value = nl2br($meta_value);
 						
-					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span>";
+					$meta_value = sprintf($pattern, $meta_value);
 				} elseif ( 'email' == $meta->type && !empty($meta_value) ) {
-					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'><a href='mailto:".$this->extractURL($meta_value, 'url')."' class='projectmanager_email'>".$this->extractURL($meta_value, 'title')."</a></span>";
+					$meta_value = sprintf($pattern, "<a href='mailto:".$this->extractURL($meta_value, 'url')."' class='projectmanager_email'>".$this->extractURL($meta_value, 'title')."</a>");
 				} elseif ( 'date' == $meta->type ) {
 					$meta_value = ( $meta_value == '0000-00-00' ) ? '' : $meta_value;
-					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".mysql2date(get_option('date_format'), $meta_value )."</span>";
+					$meta_value = sprintf($pattern, mysql2date(get_option('date_format'), $meta_value ));
 				} elseif ( 'uri' == $meta->type && !empty($meta_value) ) {
-					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'><a class='projectmanager_url' href='http://".$this->extractURL($meta_value, 'url')."' target='_blank' title='".$this->extractURL($meta_value, 'title')."'>".$this->extractURL($meta_value, 'title')."</a></span>";
+					$meta_value = sprintf($pattern, "<a class='projectmanager_url' href='http://".$this->extractURL($meta_value, 'url')."' target='_blank' title='".$this->extractURL($meta_value, 'title')."'>".$this->extractURL($meta_value, 'title')."</a>");
 				} elseif( 'image' == $meta->type && !empty($meta_value) ) {
-					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'><img class='projectmanager_image' src='".$this->getFileURL("tiny.".$meta_value)."' alt='".$meta_value."' style='width: 40px;' /></span>";
+					$meta_value = sprintf($pattern, "<img class='projectmanager_image' src='".$this->getFileURL($image.".".$meta_value)."' alt='".$meta_value."' />");
 				} elseif ( ( 'file' == $meta->type || 'video' == $meta->type ) && !empty($meta_value) ) {
-					$meta_value = "<img id='fileimage".$meta->form_field_id."_".$dataset->id."' src='".$this->getFileImage($meta_value)."' alt='' />&#160;<span id='datafield".$meta->form_field_id."_".$dataset->id."'><a class='projectmanager_file ".$this->getFileType($meta_value)."' href='".$this->getFileURL($meta_value)."' target='_blank'>".$meta_value."</a></span>";
+					$meta_value = "<img id='fileimage".$meta->form_field_id."_".$dataset->id."' src='".$this->getFileImage($meta_value)."' alt='' />&#160;" . sprintf($pattern, "<a class='projectmanager_file ".$this->getFileType($meta_value)."' href='".$this->getFileURL($meta_value)."' target='_blank'>".$meta_value."</a>");
 				} elseif ( 'numeric' == $meta->type && !empty($meta_value) ) {
 					if ( class_exists('NumberFormatter') ) {
 						$fmt = new NumberFormatter( get_locale(), NumberFormatter::DECIMAL );
@@ -1143,7 +1149,7 @@ class ProjectManager extends ProjectManagerLoader
 					} else {
 						$meta_value = apply_filters( 'projectmanager_numeric', $meta_value );
 					}
-					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span>";
+					$meta_value = sprintf($pattern, $meta_value);
 				} elseif ( 'currency' == $meta->type && !empty($meta_value) ) {
 					if ( class_exists('NumberFormatter') ) {
 						$fmt = new NumberFormatter( get_locale(), NumberFormatter::CURRENCY );
@@ -1152,7 +1158,7 @@ class ProjectManager extends ProjectManagerLoader
 						$meta_value = money_format('%i', $meta_value);
 						$meta_value = apply_filters( 'projectmanager_currency', $meta_value );
 					}
-					$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>".$meta_value."</span>";
+					$meta_value = sprintf($pattern, $meta_value);
 				} elseif ( !empty($meta->type) && is_array($this->getFormFieldTypes($meta->type)) ) {
 					// Data is retried via callback function. Most likely a special field from LeagueManager
 					$field = $this->getFormFieldTypes($meta->type);
@@ -1165,7 +1171,8 @@ class ProjectManager extends ProjectManagerLoader
 				if ( 1 == $meta->show_on_startpage || $show_all || !empty($include) ) {
 					if ( is_admin() ) {
 						if (empty($meta_value))
-							$meta_value = "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>&#160;</span>";
+							$meta_value = sprintf($pattern, '');
+
 						$out .= "\n\t<td class='".$meta->type." ".$class."'>";
 						$out .= $this->getThickbox( $dataset, $meta );
 						$out .= "\n\t\t".$meta_value;
@@ -1177,10 +1184,11 @@ class ProjectManager extends ProjectManagerLoader
 							$out .= "\n\t<dt>".$meta->label."</dt><dd>".$meta_value."</dd>";
 						} elseif ( 'li' == $output && !empty($meta_value) ) {
 							$out .= "\n\t<li class='".$meta->type." ".$class."'><span class='dataset_label'>".$meta->label."</span>:&#160;".$meta_value."</li>";
-						} elseif ( 'td' == $output ) {
-							$out .= "\n\t<td class='".$meta->type." ".$class."'>".$meta_value."</td>";
 						} else {
-							$out .= "<$output class='".$meta->type." ".$class."'>".$meta_value."</$output>";
+							if ( !empty($output) ) $out .= "<$output class='".$meta->type." ".$class."'>";
+							$out .= $meta_value;
+							
+							if ( !empty($output) ) $out .= "</$output>";
 						}
 					}
 				}

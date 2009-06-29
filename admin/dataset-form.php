@@ -59,7 +59,7 @@
 						<option value="<?php echo $year ?>"<?php if ( $year == substr($meta_data[$form_field->id], 0, 4) ) echo ' selected="selected"' ?>><?php echo $year ?></option>
 					<?php endfor; ?>
 				</select>
-				<?php elseif ( 'file' == $form_field->type || 'image' == $form_field->type || 'video' == $form_fiel->type ) : ?>
+				<?php elseif ( 'file' == $form_field->type || 'image' == $form_field->type || 'video' == $form_field->type ) : ?>
 					<input type="file" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" size="40" />
 					<input type="hidden" name="form_field[<?php echo $form_field->id ?>][current]" value="<?php echo $meta_data[$form_field->id] ?>" />
 					<?php if (!empty($meta_data[$form_field->id])) : ?>

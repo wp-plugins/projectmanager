@@ -177,13 +177,18 @@ ProjectManager.dataFieldSpanFadeOut = function( dataset_id, formfield_id, newval
 ProjectManager.ajaxSaveFormFieldOptions = function ( form_id ) {
 	tb_remove();
 	jQuery("a#options_link" + form_id).fadeIn('fast', function() {
-		form_field_options = document.getElementById('form_field_options' + form_id).value;
+		form_field_options = document.getElementsByName('form_field_option_' + form_id);
+		var form_field_options_values = '';
+		for ( var i = 0; i < form_field_options.length; i++ ) {
+			form_field_options_values += form_field_options[i].value + "|";
+		}
+
 		var ajax = new sack(ProjectManagerAjaxL10n.requestUrl);
 		ajax.execute = 1;
 		ajax.method = 'POST';
 		ajax.setVar( "action", "projectmanager_save_form_field_options" );
 		ajax.setVar( "form_id", form_id );
-		ajax.setVar( "options", form_field_options );
+		ajax.setVar( "options", form_field_options_values );
 		ajax.onError = function() { alert('Ajax error on saving group'); };
 		ajax.onCompletion = function() { ProjectManager.reInit(); };
 		ajax.runAJAX();

@@ -58,7 +58,8 @@ class ProjectManagerAJAX
 		$options = get_option('projectmanager');
 	
 		$form_id = $_POST['form_id'];
-		$form_options = explode("|", $_POST['options']);
+		$form_options = substr($_POST['options'], 0, -1);
+		$form_options = explode("|", $form_options);
 		
 		$options['form_field_options'][$form_id] = $form_options;
 		update_option('projectmanager', $options);

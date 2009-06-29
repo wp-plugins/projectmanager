@@ -82,23 +82,27 @@ $options = get_option('projectmanager');
 						</select>
 						<div style="text-align:center; margin-top: 1em;"><input type="button" value="<?php _e('Save') ?>" class="button-secondary" onclick="ProjectManager.saveProjectLink(<?php echo $form_field->id; ?>);return false;" />&#160;<input type="button" value="<?php _e('Cancel') ?>" class="button" onclick="tb_remove();" /></div>
 					</div></div>
-					<span>&#160;<a href='#TB_inline&width=300&height=100&inlineId=form_field_options_div<?php echo $form_field->id ?>' style="display: inline;" id="options_link<?php echo $form_field->id ?>" class="thickbox" title="<?php _e('Choose Project to Link','projectmanager') ?>"><img src="<?php echo $this->getIconURL("databases.png") ?>" alt="<?php _e('Set','projectmanager') ?>" /></a></span>
+					<span>&#160;<a href='#TB_inline&width=300&height=100&inlineId=form_field_options_div<?php echo $form_field->id ?>' style="display: inline;" id="options_link<?php echo $form_field->id ?>" class="thickbox" title="<?php _e('Choose Project to Link','projectmanager') ?>"><img src="<?php echo $this->getIconURL("databases.png") ?>" alt="<?php _e('Set','projectmanager') ?>" class="middle" /></a></span>
 				</div>
-				<?php endif; ?>
-
+				<?php elseif ( $form_field->type == 'select' || $form_field->type == 'checkbox' || $form_field->type == 'radio' ) : ?>
 				<!-- Thickbox Container and Link for Form Field Options -->
-				<?php if ( $form_field->type == 'select' || $form_field->type == 'checkbox' || $form_field->type == 'radio' ) : ?>
 				<div id="form_field_options_container<?php echo $form_field->id ?>" style="display: inline;" >
-					<div id="form_field_options_div<?php echo $form_field->id ?>" style="width: 450px; height: 350px; overflow: auto; display: none;">
-					<?php foreach ( $options['form_field_options'][$form_field->id] AS $item ) : ?>
-					<input type="text" id="form_field_options<?php echo $form_field->id ?>" value="<?php echo $item ?>" size="30" /><br />
-					<?php endforeach; ?>
+					<div id="form_field_options_div<?php echo $form_field->id ?>" style="width: 350px; height: 200px; overflow: auto; display: none;">
 					
+					<div class="form_field_options_inner">
+					<ul id="form_field_options_<?php echo $form_field->id ?>">
+					<?php foreach ( (array)$options['form_field_options'][$form_field->id] AS $x => $item ) : ?>
+					<li id="form_field_option_<?php echo $form_field->id ?>_<?php echo $x ?>"><input type="text" name="form_field_option_<?php echo $form_field->id ?>" value="<?php echo $item ?>" size="30" /><a class="image_link" href="#" onclick='return ProjectManager.removeFormFieldOption("form_field_option_<?php echo $form_field->id ?>_<?php echo $x ?>", <?php echo $form_field->id ?>);'><img src="../wp-content/plugins/projectmanager/admin/icons/trash.gif" alt="<?php _e( 'Delete', 'projectmanager' ) ?>" title="<?php _e( 'Delete Option', 'projectmanager' ) ?>" /></a></li>
+					<?php endforeach; ?>
+					</ul>
+					</div>
+				
+					<p><a href="#" onClick="ProjectManager.addFormFieldOption(<?php echo $form_field->id ?>)" ?><?php _e( 'Add Option', 'projectmanager' ) ?></a></p>
+
 					<div style="text-align:center; margin-top: 1em;"><input type="button" value="<?php _e('Save') ?>" class="button-secondary" onclick="ProjectManager.ajaxSaveFormFieldOptions(<?php echo $form_field->id; ?>);return false;" />&#160;<input type="button" value="<?php _e('Cancel') ?>" class="button" onclick="tb_remove();" /></div>
 						
-						<p><?php _e( "Separate Options by <strong>|</strong>", 'projectmanager' ) ?></p>
 					</div>
-					<span>&#160;<a href='#TB_inline&width=450&height=350&inlineId=form_field_options_div<?php echo $form_field->id ?>' style="display: inline;" id="options_link<?php echo $form_field->id ?>" class="thickbox" title="<?php _e('Options','projectmanager') ?>"><img src="<?php echo $this->getIconURL("application_list.png") ?>" alt="<?php _e('Set','projectmanager') ?>" /></a></span>
+					<span>&#160;<a href='#TB_inline&width=350&height=200&inlineId=form_field_options_div<?php echo $form_field->id ?>' style="display: inline;" id="options_link<?php echo $form_field->id ?>" class="thickbox" title="<?php _e('Options','projectmanager') ?>"><img src="<?php echo $this->getIconURL("application_list.png") ?>" alt="<?php _e('Set','projectmanager') ?>" class="middle" /></a></span>
 				</div>
 				<?php endif; ?>
 			</td>
@@ -106,13 +110,13 @@ $options = get_option('projectmanager');
 			<td><input type="checkbox" name="formfields[<?php echo $form_field->id ?>][show_in_profile]"<?php checked ( 1, $form_field->show_in_profile) ?> value="1" /></td>
 			<td><input type="text" size="2" name="formfields[<?php echo $form_field->id ?>][order]" value="<?php echo $form_field->order ?>" /></td>
 			<td><input type="checkbox" name="formfields[<?php echo $form_field->id ?>][orderby]" value="1"<?php checked ( 1, $form_field->order_by ) ?> /></td>
-			<td style="text-align: center; width: 12px; vertical-align: middle;"><a class="image_link" href="#" onclick='return ProjectManager.removeFormField("form_id_<?php echo $form_field->id ?>");'><img src="../wp-content/plugins/projectmanager/admin/icons/trash.gif" alt="<?php _e( 'Delete', 'projectmanager' ) ?>" title="<?php _e( 'Delete formfield', 'projectmanager' ) ?>" /></a>
+			<td style="text-align: center; width: 12px; vertical-align: middle;"><a class="image_link" href="#" onclick='return ProjectManager.removeFormField("form_id_<?php echo $form_field->id ?>");'><img src="../wp-content/plugins/projectmanager/admin/icons/trash.gif" alt="<?php _e( 'Delete', 'projectmanager' ) ?>" title="<?php _e( 'Delete formfield', 'projectmanager' ) ?>" /></a></td>
 		</tr>
 		<?php endforeach; ?>
 	<?php endif; ?>
 	</tbody>
 	</table>
-	<p><a href='#' onclick='return ProjectManager.addFormField();'><?php _e( 'Add new formfield', 'projectmanager' ) ?></a></p>
+	<p><a href='#' onclick='return ProjectManager.addFormField(<?php echo $project->id ?>);'><?php _e( 'Add new formfield', 'projectmanager' ) ?></a></p>
 	<p class="submit"><input type="submit" name="saveFormFields" value="<?php _e( 'Save Form Fields', 'projectmanager' ) ?> &raquo;" class="button" /></p>
 	</form>
 </div> 
