@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
 "POT-Creation-Date: 2009-02-05 22:08+0000\n"
-"PO-Revision-Date: 2009-06-25 13:56-0500\n"
+"PO-Revision-Date: 2009-06-29 15:56-0500\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -896,3 +896,4 @@ msgstr "Wähle Projekt zum Verlinken"
 
 msgid "Add Option"
 msgstr "Option Hinzufügen"
+
