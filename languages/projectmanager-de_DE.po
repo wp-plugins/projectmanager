@@ -885,3 +885,14 @@ msgstr "Du kannst nicht zwei Datensätze mit gleicher Benutzer ID hinzufügen"
 msgid "You don't have permission to perform this task"
 msgstr "Du hast nicht die Berechtigung diese Aufgabe auszuführen"
 
+msgid "Internal Link"
+msgstr "Interner Verweis"
+
+msgid "Choose Project"
+msgstr "Wähle Projekt"
+
+msgid "Choose Project to Link"
+msgstr "Wähle Projekt zum Verlinken"
+
+msgid "Add Option"
+msgstr "Option Hinzufügen"

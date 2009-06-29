@@ -1,3 +1,4 @@
+<?php $projectmanager->loadTinyMCE() ?>
 <script type="text/javascript">
 document.forms[0].encoding = "multipart/form-data";
 </script>
@@ -28,9 +29,9 @@ document.forms[0].encoding = "multipart/form-data";
 			<td>
 				<?php if ( 'text' == $form_field->type || 'email' == $form_field->type || 'uri' == $form_field->type || 'numeric' == $form_field->type || 'currency' == $form_field->type ) : ?>
 				<input type="text" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" value="<?php echo $meta_data[$form_field->id] ?>" size="45" />
-				<?php elseif ( 'textfield' == $form_field->type ) : ?>
-				<div style="width: 60%;">
-					<textarea class="projectmanager_mceEditor" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" cols="70" rows="8"><?php echo $meta_data[$form_field->id] ?></textarea>
+				<?php elseif ( 'textfield' == $form_field->type || 'tinymce' == $form_field->type ) : ?>
+				<div style="width: 80%;">
+					<textarea <?php if ( 'tinymce' == $form_field->type ) echo 'class="mceEditor"' ?> name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" cols="70" rows="8"><?php echo $meta_data[$form_field->id] ?></textarea>
 				</div>
 				<?php elseif ( 'date' == $form_field->type ) : ?>
 				<select size="1" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>][day]">
@@ -54,7 +55,7 @@ document.forms[0].encoding = "multipart/form-data";
 						<option value="<?php echo $year ?>"<?php if ( $year == substr($meta_data[$form_field->id], 0, 4) ) echo ' selected="selected"' ?>><?php echo $year ?></option>
 					<?php endfor; ?>
 				</select>
-				<?php elseif ( 'file' == $form_field->type || 'image' == $form_field->type || 'video' == $form_fiel->type ) : ?>
+				<?php elseif ( 'file' == $form_field->type || 'image' == $form_field->type || 'video' == $form_field->type ) : ?>
 					<input type="file" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" size="40" />
 					<input type="hidden" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>][current]" value="<?php echo $meta_data[$form_field->id] ?>" />
 					<?php if (!empty($meta_data[$form_field->id])) : ?>
@@ -70,6 +71,8 @@ document.forms[0].encoding = "multipart/form-data";
 						<input type="checkbox" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>][overwrite]" value="1" id="overwrite_file_<?php echo $form_field->id ?>">&#160;<label for="overwrite_file_<?php echo $form_field->id ?>"><strong><?php _e( 'Overwrite File', 'projectmanager' ) ?></strong></label>
 					</p>
 					<?php endif; ?>
+				<?php elseif ( 'project' == $form_field->type ) : ?>
+					<?php echo $projectmanager->getDatasetCheckboxList($options['form_field_options'][$form_field->id], 'form_field['.$dataset_id.']['.$form_field->id.'][]', $meta_data[$form_field->id]); ?>
 				<?php elseif ( 'select' == $form_field->type ) : $projectmanager->printFormFieldDropDown($form_field->id, $meta_data[$form_field->id], $dataset_id, "form_field[".$dataset_id."][".$form_field->id."]"); ?>
 				<?php elseif ( 'checkbox' == $form_field->type ) : $projectmanager->printFormFieldCheckboxList($form_field->id, $meta_data[$form_field->id], $dataset_id, "form_field[".$dataset_id."][".$form_field->id."][]"); ?>
 				<?php elseif ( 'radio' == $form_field->type ) : $projectmanager->printFormFieldRadioList($form_field->id, $meta_data[$form_field->id], $dataset_id, "form_field[".$dataset_id."][".$form_field->id."]"); ?>

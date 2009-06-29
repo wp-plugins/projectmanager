@@ -1152,8 +1152,8 @@ class ProjectManager extends ProjectManagerLoader
 
 				if ( 'text' == $meta->type || 'select' == $meta->type || 'checkbox' == $meta->type || 'radio' == $meta->type || 'project' == $meta->type ) {
 					$meta_value = sprintf($pattern, $meta_value);
-				} elseif ( 'textfield' == $meta->type ) {
-					if ( strlen($meta_value) > 150 && !$show_all && !empty($include) )
+				} elseif ( 'textfield' == $meta->type || 'tinymce' == $meta->type ) {
+					if ( strlen($meta_value) > 150 && !$show_all && empty($include) )
 						$meta_value = substr($meta_value, 0, 150)."...";
 					$meta_value = nl2br($meta_value);
 						
@@ -1247,7 +1247,7 @@ class ProjectManager extends ProjectManagerLoader
 		$out = '';
 		if ( is_admin() && ( ( current_user_can('edit_datasets') && $current_user->ID == $dataset->user_id ) || ( current_user_can('edit_other_datasets') ) ) ) {
 			$dims = array('width' => '300', 'height' => '100');
-			if ( 'textfield' == $meta->type )
+			if ( 'textfield' == $meta->type || 'tinymce' == $meta->type )
 				$dims = array('width' => '400', 'height' => '300');
 			if ( 'checkbox' == $meta->type || 'radio' == $meta->type || 'project' == $meta->type )
 				$dims = array('width' => '300', 'height' => '300');
@@ -1281,14 +1281,15 @@ class ProjectManager extends ProjectManagerLoader
 
 		$out = '';
 		if ( is_admin() && ( ( current_user_can('edit_datasets') && $current_user->ID == $dataset->user_id ) || ( current_user_can('edit_other_datasets') ) ) ) {
+		
 			
 			$out .= "\n\t\t<div id='datafieldwrap".$meta->form_field_id."_".$dataset->id."' style='overfow:auto;display:none;'>";
 			$out .= "\n\t\t<div id='datafieldbox".$meta->form_field_id."_".$dataset->id."' class='projectmanager_thickbox'>";
 			$out .= "\n\t\t\t<form name='form_field_".$meta->form_field_id."_".$dataset->id."'>";
 			if ( 'text' == $meta->type || 'email' == $meta->type || 'uri' == $meta->type || 'image' == $meta->type || 'numeric' == $meta->type || 'currency' == $meta->type ) {
 				$out .= "\n\t\t\t<input type='text' name='form_field_".$meta->form_field_id."_".$dataset->id."' id='form_field_".$meta->form_field_id."_".$dataset->id."' value=\"".$value."\" size='30' />";
-			} elseif ( 'textfield' == $meta->type ) {
-				$out .= "\n\t\t\t<textarea name='form_field_".$meta->form_field_id."_".$dataset->id."' id='form_field_".$meta->form_field_id."_".$dataset->id."' rows='10' cols='40'>".$value."</textarea>";
+			} elseif ( 'textfield' == $meta->type || 'tinymce' == $meta->type ) {
+				$out .= "\n\t\t\t<textarea name='form_field_".$meta->form_fiield_id."_".$dataset->id."' id='form_field_".$meta->form_field_id."_".$dataset->id."' rows='10' cols='40'>".$value."</textarea>";
 			} elseif  ( 'date' == $meta->type ) {
 				$out .= "\n\t\t\t<select size='1' name='form_field_".$meta->form_field_id."_".$dataset->id."_day' id='form_field_".$meta->form_field_id."_".$dataset->id."_day'>\n\t\t\t<option value=''>Tag</option>\n\t\t\t<option value=''>&#160;</option>";
 				for ( $day = 1; $day <= 30; $day++ ) {
@@ -1586,6 +1587,72 @@ class ProjectManager extends ProjectManagerLoader
 		}
 		
 		return $files;
+	}
+
+
+	/**
+	 * load TinyMCE Editor
+	 *
+	 * @param none
+	 * @return void
+	 */
+	function loadTinyMCE()
+	{
+		global $tinymce_version;
+		
+		$baseurl = includes_url('js/tinymce');
+
+		$mce_locale = ( '' == get_locale() ) ? 'en' : strtolower( substr(get_locale(), 0, 2) ); // only ISO 639-1
+		$language = $mce_locale;
+
+		$version = apply_filters('tiny_mce_version', '');
+		$version = 'ver=' . $tinymce_version . $version;
+
+		$mce_buttons = array('bold', 'italic', 'strikethrough', '|', 'bullist', 'numlist', 'blockquote', '|', 'justifyleft', 'justifycenter', 'justifyright', '|', 'link', 'unlink', 'wp_more', '|', 'spellchecker', 'fullscreen', 'wp_adv' );
+		$mce_buttons = implode($mce_buttons, ',');
+
+		$mce_buttons_2 = array('formatselect', 'underline', 'justifyfull', 'forecolor', '|', 'pastetext', 'pasteword', 'removeformat', '|', 'media', 'charmap', '|', 'outdent', 'indent', '|', 'undo', 'redo', 'wp_help' );
+		$mce_buttons_2 = implode($mce_buttons_2, ',');
+
+		$plugins = array( 'safari', 'inlinepopups', 'spellchecker', 'paste', 'wordpress', 'media', 'fullscreen', 'wpeditimage', 'tabfocus' );
+		$plugins = implode(",", $plugins);
+
+		if ( 'en' != $language )
+			include_once(ABSPATH . WPINC . '/js/tinymce/langs/wp-langs.php');
+?>
+		<script type="text/javascript" src="<?php bloginfo('url') ?>/wp-includes/js/tinymce/tiny_mce.js"></script>
+		<script type="text/javascript">
+			tinyMCE.init({
+			mode: "specific_textareas",
+			editor_selector: "theEditor",
+			theme: "advanced",
+//			skin: "wp_theme",
+			theme_advanced_buttons1: "<?php echo $mce_buttons ?>",
+			theme_advanced_buttons2: "<?php echo $mce_buttons_2 ?>",
+			theme_advanced_buttons3: "",
+			theme_advanced_buttons4: "",
+			plugins: "<?php echo $plugins ?>",
+			language: "<?php echo $mce_locale ?>",
+	
+			// Thene Options
+			theme_advanced_buttons3: "",
+			theme_advanced_buttons4: "",
+			theme_advanced_toolbar_location: "top",
+			theme_advanced_toolbar_align: "left",
+			theme_advanced_statusbar_location: "bottom",
+			theme_advanced_resizing: true,
+			theme_advanced_resize_horizontal: "",
+
+			relative_urls: false,
+			convert_urls: false,
+		});
+		</script>
+	<?php
+		if ( 'en' != $language && isset($lang) )
+			echo "<script type='text/javascript'>\n$lang\n</script>";
+		else
+			echo "<script type='text/javascript' src='$baseurl/langs/wp-langs-en.js?$version'></script>\n";
+	
 	}
 }
 ?>

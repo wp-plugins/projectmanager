@@ -48,23 +48,7 @@ if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) 
 </div>
 <?php endif; ?>
 
-<script type="text/javascript" src="<?php bloginfo('url') ?>/wp-includes/js/tinymce/tiny_mce.js"></script>
-<script type="text/javascript">
-tinyMCE.init({
-	mode: "textareas",
-	theme: "advanced",
-
-	// Thene Options
-	theme_advanced_buttons3: "",
-	theme_advanced_buttons4: "",
-	theme_advanced_toolbar_location: "top",
-	theme_advanced_toolbar_align: "left",
-	theme_advanced_statusbar_location: "bottom",
-	theme_advanced_resizing: true,
-
-	editor_selector: "mceEditor"
-});
-</script>
+<?php $projectmanager->loadTinyMCE() ?>
 
 <form name="post" id="post" action="admin.php?page=<?php echo $page ?>" method="post" enctype="multipart/form-data">
 	

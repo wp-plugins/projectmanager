@@ -1091,6 +1091,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 		if ( !current_user_can('projectmanager_user') )
 			return;
 
+		$options = get_option('projectmanager');
+
 		$projects = array();
 		foreach ( $projectmanager->getProjects() AS $project ) {
 			if ( isset($project->profile_hook) && 1 == $project->profile_hook ) 
@@ -1115,7 +1117,10 @@ class ProjectManagerAdminPanel extends ProjectManager
 					$img_filename = $dataset->image;
 					$meta_data = array();
 					foreach ( $dataset_meta AS $meta )
-						$meta_data[$meta->form_field_id] = htmlspecialchars(stripslashes_deep($meta->value),ENT_QUOTES);
+						if ( is_string($meta_data[$meta->form_field_id] ) )
+							$meta_data[$meta->form_field_id] = htmlspecialchars(stripslashes_deep($meta->value), ENT_QUOTES);
+						else
+							$meta_data[$meta->form_field_id] = stripslashes_deep($meta->value);
 			
 					echo '<h3>'.$projectmanager->getProjectTitle().'</h3>';
 					echo '<input type="hidden" name="project_id['.$dataset_id.']" value="'.$project_id.'" /><input type="hidden" name="dataset_id[]" value="'.$dataset_id.'" /><input type="hidden" name="dataset_user_id" value="'.$current_user->ID.'" />';
