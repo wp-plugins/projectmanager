@@ -394,7 +394,7 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function getFormFieldTypes($index = false)
 	{
-		$form_field_types = array( 'text' => __('Text', 'projectmanager'), 'textfield' => __('Textfield', 'projectmanager'), 'email' => __('E-Mail', 'projectmanager'), 'date' => __('Date', 'projectmanager'), 'uri' => __('URL', 'projectmanager'), 'select' => __('Selection', 'projectmanager'), 'checkbox' => __( 'Checkbox List', 'projectmanager'), 'radio' => __( 'Radio List', 'projectmanager'), 'file' => __('File', 'projectmanager'), 'image' => __( 'Image', 'projectmanager' ), 'video' => __('Video', 'projectmanager'), 'numeric' => __( 'Numeric', 'projectmanager' ), 'currency' => __('Currency', 'projectmanager'), 'project' => __( 'Internal Link', 'projectmanager' ) );
+		$form_field_types = array( 'text' => __('Text', 'projectmanager'), 'textfield' => __('Textfield', 'projectmanager'), 'tinymce' => __('TinyMCE Editor', 'projectmanager'), 'email' => __('E-Mail', 'projectmanager'), 'date' => __('Date', 'projectmanager'), 'uri' => __('URL', 'projectmanager'), 'select' => __('Selection', 'projectmanager'), 'checkbox' => __( 'Checkbox List', 'projectmanager'), 'radio' => __( 'Radio List', 'projectmanager'), 'file' => __('File', 'projectmanager'), 'image' => __( 'Image', 'projectmanager' ), 'video' => __('Video', 'projectmanager'), 'numeric' => __( 'Numeric', 'projectmanager' ), 'currency' => __('Currency', 'projectmanager'), 'project' => __( 'Internal Link', 'projectmanager' ) );
 		
 		$form_field_types = apply_filters( 'projectmanager_formfields', $form_field_types );
 		
@@ -1040,6 +1040,10 @@ class ProjectManager extends ProjectManagerLoader
 			$meta[$i]->value = stripslashes_deep(maybe_unserialize($item->value));
 			$i++;
 		}
+
+		if ( !empty($args) )
+			return $meta[0];
+
 		return $meta;
 	}
 		
@@ -1103,6 +1107,8 @@ class ProjectManager extends ProjectManagerLoader
 		$args = array_merge( $defaults, $args );
 		extract( $args, EXTR_SKIP );
 		
+		$img_size = empty($image) ? '' : $image . '.';
+
 		$exclude = !empty($exclude) ? (array) explode(',', $exclude) : array();
 		$include = !empty($include) ? (array) explode(',', $include) : array();
 
@@ -1125,7 +1131,14 @@ class ProjectManager extends ProjectManagerLoader
 								else
 									$url_pattern = "<a href='admin.php?page=project-dataset_".$item->project_id."&edit=".$item->id."&project_id=".$item->project_id."'>%s</a>";
 							} else {
-								$url_pattern = "%s";
+								if ( $this->getDatasetMeta($item->id) ) {
+									$url = get_permalink();
+									$url = add_query_arg('show', $item->id, $url);
+									$url = $this->isCategory() ? add_query_arg('cat_id', $this->getCatID(), $url) : $url;
+									$url_pattern = "<a href='".$url."'>%s</a>";
+								} else {
+									$url_pattern = "%s";
+								}
 							}
 							$item = sprintf($url_pattern, $item->name);
 						}
@@ -1153,7 +1166,7 @@ class ProjectManager extends ProjectManagerLoader
 				} elseif ( 'uri' == $meta->type && !empty($meta_value) ) {
 					$meta_value = sprintf($pattern, "<a class='projectmanager_url' href='http://".$this->extractURL($meta_value, 'url')."' target='_blank' title='".$this->extractURL($meta_value, 'title')."'>".$this->extractURL($meta_value, 'title')."</a>");
 				} elseif( 'image' == $meta->type && !empty($meta_value) ) {
-					$meta_value = sprintf($pattern, "<img class='projectmanager_image' src='".$this->getFileURL($image.".".$meta_value)."' alt='".$meta_value."' />");
+					$meta_value = sprintf($pattern, "<img class='projectmanager_image' src='".$this->getFileURL($img_size . $meta_value)."' alt='".$meta_value."' />");
 				} elseif ( ( 'file' == $meta->type || 'video' == $meta->type ) && !empty($meta_value) ) {
 					$meta_value = "<img id='fileimage".$meta->form_field_id."_".$dataset->id."' src='".$this->getFileImage($meta_value)."' alt='' />&#160;" . sprintf($pattern, "<a class='projectmanager_file ".$this->getFileType($meta_value)."' href='".$this->getFileURL($meta_value)."' target='_blank'>".$meta_value."</a>");
 				} elseif ( 'numeric' == $meta->type && !empty($meta_value) ) {

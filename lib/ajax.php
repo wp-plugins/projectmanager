@@ -296,6 +296,7 @@ class ProjectManagerAJAX
 		$formfield_id = (int)$_POST['formfield_id'];
 		$formfield_type = (string)$_POST['formfield_type'];
 		$options = (string)$_POST['options'];
+		$options = explode("|", $options);
 
 		$admin = $projectmanager_loader->getAdminPanel();
 
@@ -303,13 +304,14 @@ class ProjectManagerAJAX
 
 		if ( 'project' == $formfield_type || 'checkbox' == $formfield_type || 'radio' == $formfield_type || 'select' == $formfield_type ) {
 			$html = '<div id="form_field_options_container'.$formfield_id.'" style="display: inline;">';
-			$html .= '<div id="form_field_options_div'.$formfield_id.'" style="overflow: auto; display: none;"><div class="projectmanager_thickbox">';
+			$html .= '<div id="form_field_options_div'.$formfield_id.'" style="overflow: auto; display: none;">';
 			$html .= '<form>';
 			if ( 'project' == $formfield_type ) {
 				$dims = array( 'width' => 300, 'height' => 100 );
 				$thickbox_title = __( 'Choose Project to Link', 'projectmanager' );
 				$icon = 'databases.png';
-
+				
+				$html .= '<div class="projectmanager_thickbox">';
 				$html .= '<select size="1" id="form_field_project_'.$formfield_id.'">';
 				$html .= '<option value="0">'.__( 'Choose Project', 'projectmanager' ).'</option>';
 				foreach ( $projectmanager->getProjects() AS $p ) {
@@ -317,17 +319,27 @@ class ProjectManagerAJAX
 						$html .= '<option value="'.$p->id.'">'.$p->title.'</option>';
 				}
 				$html .= '</select>';
-				$html .= '<div style="text-align:center; margin-top: 1em;"><input type="button" value="'.__('Save').'" class="button-secondary" onclick="ProjectManager.saveProjectLink('.$formfield_id.');return false;" />&#160;<input type="button" value="'.__('Cancel').'" class="button" onclick="tb_remove();" /></div>';
+				$html .= '<div style="text-align:center; margin-top: 1em;"><input type="button" value="'.__('Save').'" class="button-secondary" onclick="ProjectManager.saveProjectLink('.$formfield_id.');return false;" />&#160;<input type="button" value="'.__('Cancel').'" class="button" onclick="tb_remove();" /></div></div>';
 			} elseif ( 'checkbox' == $formfield_type || 'radio' == $formfield_type || 'select' == $formfield_type ) {
-				$dims = array( 'width' => 450, 'height' => 100 );
+				$dims = array( 'width' => 350, 'height' => 200 );
 				$thickbox_title = __( 'Options', 'projectmanager' );
 				$icon = 'application_list.png';
 
-				$html .= '<input type="text" size="30" id="form_field_options'.$formfield_id.'" value="'.$options.'" /><div style="text-align:center; margin-top: 1em;"><input type="button" value="'.__('Save').'" class="button-secondary" onclick="ProjectManager.ajaxSaveFormFieldOptions('.$formfield_id.');return false;" />&#160;<input type="button" value="'.__('Cancel').'" class="button" onclick="tb_remove();" /><p>'.__('Separate Options by <strong>|</strong>', 'projectmanager' ).'</p></div>';
+				$html .= '<div class="form_field_options_inner">';
+				$html .= '<ul id="form_field_options_'.$formfield_id.'">';
+				foreach ( (array)$options AS $x => $item ) {
+					$html .= '<li id="form_field_option_'.$formfield_id.'_'.$x.'"><input type="text" size="30" value="'.$item.'" name="form_field_option_'.$formfield_id.'" /><a class="image_link" href="#" onclick="return ProjectManager.removeFormFieldOption(\'form_field_option_'.$formfield_id.'_'.$x.'\', '.$formfield_id.');"><img src="../wp-content/plugins/projectmanager/admin/icons/trash.gif" alt="'.__( 'Delete', 'projectmanager' ).'" title="'.__( 'Delete Option', 'projectmanager' ).'" /></a></li>';
+				}
+				$html .= '<ul>';
+				$html .= '</div>';
+
+				$html .= '<p><a href="#" onClick="ProjectManager.addFormFieldOption('.$formfield_id.')">'.__( 'Add Option', 'projectmanager' ).'</a></p>';
+
+				$html .= '<div style="text-align:center; margin-top: 1em;"><input type="button" value="'.__('Save').'" class="button-secondary" onclick="ProjectManager.ajaxSaveFormFieldOptions('.$formfield_id.');return false;" />&#160;<input type="button" value="'.__('Cancel').'" class="button" onclick="tb_remove();" /></div>';
 			}
 
 			$html .= '</form>';
-			$html .= '</div></div>';
+			$html .= '</div>';
 			$html .= '<span>&#160;<a href="#TB_inline&width='.$dims['width'].'&height='.$dims['height'].'&inlineId=form_field_options_div'.$formfield_id.'" style="display: inline;" id="options_link'.$formfield_id.'" class="thickbox" title="'.$thickbox_title.'"><img src="'.$admin->getIconURL($icon).'" alt="'.__('Options','projectmanager').'" /></a></span>';
 			$html .= '</div>';
 		}
