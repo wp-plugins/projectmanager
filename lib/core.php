@@ -1250,7 +1250,7 @@ class ProjectManager extends ProjectManagerLoader
 			if ( 'textfield' == $meta->type || 'tinymce' == $meta->type )
 				$dims = array('width' => '400', 'height' => '300');
 			if ( 'checkbox' == $meta->type || 'radio' == $meta->type || 'project' == $meta->type )
-				$dims = array('width' => '300', 'height' => '300');
+				$dims = array('width' => '300', 'height' => '150');
 
 			if ( 'file' != $meta->type && 'video' != $meta->type && 'image' != $meta->type )
 				$out .= "&#160;<a class='thickbox' id='thickboxlink".$meta->form_field_id."_".$dataset->id."' href='#TB_inline&height=".$dims['height']."&width=".$dims['width']."&inlineId=datafieldwrap".$meta->form_field_id."_".$dataset->id."' title='".$title."'><img src='".PROJECTMANAGER_URL."/admin/icons/edit.gif' border='0' alt='".__('Edit')."' /></a>";
@@ -1320,7 +1320,7 @@ class ProjectManager extends ProjectManagerLoader
 			}
 
 			if ( $meta->type != 'imageupload' ) {
-				$out .= "\n\t\t\t<div style='text-align:center; margin-top: 1em;'><input type='button' value='".__('Save')."' class='button-secondary' onclick='ProjectManager.ajaxSaveDataField(".$dataset->id.",".$meta->form_field_id.",\"".$meta->type."\"); return false;' />&#160;<input type='button' value='".__('Cancel')."' class='button' onclick='tb_remove();' /></div>";
+				$out .= "\n\t\t\t<div style='clear: both; text-align:center; margin-top: 1em;'><input type='button' value='".__('Save')."' class='button-secondary' onclick='ProjectManager.ajaxSaveDataField(".$dataset->id.",".$meta->form_field_id.",\"".$meta->type."\"); return false;' />&#160;<input type='button' value='".__('Cancel')."' class='button' onclick='tb_remove();' /></div>";
 			}
 
 			$out .= "\n\t\t\t</form>";

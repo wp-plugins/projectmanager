@@ -9,13 +9,15 @@ document.forms[0].encoding = "multipart/form-data";
 		<th scope="row"><label for="projectmanager_image"><?php _e( 'Image', 'projectmanager' ) ?></label></th>
 		<td>
 			<?php if ( '' != $img_filename ) : ?>
-				<img src="<?php echo $projectmanager->getFileURL('tiny.'.$img_filename)?>" class="alignright" />
+			<div class="alignright">
+				<img src="<?php echo $projectmanager->getFileURL('tiny.'.$img_filename)?>" />
+				<p style="text-align: center;"><input type="checkbox" id="del_old_image" name="del_old_image" value="1" style="margin-left: 1em;" />&#160;<label for="del_old_image"><?php _e( 'Delete', 'projectmanager' ) ?></label></p>
+			</div>
 			<?php endif; ?>
 			<input type="file" name="projectmanager_image[<?php echo $dataset_id ?>]" id="projectmanager_image" size="45"/><p><?php _e( 'Supported file types', 'projectmanager' ) ?>: <?php echo implode( ',',$projectmanager->getSupportedImageTypes() ); ?></p>
 			<?php if ( '' != $img_filename ) : ?>
 				<p class="alignleft"><label for="overwrite_image"><?php _e( 'Overwrite existing image', 'projectmanager' ) ?></label><input type="checkbox" id="overwrite_image" name="overwrite_image[<?php echo $dataset_id ?>]" value="1" style="margin-left: 1em;" /></p>
 				<input type="hidden" name="image_file[<?php echo $dataset_id ?>]" value="<?php echo $img_filename ?>" />
-				<p class="alignright"><label for="del_old_image"><?php _e( 'Delete current image', 'projectmanager' ) ?></label><input type="checkbox" id="del_old_image" name="del_old_image[<?php echo $dataset_id ?>]" value="1" style="margin-left: 1em;" /></p>
 			<?php endif; ?>
 		</td>
 	</tr>

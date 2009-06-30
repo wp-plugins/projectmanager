@@ -202,7 +202,12 @@ class ProjectManagerAJAX
 			foreach ( (array)$new_value AS $item ) {
 				if ( 'project' == $formfield_type && is_numeric($item) ) {
 					$item = $projectmanager->getDataset($item);
-					$item = $item->name;
+					if ( $_GET['page'] == 'projectmanager' )
+						$url_pattern = '<a href="admin.php?page=projectmanager&subpage=dataset&edit='.$item->id.'&project_id='.$item->project_id.'">%s</a>';
+					else
+						$url_pattern = '<a href="admin.php?page=project-dataset_'.$item->project_id.'&edit='.$item->id.'&project_id='.$item->project_id.'">%s</a>';
+					
+					$item = sprintf($url_pattern, $item->name);
 				}
 				$list .= '<li>'.$item.'</li>';
 			}

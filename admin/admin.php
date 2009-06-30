@@ -225,6 +225,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 	{
 		wp_enqueue_style('thickbox');
 		wp_enqueue_style('projectmanager', PROJECTMANAGER_URL . "/style.css", false, '1.0', 'screen');
+		wp_enqueue_style('projectmanager_admin', PROJECTMANAGER_URL . "/admin/style.css", false, '1.0', 'screen');
 	}
 	
 	
@@ -800,16 +801,17 @@ class ProjectManagerAdminPanel extends ProjectManager
 				else
 					$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ( '%d', '%d', '%s' )", $meta_id, $dataset_id, maybe_serialize($meta_value) ) );
 			}
-		}
-			
-		// Check for unsbumitted form data, e.g. checkbox lis
-		if ($form_fields = parent::getFormFields()) {
-			foreach ( $form_fields AS $form_field ) {
-				if ( !array_key_exists($form_field->id, $dataset_meta) ) {
-					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `value` = '' WHERE `dataset_id` = '%d' AND `form_id` = '%d'", $dataset_id, $form_field->id ) );
+		
+			// Check for unsbumitted form data, e.g. checkbox lis
+			if ($form_fields = parent::getFormFields()) {
+				foreach ( $form_fields AS $form_field ) {
+					if ( !array_key_exists($form_field->id, $dataset_meta) ) {
+						$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `value` = '' WHERE `dataset_id` = '%d' AND `form_id` = '%d'", $dataset_id, $form_field->id ) );
+					}
 				}
 			}
 		}
+			
 			
 		// Delete Image if option is checked
 		if ($del_image) {

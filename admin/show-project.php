@@ -58,7 +58,11 @@ else
 			<?php $selected[0] = ( 0 == $projectmanager->getSearchOption() ) ? " selected='selected'" : ""; ?>
 			<option value='0' <?php echo $selected[0] ?>><?php _e( 'Name', 'projectmanager' ) ?></option>
 			<?php foreach ( $form_fields AS $form_field ) : $selected = ( $search_option == $form_field->id ) ? " selected='selected'" : ""; ?>
+
+			<?php if ( $form_field->type != 'project' ) : ?>
 			<option value='<?php echo $form_field->id ?>' <?php echo $selected ?>><?php echo $form_field->label ?></option>
+			<?php endif; ?>
+
 			<?php endforeach; ?>
 			<?php $selected[1] = ( -1 == $search_option ) ? " selected='selected'" : ""; ?>
 			<option value='-1' <?php echo $selected[1] ?>><?php _e( 'Categories', 'projectmanager' ) ?></option>
@@ -194,7 +198,7 @@ else
 								<ul class="categorychecklist" id="categorychecklist<?php echo $dataset->id ?>">
 								<?php $this->categoryChecklist( $project->category, $projectmanager->getSelectedCategoryIDs($dataset) ) ?>
 								</ul>
-								<div style="text-align:center; margin-top: 1em;"><input type="button" value="<?php _e('Save') ?>" class="button-secondary" onclick="ProjectManager.ajaxSaveCategories(<?php echo $dataset->id; ?>);return false;" />&#160;<input type="button" value="<?php _e('Cancel') ?>" class="button" onclick="tb_remove();" /></div>
+								<div style="clear: both; text-align:center; margin-top: 1em;"><input type="button" value="<?php _e('Save') ?>" class="button-secondary" onclick="ProjectManager.ajaxSaveCategories(<?php echo $dataset->id; ?>);return false;" />&#160;<input type="button" value="<?php _e('Cancel') ?>" class="button" onclick="tb_remove();" /></div>
 							</form>
 						</div>
 					</div>
