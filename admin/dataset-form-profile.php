@@ -25,7 +25,7 @@ document.forms[0].encoding = "multipart/form-data";
 	<?php if ( $form_fields = $projectmanager->getFormFields() ) : ?>
 		<?php foreach ( $form_fields AS $form_field ) : ?>
 		
-		<?php if ( !$is_profile_page || ( $is_profile_page && $form_field->show_in_profile == 1 && !is_array($projectmanager->getFormFieldTypes($form_field->type)) ) ) : ?>
+		<?php if ( $form_field->show_in_profile == 1 ) : ?>
 		<tr valign="top">
 			<th scope="row"><label for="form_field_<?php echo $form_field->id ?>"><?php echo $form_field->label ?></label></th>
 			<td>
@@ -37,24 +37,24 @@ document.forms[0].encoding = "multipart/form-data";
 				</div>
 				<?php elseif ( 'date' == $form_field->type ) : ?>
 				<select size="1" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>][day]">
-					<option value="">Tag</option>
+					<option value=""><?php _e( 'Day', 'projectmanager' ) ?></option>
 					<option value="">&#160;</option>
 					<?php for ( $day = 1; $day <= 31; $day++ ) : ?>
-						<option value="<?php echo $day ?>"<?php if ( $day == substr($meta_data[$form_field->id], 8, 2) ) echo ' selected="selected"'; ?>><?php echo $day ?></option>
+						<option value="<?php echo $day ?>"<?php selected ( $day, substr($meta_data[$form_field->id], 8, 2) ); ?>><?php echo $day ?></option>
 					<?php endfor; ?>
 				</select>
 				<select size="1" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>][month]">
-					<option value="">Monat</option>
+					<option value=""><?php _e( 'Month', 'projectmanager' ) ?></option>
 					<option value="">&#160;</option>
 					<?php foreach ( $projectmanager->getMonths() AS $key => $month ) : ?>
-						<option value="<?php echo $key ?>"<?php if ( $key == substr($meta_data[$form_field->id], 5, 2) ) echo ' selected="selected"'; ?>><?php echo $month ?></option>
+						<option value="<?php echo $key ?>"<?php selected ( $key, substr($meta_data[$form_field->id], 5, 2) ); ?>><?php echo $month ?></option>
 					<?php endforeach; ?>
 				</select>
 				<select size="1" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>][year]">
-					<option value="0000">Jahr</option>
+					<option value="0000"><?php _e( 'Year', 'projectmanager' ) ?></option>
 					<option value="0000">&#160;</option>
 					<?php for ( $year = date('Y')-100; $year <= date('Y')+10; $year++ ) : ?>
-						<option value="<?php echo $year ?>"<?php if ( $year == substr($meta_data[$form_field->id], 0, 4) ) echo ' selected="selected"' ?>><?php echo $year ?></option>
+						<option value="<?php echo $year ?>"<?php selected ( $year, substr($meta_data[$form_field->id], 0, 4) ); ?>><?php echo $year ?></option>
 					<?php endfor; ?>
 				</select>
 				<?php elseif ( 'file' == $form_field->type || 'image' == $form_field->type || 'video' == $form_field->type ) : ?>
@@ -73,8 +73,7 @@ document.forms[0].encoding = "multipart/form-data";
 						<input type="checkbox" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>][overwrite]" value="1" id="overwrite_file_<?php echo $form_field->id ?>">&#160;<label for="overwrite_file_<?php echo $form_field->id ?>"><strong><?php _e( 'Overwrite File', 'projectmanager' ) ?></strong></label>
 					</p>
 					<?php endif; ?>
-				<?php elseif ( 'project' == $form_field->type ) : ?>
-					<?php echo $projectmanager->getDatasetCheckboxList($options['form_field_options'][$form_field->id], 'form_field['.$dataset_id.']['.$form_field->id.'][]', $meta_data[$form_field->id]); ?>
+				<?php elseif ( 'project' == $form_field->type ) : echo $projectmanager->getDatasetCheckboxList($options['form_field_options'][$form_field->id], 'form_field['.$dataset_id.']['.$form_field->id.'][]', $meta_data[$form_field->id]); ?>
 				<?php elseif ( 'select' == $form_field->type ) : $projectmanager->printFormFieldDropDown($form_field->id, $meta_data[$form_field->id], $dataset_id, "form_field[".$dataset_id."][".$form_field->id."]"); ?>
 				<?php elseif ( 'checkbox' == $form_field->type ) : $projectmanager->printFormFieldCheckboxList($form_field->id, $meta_data[$form_field->id], $dataset_id, "form_field[".$dataset_id."][".$form_field->id."][]"); ?>
 				<?php elseif ( 'radio' == $form_field->type ) : $projectmanager->printFormFieldRadioList($form_field->id, $meta_data[$form_field->id], $dataset_id, "form_field[".$dataset_id."][".$form_field->id."]"); ?>

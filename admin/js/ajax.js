@@ -109,11 +109,11 @@ ProjectManager.datasetnameSpanFadeOut = function( dataset_id, dataset_name ) {
 ProjectManager.ajaxSaveCategories = function( dataset_id ) {
 	tb_remove();
 	ProjectManager.isLoading('loading_category_' + dataset_id);
-	var n = jQuery("#groupchoose" + dataset_id + " #categorychecklist" + dataset_id + " input:checked").length;
+	var n = jQuery("#categorychecklist" + dataset_id + " input:checked").length;
 	//var cats = '';
 	var cats = new Array();
 	for(var a=0;a<n;a++){
-		cats += jQuery("#groupchoose" + dataset_id + " #categorychecklist" + dataset_id + " input:checked")[a].value + ",";
+		cats += jQuery("#categorychecklist" + dataset_id + " input:checked")[a].value + ",";
 	}
 	window.setTimeout("ProjectManager.categorySpanFadeOut(" + dataset_id + ",'" + cats + "')", 50);
 }

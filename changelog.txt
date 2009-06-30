@@ -1,10 +1,11 @@
 ProjectManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
-V2.7 - June , 2009
+V2.7 - June 30, 2009
 - NEW: image upload formfield type
 - NEW: video field
 - NEW: internal link to other project
+- BUGFIX: dataset ordering
 
 V2.6 - June 20, 2009
 - NEW: shortcode attribute to limit number of results

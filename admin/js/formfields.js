@@ -6,7 +6,7 @@ ProjectManager.addFormField = function( projectId ) {
   new_element_contents = "";
   new_element_contents = "<td>&#160;</td>";
   new_element_contents += "<td><input type='text' name='new_formfields["+new_element_number+"][name]' value='' /></td>\n\r";
-  new_element_contents += "<td id='form_field_options_box"+new_element_number+"'><select onChange='ProjectManager.toggleOptions(" + projectId + "," + new_element_number+", this.value, \"\");' name='new_formfields["+new_element_number+"][type]' size='1'>"+PRJCTMNGR_HTML_FORM_FIELD_TYPES+"</select></td>\n\r";
+  new_element_contents += "<td id='form_field_options_box"+new_element_number+"'><select onChange='ProjectManager.toggleOptions(" + projectId + "," + new_element_number + ", this.value, \"\");' name='new_formfields["+new_element_number+"][type]' size='1'>"+PRJCTMNGR_HTML_FORM_FIELD_TYPES+"</select><span id='loading_formfield_options_"+new_element_number+"'></span></td>\n\r";
   new_element_contents += "<td><input type='checkbox' name='new_formfields["+new_element_number+"][show_on_startpage]' value='1' /></td>\n\r";
   new_element_contents += "<td><input type='checkbox' name='new_formfields["+new_element_number+"][show_in_profile]' value='1' checked='checked' /></td>\n\r";
   new_element_contents += "<td><input type='text' size='2' name='new_formfields["+new_element_number+"][order]' value='' /></td>\n\r";
@@ -57,6 +57,7 @@ ProjectManager.removeFormFieldOption = function(id, form_field_id) {
 
 ProjectManager.toggleOptions = function(projectId, form_id, type, options) {
 	ProjectManager.isLoading('loading_formfield_options_' + form_id);
+
 	var ajax = new sack(ProjectManagerAjaxL10n.requestUrl);
 	ajax.execute = 1;
 	ajax.method = 'POST';
@@ -66,7 +67,7 @@ ProjectManager.toggleOptions = function(projectId, form_id, type, options) {
 	ajax.setVar( "formfield_type", type );
 	ajax.setVar( "options", options );
 	ajax.onError = function() { alert('Ajax error on saving dataset order'); };
-	ajax.onCompletion = function() { return true; };
+	ajax.onCompletion = function() { ProjectManager.doneLoading('loading_formfield_options_'+ form_id); return true; };
 	ajax.runAJAX();
 }
 

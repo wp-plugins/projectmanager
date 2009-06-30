@@ -6,23 +6,21 @@ else :
 if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 	if ( 'project' == $_POST['updateProjectManager'] ) {
 		check_admin_referer('projectmanager_manage-projects');
-		if ( '' == $_POST['project_id'] )
-			$this->addProject( $_POST['project_title'] );
-		else
-			$this->editProject( $_POST['project_title'], $_POST['project_id'] );
+		$this->addProject( $_POST['project_title'] );
 	}
 	$this->printMessage();
 }  elseif ( isset($_POST['doaction']) && isset($_POST['action']) ) {
-		check_admin_referer('projectmanager_projects-bulk');
-		if ( current_user_can('delete_projects') ) {
-			if ( 'delete' == $_POST['action'] ) {
-				foreach ( $_POST['project'] AS $project_id )
-					$this->delProject( $project_id );
+	check_admin_referer('projectmanager_projects-bulk');
+	if ( current_user_can('delete_projects') ) {
+		if ( 'delete' == $_POST['action'] ) {
+			foreach ( $_POST['project'] AS $project_id ) {
+				$this->delProject( $project_id );
 			}
-		} else {
-			$this->setMessage(__("You don't have permission to perform this task", 'projectmanager'), true);
-			$this->printMessage();
 		}
+	} else {
+		$this->setMessage(__("You don't have permission to perform this task", 'projectmanager'), true);
+		$this->printMessage();
+	}
 }
 ?>
 <div class="wrap">

@@ -308,15 +308,15 @@ class ProjectManagerAJAX
 		$html = '';
 
 		if ( 'project' == $formfield_type || 'checkbox' == $formfield_type || 'radio' == $formfield_type || 'select' == $formfield_type ) {
-			$html = '<div id="form_field_options_container'.$formfield_id.'" style="display: inline;">';
-			$html .= '<div id="form_field_options_div'.$formfield_id.'" style="overflow: auto; display: none;">';
-			$html .= '<form>';
+//			$html = '<div id="form_field_options_container'.$formfield_id.'" style="display: inline;">';
+			$html = '<div id="form_field_options_div'.$formfield_id.'" style="overflow: auto; display: none;">';
+//			$html .= '<form>';
 			if ( 'project' == $formfield_type ) {
 				$dims = array( 'width' => 300, 'height' => 100 );
 				$thickbox_title = __( 'Choose Project to Link', 'projectmanager' );
 				$icon = 'databases.png';
 				
-				$html .= '<div class="projectmanager_thickbox">';
+				$html .= '<div class="thickbox_content">';
 				$html .= '<select size="1" id="form_field_project_'.$formfield_id.'">';
 				$html .= '<option value="0">'.__( 'Choose Project', 'projectmanager' ).'</option>';
 				foreach ( $projectmanager->getProjects() AS $p ) {
@@ -324,29 +324,30 @@ class ProjectManagerAJAX
 						$html .= '<option value="'.$p->id.'">'.$p->title.'</option>';
 				}
 				$html .= '</select>';
-				$html .= '<div style="text-align:center; margin-top: 1em;"><input type="button" value="'.__('Save').'" class="button-secondary" onclick="ProjectManager.saveProjectLink('.$formfield_id.');return false;" />&#160;<input type="button" value="'.__('Cancel').'" class="button" onclick="tb_remove();" /></div></div>';
+				$html .= '<div class="buttonbar"><input type="button" value="'.__('Save').'" class="button-secondary" onclick="ProjectManager.saveProjectLink('.$formfield_id.');return false;" />&#160;<input type="button" value="'.__('Cancel').'" class="button" onclick="tb_remove();" /></div></div>';
 			} elseif ( 'checkbox' == $formfield_type || 'radio' == $formfield_type || 'select' == $formfield_type ) {
 				$dims = array( 'width' => 350, 'height' => 200 );
 				$thickbox_title = __( 'Options', 'projectmanager' );
 				$icon = 'application_list.png';
 
-				$html .= '<div class="form_field_options_inner">';
+				$html .= '<div class="thickbox_content"><div class="">';
 				$html .= '<ul id="form_field_options_'.$formfield_id.'">';
 				foreach ( (array)$options AS $x => $item ) {
 					$html .= '<li id="form_field_option_'.$formfield_id.'_'.$x.'"><input type="text" size="30" value="'.$item.'" name="form_field_option_'.$formfield_id.'" /><a class="image_link" href="#" onclick="return ProjectManager.removeFormFieldOption(\'form_field_option_'.$formfield_id.'_'.$x.'\', '.$formfield_id.');"><img src="../wp-content/plugins/projectmanager/admin/icons/trash.gif" alt="'.__( 'Delete', 'projectmanager' ).'" title="'.__( 'Delete Option', 'projectmanager' ).'" /></a></li>';
 				}
-				$html .= '<ul>';
+				$html .= '</ul>';
 				$html .= '</div>';
 
 				$html .= '<p><a href="#" onClick="ProjectManager.addFormFieldOption('.$formfield_id.')">'.__( 'Add Option', 'projectmanager' ).'</a></p>';
 
-				$html .= '<div style="text-align:center; margin-top: 1em;"><input type="button" value="'.__('Save').'" class="button-secondary" onclick="ProjectManager.ajaxSaveFormFieldOptions('.$formfield_id.');return false;" />&#160;<input type="button" value="'.__('Cancel').'" class="button" onclick="tb_remove();" /></div>';
+				$html .= '<div class="buttonbar"><input type="button" value="'.__('Save').'" class="button-secondary" onclick="ProjectManager.ajaxSaveFormFieldOptions('.$formfield_id.');return false;" />&#160;<input type="button" value="'.__('Cancel').'" class="button" onclick="tb_remove();" /></div>';
+				$html .= '</div>';
 			}
 
-			$html .= '</form>';
+//			$html .= '</form>';
 			$html .= '</div>';
-			$html .= '<span>&#160;<a href="#TB_inline&width='.$dims['width'].'&height='.$dims['height'].'&inlineId=form_field_options_div'.$formfield_id.'" style="display: inline;" id="options_link'.$formfield_id.'" class="thickbox" title="'.$thickbox_title.'"><img src="'.$admin->getIconURL($icon).'" alt="'.__('Options','projectmanager').'" /></a></span>';
-			$html .= '</div>';
+			$html .= '<span>&#160;<a href="#TB_inline&width='.$dims['width'].'&height='.$dims['height'].'&inlineId=form_field_options_div'.$formfield_id.'" style="display: inline;" id="options_link'.$formfield_id.'" class="thickbox" title="'.$thickbox_title.'"><img src="'.$admin->getIconURL($icon).'" alt="'.__('Options','projectmanager').'" class="middle" /></a></span>';
+//			$html .= '</div>';
 		}
 
 		die("
@@ -359,8 +360,12 @@ class ProjectManagerAJAX
 			if ( type == 'project' || type == 'select' || type == 'checkbox' || type == 'radio' ) {
 				if ( document.getElementById(new_element_id) ) {
 					jQuery('div#form_field_options_container".$formfield_id."').fadeOut('fast');
-				} {
-					document.getElementById('form_field_options_box".$formfield_id."').appendChild(new_element);
+				} else {
+					if ( document.getElementById('form_field_optionos_box".$formfield_id."') ) {
+						document.getElementById('form_field_options_box".$formfield_id."').appendChild(new_element);
+					} else {
+						alert('".__('An Error Occured. Please Save FormFields and set Options afterwards', 'projectmanager')."');
+					}
 				}
 				jQuery('div#form_field_options_container".$formfield_id."').html(\"".addslashes_gpc($html)."\").fadeIn('fast');
 				ProjectManager.reInit();
@@ -371,7 +376,7 @@ class ProjectManagerAJAX
 				}
 			}
 
-			ProjectManager.doneLoading('loading_formfield_options_".$formfield_id."');
 		");
+			//ProjectManager.doneLoading('loading_formfield_options_".$formfield_id."');
 	}
 }

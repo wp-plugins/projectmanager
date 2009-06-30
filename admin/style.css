@@ -9,10 +9,11 @@ a.image_link { margin-left: 0.5em; border-bottom: none !important; }
 	
 p.projectmanager_breadcrumb { float: right; margin: 1.5em 1.5em 0em auto; }
 
-div.projectmanager_thickbox { text-align: center; }
-div.projectmanager_thickbox input, div.projectmanager_thickbox textarea, div.projectmanager_thickbox select { margin-top: 1em; }
-div.projectmanager_thickbox ul { margin: 1em auto auto 1em; }
-div.projectmanager_thickbox p { text-align: left; margin: 0; padding: 0}
+/* Thickbox Content */
+div.thickbox_content { text-align: center; }
+div.thickbox_content input, div.thickbox_content textarea, div.thickbox_content select, div.thickbox_content .buttonbar { margin-top: 1em; }
+div.thickbox_content ul { margin: 1em auto auto 1em; }
+div.thickbox_content p { text-align: left; margin: 0; padding: 0}
 	
 div#projectmanager-category-adder {
 	height: 150px;

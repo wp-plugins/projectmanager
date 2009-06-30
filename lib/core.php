@@ -1294,7 +1294,7 @@ class ProjectManager extends ProjectManagerLoader
 		
 			
 			$out .= "\n\t\t<div id='datafieldwrap".$meta->form_field_id."_".$dataset->id."' style='overfow:auto;display:none;'>";
-			$out .= "\n\t\t<div id='datafieldbox".$meta->form_field_id."_".$dataset->id."' class='projectmanager_thickbox'>";
+			$out .= "\n\t\t<div class='thickbox_content'>";
 			$out .= "\n\t\t\t<form name='form_field_".$meta->form_field_id."_".$dataset->id."'>";
 			if ( 'text' == $meta->type || 'email' == $meta->type || 'uri' == $meta->type || 'image' == $meta->type || 'numeric' == $meta->type || 'currency' == $meta->type ) {
 				$out .= "\n\t\t\t<input type='text' name='form_field_".$meta->form_field_id."_".$dataset->id."' id='form_field_".$meta->form_field_id."_".$dataset->id."' value=\"".$value."\" size='30' />";
@@ -1618,10 +1618,10 @@ class ProjectManager extends ProjectManagerLoader
 		$version = apply_filters('tiny_mce_version', '');
 		$version = 'ver=' . $tinymce_version . $version;
 
-		$mce_buttons = array('bold', 'italic', 'strikethrough', '|', 'bullist', 'numlist', 'blockquote', '|', 'justifyleft', 'justifycenter', 'justifyright', '|', 'link', 'unlink', 'wp_more', '|', 'spellchecker', 'fullscreen', 'wp_adv' );
+		$mce_buttons = array('bold', 'italic', 'strikethrough', '|', 'bullist', 'numlist', 'blockquote', '|', 'justifyleft', 'justifycenter', 'justifyright', '|', 'link', 'unlink',  '|', 'spellchecker', 'fullscreen', 'wp_adv' );
 		$mce_buttons = implode($mce_buttons, ',');
 
-		$mce_buttons_2 = array('formatselect', 'underline', 'justifyfull', 'forecolor', '|', 'pastetext', 'pasteword', 'removeformat', '|', 'media', 'charmap', '|', 'outdent', 'indent', '|', 'undo', 'redo', 'wp_help' );
+		$mce_buttons_2 = array('formatselect', 'underline', 'justifyfull', 'forecolor', '|', 'pastetext', 'pasteword', 'removeformat', '|', 'media', 'image', 'charmap', '|', 'outdent', 'indent', '|', 'undo', 'redo', 'wp_help' );
 		$mce_buttons_2 = implode($mce_buttons_2, ',');
 
 		$plugins = array( 'safari', 'inlinepopups', 'spellchecker', 'paste', 'wordpress', 'media', 'fullscreen', 'wpeditimage', 'tabfocus' );
