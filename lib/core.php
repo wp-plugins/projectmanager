@@ -359,7 +359,7 @@ class ProjectManager extends ProjectManagerLoader
 			$this->override_order = true;
 		}
 		// Project Settings
-		elseif ( isset($project->dataset_orderby) && $project->dataset_orderby != 'formfields' && !empty($project->dataset_orderby) ) {
+		elseif ( isset($project->dataset_orderby) && !empty($project->dataset_orderby) ) {
 			$this->orderby = $project->dataset_orderby;
 			$this->order = (isset($project->dataset_order) && !empty($project->dataset_order)) ? $project->dataset_order : 'ASC';
 		}
@@ -908,7 +908,7 @@ class ProjectManager extends ProjectManagerLoader
 	function orderDatasetsByFormFields( $datasets, $form_field_id = false )
 	{
 		global $wpdb;
-	
+
 		/*
 		* Generate array of parameters to sort datasets by
 		*/
@@ -933,7 +933,17 @@ class ProjectManager extends ProjectManagerLoader
 			$dataset_meta = array();
 			foreach ( $datasets AS $dataset ) {
 				foreach ( $this->getDatasetMeta( $dataset->id ) AS $meta ) {
-					$meta_value = $meta->value;
+					
+					// Data is retried via callback function. Most likely a special field from LeagueManager
+					if ( !empty($meta->type) && is_array($this->getFormFieldTypes($meta->type)) ) {
+						$field = $this->getFormFieldTypes($meta->type);
+						$args = array( 'dataset' => array( 'id' => $dataset->id, 'name' => $dataset->name ) );
+						$field['args'] = array_merge( $args, $field['args'] );
+						$meta_value = call_user_func_array($field['callback'], $field['args']);
+					} else {
+						$meta_value = $meta->value;
+					}
+
 					$dataset_meta[$i][$meta->form_field_id] = $meta_value;
 				}
 				$dataset_meta[$i]['dataset_id'] = $dataset->id;
