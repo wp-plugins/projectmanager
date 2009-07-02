@@ -1,6 +1,9 @@
 ProjectManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
+V2.7.1 - July 2, 2009
+- BUGFIX: parse error in lib/core.php line 713
+
 V2.7 - July 1, 2009
 - NEW: image upload formfield type
 - NEW: video field with upload

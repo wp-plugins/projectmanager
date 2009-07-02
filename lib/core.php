@@ -710,7 +710,7 @@ class ProjectManager extends ProjectManagerLoader
 	{
 		global $wpdb;
 	
-		$num_form_fields = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = {$this->getProjectID()}" );
+		$num_form_fields = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = ".$this->getProjectID() );
 		return $num_form_fields;
 	}
 	
