@@ -4,11 +4,11 @@ Plugin Name: ProjectManager
 Description: This Plugin can be used to manage several different types of projects with redundant data. This could be athlet portraits, DVD database, architect projects. You can define different form field types and groups to sort your project entries.
 Author URI: http://kolja.galerie-neander.de/
 Plugin URI: http://kolja.galerie-neander.de/plugins/projectmanager/
-Version: 2.4.6
+Version: 2.7.1
 Author: Kolja Schleich
 
 
-Copyright 2008-2008  Kolja Schleich  (email : kolja.schleich@googlemail.com)
+Copyright 2008-2009  Kolja Schleich  (email : kolja.schleich@googlemail.com)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ class ProjectManagerLoader
 	 *
 	 * @var string
 	 */
-	 var $version = '2.4.6';
+	 var $version = '2.7.1';
 	 
 	 
 	 /**
@@ -48,16 +48,8 @@ class ProjectManagerLoader
 	  *
 	  * @var string
 	  */
-	 var $dbversion = '2.4.4';
+	 var $dbversion = '2.5.1';
 	 
-
-	 /**
-	  * project ID
-	  *
-	  * @var int
-	  */
-	 var $project_id;
-
 
 	 /**
 	  * admin panel object
@@ -97,9 +89,7 @@ class ProjectManagerLoader
 		// Start this plugin once all other plugins are fully loaded
 		add_action( 'plugins_loaded', array(&$this, 'initialize') );
 		
-		$this->project_id = isset($_GET['project_id']) ? (int)$_GET['project_id'] : false;
-		$projectmanager = new ProjectManager($this->project_id);
-		
+		add_action( 'user_register', array(&$this->adminPanel, 'registerUser') );
 		add_action( 'show_user_profile', array(&$this->adminPanel, 'profileHook') );
 		add_action( 'profile_update', array(&$this->adminPanel, 'updateProfile') );
 	}
@@ -124,15 +114,6 @@ class ProjectManagerLoader
 		// Add TinyMCE Button
 		add_action( 'init', array(&$this, 'addTinyMCEButton') );
 		add_filter( 'tiny_mce_version', array(&$this, 'changeTinyMCEVersion') );
-		
-		// Ajax Actions
-		add_action( 'wp_ajax_projectmanager_save_name', 'projectmanager_save_name' );
-		add_action( 'wp_ajax_projectmanager_save_categories', 'projectmanager_save_categories' );
-		add_action( 'wp_ajax_projectmanager_save_form_field_data', 'projectmanager_save_form_field_data' );
-		add_action( 'wp_ajax_projectmanager_save_form_field_options', 'projectmanager_save_form_field_options' );
-		add_action( 'wp_ajax_projectmanager_save_dataset_order', 'projectmanager_save_dataset_order' );
-		add_action( 'wp_ajax_projectmanager_ajax_delete_file', 'projectmanager_ajax_delete_file' );
-		
 	}
 	
 	
@@ -184,15 +165,23 @@ class ProjectManagerLoader
 	 */
 	function loadLibraries()
 	{
+		global $projectmanager;
+
 		// Global libraries
 		require_once (dirname (__FILE__) . '/lib/core.php');
+		require_once (dirname (__FILE__) . '/lib/ajax.php');
 		require_once (dirname (__FILE__) . '/lib/widget.php');
 		require_once (dirname (__FILE__) . '/functions.php');
 		
+		$project_id = isset($_GET['project_id']) ? (int)$_GET['project_id'] : false;
+		$projectmanager = new ProjectManager($project_id);
+
+		$ajax = new ProjectManagerAJAX();
+
 		if ( is_admin() ) {
 			require_once (dirname (__FILE__) . '/lib/image.php');
 			require_once (dirname (__FILE__) . '/admin/admin.php');	
-			$this->adminPanel = new ProjectManagerAdminPanel($this->project_id);
+			$this->adminPanel = new ProjectManagerAdminPanel();
 		} else {
 			require_once (dirname (__FILE__) . '/lib/shortcodes.php');
 			$this->shortcodes = new ProjectManagerShortcodes();
@@ -284,9 +273,6 @@ class ProjectManagerLoader
 		// Don't bother doing this stuff if the current user lacks permissions
 		if ( !current_user_can('edit_posts') && !current_user_can('edit_pages') ) return;
 		
-		// Check for LeagueManager capability
-		if ( !current_user_can('manage_projects') ) return;
-		
 		// Add only in Rich Editor mode
 		if ( get_user_option('rich_editing') == 'true') {
 			add_filter("mce_external_plugins", array(&$this, 'addTinyMCEPlugin'));
@@ -372,23 +358,38 @@ class ProjectManagerLoader
 		maybe_create_table( $wpdb->projectmanager_datasetmeta, $create_datasetmeta_sql );
 
 
-		/*
-		* Set default options
-		*/
+		// Set default options
 		add_option( 'projectmanager', $options, 'ProjectManager Options', 'yes' );
 
 		/*
 		* Add Capabilities
 		*/
 		$role = get_role('administrator');
-		$role->add_cap('projectmanager_admin');
-		$role->add_cap('manage_projects');
-		$role->add_cap('project_user_profile');
-		
+		$role->add_cap('edit_projects');
+		$role->add_cap('delete_projects');
+		$role->add_cap('projectmanager_settings');
+		$role->add_cap('edit_formfields');
+		$role->add_cap('edit_projects_settings');
+		$role->add_cap('import_datasets');
+		$role->add_cap('edit_datasets');
+		$role->add_cap('edit_other_datasets');
+		$role->add_cap('delete_datasets');
+		$role->add_cap('delete_other_datasets');
+		$role->add_cap('view_projects');
+		$role->add_cap('projectmanager_user');
+
 		$role = get_role('editor');
-		$role->add_cap('manage_projects');
-		$role->add_cap('project_user_profile');
-		
+		$role->add_cap('import_datasets');
+		$role->add_cap('edit_datasets');
+		$role->add_cap('edit_other_datasets');
+		$role->add_cap('delete_datasets');
+		$role->add_cap('delete_other_datasets');
+		$role->add_cap('view_projects');
+		$role->add_cap('projectmanager_user');
+
+		$role = get_role('subscriber');
+		$role->add_cap('projectmanager_user');
+
 		/*
 		* Add widget options
 		*/

@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: datamanager, CMS, Content Management System
 Requires at least: 2.7
 Tested up to: 2.7.1
-Stable tag: 2.4.6
+Stable tag: 2.7.1
 
 This plugin can be used to manage any number of projects with recurrent datasets (e.g. portrait system, dvd collection)
 
@@ -24,7 +24,7 @@ This plugin is a datamanager for any recurrent datasets. It can be used to manag
 * change colorscheme for output tables via admin panel
 * dataset sorting by any form field
 * import and export of datasets from/to CSV file
-* hook one project into user profile
+* hook projects into user profile
 * manual drag & drop sorting of datasets
 
 See [Usage](http://wordpress.org/extend/plugins/projectmanager/other_notes/) for details on shortcodes and the template system.
@@ -106,9 +106,10 @@ you can use this template to display with the following code
 `[project id=x template=**gallery-custom** cat_id=y]`
 
 
-= Hook Project into user profile =
+= Extend User Profile =
 
-It is possible to hook one project into the user profile to use it as extended profile. Thus it could be used to implement a player registration in combination with my [LeagueManager Plugin](http://wordpress.org/extend/plugins/leaguemanager/). Users need the capability `project_user_profile` to use this feature. By default only Administrators and Editors have this, but you can use [Role Manager](http://www.im-web-gefunden.de/wordpress-plugins/role-manager/) for finetuning.
+Projects can be linked with the user profile. Any usr with capability *projectmanager_user* can use this feature. If the default role has this capability users get added to each project that has the hook activated and can edit data through their profile. To subsequently add a Wordpress user to a project, use the *Add WP User* Link in the dataset form, located next to the name field. The added dataset will be linked to this user.
+
 
 = Custom icons for Admin Menu =
 If you want to use custom icons for the admin menu put them in
@@ -117,13 +118,21 @@ If you want to use custom icons for the admin menu put them in
 
 = Access control =
 
-ProjectManager has three different capabilities: 
+Since Version 2.5 ProjectManager has fine grained access control: 
 
-*projectmanager_admin
-*manage_projects
-*project_user_profile
+* edit_projects: add and edit projects
+* delete_projects:  delete projects
+* projectmanager_settings: grants access to global settings page
+* edit_formfields: grant editing of formfields
+* edit_projects_settings: grant access to settings page of individual projects
+* import_datasets: grant import/export of datasets
+* edit_datasets: add datasets and edit own datasets
+* edit_other_datasets: add and edit any datasets (needs also edit_datasets)
+* delete_datasets: delete own datasets
+* delete_other_datasets: delete any dataset (needs also delete_datasets)
+* view_projects: grant read access to projects and dataset overview
+* projectmanager_user: grants permission to use profile hook feature
 
-Users with the capability *projectmanager_admin* can edit settings, edit formfields and import datasets from CSV files. By default only Administrators have this privilege. Users with the capability *manage_projects* can add and edit datasets and those with the capability *project_user_profile* can use the profile hook feature. **Important**: The capabilities are not additive! Thus a user with capability *projectmanager_admin*, but not *manage_projects* will not be able to add and edit datasets.
 
 = Notes on Formfields =
 
