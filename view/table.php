@@ -13,6 +13,8 @@ The following variables are usable:
 ?>
 <?php echo $title ?>
 
+<?php $args = array( ); ?>
+
 <?php if ( isset($_GET['show']) ) : ?>
 	<?php do_action('projectmanager_dataset', array('id' => $_GET['show'], 'echo' => 1), true) ?>
 <?php else: ?>
@@ -24,13 +26,13 @@ The following variables are usable:
 <table class='projectmanager'>
 <tr>
 	<th scope='col' class="tableheader"><?php _e( 'Name', 'projectmanager' ) ?></th>
-	<?php $projectmanager->printTableHeader(); ?>
+	<?php $projectmanager->printTableHeader($args); ?>
 </tr>
 
 <?php foreach ( $datasets AS $dataset ) : ?>
 	<tr class="<?php echo $dataset->class ?>">
 		<td class="name"><?php echo $dataset->nameURL ?></td>
-		<?php $projectmanager->printDatasetMetaData( $dataset, 'td' ); ?>
+		<?php $projectmanager->printDatasetMetaData( $dataset, $args ); ?>
 	</tr>
 <?php endforeach ; ?>
 

@@ -126,6 +126,16 @@ function projectmanager_upgrade() {
 	}
 
 
+	if (version_compare($installed, '2.5', '<')) {
+		$role = get_role('administrator');
+		$role->remove_cap('projectmanager_admin');
+		$role->remove_cap('manage_projects');
+		$role->remove_cap('project_user_profile');
+		$role = get_role('editor');
+		$role->remove_cap('manage_projects');
+		$role->remove_cap('project_user_profile');
+	}
+
 
 	// Update dbversion
 	$options['dbversion'] = PROJECTMANAGER_DBVERSION;

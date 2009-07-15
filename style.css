@@ -1,6 +1,3 @@
-/**
- * @section Frontend
- */
 div.projectmanager { margin-bottom: 1em; }
 
 /* Header above simple Output */
@@ -29,6 +26,10 @@ table.projectmanager {
 table.projectmanager th, table.projectmanager td {
 	padding: 3px 5px;
 	}
+table.projectmanager th.image, table.projectmanager td.image {
+	text-align: center;
+	}
+table.projectmanager img { width: 40px; }
 table.projectmanager ul {
 	list-style-type: none;
 	}
@@ -37,6 +38,7 @@ table.projectmanager ul li {
 	}
 table.projectmanager td img {
 	display: block;
+	vertical-align: middle;
 	margin: auto;
 	}
 
@@ -130,50 +132,7 @@ p.error {
 	margin-top: 3em;
 	color: #c00;
 	}
-	
-	
-/**
- * @section Administration
- */
-#datasets tr { cursor: move; }
 
-a.image_link { border-bottom: none !important; }
-	
-p.projectmanager_breadcrumb { float: right; margin: 1.5em 1.5em 0em auto; }
-
-div.projectmanager_thickbox { text-align: center; }
-div.projectmanager_thickbox input, div.projectmanager_thickbox textarea, div.projectmanager_thickbox select { margin-top: 1em; }
-div.projectmanager_thickbox ul { margin: 1em auto auto 1em; }
-div.projectmanager_thickbox p { text-align: left; margin: 0; padding: 0}
-	
-div#projectmanager-category-adder {
-	height: 180px;
-	background-color: #ffffff;
-	padding: 5px;
-	width: 30%;
-	overflow: auto;
-	}
-	
-ul.checkboxlist, ul.radiolist, ul.categorychecklist, ul.children {
-	margin-left: 0;
-	padding-left: 0;
-	list-style-type: none;
-	list-style-image: none;
-}
-ul.checkboxlist li, ul.radiolist li, ul.categorychecklist li, ul.children li {
-	margin: 0;
-	padding: 7px 0;
-	text-align: left;
-	list-style-type: none;
-	list-style-image: none;
-}
-ul.checkboxlist li label, ul.checkboxlist li input, ul.radiolist li label, ul.radiolist li input,
-ul.categorychecklist li label, ul.categorychecklist li input, ul.children li label, ul.children li input {
-	margin: 0 3px;
-	padding: 0;
-	}
-
-	
 /**
  * @section Widget
  */
@@ -196,49 +155,6 @@ ul.categorychecklist li label, ul.categorychecklist li input, ul.children li lab
 	margin: 0 auto;
 	padding: 0;
 }
-
-	
-.projectmanager_widget_control p {
-	text-align: left;
-	clear: both;
-}
-.projectmanager_widget_control input {
-	display: inline;
-	clear: none;
-	width: auto;
-	border-width: 1px;
-	border-style: solid;
-	border-collapse: separate;
-	border-spacing: 0;
-	-moz-border-radius: 4px;
-	-khtml-border-radius: 4px;
-	-webkit-border-radius: 4px;
-	border-radius: 4px;
-}
-.projectmanager_widget_control select {
-	display: inline;
-	clear: none;
-	width: auto;
-}
-.projectmanager_widget_control label {
-	padding: 0.5em 0.5em;
-	width: 6em;
-	float: left;
-}
-.projectmanager_widget_control .slideshow_control {
-	padding: 5px;
-	border: 1px dashed #cfcfcf;
-	margin-bottom: 1em;
-}
-.projectmanager_widget_control .slideshow_control legend {
-	font-weight: bold;
-}
-.projectmanager_widget_control .slideshow_control label.right {
-	padding: 0.5em 0.5em;
-	float: none;
-	width: auto;
-}
-
 
 /*--- JQuery Slideshow Styles. Cleaned ---*/
 
