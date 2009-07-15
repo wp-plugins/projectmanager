@@ -1129,6 +1129,7 @@ class ProjectManager extends ProjectManagerLoader
 			if ( (empty($exclude) && empty($include)) || ( empty($include) && !empty($exclude) && !in_array($meta->type, $exclude) && !in_array($meta->form_field_id, $exclude) ) || ( !empty($include) && in_array($meta->type, $include) || in_array($meta->form_field_id, $include) ) ) {
 				$meta->label = stripslashes($meta->label);
 				$meta_value = is_string($meta->value) ? htmlspecialchars( $meta->value, ENT_QUOTES ) : $meta->value;
+
 				// Do some parsing on array datasets
 				if ( 'checkbox' == $meta->type || 'project' == $meta->type ) {
 					$list = "<ul class='".$meta->type."' id='form_field_".$meta->form_field_id."'>";

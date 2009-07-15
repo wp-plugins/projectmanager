@@ -13,7 +13,7 @@ The following variables are usable:
 ?>
 <?php echo $title ?>
 
-<?php $args = array( 'include' => 'project,19' ); ?>
+<?php $args = array( ); ?>
 
 <?php if ( isset($_GET['show']) ) : ?>
 	<?php do_action('projectmanager_dataset', array('id' => $_GET['show'], 'echo' => 1), true) ?>
