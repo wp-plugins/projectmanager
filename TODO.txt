@@ -1,1 +1,5 @@
-- conflict with Tubepress
+- JS conflict with Tubepress
+- delete all existing formfields deletion if no formfields are submitted
+
+- Parse error unexpected ) expecting ( in lib/core line 1185. Check NumberFormatter Doc
+

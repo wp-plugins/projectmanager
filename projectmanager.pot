@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
-"POT-Creation-Date: 2009-06-30 17:08+0000\n"
+"POT-Creation-Date: 2009-07-19 02:36+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -50,7 +50,7 @@ msgid "Projects"
 msgstr ""
 
 #: admin/admin.php:210 admin/show-project.php:189 admin/show-project.php:208
-#: admin/tinymce/window.php:38 lib/core.php:1266
+#: admin/tinymce/window.php:38 lib/core.php:1267
 msgid "Edit"
 msgstr ""
 
@@ -61,7 +61,7 @@ msgstr ""
 #: admin/admin.php:210 admin/formfields.php:82 admin/formfields.php:101
 #: admin/show-project.php:180 admin/show-project.php:201
 #: admin/tinymce/window.php:38 lib/ajax.php:327 lib/ajax.php:343
-#: lib/core.php:1333
+#: lib/core.php:1334
 msgid "Save"
 msgstr ""
 
@@ -69,7 +69,7 @@ msgstr ""
 #: admin/formfields.php:101 admin/show-project.php:180
 #: admin/show-project.php:201 admin/tinymce/window.php:38
 #: admin/tinymce/window.php:163 lib/ajax.php:327 lib/ajax.php:343
-#: lib/core.php:1333
+#: lib/core.php:1334
 msgid "Cancel"
 msgstr ""
 
@@ -93,7 +93,7 @@ msgstr ""
 #: admin/admin.php:210 admin/dataset-form-profile.php:14
 #: admin/dataset-form.php:18 admin/formfields.php:94 admin/formfields.php:113
 #: admin/index.php:40 admin/show-project.php:102 admin/tinymce/window.php:38
-#: lib/ajax.php:336 lib/core.php:1269
+#: lib/ajax.php:336 lib/core.php:1270
 msgid "Delete"
 msgstr ""
 
@@ -686,7 +686,7 @@ msgstr ""
 msgid "Internal Link"
 msgstr ""
 
-#: lib/core.php:1216
+#: lib/core.php:1217
 #, php-format
 msgid "%s of %s"
 msgstr ""
