@@ -1,12 +1,13 @@
-# ProjectManager POT file.
-# Copyright (C) 2008 Kolja Schleich
-# This file is distributed under the same license as the WordPress package.
+# ProjectManager POT File
+# Copyright (C) 2008-2009 Kolja Schleich
+# This file is distributed under the same license as the PACKAGE package.
+# Kolja Schleich <kolja.schleich@googlemail.com>, 2008.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
-"POT-Creation-Date: 2009-07-19 02:36+0000\n"
+"POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -50,7 +51,7 @@ msgid "Projects"
 msgstr ""
 
 #: admin/admin.php:210 admin/show-project.php:189 admin/show-project.php:208
-#: admin/tinymce/window.php:38 lib/core.php:1267
+#: admin/tinymce/window.php:38 lib/core.php:1269
 msgid "Edit"
 msgstr ""
 
@@ -61,7 +62,7 @@ msgstr ""
 #: admin/admin.php:210 admin/formfields.php:82 admin/formfields.php:101
 #: admin/show-project.php:180 admin/show-project.php:201
 #: admin/tinymce/window.php:38 lib/ajax.php:327 lib/ajax.php:343
-#: lib/core.php:1334
+#: lib/core.php:1336
 msgid "Save"
 msgstr ""
 
@@ -69,7 +70,7 @@ msgstr ""
 #: admin/formfields.php:101 admin/show-project.php:180
 #: admin/show-project.php:201 admin/tinymce/window.php:38
 #: admin/tinymce/window.php:163 lib/ajax.php:327 lib/ajax.php:343
-#: lib/core.php:1334
+#: lib/core.php:1336
 msgid "Cancel"
 msgstr ""
 
@@ -93,7 +94,7 @@ msgstr ""
 #: admin/admin.php:210 admin/dataset-form-profile.php:14
 #: admin/dataset-form.php:18 admin/formfields.php:94 admin/formfields.php:113
 #: admin/index.php:40 admin/show-project.php:102 admin/tinymce/window.php:38
-#: lib/ajax.php:336 lib/core.php:1270
+#: lib/ajax.php:336 lib/core.php:1272
 msgid "Delete"
 msgstr ""
 
@@ -201,11 +202,11 @@ msgstr ""
 msgid "The file type is not supported."
 msgstr ""
 
-#: admin/admin.php:1053
+#: admin/admin.php:1055
 msgid "Form Fields updated"
 msgstr ""
 
-#: admin/admin.php:1072 admin/index.php:27 admin/index.php:46
+#: admin/admin.php:1074 admin/index.php:27 admin/index.php:46
 #: admin/tinymce/window.php:28
 msgid "Projectmanager"
 msgstr ""
@@ -289,7 +290,7 @@ msgid "Profile"
 msgstr ""
 
 #: admin/formfields.php:34 admin/formfields.php:46 admin/show-project.php:46
-#: admin/tinymce/window.php:100 lib/shortcodes.php:122 lib/widget.php:235
+#: admin/tinymce/window.php:100 lib/shortcodes.php:122 lib/widget.php:162
 msgid "Order"
 msgstr ""
 
@@ -381,8 +382,8 @@ msgid "List of Projects"
 msgstr ""
 
 #: admin/index.php:51 admin/index.php:60 admin/tinymce/window.php:50
-#: admin/tinymce/window.php:62 admin/tinymce/window.php:135 lib/widget.php:46
-#: lib/widget.php:218
+#: admin/tinymce/window.php:62 admin/tinymce/window.php:135 lib/widget.php:28
+#: lib/widget.php:145
 msgid "Project"
 msgstr ""
 
@@ -486,11 +487,11 @@ msgstr ""
 msgid "Thumbnail size"
 msgstr ""
 
-#: admin/settings.php:77 lib/widget.php:231
+#: admin/settings.php:77 lib/widget.php:158
 msgid "Width"
 msgstr ""
 
-#: admin/settings.php:77 lib/widget.php:232
+#: admin/settings.php:77 lib/widget.php:159
 msgid "Height"
 msgstr ""
 
@@ -580,7 +581,7 @@ msgstr ""
 msgid "No Dataset"
 msgstr ""
 
-#: admin/tinymce/window.php:150 lib/widget.php:219
+#: admin/tinymce/window.php:150 lib/widget.php:146
 msgid "Display"
 msgstr ""
 
@@ -686,7 +687,7 @@ msgstr ""
 msgid "Internal Link"
 msgstr ""
 
-#: lib/core.php:1217
+#: lib/core.php:1219
 #, php-format
 msgid "%s of %s"
 msgstr ""
@@ -701,151 +702,151 @@ msgstr ""
 msgid "Search: %d of %d"
 msgstr ""
 
-#: lib/widget.php:47
+#: lib/widget.php:27
 msgid "Display datasets from ProjectManager"
 msgstr ""
 
-#: lib/widget.php:221
+#: lib/widget.php:148
 msgid "All"
 msgstr ""
 
-#: lib/widget.php:227
+#: lib/widget.php:154
 msgid "Page"
 msgstr ""
 
-#: lib/widget.php:228
+#: lib/widget.php:155
 msgid "Slideshow"
 msgstr ""
 
-#: lib/widget.php:230
+#: lib/widget.php:157
 msgid "Use Slideshow"
 msgstr ""
 
-#: lib/widget.php:233
+#: lib/widget.php:160
 msgid "Time"
 msgstr ""
 
-#: lib/widget.php:233
+#: lib/widget.php:160
 msgid "seconds"
 msgstr ""
 
-#: lib/widget.php:234
+#: lib/widget.php:161
 msgid "Fade Effect"
 msgstr ""
 
-#: lib/widget.php:251
+#: lib/widget.php:177
 msgid "Blind X"
 msgstr ""
 
-#: lib/widget.php:251
+#: lib/widget.php:177
 msgid "Blind Y"
 msgstr ""
 
-#: lib/widget.php:251
+#: lib/widget.php:177
 msgid "Blind Z"
 msgstr ""
 
-#: lib/widget.php:251
+#: lib/widget.php:177
 msgid "Cover"
 msgstr ""
 
-#: lib/widget.php:251
+#: lib/widget.php:177
 msgid "Curtain X"
 msgstr ""
 
-#: lib/widget.php:251
+#: lib/widget.php:177
 msgid "Curtain Y"
 msgstr ""
 
-#: lib/widget.php:251
+#: lib/widget.php:177
 msgid "Fade"
 msgstr ""
 
-#: lib/widget.php:251
+#: lib/widget.php:177
 msgid "Fade Zoom"
 msgstr ""
 
-#: lib/widget.php:251
+#: lib/widget.php:177
 msgid "Scroll Up"
 msgstr ""
 
-#: lib/widget.php:251
+#: lib/widget.php:177
 msgid "Scroll Left"
 msgstr ""
 
-#: lib/widget.php:251
+#: lib/widget.php:177
 msgid "Scroll Right"
 msgstr ""
 
-#: lib/widget.php:251
+#: lib/widget.php:177
 msgid "Scroll Down"
 msgstr ""
 
-#: lib/widget.php:251
+#: lib/widget.php:177
 msgid "Scroll Horizontal"
 msgstr ""
 
-#: lib/widget.php:251
+#: lib/widget.php:177
 msgid "Scroll Vertical"
 msgstr ""
 
-#: lib/widget.php:251
+#: lib/widget.php:177
 msgid "Shuffle"
 msgstr ""
 
-#: lib/widget.php:251
+#: lib/widget.php:177
 msgid "Slide X"
 msgstr ""
 
-#: lib/widget.php:251
+#: lib/widget.php:177
 msgid "Slide Y"
 msgstr ""
 
-#: lib/widget.php:251
+#: lib/widget.php:177
 msgid "Toss"
 msgstr ""
 
-#: lib/widget.php:251
+#: lib/widget.php:177
 msgid "Turn Up"
 msgstr ""
 
-#: lib/widget.php:251
+#: lib/widget.php:177
 msgid "Turn Down"
 msgstr ""
 
-#: lib/widget.php:251
+#: lib/widget.php:177
 msgid "Turn Left"
 msgstr ""
 
-#: lib/widget.php:251
+#: lib/widget.php:177
 msgid "Turn Right"
 msgstr ""
 
-#: lib/widget.php:251
+#: lib/widget.php:177
 msgid "Uncover"
 msgstr ""
 
-#: lib/widget.php:251
+#: lib/widget.php:177
 msgid "Wipe"
 msgstr ""
 
-#: lib/widget.php:251
+#: lib/widget.php:177
 msgid "Zoom"
 msgstr ""
 
-#: lib/widget.php:251
+#: lib/widget.php:177
 msgid "Grow X"
 msgstr ""
 
-#: lib/widget.php:251
+#: lib/widget.php:177
 msgid "Grow Y"
 msgstr ""
 
-#: lib/widget.php:251 lib/widget.php:272
+#: lib/widget.php:177 lib/widget.php:197
 msgid "Random"
 msgstr ""
 
-#: lib/widget.php:272
+#: lib/widget.php:197
 msgid "Ordered"
 msgstr ""
 
