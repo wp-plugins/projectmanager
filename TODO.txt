@@ -1,4 +1,0 @@
-- JS conflict with Tubepress
-
-- Parse error unexpected ) expecting ( in lib/core line 1185. Check NumberFormatter Doc
-- New Widget for 2.8 API

@@ -148,6 +148,9 @@ The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons
 
 == Changelog ==
 
+= 2.8 =
+* NEW: widget with 2.8 API
+
 = 2.7.3 =
 * BUGFIX: unable to delete all formfields
 
@@ -284,7 +287,7 @@ The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons
 * BUGFIX: shortcode display of single dataset
 
 = 1.8 =
-*- NEW: dataset ordering selection in frontend
+* NEW: dataset ordering selection in frontend
 * NEW: hook one project into profile
 * NEW: set custom menu icon for each project
 * NEW: shortcode to display single dataset

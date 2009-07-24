@@ -84,8 +84,7 @@ class ProjectManagerLoader
 		if (function_exists('register_uninstall_hook'))
 			register_uninstall_hook(__FILE__, array(&$this, 'uninstall'));
 
-		$widget = new ProjectManagerWidget();
-		add_action( 'widgets_init', array(&$widget, 'register') );
+		add_action( 'widgets_init', array(&$this, 'registerWidget') );
 		// Start this plugin once all other plugins are fully loaded
 		add_action( 'plugins_loaded', array(&$this, 'initialize') );
 		
@@ -117,6 +116,15 @@ class ProjectManagerLoader
 	}
 	
 	
+	/**
+	 * register Widget
+	 */
+	function registerWidget()
+	{
+		register_widget('ProjectManagerWidget');
+	}
+
+
 	/**
 	 * define constants
 	 *
