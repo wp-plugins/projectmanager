@@ -995,7 +995,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 		}
 
 		$options = get_option('projectmanager');
-		if ( null != $formfields ) {
+		if ( !empty($formfields) ) {
 			foreach ( $wpdb->get_results( "SELECT `id`, `project_id` FROM {$wpdb->projectmanager_projectmeta}" ) AS $form_field) {
 				if ( !array_key_exists( $form_field->id, $formfields ) ) {
 					$del = (bool) $wpdb->query( "DELETE FROM {$wpdb->projectmanager_projectmeta} WHERE `id` = {$form_field->id} AND `project_id` = {$project_id}"  );
@@ -1013,9 +1013,11 @@ class ProjectManagerAdminPanel extends ProjectManager
 				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projectmeta} SET `label` = '%s', `type` = '%s', `show_on_startpage` = '%d', `show_in_profile` = '%d', `order` = '%d', `order_by` = '%d' WHERE `id` = '%d' LIMIT 1 ;", $formfield['name'], $formfield['type'], $show_on_startpage, $show_in_profile, $formfield['order'], $order_by, $id ) );
 				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `form_id` = '%d' WHERE `form_id` = '%d'", $id, $id ) );
 			}
+		} else {
+			$wpdb->query( "DELETE FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = {$project_id}"  );
 		}
 			
-		if ( null != $new_formfields ) {
+		if ( !empty($new_formfields) ) {
 			foreach ($new_formfields AS $tmp_id => $formfield) {
 				$order_by = isset($formfield['orderby']) ? 1 : 0;
 				$show_on_startpage = isset($formfield['show_on_startpage']) ? 1 : 0;
