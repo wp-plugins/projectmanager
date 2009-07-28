@@ -19,6 +19,6 @@ The following variables are usable:
 	<?php if ( $dataset->image != '' ) : ?>
 	<div class='image'><img src='<?php echo $dataset->imgURL ?>' title='<?php echo $dataset->name ?>' alt='<?php echo $dataset->name ?>' /></div>
 	<?php endif; ?>
-	<dl><?php $projectmanager->printDatasetMetaData( $dataset, 'dl', true ) ?></dl>
+	<dl><?php $projectmanager->printDatasetMetaData( $dataset, array('output' => 'dl', 'show_all' => true) ) ?></dl>
 </fieldset>
 <?php endif; ?>
