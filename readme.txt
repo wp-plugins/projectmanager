@@ -148,6 +148,9 @@ The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons
 
 == Changelog ==
 
+= 2.8.1 =
+* NEW: template tag for widget
+
 = 2.8 =
 * NEW: widget with 2.8 API
 * NEW: template tags

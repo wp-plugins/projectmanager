@@ -1,6 +1,20 @@
 <?php
 
 /**
+ * display widget
+ *
+ * @param int $number
+ * @param array $instance
+ */
+function projectmanager_display_widget( $number, $instance ) {
+	echo "<ul id='projectmanager-widget-".$instance['project']."' class='projectmanager_widget'>";
+	$widget = new ProjectManagerWidget(true);
+	$widget->widget( array('number' => $number), $intance );
+	echo "</ul>";
+}
+
+
+/**
  * display searchform manually
  *
  * @param int $project_id Project ID

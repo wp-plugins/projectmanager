@@ -22,14 +22,16 @@ class ProjectManagerWidget extends WP_Widget
 	 * @param none
 	 * @return void
 	 */
-	function __construct()
+	function __construct( $template = false )
 	{
-		$widget_ops = array('classname' => 'widget_projectmanager', 'description' => __('Display datasets from ProjectManager', 'projectmanager') );
-		parent::__construct('projectmanager-widget', __( 'Project', 'projectmanager' ), $widget_ops);
+		if ( !$template ) {
+			$widget_ops = array('classname' => 'widget_projectmanager', 'description' => __('Display datasets from ProjectManager', 'projectmanager') );
+			parent::__construct('projectmanager-widget', __( 'Project', 'projectmanager' ), $widget_ops);
+		}
 	}
-	function ProjectManagerWidget()
+	function ProjectManagerWidget( $template = false )
 	{
-		$this->__construct();
+		$this->__construct( $template );
 	}
 	
 		
@@ -56,15 +58,14 @@ class ProjectManagerWidget extends WP_Widget
 			'after_title' => '</h2>',
 			'number' => $this->number,
 			'widget_title' => $project->title,
-			'limit' => $instance['limit'],
-			'slideshow' => ( 1 == $instance['slideshow']['show'] ) ? true : false,
-			'slideshow_opts' => array( 'width' => $instance['slideshow']['width'], 'height' => $instance['slideshow']['height'], 'effect' => $instance['slideshow']['fade'], 'time' => $instance['slideshow']['time'], 'order' => $instance['slideshow']['order']) 
 		);
 		$args = array_merge( $defaults, $args );
 		extract( $args, EXTR_SKIP );
 		
-		$limit = ( 0 != $limit ) ? "LIMIT 0,".$limit : '';
+		$limit = ( 0 != $instance['limit'] ) ? "LIMIT 0,".$instance['limit'] : '';
 		$datasets = $wpdb->get_results( "SELECT `id`, `name`, `image` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$project_id} ORDER BY `id` DESC ".$limit." " ); 
+
+		$slideshow = ( 1 == $instance['slideshow']['show'] ) ? true : false;
 
 		if ( $slideshow ) {
 		?>
@@ -72,9 +73,9 @@ class ProjectManagerWidget extends WP_Widget
 		//<![CDATA[
 		jQuery(document).ready(function(){
 		   jQuery('#projectmanager_slideshow_<?php echo $number ?>').cycle({
-			   fx: '<?php echo $slideshow_opts['effect'] ?>',
-			   timeout: <?php echo $slideshow_opts['time']*1000; ?>,
-			   random: <?php echo $slideshow_opts['order'] ?>,
+			   fx: '<?php echo $instance['slideshow']['fade'] ?>',
+			   timeout: <?php echo $instance['slideshow']['time']*1000; ?>,
+			   random: <?php echo $instance['slideshow']['order'] ?>,
 			   pause: 1
 		   });
 		});
@@ -82,8 +83,8 @@ class ProjectManagerWidget extends WP_Widget
 		</script>
 		<style type="text/css">
 			div#projectmanager_slideshow_<?php echo $number ?> div {
-				width: <?php echo $slideshow_opts['width'] ?>px;
-				height: <?php echo $slideshow_opts['height'] ?>px;
+				width: <?php echo $instance['slideshow']['width'] ?>px;
+				height: <?php echo $instance['slideshow']['height'] ?>px;
 			}
 		</style>
 		<?php
