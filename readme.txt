@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: datamanager, CMS, Content Management System
 Requires at least: 2.7
 Tested up to: 2.7.1
-Stable tag: 2.7.2
+Stable tag: 2.8
 
 This plugin can be used to manage any number of projects with recurrent datasets (e.g. portrait system, dvd collection)
 
@@ -150,6 +150,7 @@ The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons
 
 = 2.8 =
 * NEW: widget with 2.8 API
+* NEW: template tags
 
 = 2.7.3 =
 * BUGFIX: unable to delete all formfields

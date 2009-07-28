@@ -10,10 +10,9 @@ The following variables are usable:
 	
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
 */
+$args = array();
 ?>
 <?php echo $title ?>
-
-<?php $args = array( ); ?>
 
 <?php if ( isset($_GET['show']) ) : ?>
 	<?php do_action('projectmanager_dataset', array('id' => $_GET['show'], 'echo' => 1), true) ?>
