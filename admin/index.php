@@ -1,26 +1,29 @@
 <?php
-if ( !current_user_can( 'manage_projects' ) && !current_user_can( 'projectmanager_admin' ) ) : 
+if ( !current_user_can( 'view_projects' ) ) : 
      echo '<div class="error"><p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p></div>';
 else :
 
 if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 	if ( 'project' == $_POST['updateProjectManager'] ) {
 		check_admin_referer('projectmanager_manage-projects');
-		if ( '' == $_POST['project_id'] )
-			$this->addProject( $_POST['project_title'] );
-		else
-			$this->editProject( $_POST['project_title'], $_POST['project_id'] );
+		$this->addProject( $_POST['project_title'] );
 	}
 	$this->printMessage();
 }  elseif ( isset($_POST['doaction']) && isset($_POST['action']) ) {
-		check_admin_referer('projectmanager_projects-bulk');
+	check_admin_referer('projectmanager_projects-bulk');
+	if ( current_user_can('delete_projects') ) {
 		if ( 'delete' == $_POST['action'] ) {
-			foreach ( $_POST['project'] AS $project_id )
+			foreach ( $_POST['project'] AS $project_id ) {
 				$this->delProject( $project_id );
+			}
 		}
+	} else {
+		$this->setMessage(__("You don't have permission to perform this task", 'projectmanager'), true);
+		$this->printMessage();
+	}
 }
 ?>
-<div class="wrap" style="margin-bottom: 1em;">
+<div class="wrap">
 	<h2><?php _e( 'Projectmanager', 'projectmanager' ) ?></h2>
 	
 	<div id="col-container">
@@ -29,7 +32,7 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 		<form id="projects-filter" method="post" action="">
 		<?php wp_nonce_field( 'projectmanager_projects-bulk' ) ?>
 		
-		<div class="tablenav" style="margin-bottom: 0.1em;">
+		<div class="tablenav">
 			<div class="alignleft actions">
 				<!-- Bulk Actions -->
 				<select name="action" size="1">
@@ -40,8 +43,8 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 			</div>
 		</div>
 		
-		<table class="widefat" summary="" title="<?php _e( 'Projectmanager', 'projectmanager' ) ?>">
-			<thead>
+		<table class="widefat" summary="<?php _e( 'List of Projects', 'projectmanager' ) ?>" title="<?php _e( 'Projectmanager', 'projectmanager' ) ?>">
+		<thead>
 			<tr>
 				<th scope="col" class="check-column"><input type="checkbox" onclick="ProjectManager.checkAll(document.getElementById('projects-filter'));" /></th>
 				<th scope="col" class="num"><?php _e('ID', 'projectmanager') ?></th>
@@ -49,31 +52,33 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 				<th scope="col" class="num"><?php _e( 'Datasets', 'projectmanager' ) ?></th>
 				<th scope="col"><?php _e( 'Action', 'projectmanager' ) ?></th>
 			</tr>
-			</thead>
-			<tfoot>
-				<tr>
-					<th scope="col" class="check-column"><input type="checkbox" onclick="ProjectManager.checkAll(document.getElementById('projects-filter'));" /></th>
-					<th scope="col" class="num"><?php _e('ID', 'projectmanager') ?></th>
-					<th scope="col"><?php _e( 'Project', 'projectmanager' ) ?></th>
-					<th scope="col" class="num"><?php _e( 'Datasets', 'projectmanager' ) ?></th>
-					<th scope="col"><?php _e( 'Action', 'projectmanager' ) ?></th>
-				</tr>
-			</tfoot>
-			
-			<tbody id="the-list">
-				<?php if ( $projects = $projectmanager->getProjects() ) : ?>
-				<?php foreach ( $projects AS $project ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
-				<tr class="<?php echo $class ?>">
-					<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $project->id ?>" name="project[<?php echo $project->id ?>]" /></th>
-					<td class="num"><?php echo $project->id ?></td>
-					<td><a href="admin.php?page=projectmanager&amp;subpage=show-project&amp;project_id=<?php echo $project->id ?>"><?php echo $project->title ?></a></td>
-					<td class="num"><?php echo $projectmanager->getNumDatasets( $project->id ) ?></td>
-					<td><a href="admin.php?page=projectmanager&amp;subpage=settings&amp;project_id=<?php echo $project->id ?>"><?php _e( 'Settings', 'projectmanager' ) ?></a> - <a href="admin.php?page=projectmanager&amp;subpage=dataset&amp;project_id=<?php echo $project->id ?>"><?php _e( 'Add Dataset', 'projectmanager' ) ?></a></td>
-				</tr>
-				<?php endforeach; ?>
-				<?php endif; ?>
-			</tbody>
+		</thead>
+		<tfoot>
+			<tr>
+				<th scope="col" class="check-column"><input type="checkbox" onclick="ProjectManager.checkAll(document.getElementById('projects-filter'));" /></th>
+				<th scope="col" class="num"><?php _e('ID', 'projectmanager') ?></th>
+				<th scope="col"><?php _e( 'Project', 'projectmanager' ) ?></th>
+				<th scope="col" class="num"><?php _e( 'Datasets', 'projectmanager' ) ?></th>
+				<th scope="col"><?php _e( 'Action', 'projectmanager' ) ?></th>
+			</tr>
+		</tfoot>
+		<tbody id="the-list">
+		<?php if ( $projects = $projectmanager->getProjects() ) : ?>
+		
+		<?php foreach ( $projects AS $project ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
+			<tr class="<?php echo $class ?>">
+				<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $project->id ?>" name="project[<?php echo $project->id ?>]" /></th>
+				<td class="num"><?php echo $project->id ?></td>
+				<td><a href="admin.php?page=projectmanager&amp;subpage=show-project&amp;project_id=<?php echo $project->id ?>"><?php echo $project->title ?></a></td>
+				<td class="num"><?php echo $projectmanager->getNumDatasets( $project->id ) ?></td>
+				<td><a href="admin.php?page=projectmanager&amp;subpage=settings&amp;project_id=<?php echo $project->id ?>"><?php _e( 'Settings', 'projectmanager' ) ?></a> - <a href="admin.php?page=projectmanager&amp;subpage=dataset&amp;project_id=<?php echo $project->id ?>"><?php _e( 'Add Dataset', 'projectmanager' ) ?></a></td>
+			</tr>
+		<?php endforeach; ?>
+	
+		<?php endif; ?>
+		</tbody>
 		</table>
+
 		</form>
 	</div>
 	</div><!-- /col-right -->
