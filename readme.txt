@@ -150,6 +150,7 @@ The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons
 
 = 2.8.1 =
 * NEW: template tag for widget
+* REMOVED: NumberFormatter caused syntax error for some webhosts
 
 = 2.8 =
 * NEW: widget with 2.8 API

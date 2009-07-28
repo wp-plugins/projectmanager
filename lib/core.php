@@ -1183,21 +1183,11 @@ class ProjectManager extends ProjectManagerLoader
 				} elseif ( ( 'file' == $meta->type || 'video' == $meta->type ) && !empty($meta_value) ) {
 					$meta_value = "<img id='fileimage".$meta->form_field_id."_".$dataset->id."' src='".$this->getFileImage($meta_value)."' alt='' />&#160;" . sprintf($pattern, "<a class='projectmanager_file ".$this->getFileType($meta_value)."' href='".$this->getFileURL($meta_value)."' target='_blank'>".$meta_value."</a>");
 				} elseif ( 'numeric' == $meta->type && !empty($meta_value) ) {
-					if ( class_exists('NumberFormatter') ) {
-						$fmt = numfmt_create( $locale, NumberFormatter::DECIMAL );
-						$meta_value = numfmt_format($fmt, $meta_value);
-					} else {
-						$meta_value = apply_filters( 'projectmanager_numeric', $meta_value );
-					}
+					$meta_value = apply_filters( 'projectmanager_numeric', $meta_value );
 					$meta_value = sprintf($pattern, $meta_value);
 				} elseif ( 'currency' == $meta->type && !empty($meta_value) ) {
-					if ( class_exists('NumberFormatter') ) {
-						$fmt = numfmt_create( $locale, NumberFormatter::CURRENCY );
-						$meta_value = numfmt_format($fmt, $meta_value);
-					} else {
-						$meta_value = money_format('%i', $meta_value);
-						$meta_value = apply_filters( 'projectmanager_currency', $meta_value );
-					}
+					$meta_value = money_format('%i', $meta_value);
+					$meta_value = apply_filters( 'projectmanager_currency', $meta_value );
 					$meta_value = sprintf($pattern, $meta_value);
 				} elseif ( !empty($meta->type) && is_array($this->getFormFieldTypes($meta->type)) ) {
 					// Data is retried via callback function. Most likely a special field from LeagueManager
