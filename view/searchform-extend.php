@@ -18,7 +18,9 @@ The following variables are usable:
 	<select size='1' name='search_option'>
 		<option value='0' <?php if ( 0 == $search_option ) echo " selected='selected'" ?>><?php _e( 'Name', 'projectmanager' ) ?></option>
 		<?php foreach ( $form_fields AS $form_field ) : ?>
+		<?php if ( $form_field->type != 'project' ) : ?>
 		<option value='<?php echo $form_field->id ?>'<?php if ( $search_option == $form_field->id ) echo " selected='selected'" ?>><?php echo $form_field->label ?></option>
+		<?php endif; ?>
 		<?php endforeach; ?>
 		<option value='-1' <?php if ( -1 == $search_option ) echo " selected='selected'" ?>><?php _e( 'Categories', 'projectmanager' ) ?></option>
 	</select>
