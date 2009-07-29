@@ -183,7 +183,7 @@ function projectmanager_do_upgrade($filepath) {
 <div class="wrap">
 	<h2><?php _e('Upgrade ProjectManager', 'projectmanager') ;?></h2>
 	<p><?php projectmanager_upgrade();?></p>
-	<p><?php _e('Upgrade sucessfull', 'projectmanager') ;?></p>
+	<p><?php _e('Upgrade successful', 'projectmanager') ;?></p>
 	<h3><a class="button" href="<?php echo $filepath;?>"><?php _e('Continue', 'projectmanager'); ?>...</a></h3>
 </div>
 <?php

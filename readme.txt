@@ -148,6 +148,9 @@ The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons
 
 == Changelog ==
 
+= =
+* BUGFIX: typo correction
+
 = 2.8.2 =
 * BUGFIX: removed NumberFormatter from lib/ajax.php
 

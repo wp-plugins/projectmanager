@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
 "POT-Creation-Date: 2009-02-05 22:08+0000\n"
-"PO-Revision-Date: 2009-06-30 13:07-0500\n"
+"PO-Revision-Date: 2009-07-29 11:21-0500\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -592,7 +592,7 @@ msgid "Start upgrade now"
 msgstr "Aktualisierung jetzt starten"
 
 #: admin/upgrade.php:122
-msgid "Upgrade sucessfull"
+msgid "Upgrade successful"
 msgstr "Aktualisierung erfolgreich"
 
 #: admin/upgrade.php:123
