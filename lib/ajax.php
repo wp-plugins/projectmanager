@@ -183,20 +183,10 @@ class ProjectManagerAJAX
 		elseif ( 'email' == $formfield_type )
 			$new_value = '<a href="mailto:'.$projectmanager->extractURL($new_value, 'url').'" class="projectmanager_email">'.$projectmanager->extractURL($new_value, 'title').'</a>';	
 		elseif ( 'numeric' == $formfield_type ) {
-			if ( class_exists('NumberFormatter') ) {
-				$fmt = new NumberFormatter( get_locale(), NumberFormatter::DECIMAL );
-				$new_value = $fmt->format($new_value);
-			} else {
-				$new_value = apply_filters( 'projectmanager_numeric', $new_value );
-			}
+			$new_value = apply_filters( 'projectmanager_numeric', $new_value );
 		} elseif ( 'currency' == $formfield_type ) {
-			if ( class_exists('NumberFormatter') ) {
-				$fmt = new NumberFormatter( get_locale(), NumberFormatter::CURRENCY );
-				$new_value = $fmt->format($new_value);
-			} else {
-				$new_value = money_format('%i', $new_value);
-				$new_value = apply_filters( 'projectmanager_currency', $new_value );
-			}
+			$new_value = money_format('%i', $new_value);
+			$new_value = apply_filters( 'projectmanager_currency', $new_value );
 		} elseif ( 'checkbox' == $formfield_type || 'project' == $formfield_type ) {
 			$list = '<ul class="'.$formfield_type.'" id="form_field_'.$meta_id.'">';
 			foreach ( (array)$new_value AS $item ) {
