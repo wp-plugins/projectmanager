@@ -690,8 +690,11 @@ class ProjectManagerAdminPanel extends ProjectManager
 					
 				if ( is_array($meta_value) ) {
 					// form field value is a date
-					if ( array_key_exists('day', $meta_value) && array_key_exists('month', $meta_value) && array_key_exists('year', $meta_value) )
-						$meta_value = $meta_value['year'].'-'.str_pad($meta_value['month'], 2, 0, STR_PAD_LEFT).'-'.str_pad($meta_value['day'], 2, 0, STR_PAD_LEFT);
+					if ( array_key_exists('day', $meta_value) && array_key_exists('month', $meta_value) && array_key_exists('year', $meta_value) ) {
+						$meta_value = sprintf("%s-%s-%s", $meta_value['year'], $meta_value['month'], $meta_value['day']);
+					} elseif ( array_key_exists('hour', $meta_value) && array_key_exists('minute', $meta_value) ) {
+						$meta_value = sprintf("%s:%s", $meta_value['hour'], $meta_value['minute']);
+					}
 				}
 
 				$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ('%d', '%d', '%s')", $meta_id, $dataset_id, maybe_serialize($meta_value) ) );
@@ -792,8 +795,11 @@ class ProjectManagerAdminPanel extends ProjectManager
 					
 				if ( is_array($meta_value) ) {
 					// form field value is a date
-					if ( array_key_exists('day', $meta_value) && array_key_exists('month', $meta_value) && array_key_exists('year', $meta_value) )
-						$meta_value = $meta_value['year'].'-'.str_pad($meta_value['month'], 2, 0, STR_PAD_LEFT).'-'.str_pad($meta_value['day'], 2, 0, STR_PAD_LEFT);
+					if ( array_key_exists('day', $meta_value) && array_key_exists('month', $meta_value) && array_key_exists('year', $meta_value) ) {
+						$meta_value = sprintf("%s-%s-%s", $meta_value['year'], $meta_value['month'], $meta_value['day']);
+					} elseif ( array_key_exists('hour', $meta_value) && array_key_exists('minute', $meta_value) ) {
+						$meta_value = sprintf("%s:%s", $meta_value['hour'], $meta_value['minute']);
+					}
 				}
 					
 				if ( 1 == $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_datasetmeta} WHERE `dataset_id` = '".$dataset_id."' AND `form_id` = '".$meta_id."'" ) )

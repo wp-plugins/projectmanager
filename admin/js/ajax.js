@@ -142,6 +142,10 @@ ProjectManager.ajaxSaveDataField = function( dataset_id, formfield_id, formfield
 		var month = document.getElementById('form_field_' + formfield_id + '_' + dataset_id + '_month').value;
 		var year = document.getElementById('form_field_' + formfield_id + '_' + dataset_id + '_year').value;
 		var newvalue = year+"-"+month+"-"+day;
+	} else if ( formfield_type == 'time' ) {
+		var hour = document.getElementById('form_field_' + formfield_id + '_' + dataset_id + '_hour').value;
+		var minute = document.getElementById('form_field_' + formfield_id + '_' + dataset_id + '_minute').value;
+		var newvalue = hour+":"+minute;
 	} else if ( formfield_type == 'checkbox' || 'project' == formfield_type ) {
 		var values = ProjectManager.getSelectedCheckboxValue(document.getElementsByName("form_field_"+formfield_id+"_"+dataset_id));
 		var newvalue = '';
