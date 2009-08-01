@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
 "POT-Creation-Date: 2009-02-05 22:08+0000\n"
-"PO-Revision-Date: 2009-05-26 21:09-0500\n"
+"PO-Revision-Date: 2009-07-29 11:21-0500\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -243,8 +243,8 @@ msgstr "Typ"
 
 #: admin/formfields.php:31
 #: admin/formfields.php:41
-msgid "Show on startpage"
-msgstr "Zeige auf Startseite"
+msgid "Startpage"
+msgstr "Startseite"
 
 #: admin/formfields.php:32
 #: admin/formfields.php:42
@@ -592,7 +592,7 @@ msgid "Start upgrade now"
 msgstr "Aktualisierung jetzt starten"
 
 #: admin/upgrade.php:122
-msgid "Upgrade sucessfull"
+msgid "Upgrade successful"
 msgstr "Aktualisierung erfolgreich"
 
 #: admin/upgrade.php:123
@@ -762,8 +762,11 @@ msgstr "Kind Kategorien dieser Kategorie werden zur Gruppierung der Datensätze 
 msgid "Default"
 msgstr "Standard"
 
-msgid "Show in Profile"
-msgstr "Zeige im Profil"
+msgid "Profile"
+msgstr "Profil"
+
+msgid "Image Upload"
+msgstr "Bild Upload"
 
 msgid "The second checkbox controls image display in user profile"
 msgstr "Die zweite Checkbox kontrolliert die Bild-Anzeige im Benutzerprofil"
@@ -869,4 +872,40 @@ msgstr "Aufdecken"
 
 msgid "Wipe"
 msgstr "Wischen"
+
+msgid "WP User"
+msgstr "WP Benutzer"
+
+msgid "Add WP User"
+msgstr "WP Benutzer hinzufügen"
+
+msgid "You cannot add two datasets with same User ID"
+msgstr "Du kannst nicht zwei Datensätze mit gleicher Benutzer ID hinzufügen"
+
+msgid "You don't have permission to perform this task"
+msgstr "Du hast nicht die Berechtigung diese Aufgabe auszuführen"
+
+msgid "Internal Link"
+msgstr "Interner Verweis"
+
+msgid "Choose Project"
+msgstr "Wähle Projekt"
+
+msgid "Choose Project to Link"
+msgstr "Wähle Projekt zum Verlinken"
+
+msgid "Add Option"
+msgstr "Option Hinzufügen"
+
+msgid "Day"
+msgstr "Tag"
+
+msgid "Month"
+msgstr "Monat"
+
+msgid "Year"
+msgstr "Jahr"
+
+msgid "An Error Occured. Please Save FormFields and set Options afterwards"
+msgstr "Es ist ein Fehler aufgetreten. Bitte speichere die Formularfelder und setze die Optionen danach"
 
