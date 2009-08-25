@@ -1,0 +1,4 @@
+* check interference with Nextgen gallery slideshow
+* TinyMCE field type is displayed with HTML code
+* add demo to website
+* TinyMCE field displays HTML tags

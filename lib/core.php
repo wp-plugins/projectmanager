@@ -1165,44 +1165,44 @@ class ProjectManager extends ProjectManagerLoader
 
 				if ( 'text' == $meta->type || 'select' == $meta->type || 'checkbox' == $meta->type || 'radio' == $meta->type || 'project' == $meta->type ) {
 					$meta_value = apply_filters( 'projectmanager_text', $meta_value );
-					$meta_value = sprintf($pattern, $meta_value);
+					$meta_value = sprintf($pattern, $meta_value, $dataset);
 				} elseif ( 'textfield' == $meta->type || 'tinymce' == $meta->type ) {
 					if ( strlen($meta_value) > 150 && !$show_all && empty($include) )
 						$meta_value = substr($meta_value, 0, 150)."...";
 					$meta_value = nl2br($meta_value);
 						
 					$meta_value = apply_filters( 'projectmanager_textfield', $meta_value );
-					$meta_value = sprintf($pattern, $meta_value);
+					$meta_value = sprintf($pattern, $meta_value, $dataset);
 				} elseif ( 'email' == $meta->type && !empty($meta_value) ) {
 					$meta_value = "<a href='mailto:".$this->extractURL($meta_value, 'url')."' class='projectmanager_email'>".$this->extractURL($meta_value, 'title')."</a>";
-					$meta_value = apply_filters( 'projectmanager_email', $meta_value );
+					$meta_value = apply_filters( 'projectmanager_email', $meta_value, $dataset );
 					$meta_value = sprintf($pattern, $meta_value);
 				} elseif ( 'date' == $meta->type ) {
 					$meta_value = ( $meta_value == '0000-00-00' ) ? '' : $meta_value;
 					$meta_value = mysql2date(get_option('date_format'), $meta_value );
-					$meta_value = apply_filters( 'projectmanager_date', $meta_value );
+					$meta_value = apply_filters( 'projectmanager_date', $meta_value, $dataset );
 					$meta_value = sprintf($pattern, $meta_value);
 				} elseif ( 'time' == $meta->type ) {
 					$meta_value = mysql2date(get_option('time_format'), $meta_value);
-					$meta_value = apply_filters( 'projectmanager_time', $meta_value );
+					$meta_value = apply_filters( 'projectmanager_time', $meta_value, $dataset );
 					$meta_value = sprintf($pattern, $meta_value);
 				} elseif ( 'uri' == $meta->type && !empty($meta_value) ) {
 					$meta_value = "<a class='projectmanager_url' href='http://".$this->extractURL($meta_value, 'url')."' target='_blank' title='".$this->extractURL($meta_value, 'title')."'>".$this->extractURL($meta_value, 'title')."</a>";
-					$meta_value = apply_filters( 'projectmanager_uri', $meta_value );
+					$meta_value = apply_filters( 'projectmanager_uri', $meta_value, $dataset );
 					$meta_value = sprintf($pattern, $meta_value);
 				} elseif( 'image' == $meta->type && !empty($meta_value) ) {
 					$meta_value = "<img class='projectmanager_image' src='".$this->getFileURL($img_size . $meta_value)."' alt='".$meta_value."' />";
-					$meta_value = apply_filters( 'projectmanager_image', $meta_value );
+					$meta_value = apply_filters( 'projectmanager_image', $meta_value, $dataset );
 					$meta_value = sprintf($pattern, $meta_value);
 				} elseif ( ( 'file' == $meta->type || 'video' == $meta->type ) && !empty($meta_value) ) {
 					$meta_value = "<img id='fileimage".$meta->form_field_id."_".$dataset->id."' src='".$this->getFileImage($meta_value)."' alt='' />&#160;" . sprintf($pattern, "<a class='projectmanager_file ".$this->getFileType($meta_value)."' href='".$this->getFileURL($meta_value)."' target='_blank'>".$meta_value."</a>");
-					$meta_value = apply_filters( 'projectmanager_file', $meta_value );
+					$meta_value = apply_filters( 'projectmanager_file', $meta_value, $dataset );
 				} elseif ( 'numeric' == $meta->type && !empty($meta_value) ) {
-					$meta_value = apply_filters( 'projectmanager_numeric', $meta_value );
+					$meta_value = apply_filters( 'projectmanager_numeric', $meta_value, $dataset );
 					$meta_value = sprintf($pattern, $meta_value);
 				} elseif ( 'currency' == $meta->type && !empty($meta_value) ) {
 					$meta_value = money_format('%i', $meta_value);
-					$meta_value = apply_filters( 'projectmanager_currency', $meta_value );
+					$meta_value = apply_filters( 'projectmanager_currency', $meta_value, $dataset );
 					$meta_value = sprintf($pattern, $meta_value);
 				} elseif ( !empty($meta->type) && is_array($this->getFormFieldTypes($meta->type)) ) {
 					// Data is retried via callback function. Most likely a special field from LeagueManager
