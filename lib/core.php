@@ -847,7 +847,7 @@ class ProjectManager extends ProjectManagerLoader
 			if ( $limit && $this->per_page != 'NaN' ) $offset = ( $this->getCurrentPage() - 1 ) * $this->per_page;
 
 			if( $meta_key && $meta_key != 'name' && !empty($meta_value) )
-				$sql .= " AND `id` IN ( SELECT `dataset_id` FROM {$wpdb->projectmanager_datasetmeta} AS meta WHERE meta.form_id = '".intval($meta_key)."' AND meta.value = '".$meta_value."' )";
+				$sql .= " AND `id` IN ( SELECT `dataset_id` FROM {$wpdb->projectmanager_datasetmeta} AS meta WHERE meta.form_id = '".intval($meta_key)."' AND meta.value LIKE '".$meta_value."' )";
 
 			if ( 'name' == $meta_key && !empty($meta_value) ) $sql .= " AND `name` = '".$meta_value."'";
 		
@@ -1130,7 +1130,7 @@ class ProjectManager extends ProjectManagerLoader
 		foreach ( (array)$dataset_meta AS $meta ) {
 			if ( (empty($exclude) && empty($include)) || ( empty($include) && !empty($exclude) && !in_array($meta->type, $exclude) && !in_array($meta->form_field_id, $exclude) ) || ( !empty($include) && in_array($meta->type, $include) || in_array($meta->form_field_id, $include) ) ) {
 				$meta->label = stripslashes($meta->label);
-				$meta_value = is_string($meta->value) ? htmlspecialchars( $meta->value, ENT_QUOTES ) : $meta->value;
+				$meta_value = ( is_string($meta->value) && 'tinymce' != $meta->type ) ? htmlspecialchars( $meta->value, ENT_QUOTES ) : $meta->value;
 
 				// Do some parsing on array datasets
 				if ( 'checkbox' == $meta->type || 'project' == $meta->type ) {
@@ -1169,7 +1169,8 @@ class ProjectManager extends ProjectManagerLoader
 				} elseif ( 'textfield' == $meta->type || 'tinymce' == $meta->type ) {
 					if ( strlen($meta_value) > 150 && !$show_all && empty($include) )
 						$meta_value = substr($meta_value, 0, 150)."...";
-					$meta_value = nl2br($meta_value);
+					  $meta_value = nl2br($meta_value);
+					
 						
 					$meta_value = apply_filters( 'projectmanager_textfield', $meta_value );
 					$meta_value = sprintf($pattern, $meta_value, $dataset);

@@ -33,7 +33,7 @@ document.forms[0].encoding = "multipart/form-data";
 				<input type="text" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" value="<?php echo $meta_data[$form_field->id] ?>" size="45" />
 				<?php elseif ( 'textfield' == $form_field->type || 'tinymce' == $form_field->type ) : ?>
 				<div style="width: 80%;">
-					<textarea <?php if ( 'tinymce' == $form_field->type ) echo 'class="mceEditor"' ?> name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" cols="70" rows="8"><?php echo $meta_data[$form_field->id] ?></textarea>
+					<textarea <?php if ( 'tinymce' == $form_field->type ) echo 'class="theEditor"' ?> name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" cols="70" rows="8"><?php echo $meta_data[$form_field->id] ?></textarea>
 				</div>
 				<?php elseif ( 'date' == $form_field->type ) : ?>
 				<select size="1" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>][day]">

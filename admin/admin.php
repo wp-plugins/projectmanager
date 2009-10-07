@@ -82,8 +82,9 @@ class ProjectManagerAdminPanel extends ProjectManager
 		// Add global Projects Menu
 		add_menu_page(__('Projects', 'projectmanager'), __('Projects', 'projectmanager'), 'view_projects', PROJECTMANAGER_PATH,array(&$this, 'display'), PROJECTMANAGER_URL.'/admin/icons/menu/databases.png');
 
-		add_submenu_page(PROJECTMANAGER_PATH, __('Projects', 'projectmanager'), __('Overview','projectmanager'),'view_projects', PROJECTMANAGER_PATH,array(&$this, 'display'));
+		add_submenu_page(PROJECTMANAGER_PATH, __('Projects', 'projectmanager'), __('Overview','projectmanager'),'view_projects', PROJECTMANAGER_PATH, array(&$this, 'display'));
 		add_submenu_page(PROJECTMANAGER_PATH, __( 'Settings'), __('Settings'), 'projectmanager_settings', 'projectmanager-settings', array( &$this, 'display') );
+		add_submenu_page(PROJECTMANAGER_PATH, __( 'Documentation', 'projectmanager'), __('Documentation', 'projectmanager'), 'view_projects', 'projectmanager-documentation', array( &$this, 'display') );
 		
 		$plugin = 'projectmanager/projectmanager.php';
 		add_filter( 'plugin_action_links_' . $plugin, array( &$this, 'pluginActions' ) );
@@ -117,6 +118,9 @@ class ProjectManagerAdminPanel extends ProjectManager
 			case 'projectmanager-settings':
 				$this->displayOptionsPage();
 				break;
+			case 'projectmanager-documentation':
+			  include_once( dirname(__FILE__) . '/documentation.php' );
+			  break;
 			case 'projectmanager':
 				switch($_GET['subpage']) {
 					case 'show-project':
@@ -424,7 +428,11 @@ class ProjectManagerAdminPanel extends ProjectManager
 		}
 
 		$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_projects} (title) VALUES ('%s')", $title ) );
+		$project_id = $wpdb->insert_id;
+		
 		$this->setMessage( __('Project added','projectmanager') );
+		
+		do_action('projectmanager_add_project', $project_id);
 	}
 	
 	
@@ -446,6 +454,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 		
 		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projects} SET `title` = '%s' WHERE `id` = '%d'", $title, $project_id ) );
 		$this->setMessage( __('Project updated','projectmanager') );
+		
+		do_action('projectmanager_edit_project', $project_id);
 	}
 	
 	
@@ -468,6 +478,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 		
 		$wpdb->query( "DELETE FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = {$project_id}" );
 		$wpdb->query( "DELETE FROM {$wpdb->projectmanager_projects} WHERE `id` = {$project_id}" );
+		
+		do_action('projectmanager_del_project', $project_id);
 	}
 
 	
@@ -489,6 +501,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 
 		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projects} SET `settings` = '%s' WHERE `id` = '%d'", maybe_serialize($settings), $project_id ) );
 		$this->setMessage(__('Settings saved', 'projectmanager'));
+		
+		do_action('projectmanager_save_settings', $project_id);
 	}
 
 
@@ -580,10 +594,10 @@ class ProjectManagerAdminPanel extends ProjectManager
 	{
 		global $projectmanager;
 		
-		if ( !current_user_can('import_datasets') ) {
-			$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
-			return;
-		}
+		//if ( !current_user_can('import_datasets') ) {
+		//	$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
+		//	return;
+		//}
 
 		$this->project_id = $project_id;
 		$projectmanager->initialize($project_id);
@@ -603,12 +617,12 @@ class ProjectManagerAdminPanel extends ProjectManager
 			foreach ( $projectmanager->getDatasetMeta( $dataset->id ) AS $meta ) {
 				// Remove line breaks
 				$meta->value = str_replace("\r\n", "", stripslashes($meta->value));
-				$contents .= "\t".$meta->value;
+				$contents .= "\t".strip_tags($meta->value);
 			}
 		}
 		
 		header('Content-Type: text/csv');
-    		header('Content-Disposition: inline; filename="'.$filename.'"');
+    header('Content-Disposition: inline; filename="'.$filename.'"');
 		echo $contents;
 		exit();
 	}
@@ -653,7 +667,6 @@ class ProjectManagerAdminPanel extends ProjectManager
 				return;
 			}
 		}
-
 
 		$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_dataset} (name, cat_ids, project_id, user_id) VALUES ('%s', '%s', '%d', '%d')", $name, maybe_serialize($cat_ids), $project_id, $user_id ) );
 		$dataset_id = $wpdb->insert_id;
@@ -720,6 +733,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 			$this->uploadImage($dataset_id, $_FILES['projectmanager_image']);
 				
 		$this->setMessage( __( 'New dataset added to the database.', 'projectmanager' ) );
+		
+		do_action('projectmanager_add_dataset', $dataset_id);
 	}
 		
 		
@@ -842,6 +857,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 		}
 			
 		$this->setmessage( __('Dataset updated.', 'projectmanager') );
+		
+		do_action('projectmanager_edit_dataset', $dataset_id);
 	}
 		
 		
@@ -873,6 +890,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 		}
 		$wpdb->query("DELETE FROM {$wpdb->projectmanager_datasetmeta} WHERE `dataset_id` = {$dataset_id}");
 		$wpdb->query("DELETE FROM {$wpdb->projectmanager_dataset} WHERE `id` = {$dataset_id}");
+		
+		do_action('projectmanager_del_dataset', $dataset_id);
 	}
 	
 	
@@ -1038,7 +1057,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 				}
 				
 				$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_projectmeta} (`label`, `type`, `show_on_startpage`, `show_in_profile`, `order`, `order_by`, `project_id`) VALUES ( '%s', '%s', '%d', '%d', '%d', '%d', '%d');", $formfield['name'], $formfield['type'], $show_on_startpage, $show_in_profile, $order, $order_by, $project_id ) );
-				$id = mysql_insert_id();
+				$id = $wpdb->insert_id;
 					
 				// Redirect form field options to correct $form_id if present
 				if ( isset($options['form_field_options'][$tmp_id]) ) {
@@ -1059,6 +1078,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 		
 		update_option('projectmanager', $options);
 		$this->setMessage( __('Form Fields updated', 'projectmanager') );
+		
+		do_action('projectmanager_save_formfields', $dataset_id);
 	}
 	
 	
@@ -1135,6 +1156,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 					echo '<h3>'.$projectmanager->getProjectTitle().'</h3>';
 					echo '<input type="hidden" name="project_id['.$dataset_id.']" value="'.$project_id.'" /><input type="hidden" name="dataset_id[]" value="'.$dataset_id.'" /><input type="hidden" name="dataset_user_id" value="'.$current_user->ID.'" />';
 				
+				  $projectmanager->loadTinyMCE();
 					include( dirname(__FILE__). '/dataset-form-profile.php' );
 				}
 			}

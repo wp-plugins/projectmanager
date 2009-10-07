@@ -6,9 +6,11 @@ else :
 $project_id = $projectmanager->getProjectID();
 $project = $projectmanager->getCurrentProject();
 
-if ( isset($_POST['import']) ) {
+if ( isset($_POST['export']) ) {
+  $this->exportDatasets( $project_id );
+} elseif ( isset($_POST['import']) ) {
 	$this->importDatasets( $project_id, $_FILES['projectmanager_import'], $_POST['delimiter'], $_POST['cols'] );
-     	$this->printMessage();
+  $this->printMessage();
 }
 ?>
 
