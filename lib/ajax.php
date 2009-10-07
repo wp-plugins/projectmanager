@@ -176,6 +176,8 @@ class ProjectManagerAJAX
 		// Some special output formats
 		if ( 'date' == $formfield_type )
 			$new_value = mysql2date(get_option('date_format'), $_POST['new_value']);
+		elseif ( 'time' == $formfield_type )
+			$new_value = mysql2date(get_option('time_format'), $_POST['new_value']);
 		elseif ( 'image' == $formfield_type )
 			$new_value = '<img class="projectmanager_image" src="'.$new_value.'" alt="'.__("Image", "projectmanager").'" />';
 		elseif ( 'uri' == $formfield_type )

@@ -33,7 +33,7 @@ document.forms[0].encoding = "multipart/form-data";
 				<input type="text" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" value="<?php echo $meta_data[$form_field->id] ?>" size="45" />
 				<?php elseif ( 'textfield' == $form_field->type || 'tinymce' == $form_field->type ) : ?>
 				<div style="width: 80%;">
-					<textarea <?php if ( 'tinymce' == $form_field->type ) echo 'class="mceEditor"' ?> name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" cols="70" rows="8"><?php echo $meta_data[$form_field->id] ?></textarea>
+					<textarea <?php if ( 'tinymce' == $form_field->type ) echo 'class="theEditor"' ?> name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" cols="70" rows="8"><?php echo $meta_data[$form_field->id] ?></textarea>
 				</div>
 				<?php elseif ( 'date' == $form_field->type ) : ?>
 				<select size="1" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>][day]">
@@ -55,6 +55,17 @@ document.forms[0].encoding = "multipart/form-data";
 					<option value="0000">&#160;</option>
 					<?php for ( $year = date('Y')-100; $year <= date('Y')+10; $year++ ) : ?>
 						<option value="<?php echo $year ?>"<?php selected ( $year, substr($meta_data[$form_field->id], 0, 4) ); ?>><?php echo $year ?></option>
+					<?php endfor; ?>
+				</select>
+				<?php elseif ( 'time' == $form_field->type ) : ?>
+				<select size="1" name="form_field[<?php echo $dataset_id ?>][<?php echo  $form_field->id ?>][hour]">
+					<?php for ( $hour = 0; $hour <= 23; $hour++ ) : ?>
+					<option value="<?php echo str_pad($hour, 2, 0, STR_PAD_LEFT) ?>"<?php selected( $hour, substr($meta_data[$form_field->id], 0, 2) ) ?>><?php echo str_pad($hour, 2, 0, STR_PAD_LEFT) ?></option>
+					<?php endfor; ?>
+				</select>
+				<select size="1" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>][minute]">
+					<?php for ( $minute = 0; $minute <= 59; $minute++ ) : ?>
+					<option value="<?php  echo str_pad($minute, 2, 0, STR_PAD_LEFT) ?>"<?php selected( $minute, substr($meta_data[$form_field->id], 3, 2) ) ?>><?php echo str_pad($minute, 2, 0, STR_PAD_LEFT) ?></option>
 					<?php endfor; ?>
 				</select>
 				<?php elseif ( 'file' == $form_field->type || 'image' == $form_field->type || 'video' == $form_field->type ) : ?>
