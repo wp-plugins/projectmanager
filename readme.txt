@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: datamanager, CMS, Content Management System
 Requires at least: 2.7
 Tested up to: 2.7.1
-Stable tag: 2.8.2
+Stable tag: 2.9.2
 
 This plugin can be used to manage any number of projects with recurrent datasets (e.g. portrait system, dvd collection)
 
@@ -32,6 +32,9 @@ See [Usage](http://wordpress.org/extend/plugins/projectmanager/other_notes/) for
 Due to the growing popularity of my plugins I have launched a [website](http://kolja.galerie-neander.de/)!
 
 [ChangeLog](http://svn.wp-plugins.org/projectmanager/trunk/changelog.txt)
+
+[Randy Hoyt](http://randyhoyt.com/) created a [Screencast](http://randyhoyt.com/wordpress/snippets/]) on the usage of ProjectManager. Thanks a lot.
+
 
 == Installation ==
 
@@ -106,6 +109,36 @@ you can use this template to display with the following code
 `[project id=x template=**gallery-custom** cat_id=y]`
 
 
+= Template Tags = 
+Template Tags are functions that can be used in your Wordpress Theme to display the plugin data. Here's a brief listing of available tags. For details see file functions.php
+
+`projectmanager_display_widget( $number, $instance )`
+
+displays the widget. $number is the widget number and $instance an assoziative array of widget settings. See lib/widget.php function widget for details.
+
+`projectmanager_searchform( $project_id, $args )`
+
+can be used to show the searchform. $project_id is the ID of the project.
+
+To display all datasets from a single project use
+
+`project( $id, $args )`
+
+Finally a single dataset can be displayed with
+
+`dataset( $id, $args )`
+
+
+The variable $args is always an assoziative array of additional arguments with keys being the same as the shortcode attributes.
+
+
+= Custom Menu Icons =
+
+You can easily add your own icons for the admin menu by simply uploading them to
+
+`your_theme_directory/projectmanager/icons`.
+
+
 = Extend User Profile =
 
 Projects can be linked with the user profile. Any usr with capability *projectmanager_user* can use this feature. If the default role has this capability users get added to each project that has the hook activated and can edit data through their profile. To subsequently add a Wordpress user to a project, use the *Add WP User* Link in the dataset form, located next to the name field. The added dataset will be linked to this user.
@@ -147,6 +180,20 @@ Note that these filters are for some reasons not applied if you use the AJAX edi
 The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons of http://www.pinvoke.com/.
 
 == Changelog ==
+
+= 2.9.2 =
+* NEW: WP User field type
+* NEW: custom fields with input callback functions
+* BUGFIX: missed argument 'order' in project() function
+* BUGFIX: division by zero bug in dataset.php with "NaN" datasets per page
+
+= 2.9.1 =
+* BUGFIX: TinyMCE Editor content displayed HTML tags
+
+= 2.9 =
+* NEW: time formfield
+* NEW: filter for each formfield type *projectmanager_$type* (select, radio, checkbox, project all text)
+* BUGFIX: strange PHP 4 bug
 
 = 2.8.2 =
 * BUGFIX: removed NumberFormatter from lib/ajax.php

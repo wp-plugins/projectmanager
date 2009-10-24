@@ -78,7 +78,7 @@ class ProjectManager extends ProjectManagerLoader
 	 * @param int $project_id ID of selected project. false if none is selected
 	 * @return void
 	 */
-	function __construct( $project_id )
+	function __construct( $project_id = false )
 	{
 		global $wpdb;
 			
@@ -98,7 +98,7 @@ class ProjectManager extends ProjectManagerLoader
 	 * @param int $project_id
 	 * @return none
 	 */
-	function ProjectManager( $project_id )
+	function ProjectManager( $project_id = false )
 	{
 		$this->__construct( $project_id );
 	}
@@ -394,7 +394,7 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function getFormFieldTypes($index = false)
 	{
-		$form_field_types = array( 'text' => __('Text', 'projectmanager'), 'textfield' => __('Textfield', 'projectmanager'), 'tinymce' => __('TinyMCE Editor', 'projectmanager'), 'email' => __('E-Mail', 'projectmanager'), 'date' => __('Date', 'projectmanager'), 'uri' => __('URL', 'projectmanager'), 'select' => __('Selection', 'projectmanager'), 'checkbox' => __( 'Checkbox List', 'projectmanager'), 'radio' => __( 'Radio List', 'projectmanager'), 'file' => __('File', 'projectmanager'), 'image' => __( 'Image', 'projectmanager' ), 'video' => __('Video', 'projectmanager'), 'numeric' => __( 'Numeric', 'projectmanager' ), 'currency' => __('Currency', 'projectmanager'), 'project' => __( 'Internal Link', 'projectmanager' ) );
+		$form_field_types = array( 'text' => __('Text', 'projectmanager'), 'textfield' => __('Textfield', 'projectmanager'), 'tinymce' => __('TinyMCE Editor', 'projectmanager'), 'email' => __('E-Mail', 'projectmanager'), 'date' => __('Date', 'projectmanager'), 'uri' => __('URL', 'projectmanager'), 'select' => __('Selection', 'projectmanager'), 'checkbox' => __( 'Checkbox List', 'projectmanager'), 'radio' => __( 'Radio List', 'projectmanager'), 'file' => __('File', 'projectmanager'), 'image' => __( 'Image', 'projectmanager' ), 'video' => __('Video', 'projectmanager'), 'numeric' => __( 'Numeric', 'projectmanager' ), 'currency' => __('Currency', 'projectmanager'), 'project' => __( 'Internal Link', 'projectmanager' ), 'time' => __('Time', 'projectmanager'), 'wp_user' => __( 'WP User', 'projectmanager' ) );
 		
 		$form_field_types = apply_filters( 'projectmanager_formfields', $form_field_types );
 		
@@ -847,7 +847,7 @@ class ProjectManager extends ProjectManagerLoader
 			if ( $limit && $this->per_page != 'NaN' ) $offset = ( $this->getCurrentPage() - 1 ) * $this->per_page;
 
 			if( $meta_key && $meta_key != 'name' && !empty($meta_value) )
-				$sql .= " AND `id` IN ( SELECT `dataset_id` FROM {$wpdb->projectmanager_datasetmeta} AS meta WHERE meta.form_id = '".intval($meta_key)."' AND meta.value = '".$meta_value."' )";
+				$sql .= " AND `id` IN ( SELECT `dataset_id` FROM {$wpdb->projectmanager_datasetmeta} AS meta WHERE meta.form_id = '".intval($meta_key)."' AND meta.value LIKE '".$meta_value."' )";
 
 			if ( 'name' == $meta_key && !empty($meta_value) ) $sql .= " AND `name` = '".$meta_value."'";
 		
@@ -1021,6 +1021,9 @@ class ProjectManager extends ProjectManagerLoader
 		}
 		$number = $offsets[$dataset_id] + 1;
 		
+		if ( 'NaN' == $this->getPerPage() )
+			return 1;
+
 		return ceil($number/$this->getPerPage());
 	}
 	
@@ -1130,7 +1133,18 @@ class ProjectManager extends ProjectManagerLoader
 		foreach ( (array)$dataset_meta AS $meta ) {
 			if ( (empty($exclude) && empty($include)) || ( empty($include) && !empty($exclude) && !in_array($meta->type, $exclude) && !in_array($meta->form_field_id, $exclude) ) || ( !empty($include) && in_array($meta->type, $include) || in_array($meta->form_field_id, $include) ) ) {
 				$meta->label = stripslashes($meta->label);
-				$meta_value = is_string($meta->value) ? htmlspecialchars( $meta->value, ENT_QUOTES ) : $meta->value;
+				$meta_value = ( is_string($meta->value) && 'tinymce' != $meta->type ) ? htmlspecialchars( $meta->value, ENT_QUOTES ) : $meta->value;
+
+				$custom = false;
+				// Custom Formfield without callback function
+				if ( is_array($this->getFormFieldTypes($meta->type)) ) {
+					$field = $this->getFormFieldTypes($meta->type);
+					if ( !isset($field['callback']) ) {
+						$custom = $meta->type;
+						$meta->type = $field['html_type'];
+					}
+				}
+
 
 				// Do some parsing on array datasets
 				if ( 'checkbox' == $meta->type || 'project' == $meta->type ) {
@@ -1164,30 +1178,50 @@ class ProjectManager extends ProjectManagerLoader
 				$pattern = is_admin() ? "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>%s</span>" : "%s";
 
 				if ( 'text' == $meta->type || 'select' == $meta->type || 'checkbox' == $meta->type || 'radio' == $meta->type || 'project' == $meta->type ) {
-					$meta_value = sprintf($pattern, $meta_value);
+					$meta_value = apply_filters( 'projectmanager_text', $meta_value );
+					$meta_value = sprintf($pattern, $meta_value, $dataset);
 				} elseif ( 'textfield' == $meta->type || 'tinymce' == $meta->type ) {
 					if ( strlen($meta_value) > 150 && !$show_all && empty($include) )
 						$meta_value = substr($meta_value, 0, 150)."...";
-					$meta_value = nl2br($meta_value);
+					  $meta_value = nl2br($meta_value);
+					
 						
-					$meta_value = sprintf($pattern, $meta_value);
+					$meta_value = apply_filters( 'projectmanager_textfield', $meta_value );
+					$meta_value = sprintf($pattern, $meta_value, $dataset);
 				} elseif ( 'email' == $meta->type && !empty($meta_value) ) {
-					$meta_value = sprintf($pattern, "<a href='mailto:".$this->extractURL($meta_value, 'url')."' class='projectmanager_email'>".$this->extractURL($meta_value, 'title')."</a>");
+					$meta_value = "<a href='mailto:".$this->extractURL($meta_value, 'url')."' class='projectmanager_email'>".$this->extractURL($meta_value, 'title')."</a>";
+					$meta_value = apply_filters( 'projectmanager_email', $meta_value, $dataset );
+					$meta_value = sprintf($pattern, $meta_value);
 				} elseif ( 'date' == $meta->type ) {
 					$meta_value = ( $meta_value == '0000-00-00' ) ? '' : $meta_value;
-					$meta_value = sprintf($pattern, mysql2date(get_option('date_format'), $meta_value ));
+					$meta_value = mysql2date(get_option('date_format'), $meta_value );
+					$meta_value = apply_filters( 'projectmanager_date', $meta_value, $dataset );
+					$meta_value = sprintf($pattern, $meta_value);
+				} elseif ( 'time' == $meta->type ) {
+					$meta_value = mysql2date(get_option('time_format'), $meta_value);
+					$meta_value = apply_filters( 'projectmanager_time', $meta_value, $dataset );
+					$meta_value = sprintf($pattern, $meta_value);
 				} elseif ( 'uri' == $meta->type && !empty($meta_value) ) {
-					$meta_value = sprintf($pattern, "<a class='projectmanager_url' href='http://".$this->extractURL($meta_value, 'url')."' target='_blank' title='".$this->extractURL($meta_value, 'title')."'>".$this->extractURL($meta_value, 'title')."</a>");
+					$meta_value = "<a class='projectmanager_url' href='http://".$this->extractURL($meta_value, 'url')."' target='_blank' title='".$this->extractURL($meta_value, 'title')."'>".$this->extractURL($meta_value, 'title')."</a>";
+					$meta_value = apply_filters( 'projectmanager_uri', $meta_value, $dataset );
+					$meta_value = sprintf($pattern, $meta_value);
 				} elseif( 'image' == $meta->type && !empty($meta_value) ) {
-					$meta_value = sprintf($pattern, "<img class='projectmanager_image' src='".$this->getFileURL($img_size . $meta_value)."' alt='".$meta_value."' />");
+					$meta_value = "<img class='projectmanager_image' src='".$this->getFileURL($img_size . $meta_value)."' alt='".$meta_value."' />";
+					$meta_value = apply_filters( 'projectmanager_image', $meta_value, $dataset );
+					$meta_value = sprintf($pattern, $meta_value);
 				} elseif ( ( 'file' == $meta->type || 'video' == $meta->type ) && !empty($meta_value) ) {
 					$meta_value = "<img id='fileimage".$meta->form_field_id."_".$dataset->id."' src='".$this->getFileImage($meta_value)."' alt='' />&#160;" . sprintf($pattern, "<a class='projectmanager_file ".$this->getFileType($meta_value)."' href='".$this->getFileURL($meta_value)."' target='_blank'>".$meta_value."</a>");
+					$meta_value = apply_filters( 'projectmanager_file', $meta_value, $dataset );
 				} elseif ( 'numeric' == $meta->type && !empty($meta_value) ) {
-					$meta_value = apply_filters( 'projectmanager_numeric', $meta_value );
+					$meta_value = apply_filters( 'projectmanager_numeric', $meta_value, $dataset );
 					$meta_value = sprintf($pattern, $meta_value);
 				} elseif ( 'currency' == $meta->type && !empty($meta_value) ) {
 					$meta_value = money_format('%i', $meta_value);
-					$meta_value = apply_filters( 'projectmanager_currency', $meta_value );
+					$meta_value = apply_filters( 'projectmanager_currency', $meta_value, $dataset );
+					$meta_value = sprintf($pattern, $meta_value);
+				} elseif ( 'wp_user' == $meta->type && !empty($meta_value) ) {
+					$userdata = get_userdata($meta_value);
+					$meta_value = $userdata->display_name;
 					$meta_value = sprintf($pattern, $meta_value);
 				} elseif ( !empty($meta->type) && is_array($this->getFormFieldTypes($meta->type)) ) {
 					// Data is retried via callback function. Most likely a special field from LeagueManager
@@ -1197,8 +1231,10 @@ class ProjectManager extends ProjectManagerLoader
 					$meta_value = call_user_func_array($field['callback'], $field['args']);
 				}
 				
+
 				// Generate the output
 				if ( 1 == $meta->show_on_startpage || $show_all || !empty($include) ) {
+					if ( $custom ) $meta->type = $custom; // restore original meta data for Thickbox
 					if ( is_admin() ) {
 						if (empty($meta_value))
 							$meta_value = sprintf($pattern, '');
@@ -1250,6 +1286,14 @@ class ProjectManager extends ProjectManagerLoader
 		$out = '';
 		if ( is_admin() && ( ( current_user_can('edit_datasets') && $current_user->ID == $dataset->user_id ) || ( current_user_can('edit_other_datasets') ) ) ) {
 			$dims = array('width' => '300', 'height' => '100');
+
+			// Custom Formfield
+			if ( is_array($this->getFormFieldTypes($meta->type)) ) {
+				$field = $this->getFormFieldTypes($meta->type);
+				$meta->type = $field['html_type'];
+			}
+
+
 			if ( 'textfield' == $meta->type || 'tinymce' == $meta->type )
 				$dims = array('width' => '400', 'height' => '300');
 			if ( 'checkbox' == $meta->type || 'radio' == $meta->type || 'project' == $meta->type )
@@ -1284,8 +1328,6 @@ class ProjectManager extends ProjectManagerLoader
 
 		$out = '';
 		if ( is_admin() && ( ( current_user_can('edit_datasets') && $current_user->ID == $dataset->user_id ) || ( current_user_can('edit_other_datasets') ) ) ) {
-		
-			
 			$out .= "\n\t\t<div id='datafieldwrap".$meta->form_field_id."_".$dataset->id."' style='overfow:auto;display:none;'>";
 			$out .= "\n\t\t<div class='thickbox_content'>";
 			$out .= "\n\t\t\t<form name='form_field_".$meta->form_field_id."_".$dataset->id."'>";
@@ -1312,6 +1354,21 @@ class ProjectManager extends ProjectManagerLoader
 					$out .= "\n\t\t\t<option value='".$year."'".$selected.">".$year."</option>";
 				}
 				$out .= "\n\t\t\t</select>";
+			} elseif ( 'time' == $meta->type ) {
+				$out .= "\n\t\t\t<select size='1' name='form_field_".$meta->form_field_id."_".$dataset->id."_hour' id='form_field_".$meta->form_field_id."_".$dataset->id."_hour'>";
+				for ( $hour = 0; $hour <= 23; $hour++ ) {
+					$selected = ( $hour == substr($value, 0, 2) ) ? ' selected="selected"' : '';
+					$out .= "\n\t\t\t<option value='".str_pad($hour, 2, 0, STR_PAD_LEFT)."'".$selected.">".str_pad($hour, 2, 0, STR_PAD_LEFT)."</option>";
+				}
+				$out .= "\n\t\t\t</select>";
+				$out .= "\n\t\t\t<select size='1' name='form_field_".$meta->form_field_id."_".$dataset->id."_minute' id='form_field_".$meta->form_field_id."_".$dataset->id."_minute'>";
+				for ( $minute = 0; $minute <= 59; $minute++ ) {
+					$selected = ( $minute == substr($value, 3, 2) ) ? ' selected="selected"' : '';
+					$out .= "\n\t\t\t<option value='".str_pad($minute, 2, 0, STR_PAD_LEFT)."'".$selected.">".str_pad($minute, 2, 0, STR_PAD_LEFT)."</option>";
+				}
+				$out .= "\n\t\t\t\</select>";
+			}elseif ( 'wp_user' == $meta->type ) {
+				$out .= wp_dropdown_users(array('name' => 'form_field_'.$meta->form_field_id.'_'.$dataset->id, 'echo' => 0, 'selected' => $value));
 			} elseif ( 'project' == $meta->type ) {
 				$out .= $this->getDatasetCheckboxList($options['form_field_options'][$meta->form_field_id], 'form_field_'.$meta->form_field_id."_".$dataset->id, $value);
 			} elseif ( 'select' == $meta->type ) {
@@ -1320,6 +1377,16 @@ class ProjectManager extends ProjectManagerLoader
 				$out .= $this->printFormFieldCheckboxList($meta->form_field_id, $value, 0, "form_field_".$meta->form_field_id."_".$dataset->id, false);
 			} elseif ( 'radio' == $meta->type ) {
 				$out .= $this->printFormFieldRadioList($meta->form_field_id, $value, 0, "form_field_".$meta->form_field_id."_".$dataset->id, false);
+			} elseif ( is_array($this->getFormFieldTypes($meta->type)) ) {
+				$field = $this->getFormFieldTypes($meta->type);
+				if ( isset($field['ajax_input_callback']) ) {
+					$meta->type = $field['html_type'];
+					$args = array( 'dataset' => &$dataset, 'meta' => &$meta, 'value' => $value, 'name' => 'form_field_'.$meta->form_field_id.'_'.$dataset->id );
+					$field['args'] = array_merge( $args, (array)$field['args'] );
+					$out .= call_user_func_array($field['ajax_input_callback'], $field['args']);
+				} else {
+					$out .= __( 'This field does not provide AJAX editing functionality.', 'projectmanager' );
+				}
 			}
 
 			if ( $meta->type != 'imageupload' ) {
