@@ -205,7 +205,11 @@ class ProjectManagerAJAX
 			}
 			$list .= '</ul>';
 			$new_value = $list;
+		} elseif ( 'wp_user' == $formfield_type ) {
+			$userdata = get_userdata($new_value);
+			$new_value = $userdata->display_name;
 		}
+
 
 		die( "
 			jQuery('span#datafield" . $meta_id . "_" . $dataset_id . "').fadeOut('fast', function() {

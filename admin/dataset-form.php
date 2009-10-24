@@ -87,13 +87,21 @@
 						<input type="checkbox" name="form_field[<?php echo $form_field->id ?>][overwrite]" value="1" id="overwrite_file_<?php echo $form_field->id ?>">&#160;<label for="overwrite_file_<?php echo $form_field->id ?>"><strong><?php _e( 'Overwrite File', 'projectmanager' ) ?></strong></label>
 					</p>
 					<?php endif; ?>
+				<?php elseif ( 'wp_user' == $form_field->type ) : wp_dropdown_users( array('name' => 'form_field['.$form_field->id.']', 'selected' => $meta_data[$form_field->id]) ); ?>	
 				<?php elseif ( 'project' == $form_field->type ) : echo $projectmanager->getDatasetCheckboxList($options['form_field_options'][$form_field->id], 'form_field['.$form_field->id.'][]', $meta_data[$form_field->id]); ?>
 				<?php elseif ( 'select' == $form_field->type ) : $projectmanager->printFormFieldDropDown($form_field->id, $meta_data[$form_field->id], $dataset_id, "form_field[".$form_field->id."]"); ?>
 				<?php elseif ( 'checkbox' == $form_field->type ) : $projectmanager->printFormFieldCheckboxList($form_field->id, $meta_data[$form_field->id], $dataset_id, "form_field[".$form_field->id."][]"); ?>
 				<?php elseif ( 'radio' == $form_field->type ) : $projectmanager->printFormFieldRadioList($form_field->id, $meta_data[$form_field->id], $dataset_id, "form_field[".$form_field->id."]"); ?>
 				<?php elseif ( !empty($form_field->type) && is_array($projectmanager->getFormFieldTypes($form_field->type)) ) : ?>
+					<?php if ( isset($form_field->type['input_callback']) ) :
+						$field = $projectmanager->getFormFieldTypes($form_field->type);
+						$args = array ( 'dataset_id' => $dataset_id, 'form_field' => $form_field, 'data' => $meta_data[$form_field->id], 'name' => 'form_field['.$form_field->id.']' );
+						$field['args'] = array_merge( $args, (array)$field['args'] );
+						call_user_func_array($field['input_callback'], $field['args']);
+					else : ?>
 					<input type="hidden" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" value="" />
 					<p><?php _e( 'This Field has a callback attached which will get the data from somewhere else!', 'projectmanager' ) ?></p>
+					<?php endif; ?>
 				<?php endif; ?>
 			</td>
 		</tr>

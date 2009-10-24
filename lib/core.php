@@ -394,7 +394,7 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function getFormFieldTypes($index = false)
 	{
-		$form_field_types = array( 'text' => __('Text', 'projectmanager'), 'textfield' => __('Textfield', 'projectmanager'), 'tinymce' => __('TinyMCE Editor', 'projectmanager'), 'email' => __('E-Mail', 'projectmanager'), 'date' => __('Date', 'projectmanager'), 'uri' => __('URL', 'projectmanager'), 'select' => __('Selection', 'projectmanager'), 'checkbox' => __( 'Checkbox List', 'projectmanager'), 'radio' => __( 'Radio List', 'projectmanager'), 'file' => __('File', 'projectmanager'), 'image' => __( 'Image', 'projectmanager' ), 'video' => __('Video', 'projectmanager'), 'numeric' => __( 'Numeric', 'projectmanager' ), 'currency' => __('Currency', 'projectmanager'), 'project' => __( 'Internal Link', 'projectmanager' ), 'time' => __('Time', 'projectmanager') );
+		$form_field_types = array( 'text' => __('Text', 'projectmanager'), 'textfield' => __('Textfield', 'projectmanager'), 'tinymce' => __('TinyMCE Editor', 'projectmanager'), 'email' => __('E-Mail', 'projectmanager'), 'date' => __('Date', 'projectmanager'), 'uri' => __('URL', 'projectmanager'), 'select' => __('Selection', 'projectmanager'), 'checkbox' => __( 'Checkbox List', 'projectmanager'), 'radio' => __( 'Radio List', 'projectmanager'), 'file' => __('File', 'projectmanager'), 'image' => __( 'Image', 'projectmanager' ), 'video' => __('Video', 'projectmanager'), 'numeric' => __( 'Numeric', 'projectmanager' ), 'currency' => __('Currency', 'projectmanager'), 'project' => __( 'Internal Link', 'projectmanager' ), 'time' => __('Time', 'projectmanager'), 'wp_user' => __( 'WP User', 'projectmanager' ) );
 		
 		$form_field_types = apply_filters( 'projectmanager_formfields', $form_field_types );
 		
@@ -1021,6 +1021,9 @@ class ProjectManager extends ProjectManagerLoader
 		}
 		$number = $offsets[$dataset_id] + 1;
 		
+		if ( 'NaN' == $this->getPerPage() )
+			return 1;
+
 		return ceil($number/$this->getPerPage());
 	}
 	
@@ -1132,6 +1135,17 @@ class ProjectManager extends ProjectManagerLoader
 				$meta->label = stripslashes($meta->label);
 				$meta_value = ( is_string($meta->value) && 'tinymce' != $meta->type ) ? htmlspecialchars( $meta->value, ENT_QUOTES ) : $meta->value;
 
+				$custom = false;
+				// Custom Formfield without callback function
+				if ( is_array($this->getFormFieldTypes($meta->type)) ) {
+					$field = $this->getFormFieldTypes($meta->type);
+					if ( !isset($field['callback']) ) {
+						$custom = $meta->type;
+						$meta->type = $field['html_type'];
+					}
+				}
+
+
 				// Do some parsing on array datasets
 				if ( 'checkbox' == $meta->type || 'project' == $meta->type ) {
 					$list = "<ul class='".$meta->type."' id='form_field_".$meta->form_field_id."'>";
@@ -1205,6 +1219,10 @@ class ProjectManager extends ProjectManagerLoader
 					$meta_value = money_format('%i', $meta_value);
 					$meta_value = apply_filters( 'projectmanager_currency', $meta_value, $dataset );
 					$meta_value = sprintf($pattern, $meta_value);
+				} elseif ( 'wp_user' == $meta->type && !empty($meta_value) ) {
+					$userdata = get_userdata($meta_value);
+					$meta_value = $userdata->display_name;
+					$meta_value = sprintf($pattern, $meta_value);
 				} elseif ( !empty($meta->type) && is_array($this->getFormFieldTypes($meta->type)) ) {
 					// Data is retried via callback function. Most likely a special field from LeagueManager
 					$field = $this->getFormFieldTypes($meta->type);
@@ -1216,6 +1234,7 @@ class ProjectManager extends ProjectManagerLoader
 
 				// Generate the output
 				if ( 1 == $meta->show_on_startpage || $show_all || !empty($include) ) {
+					if ( $custom ) $meta->type = $custom; // restore original meta data for Thickbox
 					if ( is_admin() ) {
 						if (empty($meta_value))
 							$meta_value = sprintf($pattern, '');
@@ -1267,6 +1286,14 @@ class ProjectManager extends ProjectManagerLoader
 		$out = '';
 		if ( is_admin() && ( ( current_user_can('edit_datasets') && $current_user->ID == $dataset->user_id ) || ( current_user_can('edit_other_datasets') ) ) ) {
 			$dims = array('width' => '300', 'height' => '100');
+
+			// Custom Formfield
+			if ( is_array($this->getFormFieldTypes($meta->type)) ) {
+				$field = $this->getFormFieldTypes($meta->type);
+				$meta->type = $field['html_type'];
+			}
+
+
 			if ( 'textfield' == $meta->type || 'tinymce' == $meta->type )
 				$dims = array('width' => '400', 'height' => '300');
 			if ( 'checkbox' == $meta->type || 'radio' == $meta->type || 'project' == $meta->type )
@@ -1301,8 +1328,6 @@ class ProjectManager extends ProjectManagerLoader
 
 		$out = '';
 		if ( is_admin() && ( ( current_user_can('edit_datasets') && $current_user->ID == $dataset->user_id ) || ( current_user_can('edit_other_datasets') ) ) ) {
-		
-			
 			$out .= "\n\t\t<div id='datafieldwrap".$meta->form_field_id."_".$dataset->id."' style='overfow:auto;display:none;'>";
 			$out .= "\n\t\t<div class='thickbox_content'>";
 			$out .= "\n\t\t\t<form name='form_field_".$meta->form_field_id."_".$dataset->id."'>";
@@ -1342,6 +1367,8 @@ class ProjectManager extends ProjectManagerLoader
 					$out .= "\n\t\t\t<option value='".str_pad($minute, 2, 0, STR_PAD_LEFT)."'".$selected.">".str_pad($minute, 2, 0, STR_PAD_LEFT)."</option>";
 				}
 				$out .= "\n\t\t\t\</select>";
+			}elseif ( 'wp_user' == $meta->type ) {
+				$out .= wp_dropdown_users(array('name' => 'form_field_'.$meta->form_field_id.'_'.$dataset->id, 'echo' => 0, 'selected' => $value));
 			} elseif ( 'project' == $meta->type ) {
 				$out .= $this->getDatasetCheckboxList($options['form_field_options'][$meta->form_field_id], 'form_field_'.$meta->form_field_id."_".$dataset->id, $value);
 			} elseif ( 'select' == $meta->type ) {
@@ -1350,6 +1377,16 @@ class ProjectManager extends ProjectManagerLoader
 				$out .= $this->printFormFieldCheckboxList($meta->form_field_id, $value, 0, "form_field_".$meta->form_field_id."_".$dataset->id, false);
 			} elseif ( 'radio' == $meta->type ) {
 				$out .= $this->printFormFieldRadioList($meta->form_field_id, $value, 0, "form_field_".$meta->form_field_id."_".$dataset->id, false);
+			} elseif ( is_array($this->getFormFieldTypes($meta->type)) ) {
+				$field = $this->getFormFieldTypes($meta->type);
+				if ( isset($field['ajax_input_callback']) ) {
+					$meta->type = $field['html_type'];
+					$args = array( 'dataset' => &$dataset, 'meta' => &$meta, 'value' => $value, 'name' => 'form_field_'.$meta->form_field_id.'_'.$dataset->id );
+					$field['args'] = array_merge( $args, (array)$field['args'] );
+					$out .= call_user_func_array($field['ajax_input_callback'], $field['args']);
+				} else {
+					$out .= __( 'This field does not provide AJAX editing functionality.', 'projectmanager' );
+				}
 			}
 
 			if ( $meta->type != 'imageupload' ) {
