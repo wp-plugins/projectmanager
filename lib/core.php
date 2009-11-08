@@ -262,8 +262,8 @@ class ProjectManager extends ProjectManagerLoader
 	{
 		return $this->cat_id;
 	}
-		
-	
+
+              	
 	/**
 	 *  gets category title
 	 *

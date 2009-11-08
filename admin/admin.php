@@ -533,20 +533,35 @@ class ProjectManagerAdminPanel extends ProjectManager
 				if ($handle) {
 					if ( "TAB" == $delimiter ) $delimiter = "\t"; // correct tabular delimiter
 					
-					$i = 0; // initialize dataset counter
+					$i = 0; $l=0; // initialize dataset & line counter
 					while (!feof($handle)) {
-						$buffer = fgets($handle, 4096);
-						$line = explode($delimiter, $buffer);
-						$name = $line[0];
-						// assign column values to form fields
-						foreach ( $cols AS $col => $form_field_id ) {
-							$meta[$form_field_id] = $line[$col];
-						}
-						
-						if ( $line && !empty($name) ) {
-							$this->addDataset($project_id, $name, array(), $meta);
-							$i++;
-						}
+						  $buffer = fgets($handle, 4096);
+						  $line = explode($delimiter, $buffer);
+						  
+						  if ( $l > 0 && $line ) {
+  						  $name = $line[0];
+  						  $categories = empty($line[1]) ? '' : explode(",", $line[1]);
+                /*
+    						* get Category IDs from titles
+    						*/						
+    						$cat_ids = array();
+    						if ( !empty($categories) ) {
+    						  foreach ( $categories AS $category ) {
+    						    $cat_ids[] = get_cat_ID($category);
+                  }
+                }
+                
+    						// assign column values to form fields
+    						foreach ( $cols AS $col => $form_field_id ) {
+    							$meta[$form_field_id] = $line[$col];
+    						}
+    						
+    						if ( $line && !empty($name) ) {
+    							$this->addDataset($project_id, $name, $cat_ids, $meta);
+    							$i++;
+    						}
+  					  }
+  					  $l++;
 					}
 					fclose($handle);
 					
@@ -647,7 +662,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 			return false;
 		}
 
-		
+		       print_r($cat_ids);
 		$projectmanager->initialize($project_id);
 		$this->project_id = $project_id;
 		$project = $this->project = $projectmanager->getProject($project_id);
@@ -861,7 +876,32 @@ class ProjectManagerAdminPanel extends ProjectManager
 		do_action('projectmanager_edit_dataset', $dataset_id);
 	}
 		
-		
+	
+  /**
+   * duplicate dataset
+   * 
+   * @param int $dataset_id
+   * @return boolean
+   */
+  function duplicateDataset( $dataset_id )
+  {
+    global $projectmanager, $wpdb;
+    $dataset = $projectmanager->getDataset( $dataset_id );
+    $meta = $projectmanager->getDatasetMeta( $dataset_id );
+    
+    $meta_data = array();
+    foreach ( $meta AS $m ) {
+      $meta_data[$m->form_field_id] = $m->value;
+    }
+    
+    $this->addDataset($dataset->project_id, $dataset->name, maybe_unserialize($dataset->cat_ids), $meta_data);
+    $id = $wpdb->insert_id;
+    $wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `image` = '%s' WHERE id = '%d'", $dataset->image, $id ) );
+    
+    return true;
+  }
+  
+                	
 	/**
 	 * delete dataset
 	 *
@@ -1076,6 +1116,9 @@ class ProjectManagerAdminPanel extends ProjectManager
 			}
 		}
 		
+		if ( isset($options['form_field_options'][$id]) )
+		  sort($options['form_field_options'][$id]);
+		  
 		update_option('projectmanager', $options);
 		$this->setMessage( __('Form Fields updated', 'projectmanager') );
 		
