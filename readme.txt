@@ -31,8 +31,6 @@ See [Usage](http://wordpress.org/extend/plugins/projectmanager/other_notes/) for
 
 Due to the growing popularity of my plugins I have launched a [website](http://kolja.galerie-neander.de/)!
 
-[ChangeLog](http://svn.wp-plugins.org/projectmanager/trunk/changelog.txt)
-
 [Randy Hoyt](http://randyhoyt.com/) created a [Screencast](http://randyhoyt.com/wordpress/snippets/]) on the usage of ProjectManager. Thanks a lot.
 
 
