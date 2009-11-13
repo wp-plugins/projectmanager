@@ -27,7 +27,7 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['doaction']) ) {
 }  elseif ( isset($_POST['doaction']) && isset($_POST['action']) ) {
 	check_admin_referer('projectmanager_dataset-bulk');
 	if ( 'delete' == $_POST['action'] ) {
-		global $currentt_user;
+		global $current_user;
 		if ( !current_user_can('delete_datasets') || ( !current_user_can('delete_other_datasets') && $dataset->user_id != $current_user->ID ) ) {
 			$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
 			$this->printMessage();
@@ -36,7 +36,17 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['doaction']) ) {
 				$this->delDataset( $dataset_id );
 			}
 		}
-	}
+	} elseif ( 'duplicate' == $_POST['action'] ) {
+		global $current_user;
+		if ( !current_user_can('edit_datasets') && !current_user_can( 'projectmanager_user') ) {
+			$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
+			$this->printMessage();
+		} else {
+			foreach ( $_POST['dataset'] AS $dataset_id ) {
+				$this->duplicateDataset( $dataset_id );
+			}
+		}
+  }
 }
 $orderby = array( '' => __('Order By', 'projectmanager'), 'name' => __('Name','projectmanager'), 'id' => __('ID','projectmanager') );
 foreach ( $projectmanager->getFormFields() AS $form_field ) {
@@ -100,6 +110,7 @@ else
 			<select name="action" size="1">
 				<option value="-1" selected="selected"><?php _e('Bulk Actions') ?></option>
 				<option value="delete"><?php _e('Delete')?></option>
+				<option value="duplicate"><?php _e( 'Duplicate', 'projectmanager' ) ?></option>
 			</select>
 			<input type="submit" value="<?php _e('Apply'); ?>" name="doaction" id="doaction" class="button-secondary action" />
 			
