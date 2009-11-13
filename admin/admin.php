@@ -637,7 +637,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 		}
 		
 		header('Content-Type: text/csv');
-    header('Content-Disposition: inline; filename="'.$filename.'"');
+		header('Content-Disposition: inline; filename="'.$filename.'"');
 		echo $contents;
 		exit();
 	}
@@ -662,7 +662,6 @@ class ProjectManagerAdminPanel extends ProjectManager
 			return false;
 		}
 
-		       print_r($cat_ids);
 		$projectmanager->initialize($project_id);
 		$this->project_id = $project_id;
 		$project = $this->project = $projectmanager->getProject($project_id);
@@ -1221,26 +1220,6 @@ class ProjectManagerAdminPanel extends ProjectManager
 			$del_image = isset( $_POST['del_old_image'][$id] ) ? true : false;
 			$overwrite_image = ( isset($_POST['overwrite_image'][$id]) && 1 == $_POST['overwrite_image'][$id] ) ? true: false;
 			$this->editDataset( $_POST['project_id'][$id], $_POST['display_name'], $_POST['post_category'][$id], $id, $_POST['form_field'][$id], $user_id, $del_image, $_POST['image_file'][$id], $overwrite_image );
-		}
-	}
-
-
-	/**
-	 * registrer new user
-	 *
-	 * @param int $user_id
-	 * @return void
-	 */
-	function registerUser( $user_id )
-	{
-		global $projectmanager;
-
-		$user = new WP_User($user_id);
-		if ( $user->has_cap('projectmanager_user') ) {
-			foreach ( $projectmanager->getProjects() AS $project ) {
-				if ( 1 == $project->profile_hook ) 
-					$this->addDataset( $project->id, $user->first_name, array(), false, $user_id );
-			}
 		}
 	}
 }

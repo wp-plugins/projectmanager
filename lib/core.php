@@ -1724,5 +1724,26 @@ class ProjectManager extends ProjectManagerLoader
 			echo "<script type='text/javascript' src='$baseurl/langs/wp-langs-en.js?$version'></script>\n";
 	
 	}
+
+
+	/**
+	 * registrer new user
+	 *
+	 * @param int $user_id
+	 * @return void
+	 */
+	function registerUser( $user_id )
+	{
+		require_once( PROJECTMANAGER_PATH.'/admin/admin.php' );
+		$admin = new ProjectManagerAdminPanel();
+
+		$user = new WP_User($user_id);
+		if ( $user->has_cap('projectmanager_user') ) {
+			foreach ( $this->getProjects() AS $project ) {
+				if ( 1 == $project->profile_hook ) 
+					$admin->addDataset( $project->id, $user->first_name, array(), false, $user_id );
+			}
+		}
+	}
 }
 ?>
