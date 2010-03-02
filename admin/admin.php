@@ -548,8 +548,8 @@ class ProjectManagerAdminPanel extends ProjectManager
     						if ( !empty($categories) ) {
     						  foreach ( $categories AS $category ) {
     						    $cat_ids[] = get_cat_ID($category);
-                  }
-                }
+                 				  }
+                				}
                 
     						// assign column values to form fields
     						foreach ( $cols AS $col => $form_field_id ) {
