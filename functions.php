@@ -42,7 +42,7 @@ function project( $id, $args = array() ) {
 	$defaults = array( 'template' => 'table', 'cat_id' => false, 'orderby' => false, 'order' => false, 'single' => true, 'selections' => true, 'results' => true, 'field_id' => false, 'field_value' => false );
 	$args = array_merge($defaults, $args);
 	extract($args, EXTR_SKIP);
-	echo $pmShortcodes->displayProject( array('id' => $id, 'template' => $template, 'cat_id' => $cat_id, 'orderby' => $orderby, 'single' => $single, 'selections' => $selections, 'results' => $results, 'field_id' => $field_id, 'field_vaLue' => $field_value) );
+	echo $pmShortcodes->displayProject( array('id' => $id, 'template' => $template, 'cat_id' => $cat_id, 'orderby' => $orderby, 'order' => $order, 'single' => $single, 'selections' => $selections, 'results' => $results, 'field_id' => $field_id, 'field_vaLue' => $field_value) );
 }
 
 
@@ -58,7 +58,7 @@ function dataset( $id, $args = array() ) {
 	$defaults = array( 'template' => '' );
 	$args = array_merge($defaults, $args);
 	extract($args, EXTR_SKIP);
-	echo $pmShortcodes->displayDataset( array('id' => $id, 'template' => $template, 'echo' => 1) );
+	$pmShortcodes->displayDataset( array('id' => $id, 'template' => $template, 'echo' => 1) );
 }
 
 ?>
