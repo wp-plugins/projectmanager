@@ -33,7 +33,7 @@ document.forms[0].encoding = "multipart/form-data";
 				<input type="text" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" value="<?php echo $meta_data[$form_field->id] ?>" size="45" />
 				<?php elseif ( 'textfield' == $form_field->type || 'tinymce' == $form_field->type ) : ?>
 				<div style="width: 80%;">
-					<textarea <?php if ( 'tinymce' == $form_field->type ) echo 'class="mceEditor"' ?> name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" cols="70" rows="8"><?php echo $meta_data[$form_field->id] ?></textarea>
+					<textarea <?php if ( 'tinymce' == $form_field->type ) echo 'class="theEditor"' ?> name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" cols="70" rows="8"><?php echo $meta_data[$form_field->id] ?></textarea>
 				</div>
 				<?php elseif ( 'date' == $form_field->type ) : ?>
 				<select size="1" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>][day]">
@@ -57,6 +57,17 @@ document.forms[0].encoding = "multipart/form-data";
 						<option value="<?php echo $year ?>"<?php selected ( $year, substr($meta_data[$form_field->id], 0, 4) ); ?>><?php echo $year ?></option>
 					<?php endfor; ?>
 				</select>
+				<?php elseif ( 'time' == $form_field->type ) : ?>
+				<select size="1" name="form_field[<?php echo $dataset_id ?>][<?php echo  $form_field->id ?>][hour]">
+					<?php for ( $hour = 0; $hour <= 23; $hour++ ) : ?>
+					<option value="<?php echo str_pad($hour, 2, 0, STR_PAD_LEFT) ?>"<?php selected( $hour, substr($meta_data[$form_field->id], 0, 2) ) ?>><?php echo str_pad($hour, 2, 0, STR_PAD_LEFT) ?></option>
+					<?php endfor; ?>
+				</select>
+				<select size="1" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>][minute]">
+					<?php for ( $minute = 0; $minute <= 59; $minute++ ) : ?>
+					<option value="<?php  echo str_pad($minute, 2, 0, STR_PAD_LEFT) ?>"<?php selected( $minute, substr($meta_data[$form_field->id], 3, 2) ) ?>><?php echo str_pad($minute, 2, 0, STR_PAD_LEFT) ?></option>
+					<?php endfor; ?>
+				</select>
 				<?php elseif ( 'file' == $form_field->type || 'image' == $form_field->type || 'video' == $form_field->type ) : ?>
 					<input type="file" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" size="40" />
 					<input type="hidden" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>][current]" value="<?php echo $meta_data[$form_field->id] ?>" />
@@ -78,8 +89,15 @@ document.forms[0].encoding = "multipart/form-data";
 				<?php elseif ( 'checkbox' == $form_field->type ) : $projectmanager->printFormFieldCheckboxList($form_field->id, $meta_data[$form_field->id], $dataset_id, "form_field[".$dataset_id."][".$form_field->id."][]"); ?>
 				<?php elseif ( 'radio' == $form_field->type ) : $projectmanager->printFormFieldRadioList($form_field->id, $meta_data[$form_field->id], $dataset_id, "form_field[".$dataset_id."][".$form_field->id."]"); ?>
 				<?php elseif ( !empty($form_field->type) && is_array($projectmanager->getFormFieldTypes($form_field->type)) ) : ?>
+					<?php if ( isset($form_field->type['input_callback']) ) :
+						$field = $projectmanager->getFormFieldTypes($form_field->type);
+						$args = array ( 'dataset_id' => $dataset_id, 'form_field' => $form_field, 'data' => $meta_data[$form_field->id], 'name' => 'form_field['.$form_field->id.']' );
+						$field['args'] = array_merge( $args, (array)$field['args'] );
+						call_user_func_array($field['input_callback'], $field['args']);
+					else : ?>
 					<input type="hidden" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" value="" />
 					<p><?php _e( 'This Field has a callback attached which will get the data from somewhere else!', 'projectmanager' ) ?></p>
+					<?php endif; ?>
 				<?php endif; ?>
 			</td>
 		</tr>

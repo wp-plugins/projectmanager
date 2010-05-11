@@ -158,16 +158,12 @@ p.error {
 
 /*--- JQuery Slideshow Styles. Cleaned ---*/
 
-.slideshow {
-/*padding:2px;*/
+.jQuery_slideshow {
 position:relative;
-/*border:2px solid #eee;
-background-color:#eee;*/
 display:none; /* Set to "none" for not preview slideshow content */
 }
 
-.slideshow-content {
-/*border:1px solid #ccc;*/
+.jQuery_slideshow-content {
 background-color:#fff;
 color:#333;
 overflow:hidden;
