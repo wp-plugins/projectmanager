@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: datamanager, CMS, Content Management System
 Requires at least: 2.7
 Tested up to: 2.9.2
-Stable tag: 2.9.6
+Stable tag: 2.9.7
 
 This plugin can be used to manage any number of projects with recurrent datasets (e.g. portrait system, dvd collection)
 
@@ -178,6 +178,9 @@ Note that these filters are for some reasons not applied if you use the AJAX edi
 The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons of http://www.pinvoke.com/.
 
 == Changelog ==
+
+= 2.9.7 =
+* NEW: include dataset meta data in dataset object accesible through $dataset->LABEL. LABEL is the label of the formfield cleaned with the function sanitize_title. Use var_dump($dataset) to display object contents.
 
 = 2.9.6 =
 * BUGFIX: slideshow conflict with NextGen Gallery

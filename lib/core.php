@@ -878,6 +878,15 @@ class ProjectManager extends ProjectManagerLoader
 				$datasets = $this->orderDatasetsByFormFields($datasets, $formfield_id);
 		}
 
+		$i = 0;
+		foreach ( $datasets AS $dataset ) {
+			$meta = $this->getDatasetMeta($dataset->id);
+			foreach ( $meta AS $m ) {
+				$key = sanitize_title($m->label);
+				$datasets[$i]->{$key} = $m->value;
+			}
+			$i++;
+		}
 
 		return $datasets;
 	}
