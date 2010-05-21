@@ -879,13 +879,17 @@ class ProjectManager extends ProjectManagerLoader
 		}
 
 		$i = 0;
-		foreach ( $datasets AS $dataset ) {
-			$meta = $this->getDatasetMeta($dataset->id);
-			foreach ( $meta AS $m ) {
-				$key = sanitize_title($m->label);
-				$datasets[$i]->{$key} = $m->value;
+		if ( $datasets ) {
+			foreach ( $datasets AS $dataset ) {
+				$meta = $this->getDatasetMeta($dataset->id);
+				if ( $meta ) {
+					foreach ( $meta AS $m ) {
+						$key = sanitize_title($m->label);
+						$datasets[$i]->{$key} = $m->value;
+					}
+					$i++;
+				}
 			}
-			$i++;
 		}
 
 		return $datasets;
@@ -902,8 +906,17 @@ class ProjectManager extends ProjectManagerLoader
 	{
 		global $wpdb;
 		$dataset = $wpdb->get_results( "SELECT `id`, `name`, `image`, `cat_ids`, `user_id`, `project_id` FROM {$wpdb->projectmanager_dataset} WHERE `id` = {$dataset_id}" );
-			
-		return $dataset[0];
+		$dataset = $dataset[0];
+
+		$meta = $this->getDatasetMeta($dataset->id);
+		if ( $meta ) {
+			foreach ( $meta AS $m ) {
+				$key = sanitize_title($m->label);
+				$dataset->{$key} = $m->value;
+			}
+		}
+					
+		return $dataset;
 	}
 	
 
@@ -1585,7 +1598,7 @@ class ProjectManager extends ProjectManagerLoader
 		$option = $this->getSearchOption();
 			
 		if ( 0 == $option ) {
-			$datasets = $wpdb->get_results( "SELECT `id`, `name`, `cat_ids` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id} AND `name` REGEXP CONVERT( _utf8 '".$search."' USING latin1 ) ORDER BY `name` ASC" );
+			$datasets = $wpdb->get_results( "SELECT `id`, `name`, `image`, `cat_ids` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id} AND `name` REGEXP CONVERT( _utf8 '".$search."' USING latin1 ) ORDER BY `name` ASC" );
 		} elseif ( -1 == $option ) {
 			$categories = explode(",", $search);
 			$cat_ids = array();
@@ -1607,6 +1620,7 @@ class ProjectManager extends ProjectManagerLoader
 		} else {
 			$sql = "SELECT  t1.dataset_id AS id,
 					t2.name,
+					t2.image,
 					t2.cat_ids
 				FROM {$wpdb->projectmanager_datasetmeta} AS t1, {$wpdb->projectmanager_dataset} AS t2
 				WHERE t1.value REGEXP CONVERT( _utf8 '".$search."' USING latin1 )
