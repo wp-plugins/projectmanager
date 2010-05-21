@@ -1,2 +1,0 @@
-* add time formfield
-* Missing argument 1 for projectmanager() in lib/core.php 101

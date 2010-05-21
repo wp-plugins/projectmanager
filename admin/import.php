@@ -6,9 +6,11 @@ else :
 $project_id = $projectmanager->getProjectID();
 $project = $projectmanager->getCurrentProject();
 
-if ( isset($_POST['import']) ) {
+if ( isset($_POST['export']) ) {
+  $this->exportDatasets( $project_id );
+} elseif ( isset($_POST['import']) ) {
 	$this->importDatasets( $project_id, $_FILES['projectmanager_import'], $_POST['delimiter'], $_POST['cols'] );
-     	$this->printMessage();
+  $this->printMessage();
 }
 ?>
 
@@ -25,7 +27,7 @@ if ( isset($_POST['import']) ) {
 		<th scope="row"><label for="projectmanager_import"><?php _e('File','projectmanager') ?></label></th><td><input type="file" name="projectmanager_import" id="projectmanager_import" size="40"/></td>
 	</tr>
 	<tr valign="top">
-		<th scope="row"><label for="delimiter"><?php _e('Delimiter','projectmanager') ?></label></th><td><input type="text" name="delimiter" id="delimiter" value=";" size="3" /><p><?php _e('For tab delimited files use TAB as delimiter', 'projectmanager') ?></td>
+		<th scope="row"><label for="delimiter"><?php _e('Delimiter','projectmanager') ?></label></th><td><input type="text" name="delimiter" id="delimiter" value="TAB" size="3" /><p><?php _e('For tab delimited files use TAB as delimiter', 'projectmanager') ?></td>
 	</tr>
 	</table>
 	<h3><?php _e( 'Column Assignment', 'projectmanager' ) ?></h3>
@@ -35,7 +37,10 @@ if ( isset($_POST['import']) ) {
 	<tr valign="top">
 		<th scope="row"><?php printf(__( 'Column %d', 'projectmanager'), 1 ) ?></th><td><?php _e( 'Name', 'projectmanager' ) ?></td>
 	</tr>
-	<?php for ( $i = 1; $i <= $projectmanager->getNumFormFields(); $i++ ) : ?>
+	<tr valign="top">
+		<th scope="row"><?php printf(__( 'Column %d', 'projectmanager'), 2 ) ?></th><td><?php _e( 'Categories', 'projectmanager' ) ?></td>
+	</tr>
+	<?php for ( $i = 2; $i <= $projectmanager->getNumFormFields()+1; $i++ ) : ?>
 	<tr valign="top">
 		<th scope="row"><label for="col_<?php echo $i ?>"><?php printf(__( 'Column %d', 'projectmanager'), ($i+1)) ?></label></th>
 		<td>
