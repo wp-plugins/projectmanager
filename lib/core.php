@@ -816,6 +816,13 @@ class ProjectManager extends ProjectManagerLoader
 		$sql = "SELECT dataset.`id` AS id, dataset.`name` AS name, dataset.`image` AS image, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} AS dataset  WHERE dataset.`project_id` = {$this->project_id}";
 
 		if ( $random ) {
+			if ( $meta_key && !empty($meta_value) ) {
+				if ( $meta_key != 'name' )
+					$sql .= " AND `id` IN ( SELECT `dataset_id` FROM {$wpdb->projectmanager_datasetmeta} AS meta WHERE meta.form_id = '".intval($meta_key)."' AND meta.value LIKE '".$meta_value."' )";
+				else
+					$sql .= " AND `name` = '".$meta_value."'";
+			}		
+
 			// get all datasets of project
 			$results = $wpdb->get_results($sql);
 			$all = array();
@@ -846,11 +853,13 @@ class ProjectManager extends ProjectManagerLoader
 
 			if ( $limit && $this->per_page != 'NaN' ) $offset = ( $this->getCurrentPage() - 1 ) * $this->per_page;
 
-			if( $meta_key && $meta_key != 'name' && !empty($meta_value) )
-				$sql .= " AND `id` IN ( SELECT `dataset_id` FROM {$wpdb->projectmanager_datasetmeta} AS meta WHERE meta.form_id = '".intval($meta_key)."' AND meta.value LIKE '".$meta_value."' )";
+			if ( $meta_key && !empty($meta_value) ) {
+				if ( $meta_key != 'name' )
+					$sql .= " AND `id` IN ( SELECT `dataset_id` FROM {$wpdb->projectmanager_datasetmeta} AS meta WHERE meta.form_id = '".intval($meta_key)."' AND meta.value LIKE '".$meta_value."' )";
+				else
+					$sql .= " AND `name` = '".$meta_value."'";
+			}		
 
-			if ( 'name' == $meta_key && !empty($meta_value) ) $sql .= " AND `name` = '".$meta_value."'";
-		
 			if ( $this->isCategory() )
 				$sql .= $this->getCategorySearchString();
 		
