@@ -179,6 +179,9 @@ The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons
 
 == Changelog ==
 
+= 2.9.9 =
+* BUGFIX: external fields, such as statistics from LeagueManager
+
 = 2.9.8 =
 * BUGFIX: dataset image got lost in search
 * BUGFIX: date lost upon editing dataset

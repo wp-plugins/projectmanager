@@ -27,6 +27,7 @@ function ProjectManagerInsertLink() {
 	var project = document.getElementById('project_panel');
 	var dataset = document.getElementById('dataset_panel');
 	var search = document.getElementById('search_panel');
+	var datasetform = document.getElementById('datasetform_panel');
 	
 	// who is active ?
 	if (project.className.indexOf('current') != -1) {
@@ -75,7 +76,16 @@ function ProjectManagerInsertLink() {
 		else
 			tinyMCEPopup.close();
 	}
-	
+
+	if (datasetform.className.indexOf('current') != -1) {
+		var projectId = document.getElementById('datasetform_projects').value;
+		
+		if (projectId != 0)
+			tagtext = "[dataset_form project_id=" + projectId + "]";
+		else
+			tinyMCEPopup.close();
+	}
+
 	if(window.tinyMCE) {
 		window.tinyMCE.execInstanceCommand('content', 'mceInsertContent', false, tagtext);
 		//Peforms a clean up of the current editor HTML. 

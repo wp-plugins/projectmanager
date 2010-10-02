@@ -38,7 +38,7 @@ if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) 
 	echo "<div class='error'><p>".sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $projectmanager->getFilePath() )."</p></div>";
 ?>
 
-<?php if ( current_user_can('edit_other_datasets') && !$editt ) : ?>
+<?php if ( current_user_can('edit_other_datasets') && !$edit ) : ?>
 <div id="wp_users" style="display: none; overflow: auto;"><div class="thickbox_content">
 	<form>
 		<div class="aligncenter;"><?php wp_dropdown_users( array('name' => 'wp_user_id') ) ?></div>

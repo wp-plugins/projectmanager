@@ -97,7 +97,7 @@ else
 		<?php endif; ?>
 		<?php endif; ?>
 		<?php endforeach; ?>
-		<li><a href="categories.php"><?php _e( 'Categories' ) ?></a></li>
+		<li><a href="edit-tags.php?taxonomy=category"><?php _e( 'Categories' ) ?></a></li>
 	</ul>
 	
 	<?php if ( $datasets ) : ?>
@@ -116,7 +116,7 @@ else
 			
 			<?php if ( -1 != $project->category ) : ?>
 			<!-- Category Filter -->
-			<?php wp_dropdown_categories(array('echo' => 1, 'hide_empty' => 0, 'name' => 'cat_id', 'orderby' => 'name', 'selected' => $projectmanager->getCatID(), 'hierarchical' => true, 'child_of' => $project->category, 'show_option_all' => __('View all categories'))); ?>
+			<?php wp_dropdown_categories(array('echo' => 1, 'hide_empty' => 0, 'hide_if_empty' => 1, 'name' => 'cat_id', 'orderby' => 'name', 'selected' => $projectmanager->getCatID(), 'hierarchical' => true, 'child_of' => $project->category, 'show_option_all' => __('View all categories'))); ?>
 			<input type='hidden' name='page' value='<?php echo $_GET['page'] ?>' />
 			<input type='hidden' name='project_id' value='<?php echo $project_id ?>' />
 			<?php endif; ?>

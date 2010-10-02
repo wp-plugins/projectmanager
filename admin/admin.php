@@ -73,7 +73,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 					add_submenu_page('project_' . $project->id, __( 'Add Dataset', 'projectmanager' ), __( 'Add Dataset', 'projectmanager' ), 'edit_datasets', 'project-dataset_' . $project->id, array(&$this, 'display'));
 					add_submenu_page('project_' . $project->id, __( 'Form Fields', 'projectmanager' ), __( 'Form Fields', 'projectmanager' ), 'edit_formfields', 'project-formfields_' . $project->id, array(&$this, 'display'));
 					add_submenu_page('project_' . $project->id, __( 'Settings', 'projectmanager' ), __( 'Settings', 'projectmanager' ), 'edit_projects_settings', 'project-settings_' . $project->id, array(&$this, 'display'));
-					add_submenu_page('project_' . $project->id, __('Categories'), __('Categories'), 'manage_projects', 'categories.php');
+					add_submenu_page('project_' . $project->id, __('Categories'), __('Categories'), 'manage_projects', 'edit-tags.php?taxonomy=category');
 					add_submenu_page('project_' . $project->id, __('Import/Export', 'projectmanager'), __('Import/Export', 'projectmanager'), 'import_datasets', 'project-import_' . $project->id, array(&$this, 'display'));
 				}
 			}

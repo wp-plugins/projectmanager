@@ -89,8 +89,8 @@ document.forms[0].encoding = "multipart/form-data";
 				<?php elseif ( 'checkbox' == $form_field->type ) : $projectmanager->printFormFieldCheckboxList($form_field->id, $meta_data[$form_field->id], $dataset_id, "form_field[".$dataset_id."][".$form_field->id."][]"); ?>
 				<?php elseif ( 'radio' == $form_field->type ) : $projectmanager->printFormFieldRadioList($form_field->id, $meta_data[$form_field->id], $dataset_id, "form_field[".$dataset_id."][".$form_field->id."]"); ?>
 				<?php elseif ( !empty($form_field->type) && is_array($projectmanager->getFormFieldTypes($form_field->type)) ) : ?>
-					<?php if ( isset($form_field->type['input_callback']) ) :
-						$field = $projectmanager->getFormFieldTypes($form_field->type);
+					<?php $field = $projectmanager->getFormFieldTypes($form_field->type); ?>
+					<?php if ( isset($field->type['input_callback']) ) :
 						$args = array ( 'dataset_id' => $dataset_id, 'form_field' => $form_field, 'data' => $meta_data[$form_field->id], 'name' => 'form_field['.$form_field->id.']' );
 						$field['args'] = array_merge( $args, (array)$field['args'] );
 						call_user_func_array($field['input_callback'], $field['args']);

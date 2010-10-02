@@ -456,7 +456,6 @@ class ProjectManagerLoader
 global $projectmanager_loader;
 $projectmanager_loader = new ProjectManagerLoader();
 
-
 // Export datasets
 if ( isset($_POST['projectmanager_export']) )
 	$projectmanager_loader->adminPanel->exportDatasets($_POST['project_id']);

@@ -1207,7 +1207,6 @@ class ProjectManager extends ProjectManagerLoader
 				}
 				
 				$pattern = is_admin() ? "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>%s</span>" : "%s";
-
 				if ( 'text' == $meta->type || 'select' == $meta->type || 'checkbox' == $meta->type || 'radio' == $meta->type || 'project' == $meta->type ) {
 					$meta_value = apply_filters( 'projectmanager_text', $meta_value );
 					$meta_value = sprintf($pattern, $meta_value, $dataset);

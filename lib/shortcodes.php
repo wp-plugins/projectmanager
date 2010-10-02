@@ -35,6 +35,7 @@ class ProjectManagerShortcodes
 	{
 		add_shortcode( 'dataset', array(&$this, 'displayDataset') );
 		add_shortcode( 'project', array(&$this, 'displayProject') );
+		add_shortcode( 'dataset_form', array(&$this, 'displayDatasetForm') );
 		add_shortcode( 'project_search', array(&$this, 'displaySearchForm') );
 		add_action( 'projectmanager_tablenav', array(&$this, 'displayTablenav') );
 		add_action( 'projectmanager_dataset', array(&$this, 'displayDataset') );
@@ -103,11 +104,65 @@ class ProjectManagerShortcodes
 		
 	
 	/**
+	 * display dataset form
+	 *
+	 * Include the dataset formular into the frontpage
+	 *
+	 * @param array $atts
+	 * @return void
+	 */
+	function displayDatasetForm( $atts )
+	{
+		global $projectmanager;
+
+		extract(shortcode_atts(array(
+			'project_id' => 0,
+		), $atts ));
+
+		$projectmanager->initialize($project_id);
+		$project = $projectmanager->getCurrentProject();
+		
+		$options = get_option('projectmanager');
+		if ( isset($_GET['d_id']) ) {
+			$edit = true;
+			$form_title = __('Edit Dataset','projectmanager');
+			$dataset_id = (int)$_GET['d_id'];
+			$dataset = $projectmanager->getDataset( $dataset_id );
+	
+			$cat_ids = $projectmanager->getSelectedCategoryIDs($dataset);
+			$dataset_meta = $projectmanager->getDatasetMeta( $dataset_id );
+	
+			$name = htmlspecialchars(stripslashes_deep($dataset->name), ENT_QUOTES);
+	
+			$img_filename = $dataset->image;
+			$meta_data = array();
+			foreach ( $dataset_meta AS $meta ) {
+				if ( is_string($meta_data[$meta->form_field_id] ) )
+					$meta_data[$meta->form_field_id] = htmlspecialchars(stripslashes_deep($meta->value), ENT_QUOTES);
+				else
+					$meta_data[$meta->form_field_id] = stripslashes_deep($meta->value);
+			}
+		}  else {
+			$edit = false;
+			$form_title = __('Add Dataset','projectmanager');
+			$dataset_id = ''; $cat_ids = array(); $img_filename = ''; $name = ''; $meta_data = array();
+		}
+
+		$projectmanager->loadTinyMCE(); 
+
+		$filename = 'dataset-form';
+		$out = $this->loadTemplate( $filename, array('projectmanager' => $projectmanager, 'dataset' => $dataset, 'project' => $project, 'name' => $name, 'img_filename' => $img_filename, 'meta_data' => $meta_data, 'edit' => $edit, 'cat_ids' => $cat_ids, 'form_title' => $form_title) );
+
+		return $out;
+	}
+
+
+	/**
 	 * get dropdown selections
 	 *
 	 * This function is called via do_action('projectmanager_tablenav') and loads the template tablenav.php
 	 *
-	 * @param array $opts
+	 * @param none
 	 * @return void the dropdown selections
 	 */
 	function displayTablenav( )

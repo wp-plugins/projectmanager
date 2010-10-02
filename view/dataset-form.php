@@ -1,11 +1,20 @@
+<?php 
+$is_profile_page = false;
+if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) ) : ?>
+  <div class="error"><p><?php printf( __( 'Unable to create directory %s. Is its parten directory writable by the server?' ), $projectmanager->getFilePath() ) ?></p></div>
+<?php endif; ?>
+
+<?php $page = 'wp-admin/admin.php?page=projectmanager&subpage=show-project&project_id='.$project->id; ?>
+
+<form name="post" action="<?php echo $page ?>" method="post" enctype="multipart/form-data">
+<?php wp_nonce_field('projectmanager_edit-dataset'); ?>
+
+
 <table class="form-table">
 	<tr valign="top">
 		<th scope="row"><label for="name"><?php _e( 'Name', 'projectmanager' ) ?></label></th>
 		<td>
 			<input type="text" name="name" id="name" value="<?php echo $name ?>" size="45" />
-			<?php if ( current_user_can('edit_other_datasets') && !$edit ) : ?>
-				<span><a class="thickbox" title="<?php _e( 'Add WP User', 'projectmanager' ) ?>" href="#TB_inline&width=200&height=100&inlineId=wp_users"><img src="<?php echo PROJECTMANAGER_URL ?>/admin/icons/menu/user.png" alt="<?php _e( 'Add WP User', 'projectmanager' ) ?>" class="middle" /></a></span>
-			<?php endif; ?>
 		</td>
 	</tr>
 	<?php if ( 1 == $project->show_image ) : ?>
@@ -18,7 +27,8 @@
 				<p style="text-align: center;"><input type="checkbox" id="del_old_image" name="del_old_image" value="1" style="margin-left: 1em;" />&#160;<label for="del_old_image"><?php _e( 'Delete', 'projectmanager' ) ?></label></p>
 			</div>
 			<?php endif; ?>
-			<input type="file" name="projectmanager_image" id="projectmanager_image" size="45"/><p><?php _e( 'Supported file types', 'projectmanager' ) ?>: <?php echo implode( ',',$projectmanager->getSupportedImageTypes() ); ?></p>
+			<input type="file" name="projectmanager_image" id="projectmanager_image" size="45" />
+			<p><?php _e( 'Supported file types', 'projectmanager' ) ?>: jpg, jpeg, png, gif</p>
 			<?php if ( '' != $img_filename ) : ?>
 				<p class="alignleft"><label for="overwrite_image"><?php _e( 'Overwrite existing image', 'projectmanager' ) ?></label><input type="checkbox" id="overwrite_image" name="overwrite_image" value="1" style="margin-left: 1em;" /></p>
 				<input type="hidden" name="image_file" value="<?php echo $img_filename ?>" />
@@ -108,23 +118,13 @@
 		
 		<?php endforeach; ?>
 	<?php endif; ?>
-	<?php if ( -1 != $project->category && current_user_can('edit_other_datasets') ) : ?>
-	<!-- category selection form -->
-	<tr valign="top">
-		<th scope="row"><label for="post_category"><?php _e( 'Categories', 'projectmanager' ) ?></label></th>
-		<td>
-			<div id="projectmanager-category-adder">
-			<ul class="categorychecklist">
-				<?php $this->categoryChecklist( $project->category, $cat_ids ) ?>
-			</ul>
-			</div>
-		</td>
-	</tr>
-	<?php endif; ?>
-	<?php if ( isset($_GET['edit']) && current_user_can('edit_other_datasets') && !$is_profile_page ) : ?>
-	<tr valign="top">
-		<th scope="row"><label for="owner"><?php _e( 'WP User', 'projectmanager' ) ?></label></th>
-		<td><?php wp_dropdown_users( array('selected' => $dataset->user_id, 'name' => 'owner') ) ?></td>
-	</tr>
-	<?php endif; ?>
 </table>
+
+
+<input type="hidden" name="project_id" value="<?php echo $project->id ?>" />
+<input type="hidden" name="dataset_id" value="<?php echo $dataset->id ?>" />
+<input type="hidden" name="user_id" value="<?php echo $dataset->user_id ?>" />
+<input type="hidden" name="updateProjectManager" value="dataset" />
+
+<p class="submit"><input type="submit" name="adddataset" value="<?php echo $form_title ?> &raquo;" class="button" /></p>
+</form>

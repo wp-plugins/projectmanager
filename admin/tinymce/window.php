@@ -51,8 +51,9 @@ global $wpdb;
 			<!--<li id="gallery_tab"><span><a href="javascript:mcTabs.displayTab('gallery_tab', 'gallery_panel');" onmouseover="return false;"><?php _e( 'Gallery', 'projectmanager' ); ?></a></span></li>-->
 			<li id="dataset_tab"><span><a href="javascript:mcTabs.displayTab('dataset_tab', 'dataset_panel');" onmouseover="return false;"><?php _e( 'Dataset', 'projectmanager' ); ?></a></span></li>
 			<li id="search_tab"><span><a href="javascript:mcTabs.displayTab('search_tab', 'search_panel');" onmouseover="return false;"><?php _e('Search Form','projectmanager') ?></a></span></li>
+			<li id="datasetform_tab"><span><a href="javascript:mcTabs.displayTab('datasetform_tab', 'datasetform_panel');" onmouseover="return false;"><?php _e('Dataset Form','projectmanager') ?></a></span></li>
 		</ul>
-	</di>
+	</div>
 	<div class="panel_wrapper">
 		
 	<!-- project panel -->
@@ -156,6 +157,27 @@ global $wpdb;
 	</table>
 	</div>
 	
+	<!-- datast form panel -->
+	<div id="datasetform_panel" class="panel">
+	<table style="border: 0;">
+	<tr>
+		<td><label for="datasetform_projects"><?php _e("Project", 'projectmanager'); ?></label></td>
+		<td>
+		<select id="datasetform_projects" name="datasetform_projects" style="width: 200px">
+		<option value="0"><?php _e("No Project", 'projectmanager'); ?></option>
+		<?php
+			$projects = $wpdb->get_results("SELECT * FROM {$wpdb->projectmanager_projects} ORDER BY id ASC");
+			if( ($projects) ) {
+				foreach( $projects as $project )
+					echo '<option value="'.$project->id.'" >'.$project->title.'</option>'."\n";
+			}
+		?>
+        	</select>
+		</td>
+	</tr>
+	</table>
+	</div>
+
 	</div>
 	
 	<div class="mceActionPanel">
