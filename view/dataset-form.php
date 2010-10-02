@@ -6,44 +6,32 @@ if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) 
 
 <?php $page = 'wp-admin/admin.php?page=projectmanager&subpage=show-project&project_id='.$project->id; ?>
 
-<form name="post" action="<?php echo $page ?>" method="post" enctype="multipart/form-data">
+<form name="datasetform" id="datasetform"  action="<?php echo $page ?>" method="post" enctype="multipart/form-data">
 <?php wp_nonce_field('projectmanager_edit-dataset'); ?>
 
 
-<table class="form-table">
-	<tr valign="top">
-		<th scope="row"><label for="name"><?php _e( 'Name', 'projectmanager' ) ?></label></th>
-		<td>
-			<input type="text" name="name" id="name" value="<?php echo $name ?>" size="45" />
-		</td>
-	</tr>
+	<label for="name"><?php _e( 'Name', 'projectmanager' ) ?></label><input type="text" name="name" id="name" value="<?php echo $name ?>" size="30" /><br />
 	<?php if ( 1 == $project->show_image ) : ?>
-	<tr valign="top">
-		<th scope="row"><label for="projectmanager_image"><?php _e( 'Image', 'projectmanager' ) ?></label></th>
-		<td>
-			<?php if ( '' != $img_filename ) : ?>
-			<div class="alignright">
-				<img src="<?php echo $projectmanager->getFileURL('tiny.'.$img_filename)?>" />
-				<p style="text-align: center;"><input type="checkbox" id="del_old_image" name="del_old_image" value="1" style="margin-left: 1em;" />&#160;<label for="del_old_image"><?php _e( 'Delete', 'projectmanager' ) ?></label></p>
-			</div>
-			<?php endif; ?>
-			<input type="file" name="projectmanager_image" id="projectmanager_image" size="45" />
-			<p><?php _e( 'Supported file types', 'projectmanager' ) ?>: jpg, jpeg, png, gif</p>
-			<?php if ( '' != $img_filename ) : ?>
-				<p class="alignleft"><label for="overwrite_image"><?php _e( 'Overwrite existing image', 'projectmanager' ) ?></label><input type="checkbox" id="overwrite_image" name="overwrite_image" value="1" style="margin-left: 1em;" /></p>
-				<input type="hidden" name="image_file" value="<?php echo $img_filename ?>" />
-			<?php endif; ?>
-		</td>
-	</tr>
+	<label for="projectmanager_image"><?php _e( 'Image', 'projectmanager' ) ?></label>
+	<?php if ( '' != $img_filename ) : ?>
+	<div class="alignright">
+		<img src="<?php echo $projectmanager->getFileURL('tiny.'.$img_filename)?>" />
+		<p style="text-align: center;"><input type="checkbox" id="del_old_image" name="del_old_image" value="1" style="margin-left: 1em;" />&#160;<label for="del_old_image"><?php _e( 'Delete', 'projectmanager' ) ?></label></p>
+	</div>
 	<?php endif; ?>
+	<input type="file" name="projectmanager_image" id="projectmanager_image" size="25" />
+	<?php if ( '' != $img_filename ) : ?>
+		<p class="alignleft"><label for="overwrite_image"><?php _e( 'Overwrite existing image', 'projectmanager' ) ?></label><input type="checkbox" id="overwrite_image" name="overwrite_image" value="1" style="margin-left: 1em;" /></p>
+		<input type="hidden" name="image_file" value="<?php echo $img_filename ?>" />
+	<?php endif; ?>
+	<?php endif; ?><br />
 	<?php if ( $form_fields = $projectmanager->getFormFields() ) : ?>
 		<?php foreach ( $form_fields AS $form_field ) : ?>
 		
-		<tr valign="top">
-			<th scope="row"><label for="form_field_<?php echo $form_field->id ?>"><?php echo $form_field->label ?></label></th>
-			<td>
-				<?php if ( 'text' == $form_field->type || 'email' == $form_field->type || 'uri' == $form_field->type || 'numeric' == $form_field->type || 'currency' == $form_field->type ) : ?>
-				<input type="text" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" value="<?php echo $meta_data[$form_field->id] ?>" size="45" />
+			<label for="form_field_<?php echo $form_field->id ?>"><?php echo $form_field->label ?></label>
+			
+			<?php if ( 'text' == $form_field->type || 'email' == $form_field->type || 'uri' == $form_field->type || 'numeric' == $form_field->type || 'currency' == $form_field->type ) : ?>
+				<input type="text" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" value="<?php echo $meta_data[$form_field->id] ?>" size="30" />
 				<?php elseif ( 'textfield' == $form_field->type || 'tinymce' == $form_field->type ) : ?>
 				<div style="width: 80%;">
 					<textarea <?php if ( 'tinymce' == $form_field->type ) echo 'class="theEditor"' ?> name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" cols="70" rows="15"><?php echo $meta_data[$form_field->id] ?></textarea>
@@ -109,16 +97,15 @@ if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) 
 						$field['args'] = array_merge( $args, (array)$field['args'] );
 						call_user_func_array($field['input_callback'], $field['args']);
 					else : ?>
-					<input type="hidden" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" value="" />
-					<p><?php echo $field['msg'] ?></p>
+					<p>
+						<input type="hidden" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" value="" />
+						<?php echo $field['msg'] ?>
+					</p>
 					<?php endif; ?>
 				<?php endif; ?>
-			</td>
-		</tr>
-		
+				<br />
 		<?php endforeach; ?>
 	<?php endif; ?>
-</table>
 
 
 <input type="hidden" name="project_id" value="<?php echo $project->id ?>" />

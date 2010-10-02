@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ProjectManager 2.9.8\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
-"POT-Creation-Date: 2010-10-02 10:19+0000\n"
+"POT-Creation-Date: 2010-10-02 11:36+0000\n"
 "PO-Revision-Date: 2010-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,7 +40,7 @@ msgstr ""
 msgid "Overview"
 msgstr ""
 
-#: admin/admin.php:76 admin/admin.php:625 admin/dataset-form.php:114
+#: admin/admin.php:76 admin/admin.php:625 admin/dataset-form.php:115
 #: admin/import.php:41 admin/show-project.php:81 admin/show-project.php:100
 #: admin/show-project.php:155 admin/show-project.php:166
 #: view/searchform-extend.php:25
@@ -252,18 +252,17 @@ msgstr ""
 msgid "Overwrite File"
 msgstr ""
 
-#: admin/dataset-form-profile.php:99 admin/dataset-form.php:103
-#: view/dataset-form.php:113
+#: admin/dataset-form.php:7
+msgid "Add WP User"
+msgstr ""
+
+#: admin/dataset-form.php:103
 msgid ""
 "This Field has a callback attached which will get the data from somewhere "
 "else!"
 msgstr ""
 
-#: admin/dataset-form.php:7
-msgid "Add WP User"
-msgstr ""
-
-#: admin/dataset-form.php:126 lib/core.php:397
+#: admin/dataset-form.php:127 lib/core.php:397
 msgid "WP User"
 msgstr ""
 
