@@ -1,22 +1,23 @@
-# ProjectManager POT File
-# Copyright (C) 2008-2009 Kolja Schleich
-# This file is distributed under the same license as the PACKAGE package.
-# Kolja Schleich <kolja.schleich@googlemail.com>, 2008.
+# Translation of the WordPress plugin ProjectManager 2.9.8 by Kolja Schleich.
+# Copyright (C) 2010 Kolja Schleich
+# This file is distributed under the same license as the ProjectManager package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 #
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: ProjectManager 2.9.8\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
+"POT-Creation-Date: 2010-10-02 10:19+0000\n"
+"PO-Revision-Date: 2010-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: admin/admin.php:41 admin/admin.php:75 admin/admin.php:86
-#: admin/admin.php:177 admin/index.php:74 admin/settings.php:23
+#: admin/admin.php:181 admin/index.php:74 admin/settings.php:23
 #: admin/settings.php:28
 msgid "Settings"
 msgstr ""
@@ -27,11 +28,11 @@ msgid "Form Fields"
 msgstr ""
 
 #: admin/admin.php:43 admin/admin.php:73 admin/dataset.php:30
-#: admin/index.php:74
+#: admin/index.php:74 lib/shortcodes.php:147
 msgid "Add Dataset"
 msgstr ""
 
-#: admin/admin.php:44 admin/admin.php:77 admin/import.php:16
+#: admin/admin.php:44 admin/admin.php:77 admin/import.php:18
 msgid "Import/Export"
 msgstr ""
 
@@ -39,9 +40,9 @@ msgstr ""
 msgid "Overview"
 msgstr ""
 
-#: admin/admin.php:76 admin/admin.php:596 admin/dataset-form.php:95
-#: admin/show-project.php:71 admin/show-project.php:90
-#: admin/show-project.php:144 admin/show-project.php:155
+#: admin/admin.php:76 admin/admin.php:625 admin/dataset-form.php:114
+#: admin/import.php:41 admin/show-project.php:81 admin/show-project.php:100
+#: admin/show-project.php:155 admin/show-project.php:166
 #: view/searchform-extend.php:25
 msgid "Categories"
 msgstr ""
@@ -50,201 +51,209 @@ msgstr ""
 msgid "Projects"
 msgstr ""
 
-#: admin/admin.php:210 admin/show-project.php:189 admin/show-project.php:208
-#: admin/tinymce/window.php:38 lib/core.php:1269
+#: admin/admin.php:214 admin/show-project.php:200 admin/show-project.php:219
+#: admin/tinymce/window.php:38 lib/core.php:1333
 msgid "Edit"
 msgstr ""
 
-#: admin/admin.php:210 admin/tinymce/window.php:38
+#: admin/admin.php:214 admin/tinymce/window.php:38
 msgid "Post"
 msgstr ""
 
-#: admin/admin.php:210 admin/formfields.php:82 admin/formfields.php:101
-#: admin/show-project.php:180 admin/show-project.php:201
-#: admin/tinymce/window.php:38 lib/ajax.php:327 lib/ajax.php:343
-#: lib/core.php:1336
+#: admin/admin.php:214 admin/formfields.php:82 admin/formfields.php:101
+#: admin/show-project.php:191 admin/show-project.php:212
+#: admin/tinymce/window.php:38 lib/ajax.php:323 lib/ajax.php:339
+#: lib/core.php:1423
 msgid "Save"
 msgstr ""
 
-#: admin/admin.php:210 admin/dataset.php:46 admin/formfields.php:82
-#: admin/formfields.php:101 admin/show-project.php:180
-#: admin/show-project.php:201 admin/tinymce/window.php:38
-#: admin/tinymce/window.php:163 lib/ajax.php:327 lib/ajax.php:343
-#: lib/core.php:1336
+#: admin/admin.php:214 admin/dataset.php:46 admin/formfields.php:82
+#: admin/formfields.php:101 admin/show-project.php:191
+#: admin/show-project.php:212 admin/tinymce/window.php:38
+#: admin/tinymce/window.php:185 lib/ajax.php:323 lib/ajax.php:339
+#: lib/core.php:1423
 msgid "Cancel"
 msgstr ""
 
-#: admin/admin.php:210 admin/tinymce/window.php:38
+#: admin/admin.php:214 admin/tinymce/window.php:38
 msgid "Please wait..."
 msgstr ""
 
-#: admin/admin.php:210 admin/tinymce/window.php:38
+#: admin/admin.php:214 admin/tinymce/window.php:38
 msgid "Page Revisions"
 msgstr ""
 
-#: admin/admin.php:210 admin/tinymce/window.php:38
+#: admin/admin.php:214 admin/tinymce/window.php:38
 msgid "Insert time"
 msgstr ""
 
-#: admin/admin.php:210 admin/formfields.php:105 admin/tinymce/window.php:38
-#: lib/ajax.php:330 lib/ajax.php:349
+#: admin/admin.php:214 admin/formfields.php:105 admin/tinymce/window.php:38
+#: lib/ajax.php:326 lib/ajax.php:345
 msgid "Options"
 msgstr ""
 
-#: admin/admin.php:210 admin/dataset-form-profile.php:14
+#: admin/admin.php:214 admin/dataset-form-profile.php:14
 #: admin/dataset-form.php:18 admin/formfields.php:94 admin/formfields.php:113
-#: admin/index.php:40 admin/show-project.php:102 admin/tinymce/window.php:38
-#: lib/ajax.php:336 lib/core.php:1272
+#: admin/index.php:40 admin/show-project.php:112 admin/tinymce/window.php:38
+#: lib/ajax.php:332 lib/core.php:1336 view/dataset-form.php:27
 msgid "Delete"
 msgstr ""
 
-#: admin/admin.php:210 admin/dataset-form-profile.php:72
-#: admin/dataset-form.php:75
+#: admin/admin.php:214 admin/dataset-form-profile.php:83
+#: admin/dataset-form.php:86 view/dataset-form.php:96
 msgid "Delete File"
 msgstr ""
 
-#: admin/admin.php:274 admin/admin.php:491
+#: admin/admin.php:278 admin/admin.php:503
 msgid "Settings saved"
 msgstr ""
 
-#: admin/admin.php:279 admin/dataset.php:3 admin/formfields.php:3
-#: admin/import.php:3 admin/index.php:3 admin/settings.php:3
-#: admin/show-project.php:3
+#: admin/admin.php:283 admin/dataset.php:3 admin/documentation.php:3
+#: admin/formfields.php:3 admin/import.php:3 admin/index.php:3
+#: admin/settings.php:3 admin/show-project.php:3
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
-#: admin/admin.php:385
+#: admin/admin.php:389
 msgid "Manual"
 msgstr ""
 
-#: admin/admin.php:385 admin/formfields.php:29 admin/formfields.php:41
-#: admin/index.php:50 admin/index.php:59 admin/show-project.php:41
-#: admin/show-project.php:141 admin/show-project.php:152
-#: admin/tinymce/window.php:93 lib/shortcodes.php:118
+#: admin/admin.php:389 admin/formfields.php:29 admin/formfields.php:41
+#: admin/index.php:50 admin/index.php:59 admin/show-project.php:51
+#: admin/show-project.php:152 admin/show-project.php:163
+#: admin/tinymce/window.php:94 lib/shortcodes.php:173
 msgid "ID"
 msgstr ""
 
-#: admin/admin.php:385 admin/admin.php:596 admin/dataset-form.php:3
-#: admin/import.php:36 admin/show-project.php:41 admin/show-project.php:63
-#: admin/show-project.php:142 admin/show-project.php:153
-#: admin/show-project.php:189 admin/tinymce/window.php:92
-#: lib/shortcodes.php:118 view/searchform-extend.php:19
-#: view/table-image.php:26 view/table.php:28
+#: admin/admin.php:389 admin/admin.php:625 admin/dataset-form.php:3
+#: admin/import.php:38 admin/show-project.php:51 admin/show-project.php:73
+#: admin/show-project.php:153 admin/show-project.php:164
+#: admin/show-project.php:200 admin/tinymce/window.php:93
+#: lib/shortcodes.php:173 view/dataset-form.php:15
+#: view/searchform-extend.php:19 view/table-image.php:26 view/table.php:27
 msgid "Name"
 msgstr ""
 
-#: admin/admin.php:385 admin/tinymce/window.php:94
+#: admin/admin.php:389 admin/tinymce/window.php:95
 msgid "Formfields"
 msgstr ""
 
-#: admin/admin.php:402 admin/show-project.php:46 admin/tinymce/window.php:104
-#: lib/shortcodes.php:122
+#: admin/admin.php:406 admin/show-project.php:56 admin/tinymce/window.php:105
+#: lib/shortcodes.php:177
 msgid "Ascending"
 msgstr ""
 
-#: admin/admin.php:402 admin/show-project.php:46 admin/tinymce/window.php:105
-#: lib/shortcodes.php:122
+#: admin/admin.php:406 admin/show-project.php:56 admin/tinymce/window.php:106
+#: lib/shortcodes.php:177
 msgid "Descending"
 msgstr ""
 
-#: admin/admin.php:422 admin/admin.php:443 admin/admin.php:486
-#: admin/admin.php:507 admin/admin.php:584 admin/admin.php:644
-#: admin/admin.php:652 admin/admin.php:746 admin/admin.php:753
-#: admin/admin.php:993 admin/index.php:21 admin/show-project.php:32
+#: admin/admin.php:426 admin/admin.php:451 admin/admin.php:498
+#: admin/admin.php:521 admin/admin.php:672 admin/admin.php:680
+#: admin/admin.php:778 admin/admin.php:785 admin/admin.php:1057
+#: admin/index.php:21 admin/show-project.php:32 admin/show-project.php:42
 msgid "You don't have permission to perform this task"
 msgstr ""
 
-#: admin/admin.php:427
+#: admin/admin.php:433
 msgid "Project added"
 msgstr ""
 
-#: admin/admin.php:448
+#: admin/admin.php:456
 msgid "Project updated"
 msgstr ""
 
-#: admin/admin.php:539
+#: admin/admin.php:568
 #, php-format
 msgid "%d Datasets successfully imported"
 msgstr ""
 
-#: admin/admin.php:541
+#: admin/admin.php:570
 msgid "The file is not readable"
 msgstr ""
 
-#: admin/admin.php:544 admin/admin.php:926 admin/admin.php:947
+#: admin/admin.php:573 admin/admin.php:990 admin/admin.php:1011
 #, php-format
 msgid "The uploaded file could not be moved to %s."
 msgstr ""
 
-#: admin/admin.php:548
+#: admin/admin.php:577
 msgid "The uploaded file seems to be empty"
 msgstr ""
 
-#: admin/admin.php:632
+#: admin/admin.php:661
 msgid "You cannot add two datasets with same User ID."
 msgstr ""
 
-#: admin/admin.php:719
+#: admin/admin.php:749
 msgid "New dataset added to the database."
 msgstr ""
 
-#: admin/admin.php:838
+#: admin/admin.php:873
 msgid "Dataset updated."
 msgstr ""
 
-#: admin/admin.php:908 admin/admin.php:944
+#: admin/admin.php:972 admin/admin.php:1008
 msgid ""
 "File exists and is not uploaded. Set the overwrite option if you want to "
 "replace it."
 msgstr ""
 
-#: admin/admin.php:931
+#: admin/admin.php:995
 msgid "The file type is not supported."
 msgstr ""
 
-#: admin/admin.php:1055
+#: admin/admin.php:1122
 msgid "Form Fields updated"
 msgstr ""
 
-#: admin/admin.php:1074 admin/index.php:27 admin/index.php:46
+#: admin/admin.php:1143 admin/index.php:27 admin/index.php:46
 #: admin/tinymce/window.php:28
 msgid "Projectmanager"
 msgstr ""
 
-#: admin/dataset-form-profile.php:9 admin/dataset-form.php:13 lib/ajax.php:180
-#: lib/core.php:397
+#: admin/dataset-form-profile.php:9 admin/dataset-form.php:13 lib/ajax.php:182
+#: lib/core.php:397 view/dataset-form.php:22
 msgid "Image"
 msgstr ""
 
 #: admin/dataset-form-profile.php:17 admin/dataset-form.php:21
+#: view/dataset-form.php:31
 msgid "Supported file types"
 msgstr ""
 
 #: admin/dataset-form-profile.php:19 admin/dataset-form.php:23
+#: view/dataset-form.php:33
 msgid "Overwrite existing image"
 msgstr ""
 
 #: admin/dataset-form-profile.php:40 admin/dataset-form.php:43
+#: view/dataset-form.php:53
 msgid "Day"
 msgstr ""
 
 #: admin/dataset-form-profile.php:47 admin/dataset-form.php:50
+#: view/dataset-form.php:60
 msgid "Month"
 msgstr ""
 
 #: admin/dataset-form-profile.php:54 admin/dataset-form.php:57
+#: view/dataset-form.php:67
 msgid "Year"
 msgstr ""
 
-#: admin/dataset-form-profile.php:66 admin/dataset-form.php:69
+#: admin/dataset-form-profile.php:77 admin/dataset-form.php:80
+#: view/dataset-form.php:90
 msgid "Current File"
 msgstr ""
 
-#: admin/dataset-form-profile.php:73 admin/dataset-form.php:76
+#: admin/dataset-form-profile.php:84 admin/dataset-form.php:87
+#: view/dataset-form.php:97
 msgid "Overwrite File"
 msgstr ""
 
-#: admin/dataset-form-profile.php:82 admin/dataset-form.php:85
+#: admin/dataset-form-profile.php:99 admin/dataset-form.php:103
+#: view/dataset-form.php:113
 msgid ""
 "This Field has a callback attached which will get the data from somewhere "
 "else!"
@@ -254,11 +263,11 @@ msgstr ""
 msgid "Add WP User"
 msgstr ""
 
-#: admin/dataset-form.php:107
+#: admin/dataset-form.php:126 lib/core.php:397
 msgid "WP User"
 msgstr ""
 
-#: admin/dataset.php:11
+#: admin/dataset.php:11 lib/shortcodes.php:128
 msgid "Edit Dataset"
 msgstr ""
 
@@ -269,8 +278,46 @@ msgid ""
 "server?"
 msgstr ""
 
-#: admin/dataset.php:46 admin/tinymce/window.php:167
+#: admin/dataset.php:46 admin/tinymce/window.php:189
 msgid "Insert"
+msgstr ""
+
+#: admin/documentation.php:7
+msgid "Projectmanager Documentation"
+msgstr ""
+
+#: admin/documentation.php:9
+msgid "Content"
+msgstr ""
+
+#: admin/documentation.php:11 admin/documentation.php:20
+msgid "Introduction"
+msgstr ""
+
+#: admin/documentation.php:12 admin/documentation.php:24
+msgid "Setup Manager"
+msgstr ""
+
+#: admin/documentation.php:13 admin/documentation.php:27
+msgid "Shortcodes"
+msgstr ""
+
+#: admin/documentation.php:14 admin/documentation.php:30
+msgid "Templates"
+msgstr ""
+
+#: admin/documentation.php:15 admin/documentation.php:33
+msgid "Access Control"
+msgstr ""
+
+#: admin/documentation.php:16 admin/documentation.php:36
+msgid "Customization"
+msgstr ""
+
+#: admin/documentation.php:19 admin/documentation.php:23
+#: admin/documentation.php:26 admin/documentation.php:29
+#: admin/documentation.php:32 admin/documentation.php:35
+msgid "Top"
 msgstr ""
 
 #: admin/formfields.php:30 admin/formfields.php:42
@@ -289,21 +336,21 @@ msgstr ""
 msgid "Profile"
 msgstr ""
 
-#: admin/formfields.php:34 admin/formfields.php:46 admin/show-project.php:46
-#: admin/tinymce/window.php:100 lib/shortcodes.php:122 lib/widget.php:162
+#: admin/formfields.php:34 admin/formfields.php:46 admin/show-project.php:56
+#: admin/tinymce/window.php:101 lib/shortcodes.php:177 lib/widget.php:163
 msgid "Order"
 msgstr ""
 
-#: admin/formfields.php:35 admin/formfields.php:47 admin/show-project.php:41
-#: admin/tinymce/window.php:88 lib/shortcodes.php:118
+#: admin/formfields.php:35 admin/formfields.php:47 admin/show-project.php:51
+#: admin/tinymce/window.php:89 lib/shortcodes.php:173
 msgid "Order By"
 msgstr ""
 
-#: admin/formfields.php:75 lib/ajax.php:321
+#: admin/formfields.php:75 lib/ajax.php:317
 msgid "Choose Project"
 msgstr ""
 
-#: admin/formfields.php:84 lib/ajax.php:316
+#: admin/formfields.php:84 lib/ajax.php:312
 msgid "Choose Project to Link"
 msgstr ""
 
@@ -311,11 +358,11 @@ msgstr ""
 msgid "Set"
 msgstr ""
 
-#: admin/formfields.php:94 lib/ajax.php:336
+#: admin/formfields.php:94 lib/ajax.php:332
 msgid "Delete Option"
 msgstr ""
 
-#: admin/formfields.php:99 lib/ajax.php:341
+#: admin/formfields.php:99 lib/ajax.php:337
 msgid "Add Option"
 msgstr ""
 
@@ -331,48 +378,48 @@ msgstr ""
 msgid "Save Form Fields"
 msgstr ""
 
-#: admin/import.php:17 admin/import.php:52
+#: admin/import.php:19 admin/import.php:57
 msgid "Import Datasets"
 msgstr ""
 
-#: admin/import.php:25 lib/core.php:397
+#: admin/import.php:27 lib/core.php:397
 msgid "File"
 msgstr ""
 
-#: admin/import.php:28
+#: admin/import.php:30
 msgid "Delimiter"
 msgstr ""
 
-#: admin/import.php:28
+#: admin/import.php:30
 msgid "For tab delimited files use TAB as delimiter"
 msgstr ""
 
-#: admin/import.php:31
+#: admin/import.php:33
 msgid "Column Assignment"
 msgstr ""
 
-#: admin/import.php:32
+#: admin/import.php:34
 msgid "All FormFields need to be assigned, also if some contain no data."
 msgstr ""
 
-#: admin/import.php:33
+#: admin/import.php:35
 msgid "Dates must have the format <strong>YYYY-MM-DD</strong>."
 msgstr ""
 
-#: admin/import.php:36 admin/import.php:40
+#: admin/import.php:38 admin/import.php:41 admin/import.php:45
 #, php-format
 msgid "Column %d"
 msgstr ""
 
-#: admin/import.php:57 admin/import.php:60
+#: admin/import.php:62 admin/import.php:65
 msgid "Export Datasets"
 msgstr ""
 
-#: admin/index.php:39 admin/show-project.php:101
+#: admin/index.php:39 admin/show-project.php:111
 msgid "Bulk Actions"
 msgstr ""
 
-#: admin/index.php:42 admin/show-project.php:104 admin/show-project.php:122
+#: admin/index.php:42 admin/show-project.php:115 admin/show-project.php:133
 #: view/tablenav.php:38
 msgid "Apply"
 msgstr ""
@@ -382,8 +429,8 @@ msgid "List of Projects"
 msgstr ""
 
 #: admin/index.php:51 admin/index.php:60 admin/tinymce/window.php:50
-#: admin/tinymce/window.php:62 admin/tinymce/window.php:135 lib/widget.php:28
-#: lib/widget.php:145
+#: admin/tinymce/window.php:63 admin/tinymce/window.php:136
+#: admin/tinymce/window.php:164 lib/widget.php:29 lib/widget.php:146
 msgid "Project"
 msgstr ""
 
@@ -403,23 +450,23 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
-#: admin/settings-global.php:5
+#: admin/settings-global.php:2
 msgid "Global Settings"
 msgstr ""
 
-#: admin/settings-global.php:6
+#: admin/settings-global.php:3
 msgid "Color Scheme"
 msgstr ""
 
-#: admin/settings-global.php:10
+#: admin/settings-global.php:9
 msgid "Table Headers"
 msgstr ""
 
-#: admin/settings-global.php:13
+#: admin/settings-global.php:12
 msgid "Table Rows"
 msgstr ""
 
-#: admin/settings-global.php:22
+#: admin/settings-global.php:21
 msgid "Save Preferences"
 msgstr ""
 
@@ -431,11 +478,11 @@ msgstr ""
 msgid "Use <strong>NaN</strong> for no limit"
 msgstr ""
 
-#: admin/settings.php:37 admin/tinymce/window.php:84
+#: admin/settings.php:37 admin/tinymce/window.php:85
 msgid "Category"
 msgstr ""
 
-#: admin/settings.php:37 admin/show-project.php:167 lib/ajax.php:128
+#: admin/settings.php:37 admin/show-project.php:178 lib/ajax.php:128
 msgid "None"
 msgstr ""
 
@@ -487,11 +534,11 @@ msgstr ""
 msgid "Thumbnail size"
 msgstr ""
 
-#: admin/settings.php:77 lib/widget.php:158
+#: admin/settings.php:77 lib/widget.php:159
 msgid "Width"
 msgstr ""
 
-#: admin/settings.php:77 lib/widget.php:159
+#: admin/settings.php:77 lib/widget.php:160
 msgid "Height"
 msgstr ""
 
@@ -521,35 +568,39 @@ msgstr ""
 msgid "Save Settings"
 msgstr ""
 
-#: admin/show-project.php:76 view/searchform-compact.php:17
+#: admin/show-project.php:86 view/searchform-compact.php:17
 #: view/searchform-extend.php:28
 msgid "Search"
 msgstr ""
 
-#: admin/show-project.php:108 view/tablenav.php:22
+#: admin/show-project.php:113
+msgid "Duplicate"
+msgstr ""
+
+#: admin/show-project.php:119 view/tablenav.php:22
 msgid "View all categories"
 msgstr ""
 
-#: admin/show-project.php:127
+#: admin/show-project.php:138
 #, php-format
 msgid "Displaying %s&#8211;%s of %s"
 msgstr ""
 
-#: admin/show-project.php:208
+#: admin/show-project.php:219
 #, php-format
 msgid "Categories of %s"
 msgstr ""
 
-#: admin/show-project.php:228 view/gallery.php:47 view/table-image.php:44
-#: view/table.php:44
+#: admin/show-project.php:239 view/gallery.php:47 view/table-image.php:44
+#: view/table.php:43
 msgid "Nothing found"
 msgstr ""
 
-#: admin/tinymce/window.php:51 admin/tinymce/window.php:80
+#: admin/tinymce/window.php:51 admin/tinymce/window.php:81
 msgid "Gallery"
 msgstr ""
 
-#: admin/tinymce/window.php:52 admin/tinymce/window.php:114
+#: admin/tinymce/window.php:52 admin/tinymce/window.php:115
 msgid "Dataset"
 msgstr ""
 
@@ -557,39 +608,44 @@ msgstr ""
 msgid "Search Form"
 msgstr ""
 
-#: admin/tinymce/window.php:65 admin/tinymce/window.php:138
+#: admin/tinymce/window.php:54
+msgid "Dataset Form"
+msgstr ""
+
+#: admin/tinymce/window.php:66 admin/tinymce/window.php:139
+#: admin/tinymce/window.php:167
 msgid "No Project"
 msgstr ""
 
-#: admin/tinymce/window.php:77
+#: admin/tinymce/window.php:78
 msgid "Template"
 msgstr ""
 
-#: admin/tinymce/window.php:79
+#: admin/tinymce/window.php:80
 msgid "Table"
 msgstr ""
 
-#: admin/tinymce/window.php:85
+#: admin/tinymce/window.php:86
 msgid "Display all Datasets"
 msgstr ""
 
-#: admin/tinymce/window.php:91 admin/tinymce/window.php:103
+#: admin/tinymce/window.php:92 admin/tinymce/window.php:104
 msgid "Default"
 msgstr ""
 
-#: admin/tinymce/window.php:117
+#: admin/tinymce/window.php:118
 msgid "No Dataset"
 msgstr ""
 
-#: admin/tinymce/window.php:150 lib/widget.php:146
+#: admin/tinymce/window.php:151 lib/widget.php:147
 msgid "Display"
 msgstr ""
 
-#: admin/tinymce/window.php:152
+#: admin/tinymce/window.php:153
 msgid "Extended Version"
 msgstr ""
 
-#: admin/tinymce/window.php:153
+#: admin/tinymce/window.php:154
 msgid "Compact Version"
 msgstr ""
 
@@ -627,11 +683,11 @@ msgstr ""
 msgid "Continue"
 msgstr ""
 
-#: lib/ajax.php:277
+#: lib/ajax.php:273
 msgid "Select Categoy (Optional)"
 msgstr ""
 
-#: lib/ajax.php:367
+#: lib/ajax.php:363
 msgid "An Error Occured. Please Save FormFields and set Options afterwards"
 msgstr ""
 
@@ -687,167 +743,178 @@ msgstr ""
 msgid "Internal Link"
 msgstr ""
 
-#: lib/core.php:1219
+#: lib/core.php:397 lib/widget.php:161
+msgid "Time"
+msgstr ""
+
+#: lib/core.php:1275
 #, php-format
 msgid "%s of %s"
 msgstr ""
 
-#: lib/shortcodes.php:65
+#: lib/core.php:1418
+msgid "This field does not provide AJAX editing functionality."
+msgstr ""
+
+#: lib/shortcodes.php:66
 #, php-format
 msgid "Could not load template %s.php"
 msgstr ""
 
-#: lib/shortcodes.php:189
+#: lib/shortcodes.php:244
 #, php-format
 msgid "Search: %d of %d"
 msgstr ""
 
-#: lib/widget.php:27
+#: lib/widget.php:28
 msgid "Display datasets from ProjectManager"
 msgstr ""
 
-#: lib/widget.php:148
+#: lib/widget.php:149
 msgid "All"
 msgstr ""
 
-#: lib/widget.php:154
+#: lib/widget.php:155
 msgid "Page"
 msgstr ""
 
-#: lib/widget.php:155
+#: lib/widget.php:156
 msgid "Slideshow"
 msgstr ""
 
-#: lib/widget.php:157
+#: lib/widget.php:158
 msgid "Use Slideshow"
 msgstr ""
 
-#: lib/widget.php:160
-msgid "Time"
-msgstr ""
-
-#: lib/widget.php:160
+#: lib/widget.php:161
 msgid "seconds"
 msgstr ""
 
-#: lib/widget.php:161
+#: lib/widget.php:162
 msgid "Fade Effect"
 msgstr ""
 
-#: lib/widget.php:177
+#: lib/widget.php:178
 msgid "Blind X"
 msgstr ""
 
-#: lib/widget.php:177
+#: lib/widget.php:178
 msgid "Blind Y"
 msgstr ""
 
-#: lib/widget.php:177
+#: lib/widget.php:178
 msgid "Blind Z"
 msgstr ""
 
-#: lib/widget.php:177
+#: lib/widget.php:178
 msgid "Cover"
 msgstr ""
 
-#: lib/widget.php:177
+#: lib/widget.php:178
 msgid "Curtain X"
 msgstr ""
 
-#: lib/widget.php:177
+#: lib/widget.php:178
 msgid "Curtain Y"
 msgstr ""
 
-#: lib/widget.php:177
+#: lib/widget.php:178
 msgid "Fade"
 msgstr ""
 
-#: lib/widget.php:177
+#: lib/widget.php:178
 msgid "Fade Zoom"
 msgstr ""
 
-#: lib/widget.php:177
+#: lib/widget.php:178
 msgid "Scroll Up"
 msgstr ""
 
-#: lib/widget.php:177
+#: lib/widget.php:178
 msgid "Scroll Left"
 msgstr ""
 
-#: lib/widget.php:177
+#: lib/widget.php:178
 msgid "Scroll Right"
 msgstr ""
 
-#: lib/widget.php:177
+#: lib/widget.php:178
 msgid "Scroll Down"
 msgstr ""
 
-#: lib/widget.php:177
+#: lib/widget.php:178
 msgid "Scroll Horizontal"
 msgstr ""
 
-#: lib/widget.php:177
+#: lib/widget.php:178
 msgid "Scroll Vertical"
 msgstr ""
 
-#: lib/widget.php:177
+#: lib/widget.php:178
 msgid "Shuffle"
 msgstr ""
 
-#: lib/widget.php:177
+#: lib/widget.php:178
 msgid "Slide X"
 msgstr ""
 
-#: lib/widget.php:177
+#: lib/widget.php:178
 msgid "Slide Y"
 msgstr ""
 
-#: lib/widget.php:177
+#: lib/widget.php:178
 msgid "Toss"
 msgstr ""
 
-#: lib/widget.php:177
+#: lib/widget.php:178
 msgid "Turn Up"
 msgstr ""
 
-#: lib/widget.php:177
+#: lib/widget.php:178
 msgid "Turn Down"
 msgstr ""
 
-#: lib/widget.php:177
+#: lib/widget.php:178
 msgid "Turn Left"
 msgstr ""
 
-#: lib/widget.php:177
+#: lib/widget.php:178
 msgid "Turn Right"
 msgstr ""
 
-#: lib/widget.php:177
+#: lib/widget.php:178
 msgid "Uncover"
 msgstr ""
 
-#: lib/widget.php:177
+#: lib/widget.php:178
 msgid "Wipe"
 msgstr ""
 
-#: lib/widget.php:177
+#: lib/widget.php:178
 msgid "Zoom"
 msgstr ""
 
-#: lib/widget.php:177
+#: lib/widget.php:178
 msgid "Grow X"
 msgstr ""
 
-#: lib/widget.php:177
+#: lib/widget.php:178
 msgid "Grow Y"
 msgstr ""
 
-#: lib/widget.php:177 lib/widget.php:197
+#: lib/widget.php:178 lib/widget.php:198
 msgid "Random"
 msgstr ""
 
-#: lib/widget.php:197
+#: lib/widget.php:198
 msgid "Ordered"
+msgstr ""
+
+#: view/dataset-form.php:4
+#, php-format
+msgid ""
+"Unable to create directory %s. Is its parten directory writable by the "
+"server?"
 msgstr ""
 
 #: view/dataset.php:14
@@ -859,15 +926,15 @@ msgstr ""
 msgid "Details of %s"
 msgstr ""
 
-#. Plugin Name of an extension
+#. Plugin Name of the plugin/theme
 msgid "ProjectManager"
 msgstr ""
 
-#. Plugin URI of an extension
+#. Plugin URI of the plugin/theme
 msgid "http://kolja.galerie-neander.de/plugins/projectmanager/"
 msgstr ""
 
-#. Description of an extension
+#. Description of the plugin/theme
 msgid ""
 "This Plugin can be used to manage several different types of projects with "
 "redundant data. This could be athlet portraits, DVD database, architect "
@@ -875,10 +942,10 @@ msgid ""
 "project entries."
 msgstr ""
 
-#. Author of an extension
+#. Author of the plugin/theme
 msgid "Kolja Schleich"
 msgstr ""
 
-#. Author URI of an extension
+#. Author URI of the plugin/theme
 msgid "http://kolja.galerie-neander.de/"
 msgstr ""
