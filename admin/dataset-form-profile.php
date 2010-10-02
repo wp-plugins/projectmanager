@@ -96,7 +96,7 @@ document.forms[0].encoding = "multipart/form-data";
 						call_user_func_array($field['input_callback'], $field['args']);
 					else : ?>
 					<input type="hidden" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" value="" />
-					<p><?php _e( 'This Field has a callback attached which will get the data from somewhere else!', 'projectmanager' ) ?></p>
+					<p><?php echo $field['msg'] ?></p>
 					<?php endif; ?>
 				<?php endif; ?>
 			</td>

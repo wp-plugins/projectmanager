@@ -110,7 +110,7 @@ if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) 
 						call_user_func_array($field['input_callback'], $field['args']);
 					else : ?>
 					<input type="hidden" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" value="" />
-					<p><?php _e( 'This Field has a callback attached which will get the data from somewhere else!', 'projectmanager' ) ?></p>
+					<p><?php echo $field['msg'] ?></p>
 					<?php endif; ?>
 				<?php endif; ?>
 			</td>
