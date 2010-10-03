@@ -18,7 +18,7 @@ $args = array();
 	<?php do_action('projectmanager_dataset', array('id' => $_GET['show'], 'echo' => 1), true) ?>
 <?php else: ?>
 
-<?php if ( $project->tablenav ) do_action('projectmanager_tablenav'); ?>
+<?php if ( $project->selections ) do_action('projectmanager_selections'); ?>
 
 <?php if ( $datasets ) : ?>
 

@@ -37,7 +37,8 @@ class ProjectManagerShortcodes
 		add_shortcode( 'project', array(&$this, 'displayProject') );
 		add_shortcode( 'dataset_form', array(&$this, 'displayDatasetForm') );
 		add_shortcode( 'project_search', array(&$this, 'displaySearchForm') );
-		add_action( 'projectmanager_tablenav', array(&$this, 'displayTablenav') );
+		add_action( 'projectmanager_selections', array(&$this, 'displaySelections') );
+		add_action( 'projectmanager_tablenav', array(&$this, 'displaySelections') );
 		add_action( 'projectmanager_dataset', array(&$this, 'displayDataset') );
 	}
 	
@@ -160,12 +161,12 @@ class ProjectManagerShortcodes
 	/**
 	 * get dropdown selections
 	 *
-	 * This function is called via do_action('projectmanager_tablenav') and loads the template tablenav.php
+	 * This function is called via do_action('projectmanager_selections') and loads the template selections.php
 	 *
 	 * @param none
 	 * @return void the dropdown selections
 	 */
-	function displayTablenav( )
+	function displaySelections( )
 	{
 		global $projectmanager;
 		$project = $projectmanager->getCurrentProject();
@@ -179,7 +180,7 @@ class ProjectManagerShortcodes
 		$category = ( -1 != $project->category ) ? $project->category : false;
 		$selected_cat = $projectmanager->getCatID();
 		
-		$out = $this->loadTemplate( 'tablenav', array( 'category' => $category, 'selected_cat' => $selected_cat, 'orderby' => $orderby, 'order' => $order) );
+		$out = $this->loadTemplate( 'selections', array( 'category' => $category, 'selected_cat' => $selected_cat, 'orderby' => $orderby, 'order' => $order) );
 
 		echo $out;
 	}
@@ -262,7 +263,7 @@ class ProjectManagerShortcodes
 				$project->gallery_num_cols = ( $project->gallery_num_cols == 0 ) ? 4 : $project->gallery_num_cols;
 				$project->dataset_width = floor(100/$project->gallery_num_cols)."%";
 				$project->single = ( $single == 'true' ) ? true : false;
-				$project->tablenav = ( $selections == 'true' ) ? true : false;
+				$project->selections = ( $selections == 'true' ) ? true : false;
 
 				$datasets[$i]->class = $class;
 				$datasets[$i]->URL = $url;

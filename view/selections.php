@@ -1,6 +1,6 @@
 <?php
 /**
-Template page for tablenav. Loaded by do_action('projectmanager_tablenav')
+Template page for selections. Loaded by do_action('projectmanager_selections')
 
 The following variables are usable:
 
@@ -14,7 +14,7 @@ The following variables are usable:
 ?>
 <?php if ( $category || $orderby || $order ) : ?>
 
-<div class='projectmanager_tablenav'>
+<div class='projectmanager_selections'>
 <form action='<?php the_permalink() ?>' method='get'>
 <div>
 	<input type='hidden' name='page_id' value='<?php the_ID() ?>' />

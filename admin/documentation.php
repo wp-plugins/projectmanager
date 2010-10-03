@@ -133,6 +133,7 @@ else :
 			<td>&#160;</td>
 			<td><?php _e( 'Yes', 'projectmanager' ) ?></td>
 		</tr>
+	</tbody>
 	</table>
 
 	<!-- Shortcode to show search form -->
@@ -163,6 +164,7 @@ else :
 			<td>extend</td>
 			<td><?php _e( 'Yes', 'projectmanager' ) ?></td>
 		</tr>
+	</tbody>
 	</table>
 
 	<!-- Shortcode to include dataset input form -->
@@ -186,11 +188,59 @@ else :
 			<td>&#160;</td>
 			<td><?php _e( 'No', 'projectmanager' ) ?></td>
 		</tr>
+	</tbody>
 	</table>
 
 	<a href="#top" class="alignright"><?php _e( 'Top', 'projectmanager' ) ?></a>
   	<h3 id="templates"><?php _e( 'Templates', 'projectmanager' ) ?></h3>
-  
+    <p><?php _e( 'Templates are special files that are used to display plugin data in the website frontend. They reside in the following directory', 'projectmanager' ) ?></p>
+	<blockquote><p>WP_PLUGIN_DIR/projectmanager/view/</p></blockquote>
+	<p><?php _e( 'The following table lists all available default templates', 'projectmanager' ) ?></p>
+	<table class="widefat">
+	<thead>
+		<tr>
+			<th scope="col"><?php _e( 'Template', 'projectmanager' ) ?></th>
+			<th scope="col"><?php _e( 'Description', 'projectmanager' ) ?></th>
+		</tr>
+	</thead>
+		<tbody>
+		<tr class="" valign="top">
+			<td>table.php</td>
+			<td><?php _e( 'Tabular display of datasets', 'projectmanager' ) ?></td>
+
+		</tr>
+		<tr class="alternate" valign="top">
+			<td>gallery.php</td>
+			<td><?php _e( 'Show datasets as photo gallery', 'projectmanager' ) ?></td>
+
+		</tr>
+		<tr class="" valign="top">
+			<td>table-image.php</td>
+			<td><?php _e( 'Tabular display of datasets with small image', 'projectmanager' ) ?></td>
+
+		</tr>
+		<tr class="alternate" valign="top">
+			<td>selections.php</td>
+			<td><?php _e( 'Display dropdown selections for categories and dataset sorting', 'projectmanager' ) ?></td>
+
+		</tr>
+		<tr class="" valign="top">
+			<td>dataset-form.php</td>
+			<td><?php _e( 'Dataset input formular', 'projectmanager' ) ?></td>
+		</tr>
+		<tr class="alternate" valign="top">
+			<td>search-extend.php</td>
+			<td><?php _e( 'Full Search formular', 'projectmanager' ) ?></td>
+
+		</tr>
+		<tr class="" valign="top">
+			<td>search-compact.php</td>
+			<td><?php _e( 'Compact Search formular', 'projectmanager' ) ?></td>
+		</tr>
+	</tbody>
+	</table>
+	
+	
 	<a href="#top" class="alignright"><?php _e( 'Top', 'projectmanager' ) ?></a>
  	<h3 id="access"><?php _e( 'Access Control', 'projectmanager' ) ?></h3>
 

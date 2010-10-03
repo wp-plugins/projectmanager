@@ -1,17 +1,17 @@
 div.projectmanager { margin-bottom: 1em; }
 
 /* Header above simple Output */
-div.projectmanager_tablenav {
+div.projectmanager_selections {
 	float: left;
 	margin-top: 1em;
 	clear: both;
 }
-div.projectmanager_tablenav select.postform {
+div.projectmanager_selections select.postform {
 	padding: 0;
 	margin: 0;
 	background: white;
 	}
-div.projectmanager_tablenav select, div.projectmanager_tablenav select.postform {
+div.projectmanager_selections select, div.projectmanager_selections select.postform {
 	margin-right: 0.5em;
 	}
 
