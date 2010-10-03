@@ -194,7 +194,7 @@ else :
 	<a href="#top" class="alignright"><?php _e( 'Top', 'projectmanager' ) ?></a>
   	<h3 id="templates"><?php _e( 'Templates', 'projectmanager' ) ?></h3>
     <p><?php _e( 'Templates are special files that are used to display plugin data in the website frontend. They reside in the following directory', 'projectmanager' ) ?></p>
-	<blockquote><p>WP_PLUGIN_DIR/projectmanager/view/</p></blockquote>
+	<blockquote><p>WP_PLUGIN_DIR/projectmanager/templates/</p></blockquote>
 	<p><?php _e( 'The following table lists all available default templates', 'projectmanager' ) ?></p>
 	<table class="widefat">
 	<thead>
@@ -239,10 +239,18 @@ else :
 		</tr>
 	</tbody>
 	</table>
+	<p><?php _e( 'If you want to modify existing templates copy it to', 'projectmanager' ) ?></p>
+	<blockquote><p>your_theme_dir/projectmanager/</p></blockquote>
+	<p><?php _e( 'The plugin will then first look in your theme directory. Further it is possible to design own templates. Assume you created a file <strong>sample1.php</strong>, to display datasets of a project. To use the template use the following tag.', 'projectmanager' ) ?></p>
+	<blockquote><p>[project id=ID template=<strong>sample1</strong>]</p></blockquote>
+	<p><?php _e( 'For single datasets templates must be named <strong>dataset-X.php</strong> and searchform <strong>search-X.php</strong>. The files are then loaded with the following tags.', 'projectmanager' ) ?></p>
+	<blockquote><p>[dataset id=ID template=<strong>X</strong>]</p><p>[project_search project_id=ID template=<strong>X</strong>]</p></blockquote>
 	
 	
 	<a href="#top" class="alignright"><?php _e( 'Top', 'projectmanager' ) ?></a>
  	<h3 id="access"><?php _e( 'Access Control', 'projectmanager' ) ?></h3>
+	<p><?php printf( __( 'ProjectManager has fine grained capabilities to control access to different areas of the administration panel. You could use <a href="%s" target="_blank">Capability Manager</a> to manage roles and capabilities.', 'projectmanager' ), 'http://wordpress.org/extend/plugins/capsman/'); ?></p>
+	
 
 	<a href="#top" class="alignright"><?php _e( 'Top', 'projectmanager' ) ?></a>
   	<h3 id="customization"><?php _e( 'Customization', 'projectmanager' ) ?></h3>

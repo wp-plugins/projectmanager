@@ -61,8 +61,8 @@ class ProjectManagerShortcodes
 		ob_start();
 		if ( file_exists( TEMPLATEPATH . "/projectmanager/$template.php")) {
 			include(TEMPLATEPATH . "/projectmanager/$template.php");
-		} elseif ( file_exists(PROJECTMANAGER_PATH . "/view/$template.php") ) {
-			include(PROJECTMANAGER_PATH . "/view/$template.php");
+		} elseif ( file_exists(PROJECTMANAGER_PATH . "/templates/$template.php") ) {
+			include(PROJECTMANAGER_PATH . "/templates/$template.php");
 		} else {
 			$projectmanager->setMessage( sprintf(__('Could not load template %s.php', 'projectmanager'), $template), true );
 			$projectmanager->printMessage();

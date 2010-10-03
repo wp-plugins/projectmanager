@@ -29,7 +29,7 @@ The following variables are usable:
 </tr>
 
 <?php foreach ( $datasets AS $dataset ) : ?>
-	<tr class="<?php echo $dataset->class ?>">
+	<tr class="<?php echo $dataset->class ?>" valign="top">
 		<td class="name"><?php echo $dataset->nameURL ?></td>
 		<td><img src="<?php echo $projectmanager->getFileURL('tiny.'.$dataset->image)?>" class="alignright" /></td>
 		<?php $projectmanager->printDatasetMetaData( $dataset ); ?>

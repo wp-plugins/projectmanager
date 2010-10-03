@@ -894,7 +894,10 @@ class ProjectManager extends ProjectManagerLoader
 				if ( $meta ) {
 					foreach ( $meta AS $m ) {
 						$key = sanitize_title($m->label);
-						$datasets[$i]->{$key} = $m->value;
+						if ( !empty($key) ) {
+							$value = empty($m->value) ? '' : $m->value;
+							$datasets[$i]->{$key} = $m->value;
+						}
 					}
 					$i++;
 				}

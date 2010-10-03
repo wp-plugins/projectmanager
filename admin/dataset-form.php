@@ -56,7 +56,7 @@
 				<select size="1" name="form_field[<?php echo $form_field->id ?>][year]">
 					<option value="0000"><?php _e('Year', 'projectmanager') ?></option>
 					<option value="0000">&#160;</option>
-					<?php for ( $year = date('Y')-100; $year <= date('Y')+10; $year++ ) : ?>
+					<?php for ( $year = 1970; $year <= date('Y')+10; $year++ ) : ?>
 						<option value="<?php echo $year ?>"<?php selected ( $year, substr($meta_data[$form_field->id], 0, 4) ); ?>><?php echo $year ?></option>
 					<?php endfor; ?>
 				</select>
