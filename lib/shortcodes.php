@@ -254,7 +254,7 @@ class ProjectManagerShortcodes
 			
 			$i = 0;
 			foreach ( $datasets AS $dataset ) {
-				$class = ( "alternate" == $class ) ? '' : "alternate"; 
+				$class = ( !isset($class) || "alternate" == $class ) ? '' : "alternate"; 
 				
 				$dataset->name = stripslashes($dataset->name);
 				

@@ -122,12 +122,14 @@ else
 			<?php endif; ?>
 			<select size='1' name='orderby'>
 			<?php foreach ( $orderby AS $key => $value ) : ?>
-				<option value='<?php echo $key ?>' <?php selected( $_REQUEST['orderby'], $key ) ?>><?php echo $value ?></option>
+				<?php $orderby_request = isset($_REQUEST['orderby']) ? $_REQUEST['orderby'] : ''; ?>
+				<option value='<?php echo $key ?>' <?php selected( $orderby_request, $key ) ?>><?php echo $value ?></option>
 			<?php endforeach ?>
 			</select>
 			<select size='1' name='order'>
 			<?php foreach ( $order AS $key => $value ) : ?>
-				<option value='<?php echo $key ?>' <?php selected ($_REQUEST['order'], $key) ?>><?php echo $value ?></option>
+				<?php $order_request = isset($_REQUEST['order']) ? $_REQUEST['order'] : ''; ?>
+				<option value='<?php echo $key ?>' <?php selected ($order_request, $key) ?>><?php echo $value ?></option>
 			<?php endforeach; ?>
 			</select>
 			<input type='submit' value='<?php _e( 'Apply' ) ?>' class='button' />
@@ -171,7 +173,7 @@ else
 	<tbody id="the-list">
 <?php
 	foreach ( $datasets AS $dataset ) :
-		$class = ( 'alternate' == $class ) ? '' : 'alternate';
+		$class = ( !isset($class) || 'alternate' == $class ) ? '' : 'alternate';
 		if ( count($projectmanager->getSelectedCategoryIDs($dataset)) > 0 )
 			$categories = $projectmanager->getSelectedCategoryTitles( $projectmanager->getSelectedCategoryIDs($dataset) );
 		else

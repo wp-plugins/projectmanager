@@ -24,14 +24,16 @@ The following variables are usable:
 	<?php if ( $orderby ) : ?>
 	<select size='1' name='orderby'>
 		<?php foreach ( $orderby AS $key => $value ) : ?>
-		<option value='<?php echo $key ?>' <?php if ($_GET['orderby'] == $key) echo ' selected="selected"' ?>><?php echo $value ?></option>
+		<?php $orderby_request = isset($_GET['orderby']) ? $_GET['orderby'] : '' ?>
+		<option value='<?php echo $key ?>' <?php if ($orderby_request == $key) echo ' selected="selected"' ?>><?php echo $value ?></option>
 		<?php endforeach; ?>
 	</select>
 	<?php endif; ?>
 	<?php if ( $order ) : ?>
 	<select size='1' name='order'>
 		<?php foreach ( $order AS $key => $value ) : ?>
-		<option value='<?php echo $key ?>' <?php if ($_GET['order'] == $key) echo ' selected="selected"' ?>><?php echo $value ?></option>
+		<?php $order_request = isset($_GET['order']) ? $_GET['order'] : '' ?>
+		<option value='<?php echo $key ?>' <?php if ($order_request == $key) echo ' selected="selected"' ?>><?php echo $value ?></option>
 		<?php endforeach; ?>
 	</select>
 	<?php endif; ?>

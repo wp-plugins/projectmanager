@@ -65,7 +65,7 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 		<tbody id="the-list">
 		<?php if ( $projects = $projectmanager->getProjects() ) : ?>
 		
-		<?php foreach ( $projects AS $project ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
+		<?php foreach ( $projects AS $project ) : $class = ( !isset($class) || 'alternate' == $class ) ? '' : 'alternate'; ?>
 			<tr class="<?php echo $class ?>">
 				<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $project->id ?>" name="project[<?php echo $project->id ?>]" /></th>
 				<td class="num"><?php echo $project->id ?></td>

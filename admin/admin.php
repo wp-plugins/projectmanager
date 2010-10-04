@@ -122,7 +122,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 			  include_once( dirname(__FILE__) . '/documentation.php' );
 			  break;
 			case 'projectmanager':
-				switch($_GET['subpage']) {
+				$page = isset($_GET['subpage']) ? $_GET['subpage'] : '';
+				switch($page) {
 					case 'show-project':
 						include_once( dirname(__FILE__) . '/show-project.php' );
 						break;

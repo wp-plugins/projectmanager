@@ -274,7 +274,11 @@ class ProjectManager extends ProjectManagerLoader
 	{
 		if ( !$cat_id ) $cat_id = $this->getCatID();
 		$c = get_category($cat_id);
-		return $c->name;
+		
+		if ( isset($c->name) )
+			return $c->name;
+			
+		return false;
 	}
 	
 	
@@ -301,6 +305,7 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function getPageLinks()
 	{
+		$query_args = isset($this->query_args) ? $this->query_args : '';
 		$page_links = paginate_links( array(
 			'base' => add_query_arg( 'paged', '%#%' ),
 			'format' => '',
@@ -308,7 +313,7 @@ class ProjectManager extends ProjectManagerLoader
 			'next_text' => '&#9658;',
 			'total' => $this->getNumPages(),
 			'current' => $this->getCurrentPage(),
-			'add_args' => $this->query_args
+			'add_args' => $query_args
 		));
 		return $page_links;
 	}
@@ -330,7 +335,7 @@ class ProjectManager extends ProjectManagerLoader
 		if ( isset($_POST['orderby']) && isset($_POST['order']) && !isset($_POST['doaction']) ) {
 			$orderby = explode('_', $_POST['orderby']);
 			$this->orderby = ( $_POST['orderby'] != '' ) ? $_POST['orderby'] : 'name';
-			$formfield_id = $orderby[1];
+			$formfield_id = isset($orderby[1]) ? $oderby[1] : false;
 			$this->order = ( $_POST['order'] != '' ) ? $_POST['order'] : 'ASC';
 
 			$this->query_args['order'] = $this->order;
@@ -853,7 +858,7 @@ class ProjectManager extends ProjectManagerLoader
 
 			if ( $limit && $this->per_page != 'NaN' ) $offset = ( $this->getCurrentPage() - 1 ) * $this->per_page;
 
-			if ( $meta_key && !empty($meta_value) ) {
+			if ( isset($meta_key )&& !empty($meta_value) ) {
 				if ( $meta_key != 'name' )
 					$sql .= " AND `id` IN ( SELECT `dataset_id` FROM {$wpdb->projectmanager_datasetmeta} AS meta WHERE meta.form_id = '".intval($meta_key)."' AND meta.value LIKE '".$meta_value."' )";
 				else
@@ -1313,7 +1318,7 @@ class ProjectManager extends ProjectManagerLoader
 	{
 		global $current_user;
 	
-		$project = $this->getProject($dataset->project_id);
+		$project = $this->getProject();
 		$meta_value = maybe_unserialize($meta->value);
 
 		$out = '';
@@ -1323,7 +1328,8 @@ class ProjectManager extends ProjectManagerLoader
 			// Custom Formfield
 			if ( is_array($this->getFormFieldTypes($meta->type)) ) {
 				$field = $this->getFormFieldTypes($meta->type);
-				$meta->type = $field['html_type'];
+				if ( isset($field['html_type']) )
+					$meta->type = $field['html_type'];
 			}
 
 
