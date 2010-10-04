@@ -31,6 +31,29 @@ function projectmanager_searchform( $project_id, $args = array() ) {
 
 
 /**
+ * display selections for categories and dataset ordering options
+ *
+ * @param int $project_id ProjectID
+ * @return void
+ */
+function projectmanager_selections( $project_id ) {
+	global $pmShortcodes;
+	$pmShortcodes->displaySelections($project_id);
+}
+
+
+/**
+ * display dataset form
+ *
+ * @param int $project_id
+ */
+function projectmanager_datasetform( $project_id ) {
+	global $pmShortcodes;
+	echo $pmShortcodes->displayDatasetForm( array('project_id' => $project_id) );	
+}
+
+
+/**
  * display project manually
  *
  * @param int $id Project ID

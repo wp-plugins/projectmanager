@@ -163,13 +163,16 @@ class ProjectManagerShortcodes
 	 *
 	 * This function is called via do_action('projectmanager_selections') and loads the template selections.php
 	 *
-	 * @param none
+	 * @param int $project_id
 	 * @return void the dropdown selections
 	 */
-	function displaySelections( )
+	function displaySelections( $project_id = false )
 	{
 		global $projectmanager;
-		$project = $projectmanager->getCurrentProject();
+		if ( $project_id )
+			$project = $projectmanager->getProject($project_id);
+		else
+			$project = $projectmanager->getCurrentProject();
 	
 		$orderby = array( '' => __('Order By', 'projectmanager'), 'name' => __('Name','projectmanager'), 'id' => __('ID','projectmanager') );
 		foreach ( $projectmanager->getFormFields() AS $form_field )

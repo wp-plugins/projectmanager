@@ -187,6 +187,17 @@ p.error {
 	padding: 0;
 }
 
+/*--- Documentation ---*/
+dl.projectmanager {
+}
+dl.projectmanager dt {
+	clear: both;
+	font-weight: bold;
+}
+dl.projectmanager dd {
+	text-indent: 1.5em;
+}
+
 /*--- JQuery Slideshow Styles. Cleaned ---*/
 
 .jQuery_slideshow {

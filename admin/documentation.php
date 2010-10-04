@@ -249,11 +249,67 @@ else :
 	
 	<a href="#top" class="alignright"><?php _e( 'Top', 'projectmanager' ) ?></a>
  	<h3 id="access"><?php _e( 'Access Control', 'projectmanager' ) ?></h3>
-	<p><?php printf( __( 'ProjectManager has fine grained capabilities to control access to different areas of the administration panel. You could use <a href="%s" target="_blank">Capability Manager</a> to manage roles and capabilities.', 'projectmanager' ), 'http://wordpress.org/extend/plugins/capsman/'); ?></p>
+	<p><?php printf( __( 'ProjectManager has fine grained capabilities to control access to different areas of the administration panel. You could use <a href="%s" target="_blank">Capability Manager</a> to manage roles and capabilities. <em>Note</em>: Capabilities are not inherent.', 'projectmanager' ), 'http://wordpress.org/extend/plugins/capsman/'); ?></p>
+	<dl class="projectmanager">
+		<dt>edit_projects</dt><dd>add and edit projects</dd>
+		<dt>delete_projects</dt><dd>delete existing projects</dd>
+		<dt>projectmanager_settings</dt><dd>allow access to global settings of ProjectManager</dd>
+		<dt>edit_formfields</dt><dd>allow access to FormField Panel</dd>
+		<dt>edit_projects_settings</dt><dd>allow access to individual projects settinigs</dd>
+		<dt>import_datasets</dt><dd>access import/export panel</dd>
+		<dt>edit_datasets</dt><dd>add datasets and edit own datasets</dd>
+		<dt>edit_other_datasets</dt><dd>add datasets and edit all datasets and add WP User as dataset</dd>
+		<dt>delete_datasets</dt><dd>delete own datasets</dd>
+		<dt>delete_other_datasets</dt><dd>delete any dataset</dd>
+		<dt>view_projects</dt><dd>browse projects in administration panel</dd>
+		<dt>projectmanager_user</dt><dd>allow usage of profile hook</dd>
+	</dl>
 	
-
+	
+	<a href="#top" class="alignright"><?php _e( 'Top', 'projectmanager' ) ?></a>
+	<h3 id="extended_profile"><?php _e( 'Hook dataset into profile page', 'projectmanager' ) ?></h3>
+	<p><?php _e( 'Each dataset is assigned an owner who added it. This owner can be also changed by anybody with the capability <em>edit_other_datasets</em>. This makes it possible to use ProjectManager as extended WP User Profile by activating the profile hook option in the projects settings. When this option is activated the first dataset of the current user is loaded into the profile page and can be edited through their profile. Administrators can also add datasets for other WP Users by using the button next to the dataset name when adding a new dataset. For new users, a dataset is automatically generated upon registration if the default user group has the capability <em>projectmanager_user</em>.', 'projectmanager' ) ?></p>
+	
 	<a href="#top" class="alignright"><?php _e( 'Top', 'projectmanager' ) ?></a>
   	<h3 id="customization"><?php _e( 'Customization', 'projectmanager' ) ?></h3>
+	<h4>Icons in admin menu</h4>
+	<p><?php _e( 'If you want to use custom icons for the admin menu put them into the following folder in your theme directory', 'projectmanager' ) ?></p>
+	<blockquote><p>projectmanager/icons</p></blockquote>
+	
+	<h4>Add Formfield types</h4>
+	<p><?php _e( 'You can also add custom Formfields via the filter projectmanager_formfields. First let us add the field.', 'projectmanager' ) ?></h4>
+	<code><pre>
+	&lt;?php
+	add_filter( 'projectmanager_formfields', 'my_formfields');
 
+	function my_formfields( $formfields ) {
+		$formfields['myfield'] = array( 'name' => 'My Field', 'callback' => 'get_myfield_data', 'args' => array());
+		return $formfields;
+	}
+	?&gt;
+	</pre></code>
+	<p><?php _e( 'The <em>callback</em> option is a function which gets the data for this field as it is not stored in the ProjectManager Database. <em>args</em> can be an optional assoziative array of arguments that are passed to the callback function. Finally we just need to get the data from somewhere.', 'projectmanager' ) ?></p>
+	<code><pre>
+	&lt;?php
+	function get_myfield_data( $dataset, $args ) {
+		// $dataset is an assoziative array with keys 'id' and 'name' that hold the dataset ID and name respectively
+		// do some stuff
+	}
+	?&gt;
+	</pre></code>
+	
+	<a href="#top" class="alignright"><?php _e( 'Top', 'projectmanager' ) ?></a>
+	<h3 id="donations"><?php _e( 'Donations', 'projectmanager' ) ?></h3>
+	<p><?php _e( 'If you like my plugin and want to support me, I am grateful for any donation.', 'projectmanager' ) ?></p>
+	<form action="https://www.paypal.com/cgi-bin/webscr" method="post" style="float: left; margin-right: 1em;">
+		<input type="hidden" name="cmd" value="_s-xclick">
+		<input type="hidden" name="hosted_button_id" value="2329191">
+		<input type="image" src="<?php echo PROJECTMANAGER_URL ?>/admin/doc/donate_eur.gif" border="0" name="submit" alt="Donate in Euro">
+	</form>
+	<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+		<input type="hidden" name="cmd" value="_s-xclick">
+		<input type="hidden" name="hosted_button_id" value="3408441">
+		<input type="image" src="<?php echo PROJECTMANAGER_URL ?>/admin/doc/donate_usd.gif" border="0" name="submit" alt="Donate in USD">
+	</form>
 </div>
 <?php endif; ?>
