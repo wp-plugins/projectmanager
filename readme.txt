@@ -3,7 +3,7 @@ Contributors: Kolja Schleich
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2329191
 Tags: datamanager, CMS, Content Management System
 Requires at least: 2.7
-Tested up to: 3.0.1
+Tested up to3.0
 Stable tag: 2.9.8
 
 This plugin can be used to manage any number of projects with recurrent datasets (e.g. portrait system, dvd collection)
