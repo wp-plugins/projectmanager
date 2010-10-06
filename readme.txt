@@ -27,7 +27,7 @@ This plugin is a datamanager for any recurrent datasets. It can be used to manag
 * hook projects into user profile
 * manual drag & drop sorting of datasets
 
-[Randy Hoyt](http://randyhoyt.com/) created a [Screencast](http://randyhoyt.com/wordpress/snippets/]) on the usage of ProjectManager. Thanks a lot.
+[Randy Hoyt](http://randyhoyt.com/) created a [Screencast](http://randyhoyt.com/wordpress/snippets/) on the usage of ProjectManager. Thanks a lot.
 
 
 == Installation ==
@@ -45,45 +45,6 @@ To install the plugin to the following steps
 4. Easy adding of new datasets
 5. Widget control panel
 6. Easy adding of shortcode tags via TinyMCE Button
-
-
-== Usage ==
-
-
-= Template Tags = 
-Template Tags are functions that can be used in your Wordpress Theme to display the plugin data. Here's a brief listing of available tags. For details see file functions.php
-
-`projectmanager_display_widget( $number, $instance )`
-
-displays the widget. $number is the widget number and $instance an assoziative array of widget settings. See lib/widget.php function widget for details.
-
-`projectmanager_searchform( $project_id, $args )`
-
-can be used to show the searchform. $project_id is the ID of the project.
-
-To display all datasets from a single project use
-
-`project( $id, $args )`
-
-Finally a single dataset can be displayed with
-
-`dataset( $id, $args )`
-
-
-The variable $args is always an assoziative array of additional arguments with keys being the same as the shortcode attributes.
-
-
-= Custom Menu Icons =
-
-You can easily add your own icons for the admin menu by simply uploading them to
-
-`your_theme_directory/projectmanager/icons`.
-
-
-= Custom icons for Admin Menu =
-If you want to use custom icons for the admin menu put them in
-
-`yourthemedirectory/projectmanager/icons/`
 
 
 == Credits ==

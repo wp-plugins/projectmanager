@@ -1532,7 +1532,7 @@ class ProjectManager extends ProjectManagerLoader
 	
 		if ( !is_array($selected) ) $selected = explode("|", $selected);
 		$out = '';
-		if ( count($options['form_field_options'][$form_id]) > 1 ) {
+		if ( isset($options['form_field_options'][$form_id]) && count($options['form_field_options'][$form_id]) > 1 ) {
 			$out .= "<ul class='checkboxlist'>";
 			foreach ( $options['form_field_options'][$form_id] AS $id => $option_name ) {
 				if ( count($selected) > 0 && in_array($option_name, $selected) )

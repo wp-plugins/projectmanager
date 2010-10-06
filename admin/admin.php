@@ -1122,7 +1122,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 		update_option('projectmanager', $options);
 		$this->setMessage( __('Form Fields updated', 'projectmanager') );
 		
-		do_action('projectmanager_save_formfields', $dataset_id);
+		do_action('projectmanager_save_formfields', $project_id);
 	}
 	
 	

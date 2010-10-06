@@ -10,8 +10,11 @@ else :
 	<ul>
 	 <li><a href="#shortcodes"><?php _e( 'Shortcodes', 'projectmanager' ) ?></a></li>
 	 <li><a href="#templates"><?php _e( 'Templates', 'projectmanager' ) ?></a></li>
+	 <li><a href="#template_tags"><?php _e( 'Template Tags', 'projectmanager' ) ?></a></li>
 	 <li><a href="#access"><?php _e( 'Access Control', 'projectmanager' ) ?></a></li>
 	 <li><a href="#customization"><?php _e( 'Customization', 'projectmanager' ) ?></a></li>
+	 <li><a href="#howto_intro"><?php _e( 'Howto', 'projectmanager' ) ?></a></li>
+	 <li><a href="#donations"><?php _e( 'Donations', 'projectmanager' ) ?></a></li>
 	</ul>
 	
 	<a href="#top" class="alignright"><?php _e( 'Top', 'projectmanager' ) ?></a>
@@ -248,6 +251,19 @@ else :
 	
 	
 	<a href="#top" class="alignright"><?php _e( 'Top', 'projectmanager' ) ?></a>
+ 	<h3 id="template_tags"><?php _e( 'Template Tags', 'projectmanager' ) ?></h3>
+	<p><?php _e( 'Template Tags are functions that can be used in your Wordpress Theme to display the plugin data. Here is a brief listing of available tags. For details see file functions.php', 'projectmanager' ) ?><p>
+	<dl class="projectmanager">
+		<dt><pre>&lt;?php project( $id, $args ) ?&gt;</pre></dt><dd><?php _e( 'display all datasets from a single project', 'projectmanager' ) ?></dd>
+		<dt><pre>&lt;?php dataset( $id, $args ) ?&gt;</pre></dt><dd><?php _e( 'display a single dataset', 'projectmanager' ) ?></dd>
+		<dt><pre>&lt;?php projectmanager_display_widget( $number, $instance ) ?&gt;</pre></dt><dd><?php _e( 'Display widget. <em>$number</em> is the widget number and <em>$instance</em> is an assoziative array of widget settings. See lib/widget.php function widget for details.', 'projectmanager' ) ?></dd>
+		<dt><pre>&lt;?php projectmanager_searchform( $project_id, $args ) ?&gt;</pre></dt><dd><?php _e( 'display the searchform. <em>$project_id</em> is the ID of the project.', 'projectmanager' ) ?></dd>
+		<dt><pre>&lt;?php projectmanager_selections( $project_id ) ?&gt;</pre></dt><dd><?php _e( 'display the selection bar. <em>$project_id</em> is the ID of the project.', 'projectmanager' ) ?></dd>
+		<dt><pre>&lt;?php projectmanager_datasetform( $project_id ) ?&gt;</pre></dt><dd><?php _e( 'display the dataset form. <em>$project_id</em> is the ID of the project.', 'projectmanager' ) ?></dd>
+	</dl>
+	<p><?php _e( 'The variable <em>$args</em> is always an assoziative array of additional arguments with keys being the same as the shortcode attributes.', 'projectmanager' ) ?></p>
+	
+	<a href="#top" class="alignright"><?php _e( 'Top', 'projectmanager' ) ?></a>
  	<h3 id="access"><?php _e( 'Access Control', 'projectmanager' ) ?></h3>
 	<p><?php printf( __( 'ProjectManager has fine grained capabilities to control access to different areas of the administration panel. You could use <a href="%s" target="_blank">Capability Manager</a> to manage roles and capabilities. <em>Note</em>: Capabilities are not inherent.', 'projectmanager' ), 'http://wordpress.org/extend/plugins/capsman/'); ?></p>
 	<dl class="projectmanager">
@@ -297,6 +313,14 @@ else :
 	}
 	?&gt;
 	</pre></code>
+	
+	<a href="#top" class="alignright"><?php _e( 'Top', 'projectmanager' ) ?></a>
+	<h3 id="howto_intro"><?php _e( 'HowTo', 'projectmanager' ) ?></h3>
+	<p><?php _e( 'This section should give a short introduction to setting up and using ProjectManager. In addition <a href="http://randyhoyt.com/" target="_blank">Randy Hoyt</a> created a <a href="http://randyhoyt.com/wordpress/snippets/" target="_blank">Screencast</a> on the usage of ProjectManager. Thanks a lot.', 'projectmanager' ) ?></p>
+	<p><?php printf( __( 'After activation, there will be a new item in the admin menu. The first step is to <a href="%s" class="thickbox">add a new project</a>. When you click on a specific project you will get to an <a href="%s" class="thickbox">overview page displaying all datasets</a>. The screenshot already shows some example datasets. At first you should go to the <a href="%s" class="thickbox">settings page</a>. The option <em>Navi Link</em> will create an individual object in the admin menu. Activate the <em>Hook into profile option</em> to use ProjectManager as extended WP User Profile. Before adding datasets you need to setup the <a href="%s" class="thickbox">formfields</a>. This is a very powerful feature of ProjectManager as it allows the design of custom input formular to have datasets with a variety of data. You can choose to display the field value on the startpage and also control display in the user profile. Further it is possible to order datasets by certain formfield values. After that you are set to <a href="%s" class="thickbox">insert datasets</a>. It is possible to group datasets into different <a href="%s" class="thickbox">categories</a> using the WP category system.', 'projectmanager'), PROJECTMANAGER_URL .'/admin/doc/index.png', PROJECTMANAGER_URL .'/admin/doc/overview.png', PROJECTMANAGER_URL .'/admin/doc/settings.png', PROJECTMANAGER_URL .'/admin/doc/formfields.png', PROJECTMANAGER_URL .'/admin/doc/dataset-form.png', PROJECTMANAGER_URL .'/admin/doc/categories.png') ?></p>
+	<p><?php printf( __( 'The datasets of a project can be inserted into a page or post either by directly using the shortcodes which are described above or by using the <a href="%s" class="thickbox">TinyMCE Button</a>. The button, however, only covers a few default parameter. One default template is <a href="%s" class="thickbox">gallery</a> which displays the datasets in a multicolumn photogallery with a link to <a href="%s" class="thickbox">individual datasets</a>. This template is especially useful for athlete profiles. ', 'projectmanager' ), PROJECTMANAGER_URL .'/admin/doc/page.png', PROJECTMANAGER_URL .'/admin/doc/gallery.png', PROJECTMANAGER_URL .'/admin/doc/dataset.png') ?></p>
+	<p><?php printf( __( 'ProjectManager also supports <a href="%s" class="thickbox">AJAX editing</a> of dataset values by clicking on the pencil symbol next to the field value on the overview page. <a href="%s" class="thickbox">E-Mail and URL</a> fields have a special syntax to add the values with a certain text.', 'projectmanager' ), PROJECTMANAGER_URL .'/admin/doc/ajax_group.png', PROJECTMANAGER_URL .'/admin/doc/ajax_email.png') ?></p>
+	
 	
 	<a href="#top" class="alignright"><?php _e( 'Top', 'projectmanager' ) ?></a>
 	<h3 id="donations"><?php _e( 'Donations', 'projectmanager' ) ?></h3>

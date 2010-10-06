@@ -8,7 +8,8 @@ $project = $projectmanager->getCurrentProject();
 
 if ( isset($_POST['saveFormFields']) ) {
 	check_admin_referer('projectmanager_manage-formfields');
-	$this->setFormFields( $_POST['project_id'], $_POST['formfields'], $_POST['new_formfields'] );
+	$new_formfields = isset($_POST['new_formfields']) ? $_POST['new_formfields'] : false;
+	$this->setFormFields( $_POST['project_id'], $_POST['formfields'], $new_formfields );
 
 	$this->printMessage();
 }
@@ -52,12 +53,12 @@ $options = get_option('projectmanager');
 	<tbody id="projectmanager_form_fields" class="form-table">
 	<?php $form_fields = $projectmanager->getFormFields() ?>
 	<?php if ( $form_fields ) : ?>
-		<?php foreach( $form_fields AS $form_field ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
+		<?php foreach( $form_fields AS $form_field ) : $class = ( !isset($class) || 'alternate' == $class ) ? '' : 'alternate'; ?>
 		<tr id="form_id_<?php echo $form_field->id ?>" class="<?php echo $class ?>">
 			<td><?php echo $form_field->id ?></td>
 			<td><input type="text" name="formfields[<?php echo $form_field->id ?>][name]" value="<?php echo htmlspecialchars(stripslashes($form_field->label), ENT_QUOTES) ?>" /></td>
 			<td id="form_field_options_box<?php echo $form_field->id ?>">
-				<?php $form_field->options = is_array($options['form_field_options'][$form_field->id]) ? implode('|', $options['form_field_options'][$form_field->id]) : ''; ?>
+				<?php $form_field->options = (isset($options['form_field_options'][$form_field->id]) && is_array($options['form_field_options'][$form_field->id])) ? implode('|', $options['form_field_options'][$form_field->id]) : ''; ?>
 				<select id="form_type_<?php echo $form_field->id ?>" name="formfields[<?php echo $form_field->id ?>][type]" size="1" onChange="ProjectManager.toggleOptions(<?php echo $project_id ?>, <?php echo $form_field->id ?>, this.value, '<?php echo $form_field->options ?>' );">
 				<?php foreach( $projectmanager->getFormFieldTypes() AS $form_type_id => $form_type ) : 
 					$field_name = is_array($form_type) ? $form_type['name'] : $form_type;
@@ -90,9 +91,11 @@ $options = get_option('projectmanager');
 
 					<div class="">
 					<ul id="form_field_options_<?php echo $form_field->id ?>">
+					<?php if ( isset($options['form_field_options'][$form_field->id]) ) : ?>
 					<?php foreach ( (array)$options['form_field_options'][$form_field->id] AS $x => $item ) : ?>
 					<li id="form_field_option_<?php echo $form_field->id ?>_<?php echo $x ?>"><input type="text" name="form_field_option_<?php echo $form_field->id ?>" value="<?php echo $item ?>" size="30" /><a class="image_link" href="#" onclick='return ProjectManager.removeFormFieldOption("form_field_option_<?php echo $form_field->id ?>_<?php echo $x ?>", <?php echo $form_field->id ?>);'><img src="../wp-content/plugins/projectmanager/admin/icons/trash.gif" alt="<?php _e( 'Delete', 'projectmanager' ) ?>" title="<?php _e( 'Delete Option', 'projectmanager' ) ?>" /></a></li>
 					<?php endforeach; ?>
+					<?php endif; ?>
 					</ul>
 					</div>
 				

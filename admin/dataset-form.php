@@ -8,6 +8,7 @@
 			<?php endif; ?>
 		</td>
 	</tr>
+	<?php echo $img_filename ?>
 	<?php if ( 1 == $project->show_image ) : ?>
 	<tr valign="top">
 		<th scope="row"><label for="projectmanager_image"><?php _e( 'Image', 'projectmanager' ) ?></label></th>
