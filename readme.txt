@@ -55,8 +55,9 @@ The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons
 
 == Changelog ==
 
-= 2.9.9 =
+= 3.0 =
 * NEW: documentation included with plugin
+* UPDATED: Screenshots
 * BUGFIX: empty property when form field label is empty
 * BUGFIX: external fields, such as statistics from LeagueManager
 
