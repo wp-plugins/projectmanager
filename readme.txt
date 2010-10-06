@@ -45,6 +45,8 @@ To install the plugin to the following steps
 4. Easy adding of new datasets
 5. Widget control panel
 6. Easy adding of shortcode tags via TinyMCE Button
+7. Output of projects with gallery template
+8. Individual dataset
 
 
 == Credits ==
