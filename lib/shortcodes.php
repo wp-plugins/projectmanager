@@ -264,7 +264,7 @@ class ProjectManagerShortcodes
 				
 				$project->num_datasets = $projectmanager->getNumDatasets($projectmanager->getProjectID(), true);
 				$project->gallery_num_cols = ( $project->gallery_num_cols == 0 ) ? 4 : $project->gallery_num_cols;
-				$project->dataset_width = floor(100/$project->gallery_num_cols)."%";
+				$project->dataset_width = floor(100/$project->gallery_num_cols);
 				$project->single = ( $single == 'true' ) ? true : false;
 				$project->selections = ( $selections == 'true' ) ? true : false;
 

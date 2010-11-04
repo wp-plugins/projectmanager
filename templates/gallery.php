@@ -22,8 +22,8 @@ The following variables are usable:
 <div class='dataset_gallery'>
 	<?php foreach ( $datasets AS $dataset ) : $i++; ?>
 	
-	<div class='gallery-item' style='width: <?php echo $project->dataset_width ?>;'>
-		<div class="gallery-image">
+	<div class='gallery-item' style='width: <?php echo $project->dataset_width ?>%;'>
+		<div class="gallery-image" style="margin: 0 <?php echo $project->dataset_width/2 ?>%;">
 			<?php if ( !empty($dataset->image) ) : ?>
 			<a href="<?php echo $dataset->URL ?>"><img src="<?php echo $dataset->thumbURL ?>" alt="<?php echo $dataset->name ?>" title="<?php echo $dataset->name ?>" /></a>
 			<?php endif; ?>

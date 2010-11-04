@@ -49,10 +49,15 @@ table.projectmanager td img {
 }
 .dataset_gallery .gallery-item {
 	float: left;
-	margin-right: 1.5em;
+	}
+.dataset_gallery .gallery-image {
+	text-align: center;
+}
+.dataset_galley .gallery a {
+	display: block;
+	margin: 0 auto;
 	}
 .dataset_gallery .gallery-image img {
-	display: block;
 	border: 1px solid #cfcfcf;
 	margin: 0.5em auto;
 	padding: 4px;
@@ -62,8 +67,8 @@ table.projectmanager td img {
 	border: 5px solid #cfcfcf;
 	}
 .dataset_gallery .caption {
-	text-align: center;
-	margin: 0.2em 0 1.5em 0;
+	/*text-align: center;*/
+	margin: 0.2em auto 1.5em auto;
 	font-size: 0.8em;
 	}
 
