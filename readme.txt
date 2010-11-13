@@ -55,6 +55,9 @@ The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons
 
 == Changelog ==
 
+= 3.0.2 =
+* BUGFIX: only load javascript files on projectmanager pages to avoid malfunction of WP image editor
+
 = 3.0.1 =
 * BUGFIX: fixed css to avoid linebreak in gallery display
 
