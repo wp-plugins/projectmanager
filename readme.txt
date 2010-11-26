@@ -30,6 +30,12 @@ This plugin is a datamanager for any recurrent datasets. It can be used to manag
 [Randy Hoyt](http://randyhoyt.com/) created a [Screencast](http://randyhoyt.com/wordpress/snippets/) on the usage of ProjectManager. Thanks a lot.
 
 
+**Translations**
+
+* German
+* French
+* Italian ([Adriano Urso](http://heyyoudesign.it/))
+
 == Installation ==
 
 To install the plugin to the following steps
@@ -54,6 +60,10 @@ The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons
 
 
 == Changelog ==
+
+= 3.0.3 =
+* NEW: Italian translation
+* BUGFIX: formfields
 
 = 3.0.2 =
 * BUGFIX: only load javascript files on projectmanager pages to avoid malfunction of WP image editor

@@ -69,14 +69,18 @@ class ProjectManagerAdminPanel extends ProjectManager
 					else
 						$page = add_menu_page( $project->title, $project->title, 'view_projects', 'project_' . $project->id, array(&$this, 'display'), $this->getIconURL($icon) );
 
-					add_submenu_page('project_' . $project->id, __($project->title, 'projectmanager'), __('Overview','projectmanager'),'view_projects', 'project_' . $project->id, array(&$this, 'display'));
-					add_submenu_page('project_' . $project->id, __( 'Add Dataset', 'projectmanager' ), __( 'Add Dataset', 'projectmanager' ), 'edit_datasets', 'project-dataset_' . $project->id, array(&$this, 'display'));
-					add_submenu_page('project_' . $project->id, __( 'Form Fields', 'projectmanager' ), __( 'Form Fields', 'projectmanager' ), 'edit_formfields', 'project-formfields_' . $project->id, array(&$this, 'display'));
-					add_submenu_page('project_' . $project->id, __( 'Settings', 'projectmanager' ), __( 'Settings', 'projectmanager' ), 'edit_projects_settings', 'project-settings_' . $project->id, array(&$this, 'display'));
-					add_submenu_page('project_' . $project->id, __('Categories'), __('Categories'), 'manage_projects', 'edit-tags.php?taxonomy=category');
-					add_submenu_page('project_' . $project->id, __('Import/Export', 'projectmanager'), __('Import/Export', 'projectmanager'), 'import_datasets', 'project-import_' . $project->id, array(&$this, 'display'));
-					
 					add_action("admin_print_scripts-$page", array(&$this, 'loadScripts') );
+					
+					$page = add_submenu_page('project_' . $project->id, __($project->title, 'projectmanager'), __('Overview','projectmanager'),'view_projects', 'project_' . $project->id, array(&$this, 'display'));
+					add_action("admin_print_scripts-$page", array(&$this, 'loadScripts') );
+					$page = add_submenu_page('project_' . $project->id, __( 'Add Dataset', 'projectmanager' ), __( 'Add Dataset', 'projectmanager' ), 'edit_datasets', 'project-dataset_' . $project->id, array(&$this, 'display'));
+					add_action("admin_print_scripts-$page", array(&$this, 'loadScripts') );
+					$page = add_submenu_page('project_' . $project->id, __( 'Form Fields', 'projectmanager' ), __( 'Form Fields', 'projectmanager' ), 'edit_formfields', 'project-formfields_' . $project->id, array(&$this, 'display'));
+					add_action("admin_print_scripts-$page", array(&$this, 'loadScripts') );
+					$page = add_submenu_page('project_' . $project->id, __( 'Settings', 'projectmanager' ), __( 'Settings', 'projectmanager' ), 'edit_projects_settings', 'project-settings_' . $project->id, array(&$this, 'display'));
+					add_action("admin_print_scripts-$page", array(&$this, 'loadScripts') );
+					add_submenu_page('project_' . $project->id, __('Categories'), __('Categories'), 'manage_projects', 'edit-tags.php?taxonomy=category');
+					add_submenu_page('project_' . $project->id, __('Import/Export', 'projectmanager'), __('Import/Export', 'projectmanager'), 'import_datasets', 'project-import_' . $project->id, array(&$this, 'display'));			
 				}
 			}
 			
@@ -87,12 +91,10 @@ class ProjectManagerAdminPanel extends ProjectManager
 		$page = add_menu_page(__('Projects', 'projectmanager'), __('Projects', 'projectmanager'), 'view_projects', PROJECTMANAGER_PATH,array(&$this, 'display'), PROJECTMANAGER_URL.'/admin/icons/menu/databases.png');
 		add_action("admin_print_scripts-$page", array(&$this, 'loadScripts') );
 		
-		$page = add_submenu_page(PROJECTMANAGER_PATH, __('Projects', 'projectmanager'), __('Overview','projectmanager'),'view_projects', PROJECTMANAGER_PATH, array(&$this, 'display'));
-		add_action("admin_print_scripts-$page", array(&$this, 'loadScripts') );
+		add_submenu_page(PROJECTMANAGER_PATH, __('Projects', 'projectmanager'), __('Overview','projectmanager'),'view_projects', PROJECTMANAGER_PATH, array(&$this, 'display'));
 		$page = add_submenu_page(PROJECTMANAGER_PATH, __( 'Settings'), __('Settings'), 'projectmanager_settings', 'projectmanager-settings', array( &$this, 'display') );
-		add_action("admin_print_scripts-$page", array(&$this, 'loadScripts') );
-		$page = add_submenu_page(PROJECTMANAGER_PATH, __( 'Documentation', 'projectmanager'), __('Documentation', 'projectmanager'), 'view_projects', 'projectmanager-documentation', array( &$this, 'display') );
-		add_action("admin_print_scripts-$page", array(&$this, 'loadScripts') );		
+		add_action("admin_print_scripts-$page", array(&$this, 'loadColorpicker') );
+		add_submenu_page(PROJECTMANAGER_PATH, __( 'Documentation', 'projectmanager'), __('Documentation', 'projectmanager'), 'view_projects', 'projectmanager-documentation', array( &$this, 'display') );
 				
 		$plugin = 'projectmanager/projectmanager.php';
 		add_filter( 'plugin_action_links_' . $plugin, array( &$this, 'pluginActions' ) );
@@ -202,7 +204,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 */
 	function loadScripts()
 	{
-		wp_register_script( 'projectmanager', PROJECTMANAGER_URL.'/admin/js/functions.js', array( 'colorpicker', 'sack', 'scriptaculous', 'prototype' ), PROJECTMANAGER_VERSION );
+		wp_register_script( 'projectmanager', PROJECTMANAGER_URL.'/admin/js/functions.js', array( 'sack', 'scriptaculous', 'prototype' ), PROJECTMANAGER_VERSION );
 		wp_register_script( 'projectmanager_formfields', PROJECTMANAGER_URL.'/admin/js/formfields.js', array( 'projectmanager', 'thickbox' ), PROJECTMANAGER_VERSION );
 		wp_register_script ('projectmanager_ajax', PROJECTMANAGER_URL.'/admin/js/ajax.js', array( 'projectmanager' ), PROJECTMANAGER_VERSION );
 		
@@ -225,6 +227,11 @@ class ProjectManagerAdminPanel extends ProjectManager
 		//]]>
 		<?php
 		echo "</script>\n";
+	}
+	function loadColorpicker()
+	{
+		wp_register_script ('projectmanager_colorpicker', PROJECTMANAGER_URL.'/admin/js/colorpicker.js', array( 'colorpicker' ), PROJECTMANAGER_VERSION );
+		wp_enqueue_script('projectmanager_colorpicker');
 	}
 	
 	
