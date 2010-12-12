@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: datamanager, CMS, Content Management System
 Requires at least: 2.7
 Tested up to 3.0.1
-Stable tag: 3.0.3
+Stable tag: 3.0.4
 
 This plugin can be used to manage any number of projects with recurrent datasets (e.g. portrait system, dvd collection)
 
@@ -60,6 +60,9 @@ The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons
 
 
 == Changelog ==
+
+= 3.0.4 =
+* UPDATE: French Translation
 
 = 3.0.3 =
 * NEW: Italian translation
