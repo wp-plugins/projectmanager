@@ -1,6 +1,5 @@
 === ProjectManager ===
 Contributors: Kolja Schleich
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2329191
 Tags: datamanager, CMS, Content Management System
 Requires at least: 2.7
 Tested up to 3.0.1
