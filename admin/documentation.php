@@ -322,20 +322,5 @@ else :
 	<p><?php printf( __( 'The datasets of a project can be inserted into a page or post either by directly using the shortcodes which are described above or by using the <a href="%s" class="thickbox">TinyMCE Button</a>. The button, however, only covers a few default parameter. One default template is <a href="%s" class="thickbox">gallery</a> which displays the datasets in a multicolumn photogallery with a link to <a href="%s" class="thickbox">individual datasets</a>. This template is especially useful for athlete profiles. ', 'projectmanager' ), PROJECTMANAGER_URL .'/admin/doc/page.png', PROJECTMANAGER_URL .'/admin/doc/gallery.png', PROJECTMANAGER_URL .'/admin/doc/dataset.png') ?></p>
 	<p><?php printf( __( 'ProjectManager also supplies a <a href="%s" class="thickbox">widget</a> and supports any number of widgets. It can be used to display a list of datasets in the sidebar, but also show a slideshow of datasets, e.g. athlete portraits.', 'projectmanager' ), PROJECTMANAGER_URL .'/admin/doc/widget.png') ?></p>
 	<p><?php printf( __( 'ProjectManager also supports <a href="%s" class="thickbox">AJAX editing</a> of dataset values by clicking on the pencil symbol next to the field value on the overview page. <a href="%s" class="thickbox">E-Mail and URL</a> fields have a special syntax to add the values with a certain text.', 'projectmanager' ), PROJECTMANAGER_URL .'/admin/doc/ajax_group.png', PROJECTMANAGER_URL .'/admin/doc/ajax_email.png') ?></p>
-	
-	
-	<a href="#top" class="alignright"><?php _e( 'Top', 'projectmanager' ) ?></a>
-	<h3 id="donations"><?php _e( 'Donations', 'projectmanager' ) ?></h3>
-	<p><?php _e( 'If you like my plugin and want to support me, I am grateful for any donation.', 'projectmanager' ) ?></p>
-	<form action="https://www.paypal.com/cgi-bin/webscr" method="post" style="float: left; margin-right: 1em;">
-		<input type="hidden" name="cmd" value="_s-xclick">
-		<input type="hidden" name="hosted_button_id" value="2329191">
-		<input type="image" src="<?php echo PROJECTMANAGER_URL ?>/admin/doc/donate_eur.gif" border="0" name="submit" alt="Donate in Euro">
-	</form>
-	<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-		<input type="hidden" name="cmd" value="_s-xclick">
-		<input type="hidden" name="hosted_button_id" value="3408441">
-		<input type="image" src="<?php echo PROJECTMANAGER_URL ?>/admin/doc/donate_usd.gif" border="0" name="submit" alt="Donate in USD">
-	</form>
 </div>
 <?php endif; ?>
