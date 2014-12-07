@@ -14,7 +14,6 @@ else :
 	 <li><a href="#access"><?php _e( 'Access Control', 'projectmanager' ) ?></a></li>
 	 <li><a href="#customization"><?php _e( 'Customization', 'projectmanager' ) ?></a></li>
 	 <li><a href="#howto_intro"><?php _e( 'Howto', 'projectmanager' ) ?></a></li>
-	 <li><a href="#donations"><?php _e( 'Donations', 'projectmanager' ) ?></a></li>
 	</ul>
 	
 	<a href="#top" class="alignright"><?php _e( 'Top', 'projectmanager' ) ?></a>
