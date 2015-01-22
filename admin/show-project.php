@@ -66,7 +66,21 @@ else
 	
 	<h2><?php echo $projectmanager->getProjectTitle() ?> <?php if ($projectmanager->isCategory()) echo " &#8211; ".$projectmanager->getCatTitle() ?></h2>
 	
-	<form class='search-form alignright' action='' method='post'>
+	<ul class="subsubsub projectmanager-menu">
+		<?php foreach ( $this->getMenu() AS $key => $item ) : ?>
+		<?php if ( current_user_can($item['cap']) ) : ?>
+
+		<?php if ( $project->navi_link != 1 || isset($_GET['subpage']) ) : ?>
+		<li><a href="admin.php?page=projectmanager&amp;subpage=<?php echo $key ?>&amp;project_id=<?php echo $project_id ?>"><?php echo $item['title'] ?></a></li> |
+		<?php else : ?>
+		<li><a href="admin.php?page=<?php printf($item['page'], intval($project_id)) ?>"><?php echo $item['title'] ?></a></li>
+		<?php endif; ?>
+		<?php endif; ?>
+		<?php endforeach; ?>
+		<li><a href="edit-tags.php?taxonomy=category"><?php _e( 'Categories' ) ?></a></li>
+	</ul>
+	
+	<p><form class='search-form alignright' action='' method='post'>
 		<input type='text' class='search-input' name='search_string' value='<?php echo $projectmanager->getSearchString() ?>' />
 		<?php if ( $form_fields = $projectmanager->getFormFields() ) : ?>
 		<select size='1' name='search_option'>
@@ -83,22 +97,8 @@ else
 		<?php else : ?>
 		<input type='hidden' name='form_field' value='0' />
 		<?php endif; ?>
-		<input type='submit' value='<? _e( 'Search', 'projectmanager' ) ?>' class='button-secondary action' />
-	</form>
-	
-	<ul class="subsubsub">
-		<?php foreach ( $this->getMenu() AS $key => $item ) : ?>
-		<?php if ( current_user_can($item['cap']) ) : ?>
-
-		<?php if ( $project->navi_link != 1 || isset($_GET['subpage']) ) : ?>
-		<li><a href="admin.php?page=projectmanager&amp;subpage=<?php echo $key ?>&amp;project_id=<?php echo $project_id ?>"><?php echo $item['title'] ?></a></li> |
-		<?php else : ?>
-		<li><a href="admin.php?page=<? printf($item['page'], $project_id) ?>"><?php echo $item['title'] ?></a></li>
-		<?php endif; ?>
-		<?php endif; ?>
-		<?php endforeach; ?>
-		<li><a href="edit-tags.php?taxonomy=category"><?php _e( 'Categories' ) ?></a></li>
-	</ul>
+		<input type='submit' value='<?php _e( 'Search', 'projectmanager' ) ?>' class='button-secondary action' />
+	</form></p>
 	
 	<?php if ( $datasets ) : ?>
 	
@@ -113,7 +113,8 @@ else
 				<option value="duplicate"><?php _e( 'Duplicate', 'projectmanager' ) ?></option>
 			</select>
 			<input type="submit" value="<?php _e('Apply'); ?>" name="doaction" id="doaction" class="button-secondary action" />
-			
+		</div>
+		<div class="alignleft actions">
 			<?php if ( -1 != $project->category ) : ?>
 			<!-- Category Filter -->
 			<?php wp_dropdown_categories(array('echo' => 1, 'hide_empty' => 0, 'hide_if_empty' => 1, 'name' => 'cat_id', 'orderby' => 'name', 'selected' => $projectmanager->getCatID(), 'hierarchical' => true, 'child_of' => $project->category, 'show_option_all' => __('View all categories'))); ?>
@@ -197,10 +198,6 @@ else
 				<?php else : ?>
 					<?php echo $dataset->name ?>
 				<?php endif; ?>
-				
-				<?php if ( ( current_user_can('edit_datasets') && $current_user->ID == $dataset->user_id ) || ( current_user_can('edit_other_datasets') ) ) : ?>
-				<span>&#160;<a class="thickbox" id="thickboxlink_name<?php echo $dataset->id ?>" href="#TB_inline&amp;height=100&amp;width=300&amp;inlineId=datasetnamewrap<?php echo $dataset->id ?>" title="<?php _e('Name','projectmanager') ?>"><img src="<?php echo PROJECTMANAGER_URL ?>/admin/icons/edit.gif" border="0" alt="<?php _e('Edit') ?>" /></a></span>
-				<?php endif; ?>
 			</td>
 			<?php if ( -1 != $project->category ) : ?>
 			<td>
@@ -228,14 +225,6 @@ else
 	</tbody>
 	</table>
 	</form>
-	
-	<script type='text/javascript'>
-	// <![CDATA[
-	    Sortable.create("the-list",
-	    {dropOnEmpty:true, tag: 'tr', ghosting:true, constraint:false, onUpdate: function() {ProjectManager.saveOrder(Sortable.serialize('the-list'))} });
-	    //")
-	// ]]>
-	</script>
 		
 	<?php else  : ?>
 		<div class="error aligncenter" style="clear: both; margin-top: 3em; text-align: center;"><p><?php _e( 'Nothing found', 'projectmanager') ?></p></div>

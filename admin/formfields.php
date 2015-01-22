@@ -5,7 +5,7 @@ else :
 
 $project_id = $projectmanager->getProjectID();
 $project = $projectmanager->getCurrentProject();
-
+	
 if ( isset($_POST['saveFormFields']) ) {
 	check_admin_referer('projectmanager_manage-formfields');
 	$new_formfields = isset($_POST['new_formfields']) ? $_POST['new_formfields'] : false;

@@ -3,7 +3,7 @@
 * 
 * @author 	Kolja Schleich
 * @package	ProjectManager
-* @copyright 	Copyright 2008-2009
+* @copyright Copyright 2008-2015
 */
 
 class ProjectManagerWidget extends WP_Widget
@@ -46,7 +46,7 @@ class ProjectManagerWidget extends WP_Widget
 	{
 		global $wpdb, $projectmanager;
 
-		$project_id = $instance['project'];
+		$project_id = intval($instance['project']);
 		$projectmanager->initialize($project_id);
 		
 		$project = $projectmanager->getCurrentProject();
@@ -62,7 +62,7 @@ class ProjectManagerWidget extends WP_Widget
 		$args = array_merge( $defaults, $args );
 		extract( $args, EXTR_SKIP );
 		
-		$limit = ( 0 != $instance['limit'] ) ? "LIMIT 0,".$instance['limit'] : '';
+		$limit = ( 0 != $instance['limit'] ) ? "LIMIT 0,".intval($instance['limit']) : '';
 		$datasets = $wpdb->get_results( "SELECT `id`, `name`, `image` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$project_id} ORDER BY `id` DESC ".$limit." " ); 
 
 		$slideshow = ( 1 == $instance['slideshow']['show'] ) ? true : false;
@@ -174,7 +174,6 @@ class ProjectManagerWidget extends WP_Widget
 	*/
 	function getSlideshowFadeEffects( $selected )
 	{
-		
 		$effects = array(__('Blind X','projectmanager') => 'blindX', __('Blind Y','projectmanager') => 'blindY', __('Blind Z','projectmanager') => 'blindZ', __('Cover','projectmanager') => 'cover', __('Curtain X','projectmanager') => 'curtainX', __('Curtain Y','projectmanager') => 'curtain>', __('Fade','projectmanager') => 'fade', __('Fade Zoom','projectmanager') => 'fadeZoom', __('Scroll Up','projectmanager') => 'scrollUp', __('Scroll Left','projectmanager') => 'scrollLeft', __('Scroll Right','projectmanager') => 'scrollRight', __('Scroll Down','projectmanager') => 'scrollDown', __('Scroll Horizontal', 'projectmanager') => 'scrollHorz', __('Scroll Vertical', 'projectmanager') => 'scrotllVert', __('Shuffle','projectmanager') => 'shuffle', __('Slide X','projectmanager') => 'slideX', __('Slide Y','projectmanager') => 'slideY', __('Toss','projectmanager') => 'toss', __('Turn Up','projectmanager') => 'turnUp', __('Turn Down','projectmanager') => 'turnDown', __('Turn Left','projectmanager') => 'turnLeft', __('Turn Right','projectmanager') => 'turnRight', __('Uncover','projectmanager') => 'uncover', __('Wipe','projectmanager') => 'wipe', __( 'Zoom','projectmanager') => 'zoom', __('Grow X','projectmanager') => 'growX', __('Grow Y','projectmanager') => 'growY', __('Random','projectmanager') => 'all');
 
 		$out = '<select size="1" name="'.$this->get_field_name('slideshow][fade').'" id="'.$this->get_field_id('slideshow_fade').'">';

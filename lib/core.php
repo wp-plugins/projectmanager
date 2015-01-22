@@ -4,7 +4,7 @@
  * 
  * @author 	Kolja Schleich
  * @package	ProjectManager
- * @copyright 	Copyright 2008-2009
+ * @copyright Copyright 2008-2015
 */
 class ProjectManager extends ProjectManagerLoader
 {
@@ -85,7 +85,7 @@ class ProjectManager extends ProjectManagerLoader
 		//Save selected group. NULL if none is selected
 		$this->setCatID();
 
-		if ( $project_id ) $this->initialize($project_id);
+		if ( $project_id ) $this->initialize(intval($project_id));
 
 		$this->admin = parent::getAdminPanel();
 		return;
@@ -1278,10 +1278,10 @@ class ProjectManager extends ProjectManagerLoader
 							$meta_value = sprintf($pattern, '');
 
 						$out .= "\n\t<td class='".$meta->type." ".$class."'>";
-						$out .= $this->getThickbox( $dataset, $meta );
+						//$out .= $this->getThickbox( $dataset, $meta );
 						$out .= "\n\t\t".$meta_value;
-						$out .= $this->getThickboxLink( $dataset, $meta, sprintf(__('%s of %s','projectmanager'), $meta->label, $dataset->name) );
-						$out .= "<span id='loading_".$meta->form_field_id."_".$dataset->id."'></span>";
+						//$out .= $this->getThickboxLink( $dataset, $meta, sprintf(__('%s of %s','projectmanager'), $meta->label, $dataset->name) );
+						//$out .= "<span id='loading_".$meta->form_field_id."_".$dataset->id."'></span>";
 						$out .= "\n\t</td>";
 					} else {
 						if ( 'dl' == $output && !empty($meta_value) ) {
@@ -1727,8 +1727,8 @@ class ProjectManager extends ProjectManagerLoader
 		$plugins = array( 'safari', 'inlinepopups', 'spellchecker', 'paste', 'wordpress', 'media', 'fullscreen', 'wpeditimage', 'tabfocus' );
 		$plugins = implode(",", $plugins);
 
-		if ( 'en' != $language )
-			include_once(ABSPATH . WPINC . '/js/tinymce/langs/wp-langs.php');
+		//if ( 'en' != $language )
+		//include_once(ABSPATH . WPINC . '/js/tinymce/langs/wp-langs.php');
 ?>
 		<script type="text/javascript" src="<?php bloginfo('url') ?>/wp-includes/js/tinymce/tiny_mce.js"></script>
 		<script type="text/javascript">

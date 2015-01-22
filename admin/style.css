@@ -1,13 +1,17 @@
 /**
  * @section Administration
  */
-#datasets tr { cursor: move; }
+#datasets tr { }
 
 img.middle { vertical-align: middle; }
 
 a.image_link { margin-left: 0.5em; border-bottom: none !important; }
-	
-p.projectmanager_breadcrumb { float: right; margin: 1.5em 1.5em 0em auto; }
+
+ul.projectmanager-menu {
+	margin-bottom: 0em;
+}
+
+p.projectmanager_breadcrumb { float: right; margin: 1.5em 1.5em 0em auto;}
 
 /* Thickbox Content */
 div.thickbox_content { text-align: center; }

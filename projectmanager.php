@@ -6,8 +6,7 @@ Plugin URI: http://wordpress.org/extend/plugins/projectmanager/
 Version: 3.0.4
 Author: Kolja Schleich
 
-
-Copyright 2008-2009  Kolja Schleich  (email : kolja.schleich@googlemail.com)
+Copyright 2008-2015  Kolja Schleich  (email : kolja.schleich@googlemail.com)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -27,9 +26,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 /**
 * Loading class for the WordPress plugin ProjectManager
 * 
-* @author 	Kolja Schleich
-* @package	ProjectManager
-* @copyright Copyright 2008-2009
 */
 
 class ProjectManagerLoader
@@ -180,7 +176,7 @@ class ProjectManagerLoader
 		require_once (dirname (__FILE__) . '/lib/widget.php');
 		require_once (dirname (__FILE__) . '/functions.php');
 		
-		$project_id = isset($_GET['project_id']) ? (int)$_GET['project_id'] : false;
+		$project_id = isset($_GET['project_id']) ? intval($_GET['project_id']) : false;
 		$projectmanager = new ProjectManager($project_id);
 
 		$ajax = new ProjectManagerAJAX();

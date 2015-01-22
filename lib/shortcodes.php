@@ -4,7 +4,7 @@
 * 
 * @author 	Kolja Schleich
 * @package	ProjectManager
-* @copyright 	Copyright 2008-2009
+* @copyright Copyright 2008-2015
 */
 
 class ProjectManagerShortcodes
@@ -89,7 +89,7 @@ class ProjectManagerShortcodes
 			'template' => 'extend'
 		), $atts ));
 		
-		$projectmanager->initialize($project_id);
+		$projectmanager->initialize(intval($project_id));
 
 		$search_option = $projectmanager->getSearchOption();
 		$search_string = $projectmanager->getSearchString();
@@ -120,14 +120,14 @@ class ProjectManagerShortcodes
 			'project_id' => 0,
 		), $atts ));
 
-		$projectmanager->initialize($project_id);
+		$projectmanager->initialize(intval($project_id));
 		$project = $projectmanager->getCurrentProject();
 		
 		$options = get_option('projectmanager');
 		if ( isset($_GET['d_id']) ) {
 			$edit = true;
 			$form_title = __('Edit Dataset','projectmanager');
-			$dataset_id = (int)$_GET['d_id'];
+			$dataset_id = intval($_GET['d_id']);
 			$dataset = $projectmanager->getDataset( $dataset_id );
 	
 			$cat_ids = $projectmanager->getSelectedCategoryIDs($dataset);
@@ -170,7 +170,7 @@ class ProjectManagerShortcodes
 	{
 		global $projectmanager;
 		if ( $project_id )
-			$project = $projectmanager->getProject($project_id);
+			$project = $projectmanager->getProject(intval($project_id));
 		else
 			$project = $projectmanager->getCurrentProject();
 	
@@ -224,23 +224,25 @@ class ProjectManagerShortcodes
 			'field_id' => false,
 			'field_value' => false,
 		), $atts ));
-		$projectmanager->initialize($id);
+		$projectmanager->initialize(intval($id));
 		$project = $projectmanager->getCurrentProject();
 
 		$single = ( $single == 'true' ) ? true : false;
 		$random = ( $orderby == 'rand' ) ? true : false;
 
-		if ( $cat_id ) $projectmanager->setCatID($cat_id);
+		if ( $cat_id ) $projectmanager->setCatID(intval($cat_id));
 	
 		if ( isset($_GET['show']) ) {
 			$datasets = $title = $pagination = false;
+			$dataset_id = intval($_GET['show']);
 		} else {
 			$formfield_id = false;
+			$dataset_id = false;
 			
 			if ( $projectmanager->isSearch() )
 				$datasets = $projectmanager->getSearchResults();
 			else
-				$datasets = $projectmanager->getDatasets( array( 'limit' => $results, 'orderby' => $orderby, 'order' => $order, 'random' => $random, 'meta_key' => $field_id, 'meta_value' => $field_value) );
+				$datasets = $projectmanager->getDatasets( array( 'limit' => $results, 'orderby' => $orderby, 'order' => $order, 'random' => $random, 'meta_key' => intval($field_id), 'meta_value' => $field_value) );
 			
 			$title = '';
 			if ( $projectmanager->isSearch() ) {
@@ -277,7 +279,7 @@ class ProjectManagerShortcodes
 			}
 		}
 		
-		$out = $this->loadTemplate( $template, array('project' => $project, 'datasets' => $datasets, 'title' => $title, 'pagination' => $pagination) );
+		$out = $this->loadTemplate( $template, array('project' => $project, 'dataset_id' => $dataset_id, 'datasets' => $datasets, 'title' => $title, 'pagination' => $pagination) );
 		
 		return $out;
 	}
@@ -304,6 +306,8 @@ class ProjectManagerShortcodes
 			'template' => '',
 			'echo' => 0
 		), $atts ));
+		
+		$id = intval($id);
 		
 		if ( !$action ) {
 			$url = get_permalink();

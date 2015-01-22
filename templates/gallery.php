@@ -12,8 +12,8 @@ The following variables are usable:
 */
 ?>
 
-<?php if ( isset($_GET['show']) ) : ?>
- 	<?php do_action('projectmanager_dataset', array('id' => $_GET['show'], 'echo' => 1), true) ?>
+<?php if ( $dataset_id ) : ?>
+ 	<?php do_action('projectmanager_dataset', array('id' => $dataset_id, 'echo' => 1), true) ?>
 <?php else: ?>
 	
 <?php if ( $project->selections ) do_action('projectmanager_selections'); ?>

@@ -204,13 +204,6 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 */
 	function loadScripts()
 	{
-		wp_register_script( 'projectmanager', PROJECTMANAGER_URL.'/admin/js/functions.js', array( 'sack', 'scriptaculous', 'prototype' ), PROJECTMANAGER_VERSION );
-		wp_register_script( 'projectmanager_formfields', PROJECTMANAGER_URL.'/admin/js/formfields.js', array( 'projectmanager', 'thickbox' ), PROJECTMANAGER_VERSION );
-		wp_register_script ('projectmanager_ajax', PROJECTMANAGER_URL.'/admin/js/ajax.js', array( 'projectmanager' ), PROJECTMANAGER_VERSION );
-		
-		wp_enqueue_script( 'projectmanager_formfields' );
-		wp_enqueue_script( 'projectmanager_ajax');
-			
 		echo "<script type='text/javascript'>\n";
 		echo "var PRJCTMNGR_HTML_FORM_FIELD_TYPES = \"";
 		foreach (parent::getFormFieldTypes() AS $form_type_id => $form_type) {
@@ -220,13 +213,20 @@ class ProjectManagerAdminPanel extends ProjectManager
 		echo "\";\n";
 			
 		?>
-		//<![CDATA[
+		<!--//<![CDATA[
 		ProjectManagerAjaxL10n = {
-			blogUrl: "<?php bloginfo( 'wpurl' ); ?>", pluginPath: "<?php echo PROJECTMANAGER_PATH; ?>", pluginUrl: "<?php echo PROJECTMANAGER_URL; ?>", requestUrl: "<?php bloginfo( 'wpurl' ); ?>/wp-admin/admin-ajax.php", imgUrl: "<?php echo PROJECTMANAGER_URL; ?>/images", Edit: "<?php _e("Edit"); ?>", Post: "<?php _e("Post"); ?>", Save: "<?php _e("Save"); ?>", Cancel: "<?php _e("Cancel"); ?>", pleaseWait: "<?php _e("Please wait..."); ?>", Revisions: "<?php _e("Page Revisions"); ?>", Time: "<?php _e("Insert time"); ?>", Options: "<?php _e("Options", "projectmanager") ?>", Delete: "<?php _e('Delete', 'projectmanager') ?>", delFile: "<?php _e('Delete File', 'projectmanager')?>"
+			blogUrl: "<?php //bloginfo( 'wpurl' ); ?>", pluginPath: "<?php //echo PROJECTMANAGER_PATH; ?>", pluginUrl: "<?php //echo PROJECTMANAGER_URL; ?>", requestUrl: "<?php //bloginfo( 'wpurl' ); ?>/wp-admin/admin-ajax.php", imgUrl: "<?php //echo PROJECTMANAGER_URL; ?>/images", Edit: "<?php //_e("Edit"); ?>", Post: "<?php //_e("Post"); ?>", Save: "<?php //_e("Save"); ?>", Cancel: "<?php //_e("Cancel"); ?>", pleaseWait: "<?php //_e("Please wait..."); ?>", Revisions: "<?php //_e("Page Revisions"); ?>", Time: "<?php //_e("Insert time"); ?>", Options: "<?php //_e("Options", "projectmanager") ?>", Delete: "<?php //_e('Delete', 'projectmanager') ?>", delFile: "<?php //_e('Delete File', 'projectmanager')?>"
 			   }
-		//]]>
+		//]]--!>
 		<?php
 		echo "</script>\n";
+		
+		wp_register_script( 'projectmanager', PROJECTMANAGER_URL.'/admin/js/functions.js', array( 'sack', 'scriptaculous', 'prototype' ), PROJECTMANAGER_VERSION );
+		wp_register_script( 'projectmanager_formfields', PROJECTMANAGER_URL.'/admin/js/formfields.js', array( 'projectmanager', 'thickbox' ), PROJECTMANAGER_VERSION );
+		wp_register_script ('projectmanager_ajax', PROJECTMANAGER_URL.'/admin/js/ajax.js', array( 'projectmanager' ), PROJECTMANAGER_VERSION );
+		
+		wp_enqueue_script( 'projectmanager_formfields' );
+		wp_enqueue_script( 'projectmanager_ajax');
 	}
 	function loadColorpicker()
 	{
@@ -1153,7 +1153,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 		global $projectmanager;
 		$project = $projectmanager->getProject($projectmanager->getProjectID());
 
-		if ( 1 != $project->navi_link ) {
+		//if ( 1 != $project->navi_link ) {
 			echo '<p class="projectmanager_breadcrumb">';
 			if ( !$this->single )
 				echo '<a href="admin.php?page=projectmanager">'.__( 'Projectmanager', 'projectmanager' ).'</a> &raquo; ';
@@ -1164,7 +1164,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 			if ( !$start || ($start && !$this->single) ) echo $page_title;
 			
 			echo '</p>';
-		}
+		//}
 	}
 	
 	

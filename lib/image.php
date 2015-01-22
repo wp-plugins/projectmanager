@@ -5,7 +5,7 @@
 * 
 * @author 	Kolja Schleich
 * @package	ProjectManager
-* @copyright 	Copyright 2008-2009
+* @copyright Copyright 2008-2015
 */
 
 class ProjectManagerImage 
@@ -41,7 +41,7 @@ class ProjectManagerImage
 			
 		$this->image = $imagefile;
 	}
-	function LeagueManagerImage($imagefile)
+	function ProjectManagerImage($imagefile)
 	{
 		$this->__construct($imagefile);
 	}
@@ -97,7 +97,7 @@ class ProjectManagerImage
 	function createThumbnail( $dims, $new_image, $chmod )
 	{
 		$thumbnail = new Thumbnail($this->image);
-		$thumbnail->resize( $dims['width'], $dims['heigth'] );
+		$thumbnail->resize( intval($dims['width']), intval($dims['heigth']) );
 		$thumbnail->save($new_image);
 
 		if ( empty($chmod) ) $chmod = '0644';

@@ -4,7 +4,7 @@
  * 
  * @author 	Kolja Schleich
  * @package	ProjectManager
- * @copyright 	Copyright 2008-2009
+ * @copyright 	Copyright 2008-2015
 */
 class ProjectManagerAJAX
 {
@@ -57,7 +57,7 @@ class ProjectManagerAJAX
 	function saveFormFieldOptions() {
 		$options = get_option('projectmanager');
 	
-		$form_id = $_POST['form_id'];
+		$form_id = intval($_POST['form_id']);
 		$form_options = substr($_POST['options'], 0, -1);
 		$form_options = explode("|", $form_options);
 		
@@ -75,8 +75,8 @@ class ProjectManagerAJAX
 	 */
 	function saveProjectLink()
 	{
-		$project_id = (int)$_POST['project_id'];
-		$formfield_id = (int)$_POST['formfield_id'];
+		$project_id = intval($_POST['project_id']);
+		$formfield_id = intval($_POST['formfield_id']);
 
 		$options = get_option('projectmanager');
 		$options['form_field_options'][$formfield_id] = $project_id;
@@ -96,7 +96,7 @@ class ProjectManagerAJAX
 		global $wpdb;
 	
 		$dataset_id = intval($_POST['dataset_id']);
-		$new_name = $_POST['new_name'];
+		$new_name = htmlspecialchars($_POST['new_name']);
 	
 		/*if (get_magic_quotes_gpc())
 			$new_name = stripslashes_deep($new_name);*/
@@ -147,7 +147,7 @@ class ProjectManagerAJAX
 		global $wpdb, $projectmanager, $projectmanager_loader;
 	
 		$dataset_id = intval($_POST['dataset_id']);
-		$formfield_type = $_POST['formfield_type'];
+		$formfield_type = htmlspecialchars($_POST['formfield_type']);
 		$meta_id = intval($_POST['formfield_id']);
 		$new_value = $_POST['new_value'];
 
@@ -175,9 +175,9 @@ class ProjectManagerAJAX
 			
 		// Some special output formats
 		if ( 'date' == $formfield_type )
-			$new_value = mysql2date(get_option('date_format'), $_POST['new_value']);
+			$new_value = mysql2date(get_option('date_format'), $new_value);
 		elseif ( 'time' == $formfield_type )
-			$new_value = mysql2date(get_option('time_format'), $_POST['new_value']);
+			$new_value = mysql2date(get_option('time_format'), $new_value);
 		elseif ( 'image' == $formfield_type )
 			$new_value = '<img class="projectmanager_image" src="'.$new_value.'" alt="'.__("Image", "projectmanager").'" />';
 		elseif ( 'uri' == $formfield_type )
@@ -231,7 +231,7 @@ class ProjectManagerAJAX
 		$order = $_POST['order'];
 		$order = $projectmanager_loader->adminPanel->getOrder($order);
 		foreach ( $order AS $order => $dataset_id ) {
-			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `order` = '%d' WHERE `id` = '%d'", $order, $dataset_id ) );
+			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `order` = '%d' WHERE `id` = '%d'", intval($order), intval($dataset_id) ) );
 		}
 	}
 
@@ -242,7 +242,7 @@ class ProjectManagerAJAX
 	 * @since 2.5
 	 */
 	function insertWpUser() {
-		$user_id = (int)$_POST['wp_user_id'];
+		$user_id = intval($_POST['wp_user_id']);
 		$user = new WP_User($user_id);
 		$user = $user->data;
 
@@ -263,8 +263,8 @@ class ProjectManagerAJAX
 	{
 		global $projectmanager;
 
-		$project_id = (int)$_POST['project_id'];
-		$formfield_id = (int)$_POST['formfield_id'];
+		$project_id = intval($_POST['project_id']);
+		$formfield_id = intval($_POST['formfield_id']);
 
 		if ( !empty($project_id) ) {
 			$p = $projectmanager->getProject($project_id);
@@ -293,8 +293,8 @@ class ProjectManagerAJAX
 	{
 		global $projectmanager_loader, $projectmanager;
 
-		$project_id = (int)$_POST['project_id'];
-		$formfield_id = (int)$_POST['formfield_id'];
+		$project_id = intval($_POST['project_id']);
+		$formfield_id = intval($_POST['formfield_id']);
 		$formfield_type = (string)$_POST['formfield_type'];
 		$options = (string)$_POST['options'];
 		$options = explode("|", $options);
