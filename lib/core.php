@@ -399,7 +399,8 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function getFormFieldTypes($index = false)
 	{
-		$form_field_types = array( 'text' => __('Text', 'projectmanager'), 'textfield' => __('Textfield', 'projectmanager'), 'tinymce' => __('TinyMCE Editor', 'projectmanager'), 'email' => __('E-Mail', 'projectmanager'), 'date' => __('Date', 'projectmanager'), 'uri' => __('URL', 'projectmanager'), 'select' => __('Selection', 'projectmanager'), 'checkbox' => __( 'Checkbox List', 'projectmanager'), 'radio' => __( 'Radio List', 'projectmanager'), 'file' => __('File', 'projectmanager'), 'image' => __( 'Image', 'projectmanager' ), 'video' => __('Video', 'projectmanager'), 'numeric' => __( 'Numeric', 'projectmanager' ), 'currency' => __('Currency', 'projectmanager'), 'project' => __( 'Internal Link', 'projectmanager' ), 'time' => __('Time', 'projectmanager'), 'wp_user' => __( 'WP User', 'projectmanager' ) );
+		//$form_field_types = array( 'text' => __('Text', 'projectmanager'), 'textfield' => __('Textfield', 'projectmanager'), 'tinymce' => __('TinyMCE Editor', 'projectmanager'), 'email' => __('E-Mail', 'projectmanager'), 'date' => __('Date', 'projectmanager'), 'uri' => __('URL', 'projectmanager'), 'select' => __('Selection', 'projectmanager'), 'checkbox' => __( 'Checkbox List', 'projectmanager'), 'radio' => __( 'Radio List', 'projectmanager'), 'file' => __('File', 'projectmanager'), 'image' => __( 'Image', 'projectmanager' ), 'video' => __('Video', 'projectmanager'), 'numeric' => __( 'Numeric', 'projectmanager' ), 'currency' => __('Currency', 'projectmanager'), 'project' => __( 'Internal Link', 'projectmanager' ), 'time' => __('Time', 'projectmanager'), 'wp_user' => __( 'WP User', 'projectmanager' ) );
+		$form_field_types = array( 'text' => __('Text', 'projectmanager'), 'textfield' => __('Textfield', 'projectmanager'), 'email' => __('E-Mail', 'projectmanager'), 'date' => __('Date', 'projectmanager'), 'uri' => __('URL', 'projectmanager'), 'select' => __('Selection', 'projectmanager'), 'checkbox' => __( 'Checkbox List', 'projectmanager'), 'radio' => __( 'Radio List', 'projectmanager'), 'file' => __('File', 'projectmanager'), 'image' => __( 'Image', 'projectmanager' ), 'video' => __('Video', 'projectmanager'), 'numeric' => __( 'Numeric', 'projectmanager' ), 'currency' => __('Currency', 'projectmanager'), 'project' => __( 'Internal Link', 'projectmanager' ), 'time' => __('Time', 'projectmanager'), 'wp_user' => __( 'WP User', 'projectmanager' ) );
 		
 		$form_field_types = apply_filters( 'projectmanager_formfields', $form_field_types );
 		
@@ -695,7 +696,7 @@ class ProjectManager extends ProjectManagerLoader
 		else
 			$search = "`project_id` = ".$this->getProjectID(); 
 
-		$sql = "SELECT `label`, `type`, `order`, `order_by`, `show_on_startpage`, `show_in_profile`, `id` FROM {$wpdb->projectmanager_projectmeta} WHERE $search ORDER BY `order` ASC;";
+		$sql = "SELECT `label`, `type`, `order`, `order_by`, `show_on_startpage`, `show_in_profile`, `options`, `id` FROM {$wpdb->projectmanager_projectmeta} WHERE $search ORDER BY `order` ASC;";
 		$formfields = $wpdb->get_results( $sql );
 		
 		if ($id)
@@ -1254,7 +1255,9 @@ class ProjectManager extends ProjectManagerLoader
 					$meta_value = apply_filters( 'projectmanager_numeric', $meta_value, $dataset );
 					$meta_value = sprintf($pattern, $meta_value);
 				} elseif ( 'currency' == $meta->type && !empty($meta_value) ) {
-					$meta_value = money_format('%i', $meta_value);
+					if (function_exists("money_format"))
+						$meta_value = money_format('%i', $meta_value);
+
 					$meta_value = apply_filters( 'projectmanager_currency', $meta_value, $dataset );
 					$meta_value = sprintf($pattern, $meta_value);
 				} elseif ( 'wp_user' == $meta->type && !empty($meta_value) ) {
@@ -1499,10 +1502,13 @@ class ProjectManager extends ProjectManagerLoader
 	{
 		$options = get_option('projectmanager');
 		
+		$formfield = $this->getFormFields($form_id);
+		$options = explode(";", $formfield->options);
+		
 		$out = '';
-		if ( count($options['form_field_options'][$form_id]) > 1 ) {
+		if ( count($options) > 1 ) {
 			$out .= "<select size='1' name='".$name."' id='form_field_".$form_id."_".$dataset_id."'>";
-			foreach ( $options['form_field_options'][$form_id] AS $option_name ) {
+			foreach ( $options AS $option_name ) {
 				if ( $option_name == $selected )
 					$out .= "<option value='".$option_name."' selected='selected'>".$option_name."</option>";
 				else
@@ -1528,13 +1534,14 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function printFormFieldCheckboxList( $form_id, $selected=array(), $dataset_id, $name, $echo = true )
 	{
-		$options = get_option('projectmanager');
+		$formfield = $this->getFormFields($form_id);
+		$options = explode(";", $formfield->options);
 	
 		if ( !is_array($selected) ) $selected = explode("|", $selected);
 		$out = '';
-		if ( isset($options['form_field_options'][$form_id]) && count($options['form_field_options'][$form_id]) > 1 ) {
+		if ( $options != "" && count($options) > 1 ) {
 			$out .= "<ul class='checkboxlist'>";
-			foreach ( $options['form_field_options'][$form_id] AS $id => $option_name ) {
+			foreach ( $options AS $id => $option_name ) {
 				if ( count($selected) > 0 && in_array($option_name, $selected) )
 					$out .= "<li><input type='checkbox' name='".$name."' checked='checked' value='".$option_name."' id='".$name."_".$form_id."_".$id."'><label for='".$name."_".$form_id."_".$id."'> ".$option_name."</label></li>";
 				else
@@ -1559,12 +1566,13 @@ class ProjectManager extends ProjectManagerLoader
 	*/
 	function printFormFieldRadioList( $form_id, $selected, $dataset_id, $name, $echo = true )
 	{
-		$options = get_option('projectmanager');
+		$formfield = $this->getFormFields($form_id);
+		$options = explode(";", $formfield->options);
 		
 		$out = '';
-		if ( count($options['form_field_options'][$form_id]) > 1 ) {
+		if ( count($options) > 1 ) {
 			$out .= "<ul class='radiolist'>";
-			foreach ( $options['form_field_options'][$form_id] AS $id => $option_name ) {
+			foreach ( $options AS $id => $option_name ) {
 				if ( $option_name == $selected )
 					$out .= "<li><input type='radio' name='".$name."' value='".$option_name."' checked='checked'  id='".$name."_".$form_id."_".$id."'><label for='".$name."_".$form_id."_".$id."'> ".$option_name."</label></li>";
 				else

@@ -43,7 +43,7 @@ class ProjectManagerLoader
 	  *
 	  * @var string
 	  */
-	 var $dbversion = '3.0';
+	 var $dbversion = '3.1';
 	 
 
 	 /**

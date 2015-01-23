@@ -1057,6 +1057,114 @@ class ProjectManagerAdminPanel extends ProjectManager
 	
 	
 	/**
+	 * add new Form Field
+	 *
+	 * @param int $project_id
+	 * @param array $formfield
+	 * @param 
+	 */
+	function addFormField( $project_id, $formfield = false )
+	{
+		global $wpdb;
+		
+		if ( !current_user_can('edit_formfields') ) {
+			$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
+			return;
+		}
+		
+		$project_id = intval($project_id);
+		
+		if (!$formfield) {
+			$formfield = array();
+			$formfield['name'] = '';
+			$formfield['type'] = 'text'; 
+			$formfield['options'] = '';
+		}		
+		$order_by = isset($formfield['orderby']) ? 1 : 0;
+		$show_on_startpage = isset($formfield['show_on_startpage']) ? 1 : 0;
+		$show_in_profile = isset($formfield['show_in_profile']) ? 1 : 0;
+
+		
+		// get maximum order number
+		$max_order_sql = "SELECT MAX(`order`) AS `order` FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = {$project_id};";
+		if (isset($formfield['order']) && $formfield['order'] != '') {
+			$order = $formfield['order'];
+		} else {
+			$max_order_sql = $wpdb->get_results($max_order_sql, ARRAY_A);
+			$order = $max_order_sql[0]['order'] +1;
+		}
+				
+		$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_projectmeta} (`label`, `type`, `show_on_startpage`, `show_in_profile`, `order`, `order_by`, `options`, `project_id`) VALUES ( '%s', '%s', '%d', '%d', '%d', '%d', '%s', '%d');", $formfield['name'], $formfield['type'], $show_on_startpage, $show_in_profile, $order, $order_by, $formfield['options'], $project_id ) );
+		$formfield_id = $wpdb->insert_id;
+				
+		/*
+		* Populate default values for every dataset
+		*/
+		if ( $datasets = $wpdb->get_results( $wpdb->prepare("SELECT `id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = '%d'", $project_id) ) ) {
+			foreach ( $datasets AS $dataset ) {
+				$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ( '%d', '%d', '' );", $formfield_id, $dataset->id ) );
+			}
+		}
+	}
+	
+	
+	/**
+	 * edit Form Field
+	 *
+	 * @param array $formfield
+	 */
+	function editFormField( $formfield )
+	{
+		global $wpdb;
+		
+		if ( !current_user_can('edit_formfields') ) {
+			$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
+			return;
+		}
+
+		// make sure $formfield_id is numeric
+		$formfield_id = intval($formfield['id']);
+		
+		$order_by = isset($formfield['orderby']) ? 1 : 0;
+		$show_on_startpage = isset($formfield['show_on_startpage']) ? 1 : 0;
+		$show_in_profile = isset($formfield['show_in_profile']) ? 1 : 0;
+					
+		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projectmeta} SET `label` = '%s', `type` = '%s', `show_on_startpage` = '%d', `show_in_profile` = '%d', `order` = '%d', `order_by` = '%d', `options` = '%s' WHERE `id` = '%d' LIMIT 1 ;", $formfield['name'], $formfield['type'], $show_on_startpage, $show_in_profile, $formfield['order'], $order_by, $formfield['options'], $formfield_id ) );
+		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `form_id` = '%d' WHERE `form_id` = '%d'", $formfield_id, $formfield_id ) );
+	}
+	
+	
+	/**
+	 * delete Form Field
+	 *
+	 * @param int $formfield_id
+	 */
+	function delFormField( $formfield_id ) 
+	{
+		global $wpdb;
+		
+		if ( !current_user_can('edit_formfields') ) {
+			$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
+			return;
+		}
+		
+		// make sure $formfield_id is numeric
+		$formfield_id = intval($formfield_id);
+		
+		// delete formfield metadata from options
+		$options = get_option('projectmanager');
+		unset($options['form_field_options'][$form_field_id]);
+		update_option('projectmanager', $options);
+		
+		// delete formfield and formfield data
+		$wpdb->query( $wpdb->prepare("DELETE FROM {$wpdb->projectmanager_projectmeta} WHERE `id` = '%d'", $formfield_id) );
+		$wpdb->query( $wpdb->prepare("DELETE FROM {$wpdb->projectmanager_datasetmeta} WHERE `form_id` = '%d'", $formfield_id) );
+		
+		//$this->setMessage( __('Formfield deleted', 'projectmanager') );
+	}
+	
+	
+	/**
 	 * save Form Fields
 	 *
 	 * @param int $project_id
@@ -1074,24 +1182,30 @@ class ProjectManagerAdminPanel extends ProjectManager
 			return;
 		}
 
-		$options = get_option('projectmanager');
+		$project_id = intval($project_id);
+
 		if ( !empty($formfields) ) {
 			foreach ( $wpdb->get_results( "SELECT `id`, `project_id` FROM {$wpdb->projectmanager_projectmeta}" ) AS $form_field) {
 				if ( !array_key_exists( $form_field->id, $formfields ) ) {
-					$del = (bool) $wpdb->query( "DELETE FROM {$wpdb->projectmanager_projectmeta} WHERE `id` = {$form_field->id} AND `project_id` = {$project_id}"  );
-					if ( $del ) unset($options['form_field_options'][$form_field->id]);
+					//$del = (bool) $wpdb->query( "DELETE FROM {$wpdb->projectmanager_projectmeta} WHERE `id` = {$form_field->id} AND `project_id` = {$project_id}"  );
+					//if ( $del ) unset($options['form_field_options'][$form_field->id]);
 					if ( $project_id == $form_field->project_id )
-						$wpdb->query( "DELETE FROM {$wpdb->projectmanager_datasetmeta} WHERE `form_id` = {$form_field->id}" );
+						$this->delFormField($form_field->id);
+						//$wpdb->query( "DELETE FROM {$wpdb->projectmanager_datasetmeta} WHERE `form_id` = {$form_field->id}" );
 				}
 			}
 				
 			foreach ( $formfields AS $id => $formfield ) {
+				/*
 				$order_by = isset($formfield['orderby']) ? 1 : 0;
 				$show_on_startpage = isset($formfield['show_on_startpage']) ? 1 : 0;
 				$show_in_profile = isset($formfield['show_in_profile']) ? 1 : 0;
 					
 				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projectmeta} SET `label` = '%s', `type` = '%s', `show_on_startpage` = '%d', `show_in_profile` = '%d', `order` = '%d', `order_by` = '%d' WHERE `id` = '%d' LIMIT 1 ;", $formfield['name'], $formfield['type'], $show_on_startpage, $show_in_profile, $formfield['order'], $order_by, $id ) );
 				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `form_id` = '%d' WHERE `form_id` = '%d'", $id, $id ) );
+				*/
+				$formfield['id'] = $id;
+				$this->editFormField( $formfield );
 			}
 		} else {
 			$wpdb->query( "DELETE FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = {$project_id}"  );
@@ -1099,6 +1213,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 			
 		if ( !empty($new_formfields) ) {
 			foreach ($new_formfields AS $tmp_id => $formfield) {
+				/*
 				$order_by = isset($formfield['orderby']) ? 1 : 0;
 				$show_on_startpage = isset($formfield['show_on_startpage']) ? 1 : 0;
 				$show_in_profile = isset($formfield['show_in_profile']) ? 1 : 0;
@@ -1119,22 +1234,17 @@ class ProjectManagerAdminPanel extends ProjectManager
 					$options['form_field_options'][$id] = $options['form_field_options'][$tmp_id];
 					unset($options['form_field_options'][$tmp_id]);
 				}
-				
-				/*
-				* Populate default values for every dataset
-				*/
+
 				if ( $datasets = $wpdb->get_results( "SELECT `id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$project_id}" ) ) {
 					foreach ( $datasets AS $dataset ) {
 						$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ( '%d', '%d', '' );", $id, $dataset->id ) );
 					}
 				}
+				*/
+				$this->addFormField( $project_id, $formfield);
 			}
 		}
 		
-		if ( isset($options['form_field_options'][$id]) )
-		  sort($options['form_field_options'][$id]);
-		  
-		update_option('projectmanager', $options);
 		$this->setMessage( __('Form Fields updated', 'projectmanager') );
 		
 		do_action('projectmanager_save_formfields', $project_id);

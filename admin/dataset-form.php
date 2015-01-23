@@ -35,9 +35,9 @@
 			<td>
 				<?php if ( 'text' == $form_field->type || 'email' == $form_field->type || 'uri' == $form_field->type || 'numeric' == $form_field->type || 'currency' == $form_field->type ) : ?>
 				<input type="text" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" value="<?php echo $meta_data[$form_field->id] ?>" size="45" />
-				<?php elseif ( 'textfield' == $form_field->type || 'tinymce' == $form_field->type ) : ?>
+				<?php elseif ( 'textfield' == $form_field->type ) : ?>
 				<div style="width: 80%;">
-					<textarea <?php if ( 'tinymce' == $form_field->type ) echo 'class="theEditor"' ?> name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" cols="70" rows="15"><?php echo $meta_data[$form_field->id] ?></textarea>
+					<textarea name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" cols="70" rows="15"><?php echo $meta_data[$form_field->id] ?></textarea>
 				</div>
 				<?php elseif ( 'date' == $form_field->type ) : ?>
 				<select size="1" name="form_field[<?php echo $form_field->id ?>][day]">
@@ -89,7 +89,7 @@
 					</p>
 					<?php endif; ?>
 				<?php elseif ( 'wp_user' == $form_field->type ) : wp_dropdown_users( array('name' => 'form_field['.$form_field->id.']', 'selected' => $meta_data[$form_field->id]) ); ?>	
-				<?php elseif ( 'project' == $form_field->type ) : echo $projectmanager->getDatasetCheckboxList($options['form_field_options'][$form_field->id], 'form_field['.$form_field->id.'][]', $meta_data[$form_field->id]); ?>
+				<?php elseif ( 'project' == $form_field->type ) : echo $projectmanager->getDatasetCheckboxList($form_field->options, 'form_field['.$form_field->id.'][]', $meta_data[$form_field->id]); ?>
 				<?php elseif ( 'select' == $form_field->type ) : $projectmanager->printFormFieldDropDown($form_field->id, $meta_data[$form_field->id], $dataset_id, "form_field[".$form_field->id."]"); ?>
 				<?php elseif ( 'checkbox' == $form_field->type ) : $projectmanager->printFormFieldCheckboxList($form_field->id, $meta_data[$form_field->id], $dataset_id, "form_field[".$form_field->id."][]"); ?>
 				<?php elseif ( 'radio' == $form_field->type ) : $projectmanager->printFormFieldRadioList($form_field->id, $meta_data[$form_field->id], $dataset_id, "form_field[".$form_field->id."]"); ?>

@@ -24,7 +24,7 @@ The following variables are usable:
 	<?php if ( $orderby ) : ?>
 	<select size='1' name='orderby'>
 		<?php foreach ( $orderby AS $key => $value ) : ?>
-		<?php $orderby_request = isset($_GET['orderby']) ? intval($_GET['orderby']) : '' ?>
+		<?php $orderby_request = isset($_GET['orderby']) ? htmlspecialchars($_GET['orderby']) : '' ?>
 		<option value='<?php echo $key ?>' <?php if ($orderby_request == $key) echo ' selected="selected"' ?>><?php echo $value ?></option>
 		<?php endforeach; ?>
 	</select>
@@ -32,7 +32,7 @@ The following variables are usable:
 	<?php if ( $order ) : ?>
 	<select size='1' name='order'>
 		<?php foreach ( $order AS $key => $value ) : ?>
-		<?php $order_request = isset($_GET['order']) ? intval($_GET['order']) : '' ?>
+		<?php $order_request = isset($_GET['order']) ? htmlspecialchars($_GET['order']) : '' ?>
 		<option value='<?php echo $key ?>' <?php if ($order_request == $key) echo ' selected="selected"' ?>><?php echo $value ?></option>
 		<?php endforeach; ?>
 	</select>

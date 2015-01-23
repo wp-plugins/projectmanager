@@ -56,7 +56,8 @@ class ProjectManagerAJAX
 	 */
 	function saveFormFieldOptions() {
 		$options = get_option('projectmanager');
-	
+		
+		print_r($_POST);
 		$form_id = intval($_POST['form_id']);
 		$form_options = substr($_POST['options'], 0, -1);
 		$form_options = explode("|", $form_options);

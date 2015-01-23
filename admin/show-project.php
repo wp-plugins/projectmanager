@@ -187,37 +187,13 @@ else
 			<td><?php echo $dataset->id ?></td>
 			<td>
 				<?php if ( ( current_user_can('edit_datasets') && $current_user->ID == $dataset->user_id ) || ( current_user_can('edit_other_datasets') ) ) : ?>
-				<!-- Popup Window for Ajax name editing -->
-				<div id="datasetnamewrap<?php echo $dataset->id; ?>" style="overflow:auto;display:none;">
-				<div class='thickbox_content'>
-					<input type='text' name='dataset_name<?php echo $dataset_id ?>' id='dataset_name<?php echo $dataset->id ?>' value="<?php echo $dataset->name ?>" size='30' />
-					<div class="buttonbar"><input type="button" value="<?php _e('Save') ?>" class="button-secondary" onclick="ProjectManager.ajaxSaveDatasetName(<?php echo $dataset->id; ?>);return false;" />&#160;<input type="button" value="<?php _e('Cancel') ?>" class="button" onclick="tb_remove();" /></div>
-				</div>
-				</div>
-				<span><a href="admin.php?page=<?php if($_GET['page'] == 'projectmanager') echo 'projectmanager&subpage=dataset'; else echo 'project-dataset_'.$project_id ?>&amp;edit=<?php echo $dataset->id ?>&amp;project_id=<?php echo $project_id ?>"><span id="dataset_name_text<?php echo $dataset->id ?>"><?php echo $dataset->name ?></span></a></span><span id="loading_name_<?php echo $dataset->id ?>"></span>
+					<a href="admin.php?page=<?php if($_GET['page'] == 'projectmanager') echo 'projectmanager&subpage=dataset'; else echo 'project-dataset_'.$project_id ?>&amp;edit=<?php echo $dataset->id ?>&amp;project_id=<?php echo $project_id ?>"><?php echo $dataset->name ?></a>
 				<?php else : ?>
 					<?php echo $dataset->name ?>
 				<?php endif; ?>
 			</td>
 			<?php if ( -1 != $project->category ) : ?>
-			<td>
-				<?php if ( ( current_user_can('edit_datasets') && $current_user->ID == $dataset->user_id ) || ( current_user_can('edit_other_datasets') ) ) : ?>
-				<!-- Popup Window for Ajax group editing -->
-				<div id="groupchoosewrap<?php echo $dataset->id; ?>" style="overflow:auto;display:none;">
-				<div class='thickbox_content'>
-					<ul class="categorychecklist" id="categorychecklist<?php echo $dataset->id ?>">
-					<?php $this->categoryChecklist( $project->category, $projectmanager->getSelectedCategoryIDs($dataset) ) ?>
-					</ul>
-					<div class="buttonbar"><input type="button" value="<?php _e('Save') ?>" class="button-secondary" onclick="ProjectManager.ajaxSaveCategories(<?php echo $dataset->id; ?>);return false;" />&#160;<input type="button" value="<?php _e('Cancel') ?>" class="button" onclick="tb_remove();" /></div>
-				</div>
-				</div>
-				<?php endif; ?>
-				<span id="dataset_category_text<?php echo $dataset->id ?>"><?php echo $categories ?></span><span id="loading_category_<?php echo $dataset->id ?>"></span>
-					
-				<?php if ( ( current_user_can('edit_datasets') && $current_user->ID == $dataset->user_id ) || ( current_user_can('edit_other_datasets') ) ) : ?>
-				<span>&#160;<a class="thickbox" id="thickboxlink_category<?php echo $dataset->id ?>" href="#TB_inline&amp;height=300&amp;width=300&amp;inlineId=groupchoosewrap<?php echo $dataset->id ?>" title="<?php printf(__('Categories of %s','projectmanager'),$dataset->name) ?>"><img src="<?php echo PROJECTMANAGER_URL ?>/admin/icons/edit.gif" border="0" alt="<?php _e('Edit') ?>" /></a></span>
-				<?php endif; ?>
-			</td>
+			<td><?php echo $categories ?></td>
 			<?php endif; ?>
 			<?php $projectmanager->printDatasetMetaData( $dataset ) ?>
 		</tr>

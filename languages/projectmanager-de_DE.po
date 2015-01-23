@@ -14,6 +14,14 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: admin/formfields.php:
+msgid "Add Form Field"
+msgstr "Formularfeld hinzufügen"
+
+#: admin/formfields.php:
+msgid "The Options field is used to store meta-data of formfields. Separate values by ; to save options for selectable fields (i.e. dropdown, checkbox or radio list)."
+msgstr "Das Optionen Feld wird verwendet um Metadaten von Formularfeldern zu speichern. Trenne Werte mit ; um Optionen für selektierbare Felder (z.B. Dropdown, Checkbox- oder Radiolisten) zu speichern."
+
 #: admin/admin.php:47
 #: admin/admin.php:59
 msgid "Overview"

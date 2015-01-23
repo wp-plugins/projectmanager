@@ -135,6 +135,16 @@ function projectmanager_upgrade() {
 		$role->remove_cap('manage_projects');
 		$role->remove_cap('project_user_profile');
 	}
+	
+	if (version_compare($installed, '3.0', '<=')) {
+		$wpdb->query( "ALTER TABLE {$wpdb->projectmanager_projectmeta} ADD `options` varchar ( 255 ) NOT NULL default ''" );
+		foreach ( $wpdb->get_results( "SELECT `id` FROM {$wpdb->projectmanager_projectmeta}" ) AS $form_field) {
+			$formfield_options = $options['form_field_options'][$form_field->id];
+			if (is_array($formfield_options)) $formfield_options = implode(";", $formfield_options);
+			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projectmeta} SET `options` = '%s' WHERE `id` = '%d'", $formfield_options, $form_field->id ) );
+		}
+		unset($options['form_field_options']);
+	}
 
 
 	// Update dbversion
