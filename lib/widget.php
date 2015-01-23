@@ -82,7 +82,7 @@ class ProjectManagerWidget extends WP_Widget
 		//]]>
 		</script>
 		<style type="text/css">
-			div#projectmanager_slideshow_<?php echo $number ?> div {
+			div#projectmanager_slideshow_<?php echo $number ?> div, div#projectmanager_slideshow_<?php echo $number ?> img {
 				width: <?php echo $instance['slideshow']['width'] ?>px;
 				height: <?php echo $instance['slideshow']['height'] ?>px;
 			}
@@ -103,7 +103,7 @@ class ProjectManagerWidget extends WP_Widget
 			$url = get_permalink($instance['page_id']);
 			foreach ( $datasets AS $dataset ) {
 				$url = add_query_arg('show', $dataset->id, $url);
-				$name = ($projectmanager->hasDetails()) ? '<a href="'.$url.'"><img src="'.$projectmanager->getFileURL($dataset->image).'" alt="'.$dataset->name.'" title="'.$dataset->name.'" /></a>' : '<img src="'.$projectmanager->getFileURL($dataset->image).'" alt="'.$dataset->name.'" title="'.$dataset->name.'" />';
+				$name = ($projectmanager->hasDetails()) ? '<a href="'.$url.'"><img src="'.$projectmanager->getFileURL('thumb.'.$dataset->image).'" alt="'.$dataset->name.'" title="'.$dataset->name.'" /></a>' : '<img src="'.$projectmanager->getFileURL('thumb.'.$dataset->image).'" alt="'.$dataset->name.'" title="'.$dataset->name.'" />';
 				
 				if ( $slideshow )
 					echo "<div>".$name."</div>";

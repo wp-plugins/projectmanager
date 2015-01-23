@@ -35,7 +35,7 @@ global $wpdb;
 	<script type="text/javascript">
 	//<![CDATA[
 	ProjectManagerAjaxL10n = {
-		blogUrl: "<?php bloginfo( 'wpurl' ); ?>", pluginPath: "<?php echo PROJECTMANAGER_PATH; ?>", pluginUrl: "<?php echo PROJECTMANAGER_URL; ?>", requestUrl: "<?php bloginfo( 'wpurl' ); ?>/wp-admin/admin-ajax.php", imgUrl: "<?php echo PROJECTMANAGER_URL; ?>/images", Edit: "<?php _e("Edit"); ?>", Post: "<?php _e("Post"); ?>", Save: "<?php _e("Save"); ?>", Cancel: "<?php _e("Cancel"); ?>", pleaseWait: "<?php _e("Please wait..."); ?>", Revisions: "<?php _e("Page Revisions"); ?>", Time: "<?php _e("Insert time"); ?>", Options: "<?php _e("Options", "projectmanager") ?>", Delete: "<?php _e('Delete', 'projectmanager') ?>"
+		blogUrl: "<?php bloginfo( 'wpurl' ); ?>", pluginPath: "<?php echo PROJECTMANAGER_PATH; ?>", pluginUrl: "<?php echo PROJECTMANAGER_URL; ?>", requestUrl: "<?php  bloginfo( 'wpurl' ); ?>/wp-admin/admin-ajax.php", imgUrl: "<?php echo PROJECTMANAGER_URL; ?>/images", Edit: "<?php _e("Edit"); ?>", Post: "<?php _e("Post"); ?>", Save: "<?php _e("Save"); ?>", Cancel: "<?php _e("Cancel"); ?>", pleaseWait: "<?php _e("Please wait..."); ?>", Revisions: "<?php _e("Page Revisions"); ?>", Time: "<?php _e("Insert time"); ?>", Options: "<?php _e("Options", "projectmanager") ?>", Delete: "<?php _e('Delete', 'projectmanager') ?>"
 	}
 	//]]>
 	</script>
@@ -54,7 +54,7 @@ global $wpdb;
 			<li id="datasetform_tab"><span><a href="javascript:mcTabs.displayTab('datasetform_tab', 'datasetform_panel');" onmouseover="return false;"><?php _e('Dataset Form','projectmanager') ?></a></span></li>
 		</ul>
 	</div>
-	<div class="panel_wrapper">
+	<div class="panel_wrapper" style="height: 165px;">
 		
 	<!-- project panel -->
 	<div id="project_panel" class="panel current">
@@ -71,7 +71,7 @@ global $wpdb;
 					echo '<option value="'.$project->id.'" >'.$project->title.'</option>'."\n";
 			}
 		?>
-        	</select>
+        </select>
 		</td>
 	</tr>
 	<tr>
@@ -177,10 +177,11 @@ global $wpdb;
 	</tr>
 	</table>
 	</div>
-
+	
 	</div>
 	
-	<div class="mceActionPanel">
+	<br style="clear: both;" />
+	<div class="mceActionPanel" style="margin-top: 0.5em;">
 		<div style="float: left">
 			<input type="button" id="cancel" name="cancel" value="<?php _e("Cancel", 'projectmanager'); ?>" onclick="tinyMCEPopup.close();" />
 		</div>
@@ -189,7 +190,6 @@ global $wpdb;
 			<input type="submit" id="insert" name="insert" value="<?php _e("Insert", 'projectmanager'); ?>" onclick="ProjectManagerInsertLink();" />
 		</div>
 	</div>
-
 </form>
 </body>
 </html>

@@ -1476,16 +1476,21 @@ class ProjectManager extends ProjectManagerLoader
 	{
 		global $wpdb, $projectmanager;
 
+		$project = $this->getProject($project_id);
 		$datasets = $wpdb->get_results( "SELECT `id`, `name` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$project_id} ORDER BY `name` ASC" );
 		
-		$out = "<ul class='checkboxlist'>";
-		foreach ( $datasets AS $dataset ) {
-			$out .= "<li><input type='checkbox' name='".$name."' id='".$name."_".$dataset->id."' value='".$dataset->id."'";
-			if ( is_array($selected) && in_array($dataset->id, $selected) ) $out .= " checked='checked'";
-			$out .= "/><label for='".$name."_".$dataset->id."'>".$dataset->name."</label>";
+		if ($datasets) {
+			$out = "<ul class='checkboxlist'>";
+			foreach ( $datasets AS $dataset ) {
+				$out .= "<li><input type='checkbox' name='".$name."' id='".$name."_".$dataset->id."' value='".$dataset->id."'";
+				if ( is_array($selected) && in_array($dataset->id, $selected) ) $out .= " checked='checked'";
+				$out .= "/><label for='".$name."_".$dataset->id."'>".$dataset->name."</label>";
+			}
+			$out .= "</ul>";
+		} else {
+			$out = sprintf(__('No datasets found in Project %s', 'projectmanager'), $project->title)."</li>";
 		}
-		$out .= "</ul>";
-
+		
 		return $out;
 	}
 

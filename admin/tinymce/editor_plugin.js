@@ -19,8 +19,8 @@
 			ed.addCommand('mceProjectManager', function() {
 				ed.windowManager.open({
 					file : url + '/window.php',
-					width : 360 + ed.getLang('ProjectManager.delta_width', 0),
-					height : 230 + ed.getLang('ProjectManager.delta_height', 0),
+					width : 400, // + ed.getLang('ProjectManager.delta_width', 0),
+					height : 270, // + ed.getLang('ProjectManager.delta_height', 0),
 					inline : 1
 				}, {
 					plugin_url : url // Plugin absolute URL
@@ -29,7 +29,7 @@
 
 			// Register example button
 			ed.addButton('ProjectManager', {
-				title : 'ProjectManager.desc',
+				title : 'ProjectManager',
 				cmd : 'mceProjectManager',
 				image : url + '/projectmanager.png'
 			});

@@ -4,11 +4,10 @@
 		<td>
 			<input type="text" name="name" id="name" value="<?php echo $name ?>" size="45" />
 			<?php if ( current_user_can('edit_other_datasets') && !$edit ) : ?>
-				<span><a class="thickbox" title="<?php _e( 'Add WP User', 'projectmanager' ) ?>" href="#TB_inline&width=200&height=100&inlineId=wp_users"><img src="<?php echo PROJECTMANAGER_URL ?>/admin/icons/menu/user.png" alt="<?php _e( 'Add WP User', 'projectmanager' ) ?>" class="middle" /></a></span>
+				<!--<span><a class="thickbox" title="<?php _e( 'Add WP User', 'projectmanager' ) ?>" href="#TB_inline&width=200&height=100&inlineId=wp_users"><img src="<?php echo PROJECTMANAGER_URL ?>/admin/icons/menu/user.png" alt="<?php _e( 'Add WP User', 'projectmanager' ) ?>" class="middle" /></a></span>-->
 			<?php endif; ?>
 		</td>
 	</tr>
-	<?php echo $img_filename ?>
 	<?php if ( 1 == $project->show_image ) : ?>
 	<tr valign="top">
 		<th scope="row"><label for="projectmanager_image"><?php _e( 'Image', 'projectmanager' ) ?></label></th>
@@ -35,9 +34,9 @@
 			<td>
 				<?php if ( 'text' == $form_field->type || 'email' == $form_field->type || 'uri' == $form_field->type || 'numeric' == $form_field->type || 'currency' == $form_field->type ) : ?>
 				<input type="text" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" value="<?php echo $meta_data[$form_field->id] ?>" size="45" />
-				<?php elseif ( 'textfield' == $form_field->type ) : ?>
+				<?php elseif ( 'textfield' == $form_field->type || 'tinymce' == $form_field->type ) : ?>
 				<div style="width: 80%;">
-					<textarea name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" cols="70" rows="15"><?php echo $meta_data[$form_field->id] ?></textarea>
+					<textarea <?php if ('tinymce' == $form_field->type) echo 'class="wp-editor-area"' ?> name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" cols="70" rows="15"><?php echo $meta_data[$form_field->id] ?></textarea>
 				</div>
 				<?php elseif ( 'date' == $form_field->type ) : ?>
 				<select size="1" name="form_field[<?php echo $form_field->id ?>][day]">
@@ -110,7 +109,7 @@
 		
 		<?php endforeach; ?>
 	<?php endif; ?>
-	<?php if ( -1 != $project->category && current_user_can('edit_other_datasets') ) : ?>
+	<?php if ( isset($project->category) && -1 != $project->category && current_user_can('edit_other_datasets') ) : ?>
 	<!-- category selection form -->
 	<tr valign="top">
 		<th scope="row"><label for="post_category"><?php _e( 'Categories', 'projectmanager' ) ?></label></th>

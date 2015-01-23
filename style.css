@@ -137,7 +137,9 @@ ul.projectmanager, ol.projectmanager {
 	margin-top: 1em;
 	float: right;
 	}
-
+#datasetform ul.radiolist {
+	text-align: left;
+	}
 
 /* search form */
 form.search-form {
