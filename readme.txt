@@ -2,7 +2,7 @@
 Contributors: Kolja Schleich
 Tags: datamanager, CMS, Content Management System
 Requires at least: 2.7
-Tested up to 4.0
+Tested up to 4.1
 Stable tag: 3.1
 
 This plugin can be used to manage any number of projects with recurrent datasets (e.g. portrait system, dvd collection)
