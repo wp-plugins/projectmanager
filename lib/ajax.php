@@ -1,4 +1,4 @@
-<?php
+	<?php
 /**
  * AJAX class for the WordPress plugin ProjectManager
  * 
@@ -23,7 +23,7 @@ class ProjectManagerAJAX
 			add_action( 'wp_ajax_projectmanager_save_form_field_data', array(&$this, 'saveFormFieldData') );
 			add_action( 'wp_ajax_projectmanager_save_form_field_options', array(&$this, 'saveFormFieldOptions') );
 			add_action( 'wp_ajax_projectmanager_save_dataset_order', array(&$this, 'saveDatasetOrder') );
-			add_action( 'wp_ajax_projectmanager_ajax_delete_file', array(&$this, 'deleteFile') ); 
+//			add_action( 'wp_ajax_projectmanager_ajax_delete_file', array(&$this, 'deleteFile') ); 
 			add_action( 'wp_ajax_projectmanager_insert_wp_user', array(&$this, 'insertWpUser') );
 
 			add_action( 'wp_ajax_projectmanager_toggle_formfield_options', array(&$this, 'toggleFormfieldOptions') );
@@ -42,11 +42,12 @@ class ProjectManagerAJAX
 	 * 
 	 * @since 1.4
 	 */
-	function deleteFile() {
-		$file = $_POST['file'];
+/*	function deleteFile() {
+		$file = htmlspecialchars($_POST['file']);
 		@unlink($file);
 		die();
 	}
+	*/
 
 
 	/**
@@ -57,7 +58,6 @@ class ProjectManagerAJAX
 	function saveFormFieldOptions() {
 		$options = get_option('projectmanager');
 		
-		print_r($_POST);
 		$form_id = intval($_POST['form_id']);
 		$form_options = substr($_POST['options'], 0, -1);
 		$form_options = explode("|", $form_options);
@@ -121,7 +121,7 @@ class ProjectManagerAJAX
 		global $wpdb, $projectmanager;
 	
 		$dataset_id = intval($_POST['dataset_id']);
-		$new_cats = explode(",",substr($_POST['cat_ids'],0,-1));
+		$new_cats = explode(",",substr(htmlspecialchars($_POST['cat_ids']),0,-1));
 	
 		if ( count($new_cats) > 0 ) {
 			$cat_name = $projectmanager->getSelectedCategoryTitles($new_cats);
@@ -296,8 +296,8 @@ class ProjectManagerAJAX
 
 		$project_id = intval($_POST['project_id']);
 		$formfield_id = intval($_POST['formfield_id']);
-		$formfield_type = (string)$_POST['formfield_type'];
-		$options = (string)$_POST['options'];
+		$formfield_type = htmlspecialchars($_POST['formfield_type']);
+		$options = htmlspecialchars($_POST['options']);
 		$options = explode("|", $options);
 
 		$admin = $projectmanager_loader->getAdminPanel();

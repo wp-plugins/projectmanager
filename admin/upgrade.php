@@ -164,7 +164,7 @@ function projectmanager_upgrade() {
 * @return Upgrade Message
 */
 function projectmanager_upgrade_page()  {	
-	$filepath = admin_url() . 'admin.php?page=' . $_GET['page'];
+	$filepath = admin_url() . 'admin.php?page=' . htmlspecialchars($_GET['page']);
 
 	if ($_GET['upgrade'] == 'now') {
 		projectmanager_do_upgrade($filepath);

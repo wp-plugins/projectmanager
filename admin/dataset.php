@@ -9,7 +9,7 @@ $options = get_option('projectmanager');
 if ( isset($_GET['edit']) ) {
 	$edit = true;
 	$form_title = __('Edit Dataset','projectmanager');
-	$dataset_id = $_GET['edit'];
+	$dataset_id = intval($_GET['edit']);
 	$dataset = $projectmanager->getDataset( $dataset_id );
 	
 	$cat_ids = $projectmanager->getSelectedCategoryIDs($dataset);

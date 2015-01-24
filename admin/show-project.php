@@ -15,12 +15,12 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['doaction']) ) {
 		check_admin_referer( 'projectmanager_edit-dataset' );
 		if ( '' == $_POST['dataset_id'] ) {
 			$user_id = !empty($_POST['user_id']) ? (int)$_POST['user_id'] : false;
-			$this->addDataset( $_POST['project_id'], $_POST['name'], $_POST['post_category'], $_POST['form_field'], $user_id );
+			$this->addDataset( intval($_POST['project_id']), htmlspecialchars($_POST['name']), $_POST['post_category'], $_POST['form_field'], $user_id );
 		} else {
-			$dataset_owner = isset($_POST['owner']) ? $_POST['owner'] : false;
+			$dataset_owner = isset($_POST['owner']) ? intval($_POST['owner']) : false;
 			$del_image = isset( $_POST['del_old_image'] ) ? true : false;
 			$overwrite_image = ( isset($_POST['overwrite_image']) && 1 == $_POST['overwrite_image'] ) ? true: false;
-			$this->editDataset( $_POST['project_id'], $_POST['name'], $_POST['post_category'], $_POST['dataset_id'], $_POST['form_field'], $_POST['user_id'], $del_image, $_POST['image_file'], $overwrite_image, $dataset_owner );
+			$this->editDataset( intval($_POST['project_id']), htmlspecialchars($_POST['name']), $_POST['post_category'], intval($_POST['dataset_id']), $_POST['form_field'], intval($_POST['user_id']), $del_image, $_POST['image_file'], $overwrite_image, $dataset_owner );
 		}
 	}
 	$this->printMessage();
@@ -33,7 +33,7 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['doaction']) ) {
 			$this->printMessage();
 		} else {
 			foreach ( $_POST['dataset'] AS $dataset_id ) {
-				$this->delDataset( $dataset_id );
+				$this->delDataset( intval($dataset_id) );
 			}
 		}
 	} elseif ( 'duplicate' == $_POST['action'] ) {
@@ -43,7 +43,7 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['doaction']) ) {
 			$this->printMessage();
 		} else {
 			foreach ( $_POST['dataset'] AS $dataset_id ) {
-				$this->duplicateDataset( $dataset_id );
+				$this->duplicateDataset( intval($dataset_id) );
 			}
 		}
   }
@@ -118,7 +118,7 @@ else
 			<?php if ( -1 != $project->category ) : ?>
 			<!-- Category Filter -->
 			<?php wp_dropdown_categories(array('echo' => 1, 'hide_empty' => 0, 'hide_if_empty' => 1, 'name' => 'cat_id', 'orderby' => 'name', 'selected' => $projectmanager->getCatID(), 'hierarchical' => true, 'child_of' => $project->category, 'show_option_all' => __('View all categories'))); ?>
-			<input type='hidden' name='page' value='<?php echo $_GET['page'] ?>' />
+			<input type='hidden' name='page' value='<?php echo htmlspecialchars($_GET['page']) ?>' />
 			<input type='hidden' name='project_id' value='<?php echo $project_id ?>' />
 			<?php endif; ?>
 			<select size='1' name='orderby'>

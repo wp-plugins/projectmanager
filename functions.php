@@ -7,6 +7,7 @@
  * @param array $instance
  */
 function projectmanager_display_widget( $number, $instance ) {
+	$number = intval($number);
 	echo "<ul id='projectmanager-widget-".$instance['project']."' class='projectmanager_widget'>";
 	$widget = new ProjectManagerWidget(true);
 	$widget->widget( array('number' => $number), $intance );
@@ -23,6 +24,7 @@ function projectmanager_display_widget( $number, $instance ) {
  */
 function projectmanager_searchform( $project_id, $args = array() ) {
 	global $pmShortcodes;
+	$project_id = intval($project_id);
 	$defaults = array( 'template' => 'extend' );
 	$args = array_merge($defaults, $args);
 	extract($args, EXTR_SKIP);
@@ -38,7 +40,7 @@ function projectmanager_searchform( $project_id, $args = array() ) {
  */
 function projectmanager_selections( $project_id ) {
 	global $pmShortcodes;
-	$pmShortcodes->displaySelections($project_id);
+	$pmShortcodes->displaySelections(intval($project_id));
 }
 
 
@@ -49,7 +51,7 @@ function projectmanager_selections( $project_id ) {
  */
 function projectmanager_datasetform( $project_id ) {
 	global $pmShortcodes;
-	echo $pmShortcodes->displayDatasetForm( array('project_id' => $project_id) );	
+	echo $pmShortcodes->displayDatasetForm( array('project_id' => intval($project_id)) );	
 }
 
 
@@ -65,7 +67,7 @@ function project( $id, $args = array() ) {
 	$defaults = array( 'template' => 'table', 'cat_id' => false, 'orderby' => false, 'order' => false, 'single' => true, 'selections' => true, 'results' => true, 'field_id' => false, 'field_value' => false );
 	$args = array_merge($defaults, $args);
 	extract($args, EXTR_SKIP);
-	echo $pmShortcodes->displayProject( array('id' => $id, 'template' => $template, 'cat_id' => $cat_id, 'orderby' => $orderby, 'order' => $order, 'single' => $single, 'selections' => $selections, 'results' => $results, 'field_id' => $field_id, 'field_vaLue' => $field_value) );
+	echo $pmShortcodes->displayProject( array('id' => intval($id), 'template' => $template, 'cat_id' => intval($cat_id), 'orderby' => $orderby, 'order' => $order, 'single' => $single, 'selections' => $selections, 'results' => $results, 'field_id' => intval($field_id), 'field_vaLue' => $field_value) );
 }
 
 
@@ -81,7 +83,7 @@ function dataset( $id, $args = array() ) {
 	$defaults = array( 'template' => '' );
 	$args = array_merge($defaults, $args);
 	extract($args, EXTR_SKIP);
-	$pmShortcodes->displayDataset( array('id' => $id, 'template' => $template, 'echo' => 1) );
+	$pmShortcodes->displayDataset( array('id' => intval($id), 'template' => $template, 'echo' => 1) );
 }
 
 ?>

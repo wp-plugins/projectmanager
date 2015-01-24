@@ -287,8 +287,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 		if ( current_user_can( 'projectmanager_settings' ) ) {
 			if ( isset($_POST['updateProjectManager']) ) {
 				check_admin_referer('projetmanager_manage-global-league-options');
-				$options['colors']['headers'] = $_POST['color_headers'];
-				$options['colors']['rows'] = array( $_POST['color_rows_alt'], $_POST['color_rows'] );
+				$options['colors']['headers'] = htmlspecialchars($_POST['color_headers']);
+				$options['colors']['rows'] = array( htmlspecialchars($_POST['color_rows_alt']), htmlspecialchars($_POST['color_rows']) );
 				
 				update_option( 'projectmanager', $options );
 				$this->setMessage(__( 'Settings saved', 'leaguemanager' ));
@@ -402,7 +402,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 */
 	function datasetOrderbyOptions( $selected )
 	{
-		$options = array( 'order' => __('Manual', 'projectmanager'), 'id' => __('ID', 'projectmanager'), 'name' => __('Name','projectmanager'), 'formfields' => __('Formfields', 'projectmanager') );
+		$options = array( 'id' => __('ID', 'projectmanager'), 'name' => __('Name','projectmanager'), 'formfields' => __('Formfields', 'projectmanager') );
 		
 		foreach ( $options AS $option => $title ) {
 			$select = ( $selected == $option ) ? ' selected="selected"' : '';
@@ -443,7 +443,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 			return;
 		}
 
-		$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_projects} (title) VALUES ('%s')", $title ) );
+		$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_projects} (title) VALUES ('%s')", htmlspecialchars($title) ) );
 		$project_id = $wpdb->insert_id;
 		
 		$this->setMessage( __('Project added','projectmanager') );
@@ -468,7 +468,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 			return;
 		}
 		
-		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projects} SET `title` = '%s' WHERE `id` = '%d'", $title, $project_id ) );
+		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projects} SET `title` = '%s' WHERE `id` = '%d'", htmlspecialchars($title), intval($project_id) ) );
 		$this->setMessage( __('Project updated','projectmanager') );
 		
 		do_action('projectmanager_edit_project', $project_id);
@@ -488,6 +488,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 		if ( !current_user_can('delete_projects') ) 
 			return;
 
+		$project_id = intval($project_id);
 		$projectmanager->initialize($project_id);
 		foreach ( $projectmanager->getDatasets() AS $dataset )
 			$this->delDataset( $dataset->id );
@@ -515,6 +516,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 			return;
 		}
 
+		$project_id = intval($project_id);
 		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projects} SET `settings` = '%s' WHERE `id` = '%d'", maybe_serialize($settings), $project_id ) );
 		$this->setMessage(__('Settings saved', 'projectmanager'));
 		
@@ -538,6 +540,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 			return;
 		}
 
+		$project_id = intval($project_id);
 
 		if ( $file['size'] > 0 ) {
 			/*
@@ -606,6 +609,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 	{
 		global $wpdb;
 
+		$project_id = intval($project_id);
+		$user_id = intval($user_id);
 		$count= $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$project_id} AND `user_id` = '".$user_id."'" );
 
 		if ( $count > 0 )
@@ -630,6 +635,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 		//	return;
 		//}
 
+		$project_id = intval($project_id);
 		$this->project_id = $project_id;
 		$projectmanager->initialize($project_id);
 		$project = $projectmanager->getProject();
@@ -678,10 +684,12 @@ class ProjectManagerAdminPanel extends ProjectManager
 			return false;
 		}
 
+		$project_id = intval($project_id);
 		$projectmanager->initialize($project_id);
 		$this->project_id = $project_id;
 		$project = $this->project = $projectmanager->getProject($project_id);
 		if ( !$user_id ) $user_id = $current_user->ID;
+		$user_id = intval($user_id);
 
 		// Negative check on capability: user can't edit datasets
 		if ( !current_user_can('edit_datasets') && !current_user_can('projectmanager_user') && !current_user_can('import_datasets') ) {
@@ -703,6 +711,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 				
 		if ( $dataset_meta ) {
 			foreach ( $dataset_meta AS $meta_id => $meta_value ) {
+				$meta_id = intval($meta_id);
 				$formfield = parent::getFormFields($meta_id);
 					
 				// Manage file upload
@@ -803,6 +812,10 @@ class ProjectManagerAdminPanel extends ProjectManager
 			}
 		}
 
+		$project_id = intval($project_id);
+		$dataset_id = intval($dataset_id);
+		$user_id = intval($user_id);
+		
 		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `name` = '%s', `cat_ids` = '%s' WHERE `id` = '%d'", $name, maybe_serialize($cat_ids), $dataset_id ) );
 			
 		// Change Dataset owner if supplied
@@ -811,6 +824,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 			
 		if ( $dataset_meta ) {
 			foreach ( $dataset_meta AS $meta_id => $meta_value ) {
+				$meta_id = intval($meta_id);
 				$formfield = parent::getFormFields($meta_id);
 					
 				// Manage file upload
@@ -901,6 +915,7 @@ class ProjectManagerAdminPanel extends ProjectManager
   function duplicateDataset( $dataset_id )
   {
     global $projectmanager, $wpdb;
+	$dataset_id = intval($dataset_id);
     $dataset = $projectmanager->getDataset( $dataset_id );
     $meta = $projectmanager->getDatasetMeta( $dataset_id );
     
@@ -927,6 +942,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 	{
 		global $wpdb, $current_user, $projectmanager;
 			
+		$dataset_id = intval($dataset_id);
 		$dataset = $projectmanager->getDataset($dataset_id); 
 
 		if ( !current_user_can('delete_datasets') || ( !current_user_can('delete_other_datasets') && $dataset->user_id != $current_user->ID ) ) 
@@ -978,7 +994,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 		global $wpdb;
 		
 		$project = $this->project;
-
+		$dataset_id = intval($dataset_id);
+		
 		$new_file = parent::getFilePath().'/'.basename($file['name']);
 		$image = new ProjectManagerImage($new_file);
 		if ( $image->supported($file['name']) ) {
@@ -1305,7 +1322,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 				$project = $projectmanager->getProject();
 			
 				$is_profile_page = true;
-				$dataset = $wpdb->get_results( "SELECT `id`, `name`, `image`, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id} AND `user_id` = '".$current_user->ID."' LIMIT 0,1" );
+				$dataset = $wpdb->get_results( "SELECT `id`, `name`, `image`, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id} AND `user_id` = '".intval($current_user->ID)."' LIMIT 0,1" );
 				$dataset = $dataset[0];
 					
 				if ( $dataset ) {
@@ -1340,9 +1357,10 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 */
 	function updateProfile()
 	{
-		$user_id = $_POST['dataset_user_id'];
+		$user_id = intval($_POST['dataset_user_id']);
 
 		foreach ( (array)$_POST['dataset_id'] AS $id ) {
+			$id = intval($id);
 			$del_image = isset( $_POST['del_old_image'][$id] ) ? true : false;
 			$overwrite_image = ( isset($_POST['overwrite_image'][$id]) && 1 == $_POST['overwrite_image'][$id] ) ? true: false;
 			$this->editDataset( $_POST['project_id'][$id], $_POST['display_name'], $_POST['post_category'][$id], $id, $_POST['form_field'][$id], $user_id, $del_image, $_POST['image_file'][$id], $overwrite_image );

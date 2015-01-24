@@ -6,11 +6,11 @@ else :
 if ( isset($_POST['saveSettings']) ) {
 	check_admin_referer('projectmanager_manage-settings');
 
-	$this->editProject( $_POST['project_title'], $_POST['project_id'] );
-	$this->saveSettings( $_POST['settings'], $_POST['project_id'] );
+	$this->editProject( htmlspecialchars($_POST['project_title']), intval($_POST['project_id']) );
+	$this->saveSettings( $_POST['settings'], intval($_POST['project_id']) );
 
      	$this->printMessage();
-	$projectmanager->getProject($_POST['project_id']);
+	$projectmanager->getProject(intval($_POST['project_id']));
 }
 $project = $projectmanager->getCurrentProject();
 

@@ -1,4 +1,4 @@
-# Translation of the WordPress plugin ProjectManager 2.9.8 by Kolja Schleich.
+	# Translation of the WordPress plugin ProjectManager 2.9.8 by Kolja Schleich.
 # Copyright (C) 2010 Kolja Schleich
 # This file is distributed under the same license as the ProjectManager package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
@@ -709,6 +709,14 @@ msgstr ""
 
 #: admin/formfields.php:85 admin/formfields.php:108
 msgid "Set"
+msgstr ""
+
+#: admin/formfields.php:
+msgid "Add Form Field"
+msgstr ""
+
+#: admin/formfields.php:
+msgid "The Options field is used to store meta-data of formfields. Separate values by ; to save options for selectable fields (i.e. dropdown, checkbox or radio list)."
 msgstr ""
 
 #: admin/formfields.php:96 lib/ajax.php:332
