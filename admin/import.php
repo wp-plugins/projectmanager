@@ -54,7 +54,7 @@ if ( isset($_POST['export']) ) {
 	<?php endfor; ?>
 	</table>
 	
-	<p class="submit"><input type="submit" name="import" value="<?php _e('Import Datasets', 'projectmanager') ?> &raquo;" class="button" /></p>
+	<p class="submit"><input type="submit" name="import" value="<?php _e('Import Datasets', 'projectmanager') ?> &raquo;" class="button-primary" /></p>
 	</form>
 </div>
 
@@ -62,7 +62,7 @@ if ( isset($_POST['export']) ) {
 	<h2><?php _e( 'Export Datasets', 'projectmanager' ) ?></h2>
 	<form action="" method="post">
 		<input type="hidden" name="project_id" value="<?php echo $project_id ?>" />
-		<p class="submit"><input type="submit" name="projectmanager_export" value="<?php _e('Export Datasets', 'projectmanager') ?> &raquo;" class="button" /></p>
+		<p class="submit"><input type="submit" name="projectmanager_export" value="<?php _e('Export Datasets', 'projectmanager') ?> &raquo;" class="button-primary" /></p>
 	</form>
 </div>
 <?php endif; ?>

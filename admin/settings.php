@@ -26,7 +26,6 @@ if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) 
 		<?php wp_nonce_field( 'projectmanager_manage-settings' ) ?>
 		
 		<h2><?php _e( 'Settings', 'projectmanager' ) ?></h2>
-		<p class="submit"><input type="submit" name="saveSettings" value="<?php _e( 'Save Settings', 'projectmanager' ) ?> &raquo;" class="button" /></p>
 		<table class="form-table">
 		<tr valign="top">
 			<th scope="row"><label for="project_title"><?php _e( 'Title', 'projectmanager' ) ?></label></td><td><input type="text" name="project_title" id="project_title" value="<?php echo $project->title ?>" size="30" style="margin-bottom: 1em;" /></td>
@@ -86,7 +85,7 @@ if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) 
 		</table>
 		
 		<input type="hidden" name="project_id" value="<?php echo $project->id ?>" />
-		<p class="submit"><input type="submit" name="saveSettings" value="<?php _e( 'Save Settings', 'projectmanager' ) ?> &raquo;" class="button" /></p>
+		<p class="submit"><input type="submit" name="saveSettings" value="<?php _e( 'Save Settings', 'projectmanager' ) ?> &raquo;" class="button-primary" /></p>
 	</form> 
 </div>
 

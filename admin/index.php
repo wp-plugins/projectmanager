@@ -98,7 +98,7 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['deleteit']) ) {
 				<input type="text" name="project_title" id="project_title" value="" size="30" style="margin-bottom: 1em;" />
 			</div>
 			
-			<p class="submit"><input type="submit" value="<?php _e( 'Add Project', 'projectmanager' ) ?> &raquo;" class="button" /></p>
+			<p class="submit"><input type="submit" value="<?php _e( 'Add Project', 'projectmanager' ) ?> &raquo;" class="button button-primary" /></p>
 		</form>
 		</div>
 	</div>

@@ -18,7 +18,7 @@
 	</table>
 	
 	<input type='hidden' name='page_options' value='color_headers,color_rows,color_rows_alt' />
-	<p class='submit'><input type='submit' name='updateProjectManager' value='<?php _e( 'Save Preferences', 'projectmanager' ) ?> &raquo;' class='button' /></p>
+	<p class='submit'><input type='submit' name='updateProjectManager' value='<?php _e( 'Save Preferences', 'projectmanager' ) ?> &raquo;' class='button-primary' /></p>
   </form>
 
 </div>

@@ -66,7 +66,7 @@ if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) 
 	<input type="hidden" name="user_id" id="user_id"  value="<?php echo $dataset->user_id ?>" />
 	<input type="hidden" name="updateProjectManager" value="dataset" />
 			
-	<p class="submit"><input type="submit" name="addportrait" value="<?php echo $form_title ?> &raquo;" class="button" /></p>
+	<p class="submit"><input type="submit" name="addportrait" value="<?php echo $form_title ?> &raquo;" class="button-primary" /></p>
 </div>
 </form>
 
