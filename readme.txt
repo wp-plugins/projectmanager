@@ -1,7 +1,7 @@
 === ProjectManager ===
 Contributors: Kolja Schleich
 Tags: datamanager, CMS, Content Management System
-Requires at least: 2.7
+Requires at least: 3.9
 Tested up to 4.1
 Stable tag: 3.1
 
@@ -18,13 +18,11 @@ This plugin is a datamanager for any recurrent datasets. It can be used to manag
 * adding of form fields (text, textfield, e-mail, date, url, selection, checkbox and radio list) for each project independently
 * simple search of any form field and category names
 * template system to easily customize frontend display
-* Ajax enabled editing of datasets
 * easy adding of shortcodes via TinyMCE Button
 * change colorscheme for output tables via admin panel
 * dataset sorting by any form field
 * import and export of datasets from/to CSV file
 * hook projects into user profile
-* manual drag & drop sorting of datasets
 
 [Randy Hoyt](http://randyhoyt.com/) created a [Screencast](http://randyhoyt.com/wordpress/snippets/) on the usage of ProjectManager. Thanks a lot.
 
@@ -59,6 +57,9 @@ The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons
 
 
 == Changelog ==
+
+= 3.1.1 = 
+* UPDATE: re-added TinyMCE editor as formfield type, which was broken
 
 = 3.1 =
 * UPDATE: compatible with Wordpress 4

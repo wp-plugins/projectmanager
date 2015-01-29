@@ -233,7 +233,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 		wp_register_script ('projectmanager_colorpicker', PROJECTMANAGER_URL.'/admin/js/colorpicker.js', array( 'colorpicker' ), PROJECTMANAGER_VERSION );
 		wp_enqueue_script('projectmanager_colorpicker');
 	}
-	
+
 	
 	/**
 	 * load styles
