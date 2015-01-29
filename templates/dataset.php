@@ -10,6 +10,16 @@ The following variables are usable:
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
 */
 ?>
+<!-- Display dropdown form to select dataset from current project -->
+<!--
+<form action="<?php the_permalink() ?>" method="get" >
+<label for="show"><?php _e('Datasets', 'projectmanager') ?></label>
+<?php $projectmanager->printDatasetDropdown(array("selected" => $_GET['show'])); ?>
+<input type='hidden' name='page_id' value='<?php the_ID() ?>' />
+<input type='submit' value='<?php _e( 'Apply' ) ?>' class='button' />
+</form>
+-->
+
 <?php if ( $backurl ) : ?>
 <p><a href='<?php echo $backurl ?>'><?php _e('Back to list', 'projectmanager') ?></a></p>
 <?php endif; ?>

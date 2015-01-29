@@ -883,7 +883,7 @@ class ProjectManager extends ProjectManagerLoader
 			$datasets = $wpdb->get_results($sql);
 
 			/*
-			* Determine wether to sort by formfields or not
+			* Determine whether to sort by formfields or not
 			* Selection Menus and Shortcode Attributes override Project Settings
 			*/
 			if ( ($project->dataset_orderby == 'formfields' && !$this->override_order) || $formfield_id )
@@ -940,6 +940,43 @@ class ProjectManager extends ProjectManagerLoader
 	}
 	
 
+	/**
+	 * get dropdown of datasets
+	 *
+	 * @param array $args
+	 */
+	function getDatasetDropdown( $args )
+	{
+		global $wpdb;
+		$defaults = array(
+			"project_id" => false,
+			"name" => 'show',
+			"selected" => ""
+		);
+			
+		$args = array_merge( $defaults, $args );
+		extract( $args, EXTR_SKIP );
+		
+		if (!$project_id) $project_id = $this->getProjectID();
+		$project_id = intval($project_id);
+		$selected = intval($selected);
+		
+		$project = $this->getProject($project_id);
+		
+		$datasets = $wpdb->get_results( $wpdb->prepare("SELECT `id`, `name` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = '%d'", intval($project->id)) );
+		$out = "<select name='".$name."' id='".$name."'>";
+		foreach ($datasets AS $dataset) {
+			$out .= "<option value='".$dataset->id."' ".selected($selected,$dataset->id,false).">".$dataset->name."</option>";
+		}
+		$out .= "</select>";
+		return $out;
+	}
+	function printDatasetDropdown( $args )
+	{
+		echo $this->getDatasetDropdown( $args );
+	}
+	
+	
 	/**
 	 * order datasets by chosen form fields
 	 *

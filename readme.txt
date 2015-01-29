@@ -58,6 +58,10 @@ The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons
 
 == Changelog ==
 
+= 3.1.3 =
+* NEW: function to easily display dropdown selection for all datasets of a project, see an example in templates/dataset.php for usage
+* UPDATE: update main submit button classes to "button-primary"
+
 = 3.1.2 =
 * BUGFIX: fixed TinyMCE in frontent template
 
