@@ -3,7 +3,7 @@ Contributors: Kolja Schleich
 Tags: datamanager, CMS, Content Management System
 Requires at least: 3.9
 Tested up to 4.1
-Stable tag: 3.1.1
+Stable tag: 3.1.2
 
 This plugin can be used to manage any number of projects with recurrent datasets (e.g. portrait system, dvd collection)
 
@@ -57,6 +57,9 @@ The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons
 
 
 == Changelog ==
+
+= 3.1.2 =
+* BUGFIX: fixed TinyMCE in frontent template
 
 = 3.1.1 = 
 * UPDATE: re-added TinyMCE editor as formfield type, which was broken
