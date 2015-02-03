@@ -1,4 +1,4 @@
-	<?php
+<?php
 /**
 * Admin class holding all adminstrative functions for the WordPress plugin ProjectManager
 * 
@@ -204,29 +204,13 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 */
 	function loadScripts()
 	{
-		echo "<script type='text/javascript'>\n";
-		echo "var PRJCTMNGR_HTML_FORM_FIELD_TYPES = \"";
-		foreach (parent::getFormFieldTypes() AS $form_type_id => $form_type) {
-			$field_name = is_array($form_type) ? $form_type['name'] : $form_type;
-			echo "<option value='".$form_type_id."'>".$field_name."</option>";
-		}
-		echo "\";\n";
-			
-		?>
-		<!--//<![CDATA[
-		ProjectManagerAjaxL10n = {
-			blogUrl: "<?php //bloginfo( 'wpurl' ); ?>", pluginPath: "<?php //echo PROJECTMANAGER_PATH; ?>", pluginUrl: "<?php //echo PROJECTMANAGER_URL; ?>", requestUrl: "<?php //bloginfo( 'wpurl' ); ?>/wp-admin/admin-ajax.php", imgUrl: "<?php //echo PROJECTMANAGER_URL; ?>/images", Edit: "<?php //_e("Edit"); ?>", Post: "<?php //_e("Post"); ?>", Save: "<?php //_e("Save"); ?>", Cancel: "<?php //_e("Cancel"); ?>", pleaseWait: "<?php //_e("Please wait..."); ?>", Revisions: "<?php //_e("Page Revisions"); ?>", Time: "<?php //_e("Insert time"); ?>", Options: "<?php //_e("Options", "projectmanager") ?>", Delete: "<?php //_e('Delete', 'projectmanager') ?>", delFile: "<?php //_e('Delete File', 'projectmanager')?>"
-			   }
-		//]]--!>
-		<?php
-		echo "</script>\n";
+		//wp_register_script( 'projectmanager', PROJECTMANAGER_URL.'/admin/js/functions.js', array( 'sack', 'scriptaculous', 'prototype' ), PROJECTMANAGER_VERSION );
+		//wp_register_script( 'projectmanager_formfields', PROJECTMANAGER_URL.'/admin/js/formfields.js', array( 'projectmanager', 'thickbox' ), PROJECTMANAGER_VERSION );
+		//wp_register_script ('projectmanager_ajax', PROJECTMANAGER_URL.'/admin/js/ajax.js', array( 'projectmanager' ), PROJECTMANAGER_VERSION );
 		
-		wp_register_script( 'projectmanager', PROJECTMANAGER_URL.'/admin/js/functions.js', array( 'sack', 'scriptaculous', 'prototype' ), PROJECTMANAGER_VERSION );
-		wp_register_script( 'projectmanager_formfields', PROJECTMANAGER_URL.'/admin/js/formfields.js', array( 'projectmanager', 'thickbox' ), PROJECTMANAGER_VERSION );
-		wp_register_script ('projectmanager_ajax', PROJECTMANAGER_URL.'/admin/js/ajax.js', array( 'projectmanager' ), PROJECTMANAGER_VERSION );
-		
-		wp_enqueue_script( 'projectmanager_formfields' );
-		wp_enqueue_script( 'projectmanager_ajax');
+		//wp_enqueue_script( 'projectmanager_formfields' );
+		//wp_enqueue_script( 'projectmanager_ajax');
+		//wp_enqueue_script( 'projectmanager' );
 	}
 	function loadColorpicker()
 	{
@@ -678,6 +662,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 	function addDataset( $project_id, $name, $cat_ids, $dataset_meta = false, $user_id = false )
 	{
 		global $wpdb, $current_user, $projectmanager;
+		require_once (PROJECTMANAGER_PATH . '/lib/image.php');
 
 		if ( $user_id && $this->datasetExists($project_id, $user_id) ) {
 			$this->setMessage( __( 'You cannot add two datasets with same User ID.', 'projectmanager' ), true );
@@ -736,7 +721,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 						$dims = array( 'width' => 80, 'height' => 50 );
 						$image->createThumbnail( $dims, parent::getFilePath().'/tiny.'.$meta_value, $project->chmod );
 					}		
-				} elseif ( 'numeric' == $formfield->type || 'currency' == $formfiel->type ) {
+				} elseif ( 'numeric' == $formfield->type || 'currency' == $formfield->type ) {
 					$meta_value += 0; // convert value to numeric type
 				}
 					
@@ -1170,7 +1155,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 		
 		// delete formfield metadata from options
 		$options = get_option('projectmanager');
-		unset($options['form_field_options'][$form_field_id]);
+		unset($options['form_field_options'][$formfield_id]);
 		update_option('projectmanager', $options);
 		
 		// delete formfield and formfield data
@@ -1282,13 +1267,13 @@ class ProjectManagerAdminPanel extends ProjectManager
 
 		//if ( 1 != $project->navi_link ) {
 			echo '<p class="projectmanager_breadcrumb">';
-			if ( !$this->single )
+			if ( !isset($this->single) || !$this->single )
 				echo '<a href="admin.php?page=projectmanager">'.__( 'Projectmanager', 'projectmanager' ).'</a> &raquo; ';
 			
 			if ( $page_title != $project->title )
 				echo '<a href="admin.php?page=projectmanager&subpage=show-project&amp;project_id='.$project->id.'">'.$project->title.'</a> &raquo; ';
 			
-			if ( !$start || ($start && !$this->single) ) echo $page_title;
+			if ( !$start || ($start && (!isset($this->single) || !$this->single)) ) echo $page_title;
 			
 			echo '</p>';
 		//}
@@ -1341,7 +1326,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 					echo '<h3>'.$projectmanager->getProjectTitle().'</h3>';
 					echo '<input type="hidden" name="project_id['.$dataset_id.']" value="'.$project_id.'" /><input type="hidden" name="dataset_id[]" value="'.$dataset_id.'" /><input type="hidden" name="dataset_user_id" value="'.$current_user->ID.'" />';
 				
-				  $projectmanager->loadTinyMCE();
+					$projectmanager->loadTinyMCE();
 					include( dirname(__FILE__). '/dataset-form-profile.php' );
 				}
 			}
@@ -1367,3 +1352,4 @@ class ProjectManagerAdminPanel extends ProjectManager
 		}
 	}
 }
+?>

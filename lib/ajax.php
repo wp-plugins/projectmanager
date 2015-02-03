@@ -377,3 +377,4 @@ class ProjectManagerAJAX
 			//ProjectManager.doneLoading('loading_formfield_options_".$formfield_id."');
 	}
 }
+?>

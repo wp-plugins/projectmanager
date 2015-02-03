@@ -20,7 +20,7 @@ if ( isset($_GET['edit']) ) {
 	$img_filename = $dataset->image;
 	$meta_data = array();
 	foreach ( $dataset_meta AS $meta ) {
-		if ( is_string($meta_data[$meta->form_field_id] ) )
+		if ( is_string($meta->value) )
 			$meta_data[$meta->form_field_id] = htmlspecialchars(stripslashes_deep($meta->value), ENT_QUOTES);
 		else
 			$meta_data[$meta->form_field_id] = stripslashes_deep($meta->value);

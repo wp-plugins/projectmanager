@@ -3,7 +3,7 @@
 Plugin Name: ProjectManager
 Description: This Plugin can be used to manage several different types of projects with redundant data. This could be athlet portraits, DVD database, architect projects. You can define different form field types and groups to sort your project entries.
 Plugin URI: http://wordpress.org/extend/plugins/projectmanager/
-Version: 3.1.2
+Version: 3.1.3
 Author: Kolja Schleich
 
 Copyright 2008-2015  Kolja Schleich  (email : kolja.schleich@googlemail.com)
@@ -35,7 +35,7 @@ class ProjectManagerLoader
 	 *
 	 * @var string
 	 */
-	 var $version = '3.1.2';
+	 var $version = '3.1.3';
 	 
 	 
 	 /**
@@ -77,7 +77,7 @@ class ProjectManagerLoader
 		register_activation_hook(__FILE__, array(&$this, 'activate') );
 		
 		if (function_exists('register_uninstall_hook'))
-			register_uninstall_hook(__FILE__, array(&$this, 'uninstall'));
+			register_uninstall_hook(__FILE__, array('ProjectManagerLoader', 'uninstall'));
 
 		add_action( 'widgets_init', array(&$this, 'registerWidget') );
 		// Start this plugin once all other plugins are fully loaded
@@ -172,17 +172,17 @@ class ProjectManagerLoader
 
 		// Global libraries
 		require_once (dirname (__FILE__) . '/lib/core.php');
-		require_once (dirname (__FILE__) . '/lib/ajax.php');
+		//require_once (dirname (__FILE__) . '/lib/ajax.php');
 		require_once (dirname (__FILE__) . '/lib/widget.php');
 		require_once (dirname (__FILE__) . '/functions.php');
 		
 		$project_id = isset($_GET['project_id']) ? intval($_GET['project_id']) : false;
 		$projectmanager = new ProjectManager($project_id);
 
-		$ajax = new ProjectManagerAJAX();
+		//$ajax = new ProjectManagerAJAX();
 
 		if ( is_admin() ) {
-			require_once (dirname (__FILE__) . '/lib/image.php');
+			//require_once (dirname (__FILE__) . '/lib/image.php');
 			require_once (dirname (__FILE__) . '/admin/admin.php');	
 			$this->adminPanel = new ProjectManagerAdminPanel();
 		} else {
@@ -243,7 +243,6 @@ class ProjectManagerLoader
 		wp_register_script( 'jquery_slideshow', PROJECTMANAGER_URL.'/js/jquery.cycle.all.js', array('jquery'), '2.65' );
 		wp_print_scripts( 'jquery_slideshow' );
 	}
-	
 	
 	/**
 	 * load styles
@@ -407,7 +406,7 @@ class ProjectManagerLoader
 	 * @param none
 	 * @return boolean
 	 */
-	function uninstall()
+	static function uninstall()
 	{
 		global $wpdb, $projectmanager;
 

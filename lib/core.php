@@ -85,7 +85,7 @@ class ProjectManager extends ProjectManagerLoader
 		//Save selected group. NULL if none is selected
 		$this->setCatID();
 
-		if ( $project_id ) $this->initialize(intval($project_id));
+		if ( $project_id ) $this->init(intval($project_id));
 
 		$this->admin = parent::getAdminPanel();
 		return;
@@ -110,7 +110,7 @@ class ProjectManager extends ProjectManagerLoader
 	 * @param int $project_id
 	 * @return void
 	 */
-	function initialize( $project_id )
+	function init( $project_id )
 	{
 		$this->setProjectID(intval($project_id));
 		$this->project = $this->getProject($this->getProjectID());
@@ -150,7 +150,8 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function getNumPages()
 	{
-		return intval($this->num_max_pages);
+		if (isset($this->num_max_pages)) return intval($this->num_max_pages);
+		else return 1;
 	}
 
 	
@@ -1261,7 +1262,7 @@ class ProjectManager extends ProjectManagerLoader
 				} elseif ( 'textfield' == $meta->type || 'tinymce' == $meta->type ) {
 					if ( strlen($meta_value) > 100 && !$show_all && empty($include) )
 						$meta_value = substr($meta_value, 0, 100)."...";
-					  $meta_value = nl2br($meta_value);
+					  if (!is_admin()) $meta_value = nl2br($meta_value);
 						
 					$meta_value = apply_filters( 'projectmanager_textfield', $meta_value );
 					$meta_value = sprintf($pattern, $meta_value, $dataset);
@@ -1714,7 +1715,8 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function getSupportedImageTypes()
 	{
-		return ProjectManagerImage::getSupportedImageTypes();	
+		//return ProjectManagerImage::getSupportedImageTypes();	
+		return array( "jpg", "jpeg", "png", "gif" );
 	}
 	
 	
@@ -1798,7 +1800,7 @@ class ProjectManager extends ProjectManagerLoader
 			plugins: "<?php echo $plugins ?>",
 			language: "<?php echo $mce_locale ?>",
 	
-			// Thene Options
+			// Theme Options
 			theme_advanced_buttons3: "",
 			theme_advanced_buttons4: "",
 			theme_advanced_toolbar_location: "top",
