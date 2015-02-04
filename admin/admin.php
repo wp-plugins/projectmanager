@@ -157,7 +157,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 			
 			default:
 				$page = explode("_", $_GET['page']);
-				$projectmanager->initialize($page[1]);
+				$projectmanager->init($page[1]);
 							
 				switch ($page[0]) {
 					case 'project':
@@ -204,13 +204,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 */
 	function loadScripts()
 	{
-		//wp_register_script( 'projectmanager', PROJECTMANAGER_URL.'/admin/js/functions.js', array( 'sack', 'scriptaculous', 'prototype' ), PROJECTMANAGER_VERSION );
-		//wp_register_script( 'projectmanager_formfields', PROJECTMANAGER_URL.'/admin/js/formfields.js', array( 'projectmanager', 'thickbox' ), PROJECTMANAGER_VERSION );
-		//wp_register_script ('projectmanager_ajax', PROJECTMANAGER_URL.'/admin/js/ajax.js', array( 'projectmanager' ), PROJECTMANAGER_VERSION );
-		
-		//wp_enqueue_script( 'projectmanager_formfields' );
-		//wp_enqueue_script( 'projectmanager_ajax');
-		//wp_enqueue_script( 'projectmanager' );
+		wp_register_script( 'projectmanager', PROJECTMANAGER_URL.'/admin/js/functions.js', array( 'sack', 'scriptaculous', 'prototype' ), PROJECTMANAGER_VERSION );
+		wp_enqueue_script( 'projectmanager' );
 	}
 	function loadColorpicker()
 	{
@@ -473,7 +468,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 			return;
 
 		$project_id = intval($project_id);
-		$projectmanager->initialize($project_id);
+		$projectmanager->init($project_id);
 		foreach ( $projectmanager->getDatasets() AS $dataset )
 			$this->delDataset( $dataset->id );
 		
@@ -621,7 +616,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 
 		$project_id = intval($project_id);
 		$this->project_id = $project_id;
-		$projectmanager->initialize($project_id);
+		$projectmanager->init($project_id);
 		$project = $projectmanager->getProject();
 			
 		$filename = $project->title."_".date("Y-m-d").".csv";
@@ -670,7 +665,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 		}
 
 		$project_id = intval($project_id);
-		$projectmanager->initialize($project_id);
+		$projectmanager->init($project_id);
 		$this->project_id = $project_id;
 		$project = $this->project = $projectmanager->getProject($project_id);
 		if ( !$user_id ) $user_id = $current_user->ID;
@@ -1303,7 +1298,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 		if ( !empty($projects) ) {
 			foreach ( $projects AS $project_id ) {
 				$this->project_id = $project_id;
-				$projectmanager->initialize($this->project_id);
+				$projectmanager->init($this->project_id);
 				$project = $projectmanager->getProject();
 			
 				$is_profile_page = true;

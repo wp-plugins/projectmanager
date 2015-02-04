@@ -172,14 +172,11 @@ class ProjectManagerLoader
 
 		// Global libraries
 		require_once (dirname (__FILE__) . '/lib/core.php');
-		//require_once (dirname (__FILE__) . '/lib/ajax.php');
 		require_once (dirname (__FILE__) . '/lib/widget.php');
 		require_once (dirname (__FILE__) . '/functions.php');
 		
 		$project_id = isset($_GET['project_id']) ? intval($_GET['project_id']) : false;
 		$projectmanager = new ProjectManager($project_id);
-
-		//$ajax = new ProjectManagerAJAX();
 
 		if ( is_admin() ) {
 			//require_once (dirname (__FILE__) . '/lib/image.php');

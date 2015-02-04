@@ -47,7 +47,7 @@ class ProjectManagerWidget extends WP_Widget
 		global $wpdb, $projectmanager;
 
 		$project_id = intval($instance['project']);
-		$projectmanager->initialize($project_id);
+		$projectmanager->init($project_id);
 		
 		$project = $projectmanager->getCurrentProject();
 		

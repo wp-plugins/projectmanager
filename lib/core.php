@@ -349,7 +349,7 @@ class ProjectManager extends ProjectManagerLoader
 		elseif ( isset($_GET['orderby']) && isset($_GET['order']) ) {
 			$orderby = explode('_', htmlspecialchars($_GET['orderby']));
 			$this->orderby = ( $_GET['orderby'] != '' ) ? htmlspecialchars($_GET['orderby']) : 'name';
-			$formfield_id = $orderby[1];
+			$formfield_id = isset($orderby[1]) ? $orderby[1] : "";
 			$this->order = ( $_GET['order'] != '' ) ? htmlspecialchars($_GET['order']) : 'ASC';
 			
 			$this->override_order = true;
@@ -357,9 +357,9 @@ class ProjectManager extends ProjectManagerLoader
 		// Shortcode Attributes
 		elseif ( $orderby || $order ) {
 			if ( $orderby ) {
-				$tmp = explode("-",$orderby);
+				$tmp = explode("_",$orderby);
 				$this->orderby = $tmp[0];
-				$formfield_id = $tmp[1];
+				$formfield_id = isset($tmp[1]) ? $tmp[1] : "";
 			}
 			if ( $order ) $this->order = $order;
 
@@ -677,8 +677,33 @@ class ProjectManager extends ProjectManagerLoader
 		$project = $project[0];
 		$project = (object) array_merge( (array)$project, (array)maybe_unserialize($project->settings) );
 		unset($project->settings);
+		$project = $this->getDefaultProjectSettings($project);
 
 		$this->project = $project;
+		return $project;
+	}
+	
+	
+	/**
+	 * get default project settings
+	 *
+	 * @param object $project
+	 */
+	function getDefaultProjectSettings( $project )
+	{
+		if (!isset($project->per_page)) $project->per_page = "";
+		if (!isset($project->category)) $project->category = "";
+		if (!isset($project->dataset_orderby)) $project->dataset_orderby = "name";
+		if (!isset($project->dataset_order)) $project->dataset_order = "ASC";
+		if (!isset($project->navi_link)) $project->navi_link = 0;
+		if (!isset($project->profile_hook)) $project->profile_hook = 0;
+		if (!isset($project->menu_icon)) $project->menu_icon = "databases.png";
+		if (!isset($project->gallery_num_cols)) $project->gallery_num_cols = "";
+		if (!isset($project->show_image)) $project->show_image = 0;
+		if (!isset($project->thumb_size)) $project->thumb_size = array("width" => "", "height" => "");
+		if (!isset($project->medium_size)) $project->medium_size = array("width" => "", "height" => "");
+		if (!isset($project->chmod)) $project->chmod = "755";
+		
 		return $project;
 	}
 	
@@ -793,11 +818,12 @@ class ProjectManager extends ProjectManagerLoader
 
 		$project_id = intval($project_id);
 		$sql = "SELECT COUNT(ID) FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$project_id}";
-		if ( $all )
+		if ( $all ) {
 			return $wpdb->get_var( $sql );
-		elseif ( $this->isSearch() )
-			return count($this->datasets);
-		else {
+		} elseif ( $this->isSearch() ) {
+			if (isset($this->datasets)) return count($this->datasets);
+			else return 0;
+		} else {
 			if ( $this->isCategory() )
 				$sql .= $this->getCategorySearchString();
 
@@ -850,9 +876,11 @@ class ProjectManager extends ProjectManagerLoader
 		} else {
 			// Set ordering
 			$formfield_id = $this->setDatasetOrder($orderby, $order);
-
+			$orderby = $this->orderby;
+			$order = $this->order;
+			
 			// get MySQL Ordering String
-			$tmp = explode("-",$orderby);
+			$tmp = explode("_",$orderby);
 			$orderby = $tmp[0];
 			if ( $orderby && $orderby != 'formfields' ) {
 				$sql_order = "`$orderby` $order";
@@ -887,7 +915,7 @@ class ProjectManager extends ProjectManagerLoader
 			* Determine whether to sort by formfields or not
 			* Selection Menus and Shortcode Attributes override Project Settings
 			*/
-			if ( ($project->dataset_orderby == 'formfields' && !$this->override_order) || $formfield_id )
+			if ( (isset($project->dataset_orderby) && $project->dataset_orderby == 'formfields' && !$this->override_order) || $formfield_id )
 				$orderby_formfields = true;
 			else
 				$orderby_formfields = false;
@@ -1670,7 +1698,7 @@ class ProjectManager extends ProjectManagerLoader
 		$option = $this->getSearchOption();
 			
 		if ( 0 == $option ) {
-			$datasets = $wpdb->get_results( "SELECT `id`, `name`, `image`, `cat_ids` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = '".intval($this->project_id)."' AND `name` REGEXP CONVERT( _utf8 '".$search."' USING latin1 ) ORDER BY `name` ASC" );
+			$datasets = $wpdb->get_results( "SELECT `id`, `name`, `image`, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = '".intval($this->project_id)."' AND `name` REGEXP CONVERT( _utf8 '".$search."' USING latin1 ) ORDER BY `name` ASC" );
 		} elseif ( -1 == $option ) {
 			$categories = explode(",", $search);
 			$cat_ids = array();
@@ -1678,7 +1706,7 @@ class ProjectManager extends ProjectManagerLoader
 				$c = $wpdb->get_results( $wpdb->prepare ( "SELECT `term_id` FROM $wpdb->terms WHERE `name` = '%s'", trim($category) ) );
 				$cat_ids[] = $c[0]->term_id;;
 			}
-			$sql = "SELECT `id`, `name`, `image`, `cat_ids` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = '".intval($this->project_id)."'";
+			$sql = "SELECT `id`, `name`, `image`, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = '".intval($this->project_id)."'";
 				
 			foreach ( $cat_ids AS $cat_id ) {
 				$this->setCatID($cat_id);

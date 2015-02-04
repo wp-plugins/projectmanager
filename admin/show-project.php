@@ -70,7 +70,7 @@ else
 		<?php foreach ( $this->getMenu() AS $key => $item ) : ?>
 		<?php if ( current_user_can($item['cap']) ) : ?>
 
-		<?php if ( $project->navi_link != 1 || isset($_GET['subpage']) ) : ?>
+		<?php if ( (isset($project->navi_link) && $project->navi_link != 1) || isset($_GET['subpage']) ) : ?>
 		<li><a href="admin.php?page=projectmanager&amp;subpage=<?php echo $key ?>&amp;project_id=<?php echo $project_id ?>"><?php echo $item['title'] ?></a></li> |
 		<?php else : ?>
 		<li><a href="admin.php?page=<?php printf($item['page'], intval($project_id)) ?>"><?php echo $item['title'] ?></a></li>
