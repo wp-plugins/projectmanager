@@ -3,13 +3,13 @@ Contributors: Kolja Schleich
 Tags: datamanager, CMS, Content Management System
 Requires at least: 3.9
 Tested up to 4.1
-Stable tag: 3.1.3
+Stable tag: 3.1.4
 
 This plugin can be used to manage any number of projects with recurrent datasets (e.g. portrait system, dvd collection)
 
 == Description ==
 
-This plugin is a datamanager for any recurrent datasets. It can be used to manage and list a DVD collection, to to present portraits (e.g. athlets of a team), simple tabular calendar or anything you can think of. Below is a least of features
+This plugin is a datamanager for any recurrent datasets. It can be used to manage and list a DVD collection, to to present portraits (e.g. athlets of a team), simple tabular calendar or anything you can think of. Below is a list of features
 
 **Features**
 
@@ -55,8 +55,11 @@ To install the plugin to the following steps
 == Credits ==
 The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons of http://www.pinvoke.com/.
 
-
 == Changelog ==
+
+= 3.1.4 =
+* BUGFIX: small fixes for better coding
+* BUGFIX: fix htmlspecialchars problem with TinyMCE editor data
 
 = 3.1.3 =
 * NEW: function to easily display dropdown selection for all datasets of a project, see an example in templates/dataset.php for usage

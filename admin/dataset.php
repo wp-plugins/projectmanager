@@ -21,7 +21,7 @@ if ( isset($_GET['edit']) ) {
 	$meta_data = array();
 	foreach ( $dataset_meta AS $meta ) {
 		if ( is_string($meta->value) )
-			$meta_data[$meta->form_field_id] = htmlspecialchars(stripslashes_deep($meta->value), ENT_QUOTES);
+			$meta_data[$meta->form_field_id] = stripslashes_deep($meta->value);
 		else
 			$meta_data[$meta->form_field_id] = stripslashes_deep($meta->value);
 	}
