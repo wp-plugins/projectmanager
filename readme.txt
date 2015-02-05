@@ -3,7 +3,7 @@ Contributors: Kolja Schleich
 Tags: datamanager, CMS, Content Management System
 Requires at least: 3.9
 Tested up to 4.1
-Stable tag: 3.1.4
+Stable tag: 3.1.5
 
 This plugin can be used to manage any number of projects with recurrent datasets (e.g. portrait system, dvd collection)
 
@@ -23,6 +23,7 @@ This plugin is a datamanager for any recurrent datasets. It can be used to manag
 * dataset sorting by any form field
 * import and export of datasets from/to CSV file
 * hook projects into user profile
+* show multiple projects on the same page (there are some limitations)
 
 [Randy Hoyt](http://randyhoyt.com/) created a [Screencast](http://randyhoyt.com/wordpress/snippets/) on the usage of ProjectManager. Thanks a lot.
 
@@ -55,7 +56,16 @@ To install the plugin to the following steps
 == Credits ==
 The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons of http://www.pinvoke.com/.
 
+== Limitations of multiple projects on the same page ==
+* Navigating through pages in one project while a single dataset of another project is selected will lead to conflicts
+* Pagination of different projects do not work simultaneously
+
 == Changelog ==
+
+= 3.1.5 =
+* NEW: multiple projects can be displayed on the same page with some limitations
+* NEW: admin dashboard widget showing latest posts from wordpress support forum with editable options
+* BUGFIX: fixed several small bugs
 
 = 3.1.4 =
 * BUGFIX: small fixes for better coding

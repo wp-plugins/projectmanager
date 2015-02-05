@@ -15,12 +15,15 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['doaction']) ) {
 		check_admin_referer( 'projectmanager_edit-dataset' );
 		if ( '' == $_POST['dataset_id'] ) {
 			$user_id = !empty($_POST['user_id']) ? (int)$_POST['user_id'] : false;
-			$this->addDataset( intval($_POST['project_id']), htmlspecialchars($_POST['name']), $_POST['post_category'], $_POST['form_field'], $user_id );
+			$category = isset($_POST['post_category']) ? $_POST['post_category'] : '';
+			$this->addDataset( intval($_POST['project_id']), htmlspecialchars($_POST['name']), $category, $_POST['form_field'], $user_id );
 		} else {
 			$dataset_owner = isset($_POST['owner']) ? intval($_POST['owner']) : false;
 			$del_image = isset( $_POST['del_old_image'] ) ? true : false;
+			$category = isset($_POST['post_category']) ? $_POST['post_category'] : '';
 			$overwrite_image = ( isset($_POST['overwrite_image']) && 1 == $_POST['overwrite_image'] ) ? true: false;
-			$this->editDataset( intval($_POST['project_id']), htmlspecialchars($_POST['name']), $_POST['post_category'], intval($_POST['dataset_id']), $_POST['form_field'], intval($_POST['user_id']), $del_image, $_POST['image_file'], $overwrite_image, $dataset_owner );
+			$img_file = isset($_POST['image_file']) ? $_POST['image_file'] : "";
+			$this->editDataset( intval($_POST['project_id']), htmlspecialchars($_POST['name']), $category, intval($_POST['dataset_id']), $_POST['form_field'], intval($_POST['user_id']), $del_image, $img_file, $overwrite_image, $dataset_owner );
 		}
 	}
 	$this->printMessage();
@@ -97,6 +100,7 @@ else
 		<?php else : ?>
 		<input type='hidden' name='form_field' value='0' />
 		<?php endif; ?>
+		<input type="hidden" name="project_id" value="<?php echo $projectmanager->getProjectID() ?>" />
 		<input type='submit' value='<?php _e( 'Search', 'projectmanager' ) ?>' class='button-secondary action' />
 	</form></p>
 	
@@ -181,12 +185,13 @@ else
 			$categories = __( 'None', 'projectmanager' );
 				
 		$dataset->name = htmlspecialchars(stripslashes($dataset->name), ENT_QUOTES);
+		$dataset_user_id = isset($dataset->user_id) ? $dataset->user_id : '';
 ?>
 		<tr class="<?php echo $class ?>" id="dataset_<?php echo $dataset->id ?>">
 			<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $dataset->id ?>" name="dataset[<?php echo $dataset->id ?>]" /></th>
 			<td><?php echo $dataset->id ?></td>
 			<td>
-				<?php if ( ( current_user_can('edit_datasets') && $current_user->ID == $dataset->user_id ) || ( current_user_can('edit_other_datasets') ) ) : ?>
+				<?php if ( ( current_user_can('edit_datasets') && $current_user->ID == $dataset_user_id ) || ( current_user_can('edit_other_datasets') ) ) : ?>
 					<a href="admin.php?page=<?php if($_GET['page'] == 'projectmanager') echo 'projectmanager&subpage=dataset'; else echo 'project-dataset_'.$project_id ?>&amp;edit=<?php echo $dataset->id ?>&amp;project_id=<?php echo $project_id ?>"><?php echo $dataset->name ?></a>
 				<?php else : ?>
 					<?php echo $dataset->name ?>

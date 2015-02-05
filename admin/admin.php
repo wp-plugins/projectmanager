@@ -22,8 +22,9 @@ class ProjectManagerAdminPanel extends ProjectManager
 		
 		//add_action('admin_print_scripts', array(&$this, 'loadScripts') );
 		add_action('admin_print_styles', array(&$this, 'loadStyles') );
+		add_action('wp_dashboard_setup', array( $this, 'registerDashboardWidget'));
 	}
-	function LeagueManagerAdmin()
+	function ProjectManagerAdminPanel()
 	{
 		$this->__construct();
 	}
@@ -98,6 +99,46 @@ class ProjectManagerAdminPanel extends ProjectManager
 				
 		$plugin = 'projectmanager/projectmanager.php';
 		add_filter( 'plugin_action_links_' . $plugin, array( &$this, 'pluginActions' ) );
+	}
+	
+	
+	/**
+	* Register ProjectManager Dashboard Widget
+	*
+	* @param  none
+	* @return void
+	*/
+	public static function registerDashboardWidget()
+	{
+		wp_add_dashboard_widget(
+			'projectmanager_dashboard',
+			__('ProjectManager Latest Support News', 'projectmanager'),
+			array(
+				'ProjectManagerAdminPanel',
+				'latestSupportNews'
+			)
+		);
+	}
+	/**
+	 * Get latest news from ProjectManager Support on WordPress.org
+	 *
+	 * @param  none
+	 * @return string
+	 */
+	public static function latestSupportNews()
+	{
+		$options = get_option('projectmanager');
+		echo '<div class="rss-widget">';
+
+		wp_widget_rss_output(array(
+			'url' => 'http://wordpress.org/support/rss/plugin/projectmanager',
+			'show_author' => $options['dashboard_widget']['show_author'],
+			'show_date' => $options['dashboard_widget']['show_date'],
+			'show_summary' => $options['dashboard_widget']['show_summary'],
+			'items' => $options['dashboard_widget']['num_items']
+		));
+
+		echo '</div>';
 	}
 	
 	
@@ -268,6 +309,10 @@ class ProjectManagerAdminPanel extends ProjectManager
 				check_admin_referer('projetmanager_manage-global-league-options');
 				$options['colors']['headers'] = htmlspecialchars($_POST['color_headers']);
 				$options['colors']['rows'] = array( htmlspecialchars($_POST['color_rows_alt']), htmlspecialchars($_POST['color_rows']) );
+				$options['dashboard_widget']['num_items'] = intval($_POST['dashboard']['num_items']);
+				$options['dashboard_widget']['show_author'] = isset($_POST['dashboard']['show_author']) ? 1 : 0;
+				$options['dashboard_widget']['show_date'] = isset($_POST['dashboard']['show_date']) ? 1 : 0;
+				$options['dashboard_widget']['show_summary'] = isset($_POST['dashboard']['show_summary']) ? 1 : 0;
 				
 				update_option( 'projectmanager', $options );
 				$this->setMessage(__( 'Settings saved', 'leaguemanager' ));

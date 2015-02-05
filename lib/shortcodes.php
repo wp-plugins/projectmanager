@@ -39,7 +39,7 @@ class ProjectManagerShortcodes
 		add_shortcode( 'project_search', array(&$this, 'displaySearchForm') );
 		add_action( 'projectmanager_selections', array(&$this, 'displaySelections') );
 		add_action( 'projectmanager_tablenav', array(&$this, 'displaySelections') );
-		add_action( 'projectmanager_dataset', array(&$this, 'displayDataset') );
+		add_action( 'projectmanager_dataset', array(&$this, 'displayDataset'), 10, 2 );
 	}
 	
 	
@@ -97,7 +97,7 @@ class ProjectManagerShortcodes
 		
 		$filename = 'searchform-'.$template;
 		if ( !isset($_GET['show'])) {
-			$out = $this->loadTemplate( $filename, array( 'form_fields' => $form_fields, 'search' => $search_string, 'search_option' => $search_option ) );
+			$out = $this->loadTemplate( $filename, array( 'project_id' => $project_id, 'form_fields' => $form_fields, 'search' => $search_string, 'search_option' => $search_option ) );
 		} else {
 			$out = "";
 		}
@@ -141,7 +141,7 @@ class ProjectManagerShortcodes
 			$meta_data = array();
 			foreach ( $dataset_meta AS $meta ) {
 				if ( is_string($meta_data[$meta->form_field_id] ) )
-					$meta_data[$meta->form_field_id] = htmlspecialchars(stripslashes_deep($meta->value), ENT_QUOTES);
+					$meta_data[$meta->form_field_id] = stripslashes_deep($meta->value);
 				else
 					$meta_data[$meta->form_field_id] = stripslashes_deep($meta->value);
 			}
@@ -149,12 +149,13 @@ class ProjectManagerShortcodes
 			$edit = false;
 			$form_title = __('Add Dataset','projectmanager');
 			$dataset_id = ''; $cat_ids = array(); $img_filename = ''; $name = ''; $meta_data = array();
+			$dataset = false;
 		}
 
 		$projectmanager->loadTinyMCE(); 
 
 		$filename = 'dataset-form';
-		$out = $this->loadTemplate( $filename, array('projectmanager' => $projectmanager, 'dataset' => $dataset, 'project' => $project, 'name' => $name, 'img_filename' => $img_filename, 'meta_data' => $meta_data, 'edit' => $edit, 'cat_ids' => $cat_ids, 'form_title' => $form_title) );
+		$out = $this->loadTemplate( $filename, array('projectmanager' => $projectmanager, 'dataset_id' => $dataset_id, 'dataset' => $dataset, 'project' => $project, 'name' => $name, 'img_filename' => $img_filename, 'meta_data' => $meta_data, 'edit' => $edit, 'cat_ids' => $cat_ids, 'form_title' => $form_title) );
 
 		return $out;
 	}
@@ -171,11 +172,13 @@ class ProjectManagerShortcodes
 	function displaySelections( $project_id = false )
 	{
 		global $projectmanager;
-		if ( $project_id )
-			$project = $projectmanager->getProject(intval($project_id));
-		else
-			$project = $projectmanager->getCurrentProject();
-	
+		if ( $project_id ) $project_id = intval($project_id);
+		else $project_id = $projectmanager->getProjectID();
+		
+		$project = $projectmanager->getProject(intval($project_id));
+		//else
+			//$project = $projectmanager->getCurrentProject();
+			
 		$orderby = array( '' => __('Order By', 'projectmanager'), 'name' => __('Name','projectmanager'), 'id' => __('ID','projectmanager') );
 		foreach ( $projectmanager->getFormFields() AS $form_field )
 			$orderby['formfields_'.$form_field->id] = $form_field->label;
@@ -185,7 +188,7 @@ class ProjectManagerShortcodes
 		$category = ( -1 != $project->category ) ? $project->category : false;
 		$selected_cat = $projectmanager->getCatID();
 		
-		$out = $this->loadTemplate( 'selections', array( 'category' => $category, 'selected_cat' => $selected_cat, 'orderby' => $orderby, 'order' => $order) );
+		$out = $this->loadTemplate( 'selections', array( 'project_id' => $project_id, 'category' => $category, 'selected_cat' => $selected_cat, 'orderby' => $orderby, 'order' => $order) );
 
 		echo $out;
 	}
@@ -232,29 +235,37 @@ class ProjectManagerShortcodes
 		$single = ( $single == 'true' ) ? true : false;
 		$random = ( $orderby == 'rand' ) ? true : false;
 
+		if (isset($_GET['cat_id']) && isset($_GET['project_id']) && $_GET['project_id'] == $id) $cat_id = intval($_GET['cat_id']);
 		if ( $cat_id ) $projectmanager->setCatID(intval($cat_id));
 	
-		if ( isset($_GET['show']) ) {
+		if ( isset($_GET['show']) && isset($_GET['project_id']) && $_GET['project_id'] == $id ) {
 			$datasets = $title = $pagination = false;
 			$dataset_id = intval($_GET['show']);
 		} else {
 			$formfield_id = false;
 			$dataset_id = false;
 			
+			if (isset($_GET['paged']) && isset($_GET['project_id']) && $_GET['project_id'] == intval($id))
+				$current_page = intval($_GET['paged']);
+			elseif (isset($wp->query_vars['paged']) && isset($_GET['project_id']) && $_GET['project_id'] == intval($id))
+				$current_page = max(1, intval($wp->query_vars['paged']));
+			else
+				$current_page = 1;
+				
 			if ( $projectmanager->isSearch() )
 				$datasets = $projectmanager->getSearchResults();
 			else
-				$datasets = $projectmanager->getDatasets( array( 'limit' => $results, 'orderby' => $orderby, 'order' => $order, 'random' => $random, 'meta_key' => intval($field_id), 'meta_value' => $field_value) );
+				$datasets = $projectmanager->getDatasets( array( 'project_id' => intval($id), 'current_page' => $current_page, 'limit' => $results, 'orderby' => $orderby, 'order' => $order, 'random' => $random, 'meta_key' => intval($field_id), 'meta_value' => $field_value) );
 			
 			$title = '';
 			if ( $projectmanager->isSearch() ) {
 				$num_datasets = $projectmanager->getNumDatasets($projectmanager->getProjectID(), true);
 				$title = "<h3 style='clear:both;'>".sprintf(__('Search: %d of %d', 'projectmanager'), count($datasets), $num_datasets)."</h3>";
-			} elseif ( $projectmanager->isCategory() ) {
-				$title = "<h3 style='clear:both;'>".$projectmanager->getCatTitle($projectmanager->getCatID())."</h3>";
+			} elseif ( $cat_id ) {
+				$title = "<h3 style='clear:both;'>".$projectmanager->getCatTitle($cat_id)."</h3>";
 			}
 			
-			$pagination = ( $projectmanager->isSearch() ) ? '' : $projectmanager->getPageLinks();
+			$pagination = ( $projectmanager->isSearch() ) ? '' : $projectmanager->getPageLinks($current_page);
 			
 			$i = 0;
 			foreach ( $datasets AS $dataset ) {
@@ -264,6 +275,7 @@ class ProjectManagerShortcodes
 				
 				$url = get_permalink();
 				$url = add_query_arg('show', $dataset->id, $url);
+				$url = add_query_arg('project_id', intval($id), $url);
 				$url = ($projectmanager->isCategory()) ? add_query_arg('cat_id', $projectmanager->getCatID(), $url) : $url;
 				
 				$project->num_datasets = $projectmanager->getNumDatasets($projectmanager->getProjectID(), true);
@@ -310,20 +322,22 @@ class ProjectManagerShortcodes
 		), $atts ));
 		
 		$id = intval($id);
-		
-		if ( !$action ) {
+
+		$dataset = $projectmanager->getDataset($id);
+		$dataset->imgURL = $projectmanager->getFileURL($dataset->image);
+		$dataset->name = stripslashes($dataset->name);
+				
+		if ( $action ) {
 			$url = get_permalink();
 			$url = remove_query_arg('show', $url);
 			$url = add_query_arg('paged', $projectmanager->getDatasetPage($id), $url);
+			$url = add_query_arg('project_id', $dataset->project_id, $url);
 			$url = ($projectmanager->isCategory()) ? add_query_arg('cat_id', $projectmanager->getCatID(), $url) : $url;
 		} else {
 			$url = false;
 		}
 
-		if ( $dataset = $projectmanager->getDataset( $id ) ) {
-			$dataset->imgURL = $projectmanager->getFileURL($dataset->image);
-			$dataset->name = stripslashes($dataset->name);
-		}
+
 				
 		$filename = ( empty($template) ) ? 'dataset' : 'dataset-'.$template;
 		$out = $this->loadTemplate( $filename, array('dataset' => $dataset, 'backurl' => $url) );

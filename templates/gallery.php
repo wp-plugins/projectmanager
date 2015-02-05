@@ -11,6 +11,7 @@ The following variables are usable:
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
 */
 ?>
+<?php echo $title ?>
 
 <?php if ( $dataset_id ) : ?>
  	<?php do_action('projectmanager_dataset', array('id' => $dataset_id, 'echo' => 1), true) ?>

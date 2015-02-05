@@ -145,6 +145,13 @@ function projectmanager_upgrade() {
 		}
 		unset($options['form_field_options']);
 	}
+	
+	if (version_compare($installed, '3.1', '<=')) {
+		$options['dashboard_widget']['num_items'] = 3;
+		$options['dashboard_widget']['show_author'] = 1;
+		$options['dashboard_widget']['show_date'] = 1;
+		$options['dashboard_widget']['show_summary'] = 1;
+	}
 
 
 	// Update dbversion
@@ -166,7 +173,7 @@ function projectmanager_upgrade() {
 function projectmanager_upgrade_page()  {	
 	$filepath = admin_url() . 'admin.php?page=' . htmlspecialchars($_GET['page']);
 
-	if ($_GET['upgrade'] == 'now') {
+	if (isset($_GET['upgrade']) && $_GET['upgrade'] == 'now') {
 		projectmanager_do_upgrade($filepath);
 		return;
 	}

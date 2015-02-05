@@ -25,6 +25,7 @@ The following variables are usable:
 		<option value='-1' <?php if ( -1 == $search_option ) echo " selected='selected'" ?>><?php _e( 'Categories', 'projectmanager' ) ?></option>
 	</select>
 	
+	<input type="hidden" name="project_id" value="<?php echo $project_id ?>" />
 	<input type='submit' value='<?php _e('Search', 'projectmanager') ?> &raquo;' class='button' />
 </div>
 </form>

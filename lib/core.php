@@ -114,6 +114,7 @@ class ProjectManager extends ProjectManagerLoader
 	{
 		$this->setProjectID(intval($project_id));
 		$this->project = $this->getProject($this->getProjectID());
+		$this->query_args['project_id'] = $this->getProjectID();
 
 		$this->setPerPage();
 
@@ -128,13 +129,16 @@ class ProjectManager extends ProjectManagerLoader
 	 * @param none
 	 * @return int
 	 */
-	function getCurrentPage()
+	function getCurrentPage($project_id = false)
 	{
 		global $wp;
-		if (isset($wp->query_vars['paged']))
-			$this->current_page = max(1, intval($wp->query_vars['paged']));
-		elseif (isset($_GET['paged']))
+		
+		if ($project_id) $this->setProjectID(intval($project_id));
+		//echo $_GET['project_id'];
+		if (isset($_GET['paged']) && isset($_GET['project_id']) && $_GET['project_id'] == $this->getProjectID())
 			$this->current_page = intval($_GET['paged']);
+		elseif (isset($wp->query_vars['paged']))
+			$this->current_page = max(1, intval($wp->query_vars['paged']));
 		else
 			$this->current_page = 1;
 
@@ -245,6 +249,7 @@ class ProjectManager extends ProjectManagerLoader
 			$this->query_args['cat_id'] = $this->cat_id;
 		} elseif ( isset($_GET['cat_id']) ) {
 			$this->cat_id = intval($_GET['cat_id']);
+			$this->query_args['cat_id'] = $this->cat_id;
 		} else {
 			$this->cat_id = null;
 		}
@@ -305,8 +310,10 @@ class ProjectManager extends ProjectManagerLoader
 	 * @param none
 	 * @return string
 	 */
-	function getPageLinks()
+	function getPageLinks($current_page = false)
 	{
+		if (!$current_page) $current_page = $this->getCurrentPage();
+		
 		$query_args = isset($this->query_args) ? $this->query_args : '';
 		$page_links = paginate_links( array(
 			'base' => add_query_arg( 'paged', '%#%' ),
@@ -314,7 +321,7 @@ class ProjectManager extends ProjectManagerLoader
 			'prev_text' => '&#9668;',
 			'next_text' => '&#9658;',
 			'total' => $this->getNumPages(),
-			'current' => $this->getCurrentPage(),
+			'current' => $current_page,
 			'add_args' => $query_args
 		));
 		return $page_links;
@@ -337,7 +344,7 @@ class ProjectManager extends ProjectManagerLoader
 		if ( isset($_POST['orderby']) && isset($_POST['order']) && !isset($_POST['doaction']) ) {
 			$orderby = explode('_', htmlspecialchars($_POST['orderby']));
 			$this->orderby = ( $_POST['orderby'] != '' ) ? htmlspecialchars($_POST['orderby']) : 'name';
-			$formfield_id = isset($orderby[1]) ? $oderby[1] : false;
+			$formfield_id = isset($orderby[1]) ? $orderby[1] : false;
 			$this->order = ( $_POST['order'] != '' ) ? htmlspecialchars($_POST['order']) : 'ASC';
 
 			$this->query_args['order'] = $this->order;
@@ -346,7 +353,7 @@ class ProjectManager extends ProjectManagerLoader
 			$this->override_order = true;
 		}
 		// Selection in Frontend
-		elseif ( isset($_GET['orderby']) && isset($_GET['order']) ) {
+		elseif ( isset($_GET['orderby']) && isset($_GET['order']) && isset($_GET['project_id']) && $_GET['project_id'] == $this->getProjectID() ) {
 			$orderby = explode('_', htmlspecialchars($_GET['orderby']));
 			$this->orderby = ( $_GET['orderby'] != '' ) ? htmlspecialchars($_GET['orderby']) : 'name';
 			$formfield_id = isset($orderby[1]) ? $orderby[1] : "";
@@ -590,7 +597,7 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function isSearch()
 	{
-		if ( isset( $_POST['search_string'] ) )
+		if ( isset($_POST['search_string']) && isset($_POST['project_id']) && $_POST['project_id'] == $this->getProjectID() )
 			return true;
 	
 		return false;
@@ -620,7 +627,7 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function getSearchOption()
 	{
-		if ( $this->isSearch() )
+		if ( $this->isSearch() && isset($_POST['search_option']))
 			return intval($_POST['search_option']);
 		
 		return 0;
@@ -844,7 +851,7 @@ class ProjectManager extends ProjectManagerLoader
 		$defaults = array( 'limit' => false, 'orderby' => false, 'order' => false, 'random' => false );
 		$args = array_merge($defaults, $args);
 		extract($args, EXTR_SKIP);
-
+		
 		$project = $this->getCurrentProject();
 
 		// Start basic MySQL Query
@@ -888,7 +895,8 @@ class ProjectManager extends ProjectManagerLoader
 				$sql_order = ( $this->orderby != 'name' && $this->orderby != 'id' && $this->orderby != 'order' ) ? '`name` '.$this->order : $this->getDatasetOrder();
 			}
 
-			if ( $limit && $this->per_page != 'NaN' ) $offset = ( $this->getCurrentPage() - 1 ) * $this->per_page;
+			if (!isset($current_page)) $current_page = $this->getCurrentPage();
+			if ( $limit && $this->per_page != 'NaN' ) $offset = ( $current_page - 1 ) * $this->per_page;
 
 			if ( isset($meta_key )&& !empty($meta_value) ) {
 				if ( $meta_key != 'name' )

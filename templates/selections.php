@@ -18,13 +18,15 @@ The following variables are usable:
 <form action='<?php the_permalink() ?>' method='get'>
 <div>
 	<input type='hidden' name='page_id' value='<?php the_ID() ?>' />
+	<input type='hidden' name='project_id' value='<?php echo $project_id ?>' />
+	
 	<?php if ( $category ) : ?>
 	<?php wp_dropdown_categories(array('echo' => 1, 'hide_empty' => 0, 'hide_if_empty' => 1, 'name' => 'cat_id', 'orderby' => 'name', 'selected' => $selected_cat, 'hierarchical' => true, 'child_of' => $category, 'show_option_all' => __('View all categories'))); ?>
 	<?php endif; ?>
 	<?php if ( $orderby ) : ?>
 	<select size='1' name='orderby'>
 		<?php foreach ( $orderby AS $key => $value ) : ?>
-		<?php $orderby_request = isset($_GET['orderby']) ? htmlspecialchars($_GET['orderby']) : '' ?>
+		<?php $orderby_request = (isset($_GET['orderby']) && isset($_GET['project_id']) && $_GET['project_id'] == $project_id ) ? htmlspecialchars($_GET['orderby']) : '' ?>
 		<option value='<?php echo $key ?>' <?php if ($orderby_request == $key) echo ' selected="selected"' ?>><?php echo $value ?></option>
 		<?php endforeach; ?>
 	</select>
@@ -32,7 +34,7 @@ The following variables are usable:
 	<?php if ( $order ) : ?>
 	<select size='1' name='order'>
 		<?php foreach ( $order AS $key => $value ) : ?>
-		<?php $order_request = isset($_GET['order']) ? htmlspecialchars($_GET['order']) : '' ?>
+		<?php $order_request = (isset($_GET['order']) && isset($_GET['project_id']) && $_GET['project_id'] == $project_id ) ? htmlspecialchars($_GET['order']) : '' ?>
 		<option value='<?php echo $key ?>' <?php if ($order_request == $key) echo ' selected="selected"' ?>><?php echo $value ?></option>
 		<?php endforeach; ?>
 	</select>

@@ -367,7 +367,27 @@ msgstr "Tabellen Header"
 msgid "Table Rows"
 msgstr "Tabellenzeilen"
 
-#: admin/settings-global.php:22
+#: admin/settings-global.php:20
+msgid "Dashboard Widget Support News"
+msgstr "Dashboard Widget Support Nachrichten"
+
+#: admin/settings-global.php:23
+msgid "Number of Support Threads"
+msgstr "Anzahl Support Threads"
+
+#: admin/settings-global.php:26
+msgid "Show Author"
+msgstr "Autor anzeigen"
+
+#: admin/settings-global.php:29
+msgid "Show Date"
+msgstr "Datum anzeigen"
+
+#: admin/settings-global.php:32
+msgid "Show Summary"
+msgstr "Zusammenfassung anzeigen"
+
+#: admin/settings-global.php:37
 msgid "Save Preferences"
 msgstr "Einstellungen speichern"
 

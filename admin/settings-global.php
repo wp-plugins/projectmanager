@@ -2,8 +2,8 @@
 	<h2><?php _e( 'Global Settings', 'projectmanager' ) ?></h2>
 	<h3><?php _e( 'Color Scheme', 'projectmanager' ) ?></h3>
 
-  <form action='' method='post' name='colors'>
-  <?php wp_nonce_field( 'projetmanager_manage-global-league-options' ); ?>	
+	<form action='' method='post' name='colors'>
+	<?php wp_nonce_field( 'projetmanager_manage-global-league-options' ); ?>	
 	<table class='form-table'>
 	<tr valign='top'>
 		<th scope='row'><label for='color_headers'><?php _e( 'Table Headers', 'projectmanager' ) ?></label></th><td><input type='text' name='color_headers' id='color_headers' value='<?php echo $options['colors']['headers'] ?>' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms["colors"].color_headers,"pick_color_headers"); return false;' name='pick_color_headers' id='pick_color_headers'>&#160;&#160;&#160;</a></td>
@@ -14,6 +14,22 @@
 			<p class='table_rows'><input type='text' name='color_rows_alt' id='color_rows_alt' value='<?php echo $options['colors']['rows'][0] ?>' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms["colors"].color_rows_alt,"pick_color_rows_alt"); return false;' name='pick_color_rows_alt' id='pick_color_rows_alt'>&#160;&#160;&#160;</a></p>
 			<p class='table_rows'><input type='text' name='color_rows' id='color_rows' value='<?php echo $options['colors']['rows'][1] ?>' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms["colors"].color_rows,"pick_color_rows"); return false;' name='pick_color_rows' id='pick_color_rows'>&#160;&#160;&#160;</a></p>
 		</td>
+	</tr>
+	</table>
+	
+	<h3><?php _e('Dashboard Widget Support News', 'projectmanager') ?></h3>
+	<table class='form-table'>
+	<tr valign='top'>
+		<th scope='row'><label for='dashboard_num_items'><?php _e( 'Number of Support Threads', 'projectmanager' ) ?></label></th><td><input type='text' name='dashboard[num_items]' id='dashboard_num_items' value='<?php echo $options['dashboard_widget']['num_items'] ?>' size='2' /></td>
+	</tr>
+	<tr valign='top'>
+		<th scope='row'><label for='dashboard_show_author'><?php _e( 'Show Author', 'projectmanager' ) ?></label></th><td><input type='checkbox' name='dashboard[show_author]' id='dashboard_show_author'<?php checked($options['dashboard_widget']['show_author'], 1) ?> /></td>
+	</tr>
+	<tr valign='top'>
+		<th scope='row'><label for='dashboard_show_date'><?php _e( 'Show Date', 'projectmanager' ) ?></label></th><td><input type='checkbox' name='dashboard[show_date]' id='dashboard_show_date'<?php checked($options['dashboard_widget']['show_date'], 1) ?> /></td>
+	</tr>
+		<tr valign='top'>
+		<th scope='row'><label for='dashboard_show_summary'><?php _e( 'Show Summary', 'projectmanager' ) ?></label></th><td><input type='checkbox' name='dashboard[show_summary]' id='dashboard_show_summary'<?php checked($options['dashboard_widget']['show_summary'], 1) ?> /></td>
 	</tr>
 	</table>
 	
