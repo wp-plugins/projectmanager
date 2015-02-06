@@ -242,7 +242,7 @@ class ProjectManagerShortcodes
 		$random = ( $orderby == 'rand' ) ? true : false;
 		
 		$show = "show_".$project_id;
-		if ( isset($_GET[$show]) ) {// && isset($_GET['project_id']) && $_GET['project_id'] == $project_id ) {
+		if ( isset($_GET[$show]) && !$projectmanager->isSearch() ) {// && isset($_GET['project_id']) && $_GET['project_id'] == $project_id ) {
 			$datasets = $title = $pagination = false;
 			$dataset_id = intval($_GET[$show]);
 		} else {
@@ -286,6 +286,15 @@ class ProjectManagerShortcodes
 				$url = add_query_arg($show, $dataset->id, $url);
 				//$url = add_query_arg('project_id', $project_id, $url);
 				$url = ($projectmanager->isCategory()) ? add_query_arg('cat_id', $projectmanager->getCatID(), $url) : $url;
+				
+				foreach ( $matches = preg_grep("/cat_id_\d+/", array_keys($_GET)) AS $key )
+					$url = add_query_arg($key, $_GET[$key], $url);
+				foreach ( $matches = preg_grep("/paged_\d+/", array_keys($_GET)) AS $key )
+					$url = add_query_arg($key, $_GET[$key], $url);
+				foreach ( $matches = preg_grep("/orderby_\d+/", array_keys($_GET)) AS $key )
+					$url = add_query_arg($key, $_GET[$key], $url);
+				foreach ( $matches = preg_grep("/order_\d+/", array_keys($_GET)) AS $key )
+					$url = add_query_arg($key, $_GET[$key], $url);
 				
 				$project->num_datasets = $projectmanager->getNumDatasets($projectmanager->getProjectID(), true);
 				$project->gallery_num_cols = ( $project->gallery_num_cols == 0 ) ? 4 : $project->gallery_num_cols;
@@ -339,8 +348,20 @@ class ProjectManagerShortcodes
 		if ( $action ) {
 			$url = get_permalink();
 			$url = remove_query_arg('show_'.$dataset->project_id, $url);
-			$url = add_query_arg('paged', $projectmanager->getDatasetPage($id), $url);
 			$url = add_query_arg('project_id', $dataset->project_id, $url);
+			
+			foreach ( $matches = preg_grep("/cat_id_\d+/", array_keys($_GET)) AS $key )
+				$url = add_query_arg($key, $_GET[$key], $url);
+			foreach ( $matches = preg_grep("/paged_\d+/", array_keys($_GET)) AS $key )
+				$url = add_query_arg($key, $_GET[$key], $url);
+			foreach ( $matches = preg_grep("/orderby_\d+/", array_keys($_GET)) AS $key )
+				$url = add_query_arg($key, $_GET[$key], $url);
+			foreach ( $matches = preg_grep("/order_\d+/", array_keys($_GET)) AS $key )
+				$url = add_query_arg($key, $_GET[$key], $url);
+				
+			$url = remove_query_arg('paged_'.$dataset->project_id, $url);
+			$url = add_query_arg('paged_'.$dataset->project_id, $projectmanager->getDatasetPage($id), $url);
+			
 			$url = ($projectmanager->isCategory()) ? add_query_arg('cat_id', $projectmanager->getCatID(), $url) : $url;
 		} else {
 			$url = false;

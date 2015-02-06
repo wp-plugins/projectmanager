@@ -342,7 +342,8 @@ class ProjectManager extends ProjectManagerLoader
 	{
 		if (!$current_page) $current_page = $this->getCurrentPage();
 		
-		$query_args = isset($this->query_args) ? $this->query_args : '';
+		if (is_admin()) $query_args = array('project_id' => $this->getProjectID());
+		else $query_args = (isset($this->query_args)) ? $this->query_args : '';
 		$page_links = paginate_links( array(
 			'base' => add_query_arg( $base, '%#%' ),
 			'format' => '',

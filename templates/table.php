@@ -18,7 +18,7 @@ $args = array();
 	<?php do_action('projectmanager_dataset', array('id' => $dataset_id, 'echo' => 1), true) ?>
 <?php else: ?>
 
-<?php if ( $project->selections ) do_action('projectmanager_selections'); ?>
+<?php if ( isset($project->selections) && $project->selections ) do_action('projectmanager_selections'); ?>
 
 <?php if ( $datasets ) : ?>
 
