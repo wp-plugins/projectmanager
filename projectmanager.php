@@ -35,7 +35,7 @@ class ProjectManagerLoader
 	 *
 	 * @var string
 	 */
-	 var $version = '3.1.5';
+	 var $version = '3.1.6';
 	 
 	 
 	 /**

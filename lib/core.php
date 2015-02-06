@@ -118,8 +118,10 @@ class ProjectManager extends ProjectManagerLoader
 
 		$this->setPerPage();
 
-		$this->num_items = $this->getNumDatasets($this->getProjectID());
-		$this->num_max_pages = ( 0 == $this->getPerPage() || $this->isSearch() ) ? 1 : ceil( $this->num_items/$this->getPerPage() );
+		//$this->num_items = $this->getNumDatasets($this->getProjectID());
+		$this->setNumDatasets($this->getNumDatasets($this->getProjectID()));
+		//$this->num_max_pages = $this->setNumPages(); //( 'NaN' == $this->getPerPage() || 0 == $this->getPerPage() || $this->isSearch() ) ? 1 : ceil( $this->num_items/$this->getPerPage() );
+		$this->setNumPages();
 	}
 	
 	
@@ -160,6 +162,19 @@ class ProjectManager extends ProjectManagerLoader
 
 	
 	/**
+	 * set number of pages
+	 *
+	 * @param int $num_max_pages
+	 * @return none
+	 */
+	function setNumPages()
+	{
+		$this->num_max_pages = ( 'NaN' == $this->getPerPage() || 0 == $this->getPerPage() || $this->isSearch() ) ? 1 : ceil( $this->num_items/$this->getPerPage() );
+		//$this->num_max_pages = $num_max_pages;
+	}
+	
+	
+	/**
 	 * sets number of objects per page
 	 *
 	 * @param int|false
@@ -170,10 +185,22 @@ class ProjectManager extends ProjectManagerLoader
 		if ( $per_page )
 			$this->per_page = intval($per_page);
 		else
-			$this->per_page = ( isset($this->project->per_page) && !empty($this->project->per_page) ) ? intval($this->project->per_page) : 15;
+			$this->per_page = ( isset($this->project->per_page) && !empty($this->project->per_page) ) ? $this->project->per_page : 15;
 	}
 
 
+	/**
+	 * set number of items
+	 *
+	 * @param int $num_datasets
+	 * @return none
+	 */
+	function setNumDatasets($num_datasets)
+	{
+		$this->num_items = $num_datasets;
+	}
+	
+	
 	/**
 	 * gets object limit per page
 	 *
@@ -307,16 +334,17 @@ class ProjectManager extends ProjectManagerLoader
 	/**
 	 * display pagination
 	 *
-	 * @param none
+	 * @param int $current_page
+	 * @param string $base
 	 * @return string
 	 */
-	function getPageLinks($current_page = false)
+	function getPageLinks($current_page = false, $base = 'paged')
 	{
 		if (!$current_page) $current_page = $this->getCurrentPage();
 		
 		$query_args = isset($this->query_args) ? $this->query_args : '';
 		$page_links = paginate_links( array(
-			'base' => add_query_arg( 'paged', '%#%' ),
+			'base' => add_query_arg( $base, '%#%' ),
 			'format' => '',
 			'prev_text' => '&#9668;',
 			'next_text' => '&#9658;',
@@ -358,6 +386,15 @@ class ProjectManager extends ProjectManagerLoader
 			$this->orderby = ( $_GET['orderby'] != '' ) ? htmlspecialchars($_GET['orderby']) : 'name';
 			$formfield_id = isset($orderby[1]) ? $orderby[1] : "";
 			$this->order = ( $_GET['order'] != '' ) ? htmlspecialchars($_GET['order']) : 'ASC';
+			
+			$this->override_order = true;
+		}
+		// Selection in Frontend
+		elseif ( isset($_GET['orderby_'.$this->getProjectID()]) && isset($_GET['order_'.$this->getProjectID()])) {
+			$orderby = explode('_', htmlspecialchars($_GET['orderby_'.$this->getProjectID()]));
+			$this->orderby = ( $_GET['orderby_'.$this->getProjectID()] != '' ) ? htmlspecialchars($_GET['orderby_'.$this->getProjectID()]) : 'name';
+			$formfield_id = isset($orderby[1]) ? $orderby[1] : "";
+			$this->order = ( $_GET['order_'.$this->getProjectID()] != '' ) ? htmlspecialchars($_GET['order_'.$this->getProjectID()]) : 'ASC';
 			
 			$this->override_order = true;
 		}
@@ -599,7 +636,11 @@ class ProjectManager extends ProjectManagerLoader
 	{
 		if ( isset($_POST['search_string']) && isset($_POST['project_id']) && $_POST['project_id'] == $this->getProjectID() )
 			return true;
-	
+		
+		$search_string_ind = "search_string_".$this->getProjectID();
+		if ( isset($_POST[$search_string_ind]) )
+			return true;
+		
 		return false;
 	}
 	
@@ -612,9 +653,12 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function getSearchString()
 	{
-		if ( $this->isSearch() )
-			return htmlspecialchars($_POST['search_string']);
-
+		if ( $this->isSearch() ) {
+			$search_string_ind = "search_string_".$this->getProjectID();
+			if (isset($_POST['search_string'])) return htmlspecialchars($_POST['search_string']);
+			elseif (isset($_POST[$search_string_ind])) return htmlspecialchars($_POST[$search_string_ind]);
+		}
+		
 		return '';
 	}
 	
@@ -627,8 +671,13 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function getSearchOption()
 	{
-		if ( $this->isSearch() && isset($_POST['search_option']))
-			return intval($_POST['search_option']);
+		if ( $this->isSearch() ) {
+			$search_option_ind = "search_option_".$this->getProjectID();
+			if (isset($_POST['search_option']))
+				return intval($_POST['search_option']);
+			elseif (isset($_POST[$search_option_ind]))
+				return intval($_POST[$search_option_ind]);
+		}
 		
 		return 0;
 	}
@@ -1876,6 +1925,39 @@ class ProjectManager extends ProjectManagerLoader
 					$admin->addDataset( $project->id, $user->first_name, array(), false, $user_id );
 			}
 		}
+	}
+	
+	/**
+	 * print hidden fields for selection form
+	 *
+	 * @param none
+	 * @return none
+	 */
+	function printSelectionFormHiddenFields()
+	{
+		foreach ( $matches = preg_grep("/cat_id_\d+/", array_keys($_GET)) AS $key )
+			echo '<input type="hidden" name="'.$key.'" value="'.$_GET[$key].'" />';
+		foreach ( $matches = preg_grep("/paged_\d+/", array_keys($_GET)) AS $key )
+			echo '<input type="hidden" name="'.$key.'" value="'.$_GET[$key].'" />';
+		foreach ( $matches = preg_grep("/orderby_\d+/", array_keys($_GET)) AS $key )
+			echo '<input type="hidden" name="'.$key.'" value="'.$_GET[$key].'" />';
+		foreach ( $matches = preg_grep("/order_\d+/", array_keys($_GET)) AS $key )
+			echo '<input type="hidden" name="'.$key.'" value="'.$_GET[$key].'" />';
+	}
+	
+	
+	/**
+	 * print hidden fields for search form
+	 *
+	 * @param none
+	 * @return none
+	 */
+	function printSearchFormHiddenFields()
+	{
+		foreach ( $matches = preg_grep("/search_string_\d+/", array_keys($_POST)) AS $key )
+			echo '<input type="hidden" name="'.$key.'" value="'.$_POST[$key].'" />';
+		foreach ( $matches = preg_grep("/search_option_\d+/", array_keys($_POST)) AS $key )
+			echo '<input type="hidden" name="'.$key.'" value="'.$_POST[$key].'" />';
 	}
 }
 ?>

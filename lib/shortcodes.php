@@ -229,33 +229,42 @@ class ProjectManagerShortcodes
 			'field_id' => false,
 			'field_value' => false,
 		), $atts ));
-		$projectmanager->init(intval($id));
+		$project_id = intval($id);
+		
+		$get_cat_id = "cat_id_".$project_id;
+		if (isset($_GET[$get_cat_id])) $cat_id = intval($_GET[$get_cat_id]);
+		if ( $cat_id ) $projectmanager->setCatID(intval($cat_id));
+		
+		$projectmanager->init($project_id);
 		$project = $projectmanager->getCurrentProject();
-
+		
 		$single = ( $single == 'true' ) ? true : false;
 		$random = ( $orderby == 'rand' ) ? true : false;
-
-		if (isset($_GET['cat_id']) && isset($_GET['project_id']) && $_GET['project_id'] == $id) $cat_id = intval($_GET['cat_id']);
-		if ( $cat_id ) $projectmanager->setCatID(intval($cat_id));
-	
-		if ( isset($_GET['show']) && isset($_GET['project_id']) && $_GET['project_id'] == $id ) {
+		
+		$show = "show_".$project_id;
+		if ( isset($_GET[$show]) ) {// && isset($_GET['project_id']) && $_GET['project_id'] == $project_id ) {
 			$datasets = $title = $pagination = false;
-			$dataset_id = intval($_GET['show']);
+			$dataset_id = intval($_GET[$show]);
 		} else {
 			$formfield_id = false;
 			$dataset_id = false;
 			
-			if (isset($_GET['paged']) && isset($_GET['project_id']) && $_GET['project_id'] == intval($id))
+			$page_get = "paged_".$project_id;
+			if (isset($_GET['paged']) && isset($_GET['project_id']) && $_GET['project_id'] == $project_id)
 				$current_page = intval($_GET['paged']);
-			elseif (isset($wp->query_vars['paged']) && isset($_GET['project_id']) && $_GET['project_id'] == intval($id))
+			elseif (isset($wp->query_vars['paged']) && isset($_GET['project_id']) && $_GET['project_id'] == $project_id)
 				$current_page = max(1, intval($wp->query_vars['paged']));
+			elseif (isset($_GET[$page_get]))
+				$current_page = intval($_GET[$page_get]);
+			elseif (isset($wp->query_vars[$page_get]))
+				$current_page = max(1, intval($wp->query_vars[$page_get]));
 			else
 				$current_page = 1;
 				
 			if ( $projectmanager->isSearch() )
 				$datasets = $projectmanager->getSearchResults();
 			else
-				$datasets = $projectmanager->getDatasets( array( 'project_id' => intval($id), 'current_page' => $current_page, 'limit' => $results, 'orderby' => $orderby, 'order' => $order, 'random' => $random, 'meta_key' => intval($field_id), 'meta_value' => $field_value) );
+				$datasets = $projectmanager->getDatasets( array( 'project_id' => $project_id, 'current_page' => $current_page, 'limit' => $results, 'orderby' => $orderby, 'order' => $order, 'random' => $random, 'meta_key' => intval($field_id), 'meta_value' => $field_value) );
 			
 			$title = '';
 			if ( $projectmanager->isSearch() ) {
@@ -265,7 +274,7 @@ class ProjectManagerShortcodes
 				$title = "<h3 style='clear:both;'>".$projectmanager->getCatTitle($cat_id)."</h3>";
 			}
 			
-			$pagination = ( $projectmanager->isSearch() ) ? '' : $projectmanager->getPageLinks($current_page);
+			$pagination = ( $projectmanager->isSearch() ) ? '' : $projectmanager->getPageLinks($current_page, $page_get);
 			
 			$i = 0;
 			foreach ( $datasets AS $dataset ) {
@@ -274,8 +283,8 @@ class ProjectManagerShortcodes
 				$dataset->name = stripslashes($dataset->name);
 				
 				$url = get_permalink();
-				$url = add_query_arg('show', $dataset->id, $url);
-				$url = add_query_arg('project_id', intval($id), $url);
+				$url = add_query_arg($show, $dataset->id, $url);
+				//$url = add_query_arg('project_id', $project_id, $url);
 				$url = ($projectmanager->isCategory()) ? add_query_arg('cat_id', $projectmanager->getCatID(), $url) : $url;
 				
 				$project->num_datasets = $projectmanager->getNumDatasets($projectmanager->getProjectID(), true);
@@ -329,7 +338,7 @@ class ProjectManagerShortcodes
 				
 		if ( $action ) {
 			$url = get_permalink();
-			$url = remove_query_arg('show', $url);
+			$url = remove_query_arg('show_'.$dataset->project_id, $url);
 			$url = add_query_arg('paged', $projectmanager->getDatasetPage($id), $url);
 			$url = add_query_arg('project_id', $dataset->project_id, $url);
 			$url = ($projectmanager->isCategory()) ? add_query_arg('cat_id', $projectmanager->getCatID(), $url) : $url;

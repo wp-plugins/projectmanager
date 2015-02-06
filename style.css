@@ -103,6 +103,9 @@ fieldset.dataset dt {
 fieldset.dataset dd {
 
 	}
+div.dataset p {
+	clear: both;
+	}
 	
 ul.projectmanager, ol.projectmanager {
 	clear: both;

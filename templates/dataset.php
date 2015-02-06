@@ -10,6 +10,7 @@ The following variables are usable:
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
 */
 ?>
+<div class="dataset">
 <!-- Display dropdown form to select dataset from current project -->
 <!--
 <form action="<?php the_permalink() ?>" method="get" >
@@ -32,3 +33,4 @@ The following variables are usable:
 	<dl><?php $projectmanager->printDatasetMetaData( $dataset, array('output' => 'dl', 'show_all' => true) ) ?></dl>
 </fieldset>
 <?php endif; ?>
+</div>

@@ -13,9 +13,11 @@ The following variables are usable:
 ?>
 <form class='search-form alignright' action='' method='post'>
 <div>
-	<input type='text' class='search-input' name='search_string' value='<?php echo $search ?>' />
+	<input type='text' class='search-input' name='search_string_<?php echo $project_id ?>' value='<?php echo $search ?>' />
 	
-	<select size='1' name='search_option'>
+	<?php $projectmanager->printSearchFormHiddenFields() ?>
+	
+	<select size='1' name='search_option_<?php echo $project_id ?>'>
 		<option value='0' <?php if ( 0 == $search_option ) echo " selected='selected'" ?>><?php _e( 'Name', 'projectmanager' ) ?></option>
 		<?php foreach ( $form_fields AS $form_field ) : ?>
 		<?php if ( $form_field->type != 'project' ) : ?>
