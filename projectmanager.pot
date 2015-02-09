@@ -981,6 +981,18 @@ msgstr ""
 msgid "Gallery"
 msgstr ""
 
+#: admin/tinymce/window.php:
+msgid "Table with Image"
+msgstr ""
+
+# admin/tinymce/windows.php:
+msgid "Limit"
+msgstr ""
+
+#: admin/tinymce/window.php:
+msgid "Show all datasets"
+msgstr ""
+
 #: admin/tinymce/window.php:52 admin/tinymce/window.php:115
 msgid "Dataset"
 msgstr ""
@@ -1301,6 +1313,10 @@ msgstr ""
 
 #. Plugin Name of the plugin/theme
 msgid "ProjectManager"
+msgstr ""
+
+#: admin/admin.php:
+msgid "Documentation"
 msgstr ""
 
 #. #-#-#-#-#  plugin.pot (ProjectManager 2.9.8)  #-#-#-#-#

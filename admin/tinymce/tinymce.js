@@ -32,15 +32,25 @@ function ProjectManagerInsertLink() {
 	// who is active ?
 	if (project.className.indexOf('current') != -1) {
 		var projectId = document.getElementById('projects').value;
-		var template = getCheckedValue(document.getElementsByName('project_template'));
+		var template = document.getElementById('project_template').value;
 		var cat = document.getElementById('cat_id').value;
 		var orderby = document.getElementById('orderby').value;
 		var formfield_id = document.getElementById('formfield_id').value;
 		var order = document.getElementById('order').value;
+		var selections = getCheckedValue(document.getElementById('selections'));
+		var limit = document.getElementById('limit').value;
+		
+		if (selections == "")
+			selections = " selections=false";
+		else
+			selections = "";
+		
+		if (limit != "")
+			limit = " results=" + limit;
 		
 		if ( orderby != '' ) {
 			if ( orderby == 'formfields' && formfield_id != '' )
-				orderby = " orderby=" + orderby + "-" + formfield_id;
+				orderby = " orderby=" + orderby + "_" + formfield_id;
 			else
 				orderby = " orderby=" + orderby;
 		}
@@ -54,7 +64,7 @@ function ProjectManagerInsertLink() {
 			cat = " cat_id=" + cat;
 	
 		if (projectId != 0)
-			tagtext = "[project id=" + projectId + " template=" + template + cat + orderby + order +"]";
+			tagtext = "[project id=" + projectId + " template=" + template + cat + orderby + order + selections + limit +"]";
 		else
 			tinyMCEPopup.close();
 	}

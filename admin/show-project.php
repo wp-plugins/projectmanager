@@ -121,7 +121,7 @@ else
 		<div class="alignleft actions">
 			<?php if ( -1 != $project->category ) : ?>
 			<!-- Category Filter -->
-			<?php wp_dropdown_categories(array('echo' => 1, 'hide_empty' => 0, 'hide_if_empty' => 1, 'name' => 'cat_id', 'orderby' => 'name', 'selected' => $projectmanager->getCatID(), 'hierarchical' => true, 'child_of' => $project->category, 'show_option_all' => __('View all categories'))); ?>
+			<?php wp_dropdown_categories(array('echo' => 1, 'hide_empty' => 0, 'hide_if_empty' => 1, 'name' => 'cat_id', 'orderby' => 'name', 'selected' => $projectmanager->getCatID(), 'hierarchical' => true, 'child_of' => $project->category, 'show_option_all' => __('View all categories', 'projectmanager'))); ?>
 			<input type='hidden' name='page' value='<?php echo htmlspecialchars($_GET['page']) ?>' />
 			<input type='hidden' name='project_id' value='<?php echo $project_id ?>' />
 			<?php endif; ?>

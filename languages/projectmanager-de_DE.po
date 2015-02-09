@@ -937,3 +937,19 @@ msgstr "Jahr"
 msgid "An Error Occured. Please Save FormFields and set Options afterwards"
 msgstr "Es ist ein Fehler aufgetreten. Bitte speichere die Formularfelder und setze die Optionen danach"
 
+#: admin/tinymce/window.php:
+msgid "Table with Image"
+msgstr "Tabelle mit Bild"
+
+# admin/tinymce/windows.php:
+msgid "Limit"
+msgstr "Limit"
+
+#: admin/tinymce/window.php:
+msgid "Show all datasets"
+msgstr "Alle Datensätze anzeigen"
+
+
+#: admin/admin.php:
+msgid "Documentation"
+msgstr "Dokumentation"

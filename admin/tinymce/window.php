@@ -35,7 +35,20 @@ global $wpdb;
 	<script type="text/javascript">
 	//<![CDATA[
 	ProjectManagerAjaxL10n = {
-		blogUrl: "<?php bloginfo( 'wpurl' ); ?>", pluginPath: "<?php echo PROJECTMANAGER_PATH; ?>", pluginUrl: "<?php echo PROJECTMANAGER_URL; ?>", requestUrl: "<?php  bloginfo( 'wpurl' ); ?>/wp-admin/admin-ajax.php", imgUrl: "<?php echo PROJECTMANAGER_URL; ?>/images", Edit: "<?php _e("Edit"); ?>", Post: "<?php _e("Post"); ?>", Save: "<?php _e("Save"); ?>", Cancel: "<?php _e("Cancel"); ?>", pleaseWait: "<?php _e("Please wait..."); ?>", Revisions: "<?php _e("Page Revisions"); ?>", Time: "<?php _e("Insert time"); ?>", Options: "<?php _e("Options", "projectmanager") ?>", Delete: "<?php _e('Delete', 'projectmanager') ?>"
+		blogUrl: "<?php bloginfo( 'wpurl' ); ?>",
+		//pluginPath: "<?php echo PROJECTMANAGER_PATH; ?>",
+		pluginUrl: "<?php echo PROJECTMANAGER_URL; ?>",
+		requestUrl: "<?php  bloginfo( 'wpurl' ); ?>/wp-admin/admin-ajax.php",
+		imgUrl: "<?php echo PROJECTMANAGER_URL; ?>/images",
+		Edit: "<?php _e("Edit"); ?>",
+		Post: "<?php _e("Post"); ?>",
+		Save: "<?php _e("Save"); ?>",
+		Cancel: "<?php _e("Cancel"); ?>",
+		pleaseWait: "<?php _e("Please wait..."); ?>",
+		Revisions: "<?php _e("Page Revisions"); ?>",
+		Time: "<?php _e("Insert time"); ?>",
+		Options: "<?php _e("Options", "projectmanager") ?>",
+		Delete: "<?php _e('Delete', 'projectmanager') ?>"
 	}
 	//]]>
 	</script>
@@ -48,7 +61,6 @@ global $wpdb;
 	<div class="tabs">
 		<ul>
 			<li id="project_tab" class="current"><span><a href="javascript:mcTabs.displayTab('project_tab', 'project_panel');" onmouseover="return false;"><?php _e( 'Project', 'projectmanager' ); ?></a></span></li>
-			<!--<li id="gallery_tab"><span><a href="javascript:mcTabs.displayTab('gallery_tab', 'gallery_panel');" onmouseover="return false;"><?php _e( 'Gallery', 'projectmanager' ); ?></a></span></li>-->
 			<li id="dataset_tab"><span><a href="javascript:mcTabs.displayTab('dataset_tab', 'dataset_panel');" onmouseover="return false;"><?php _e( 'Dataset', 'projectmanager' ); ?></a></span></li>
 			<li id="search_tab"><span><a href="javascript:mcTabs.displayTab('search_tab', 'search_panel');" onmouseover="return false;"><?php _e('Search Form','projectmanager') ?></a></span></li>
 			<li id="datasetform_tab"><span><a href="javascript:mcTabs.displayTab('datasetform_tab', 'datasetform_panel');" onmouseover="return false;"><?php _e('Dataset Form','projectmanager') ?></a></span></li>
@@ -77,8 +89,12 @@ global $wpdb;
 	<tr>
 		<td nowrap="nowrap" valign="top"><label for="template"><?php _e( 'Template', 'projectmanager' ) ?></label></td>
 		<td>
-		<input type="radio" name="project_template" id="project_template_table" value="table" checked="ckecked" /><label for="project_template_table"><?php _e( 'Table', 'projectmanager' ) ?></label><br />
-		<input type="radio" name="project_template" id="project_template_gallery" value="gallery" /><label for="project_template_gallery"><?php _e( 'Gallery', 'projectmanager' ) ?></label><br />
+		<?php $templates = array('gallery' => __('Gallery', 'projectmanager'), 'table' => __('Table', 'projectmanager'), 'table-image' => __('Table with Image', 'projectmanager')) ?>
+		<select size="1" name="project_template" id="project_template">
+		<?php foreach ($templates AS $value => $template_name) : ?>
+		<option value="<?php echo $value ?>"><?php echo $template_name ?></option>
+		<?php endforeach; ?>
+		</select>
 		</td>
 	</tr>
 	<tr>
@@ -95,16 +111,28 @@ global $wpdb;
 				<option value="formfields"><?php _e( 'Formfields', 'projectmanager') ?></option>
 			</select>
 			<input type="text" size="3" name="formfield_id" id="formfield_id" />
-		</td>
-	</tr>
-	<tr>
-		<td nowrap="nowrap" valign="top"><label for="order"><?php _e( 'Order', 'projectmanager' ) ?></label></td>
-		<td>
 			<select size="1" name="order" id="order">
 				<option value=""><?php _e( 'Default', 'projectmanager') ?></option>
 				<option value="asc"><?php _e('Ascending', 'projectmanager') ?></option>
 				<option value="desc"><?php _e('Descending', 'projectmanager') ?></option>
 			</select>
+		</td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" valign="top"><label for="selections"><?php _e('Show Selections', 'projectmanager') ?></label></td>
+		<td><input type="checkbox" name="selections" value="true" id="selections" checked="checked" /></td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" valign="top"><label for="limit"><?php _e('Limit', 'projectmanager') ?></label></td>
+		<td>
+			<select size="1" name="limit" id="limit">
+				<option value=""><?php _e('Show all datasets', 'projectmanager') ?></option>
+				<?php for($i = 1; $i <= 20; $i++) : ?>
+				<option value="<?php echo $i ?>"><?php echo $i ?></option>
+				<?php endfor; ?>
+			</select>
+		</td>
+	</tr>
 	</table>
 	</div>
 	

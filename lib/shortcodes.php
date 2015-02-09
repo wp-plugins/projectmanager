@@ -276,6 +276,12 @@ class ProjectManagerShortcodes
 			
 			$pagination = ( $projectmanager->isSearch() ) ? '' : $projectmanager->getPageLinks($current_page, $page_get);
 			
+			$project->num_datasets = $projectmanager->getNumDatasets($projectmanager->getProjectID(), true);
+			$project->gallery_num_cols = ( $project->gallery_num_cols == 0 ) ? 4 : $project->gallery_num_cols;
+			$project->dataset_width = floor(100/$project->gallery_num_cols);
+			$project->single = ( $single == 'true' ) ? true : false;
+			$project->selections = ( $selections == 'true' ) ? true : false;
+			
 			$i = 0;
 			foreach ( $datasets AS $dataset ) {
 				$class = ( !isset($class) || "alternate" == $class ) ? '' : "alternate"; 
@@ -295,12 +301,6 @@ class ProjectManagerShortcodes
 					$url = add_query_arg($key, $_GET[$key], $url);
 				foreach ( $matches = preg_grep("/order_\d+/", array_keys($_GET)) AS $key )
 					$url = add_query_arg($key, $_GET[$key], $url);
-				
-				$project->num_datasets = $projectmanager->getNumDatasets($projectmanager->getProjectID(), true);
-				$project->gallery_num_cols = ( $project->gallery_num_cols == 0 ) ? 4 : $project->gallery_num_cols;
-				$project->dataset_width = floor(100/$project->gallery_num_cols);
-				$project->single = ( $single == 'true' ) ? true : false;
-				$project->selections = ( $selections == 'true' ) ? true : false;
 
 				$datasets[$i]->class = $class;
 				$datasets[$i]->URL = $url;
