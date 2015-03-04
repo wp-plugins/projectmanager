@@ -15,7 +15,7 @@ class ProjectManagerImage
 	 *
 	 * @var string
 	 */
-	var $image;
+	var $image = null;
 	
 	
 	/**
@@ -23,7 +23,7 @@ class ProjectManagerImage
 	 *
 	 * @var object
 	 */
-	var $thumbnail;
+	//var $thumbnail = null;
 	
 	
 	/**
@@ -97,7 +97,7 @@ class ProjectManagerImage
 	function createThumbnail( $dims, $new_image, $chmod )
 	{
 		$thumbnail = new Thumbnail($this->image);
-		$thumbnail->resize( intval($dims['width']), intval($dims['heigth']) );
+		$thumbnail->resize( intval($dims['width']), intval($dims['height']) );
 		$thumbnail->save($new_image);
 
 		if ( empty($chmod) ) $chmod = '0644';
@@ -106,5 +106,4 @@ class ProjectManagerImage
 		chmod( $new_image, $chmod );
 	}
 }
-
 ?>

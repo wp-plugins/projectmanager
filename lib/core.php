@@ -13,7 +13,7 @@ class ProjectManager extends ProjectManagerLoader
 	 *
 	 * @var int
 	 */
-	var $project_id;
+	var $project_id = null;
 	
 	
 	/**
@@ -21,7 +21,7 @@ class ProjectManager extends ProjectManagerLoader
 	 *
 	 * @var object
 	 */
-	var $project;
+	var $project = null;
 	
 	
 	/**
@@ -29,7 +29,7 @@ class ProjectManager extends ProjectManagerLoader
 	 *
 	 * @var int
 	 */
-	var $cat_id;
+	var $cat_id = null;
 		
 		
 	/**
@@ -37,7 +37,7 @@ class ProjectManager extends ProjectManagerLoader
 	 *
 	 * @var int
 	 */
-	var $per_page;
+	var $per_page = null;
 		
 
 	/**
@@ -70,6 +70,22 @@ class ProjectManager extends ProjectManagerLoader
 	 * @var string
 	 */
 	var $orderby = 'name';
+	
+	
+	/**
+	 * query arguments
+	 *
+	 * @var array
+	 */
+	var $query_args = array();
+	
+	
+	/**
+	 * admin panel object
+	 *
+	 * @var object
+	 */
+	var $admin = null;
 	
 	
 	/**
@@ -113,8 +129,9 @@ class ProjectManager extends ProjectManagerLoader
 	function init( $project_id )
 	{
 		$this->setProjectID(intval($project_id));
-		$this->project = $this->getProject($this->getProjectID());
-		$this->query_args['project_id'] = $this->getProjectID();
+		$this->setProject($this->getProject($this->getProjectID()));
+
+		$this->setQueryArg('project_id', $this->getProjectID());
 
 		$this->setPerPage();
 
@@ -122,6 +139,18 @@ class ProjectManager extends ProjectManagerLoader
 		$this->setNumDatasets($this->getNumDatasets($this->getProjectID()));
 		//$this->num_max_pages = $this->setNumPages(); //( 'NaN' == $this->getPerPage() || 0 == $this->getPerPage() || $this->isSearch() ) ? 1 : ceil( $this->num_items/$this->getPerPage() );
 		$this->setNumPages();
+	}
+	
+	
+	/**
+	 * set query args
+	 *
+	 * @param string $key
+	 * @param $value
+	 */
+	function setQueryArg($key, $value)
+	{
+		$this->query_args[$key] = $value;
 	}
 	
 	
@@ -136,11 +165,16 @@ class ProjectManager extends ProjectManagerLoader
 		global $wp;
 		
 		if ($project_id) $this->setProjectID(intval($project_id));
-		//echo $_GET['project_id'];
-		if (isset($_GET['paged']) && isset($_GET['project_id']) && $_GET['project_id'] == $this->getProjectID())
+		
+		$key = "paged_".$this->getProjectID();
+		if (isset($_GET['paged'])) // && isset($_GET['project_id']) && $_GET['project_id'] == $this->getProjectID())
 			$this->current_page = intval($_GET['paged']);
 		elseif (isset($wp->query_vars['paged']))
 			$this->current_page = max(1, intval($wp->query_vars['paged']));
+		elseif (isset($_GET[$key]))
+			$this->current_page = intval($_GET[$key]);
+		elseif (isset($wp->query_vars[$key]))
+			$this->current_page = max(1, intval($wp->query_vars[$key]));
 		else
 			$this->current_page = 1;
 
@@ -156,8 +190,10 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function getNumPages()
 	{
-		if (isset($this->num_max_pages)) return intval($this->num_max_pages);
-		else return 1;
+		if (isset($this->num_max_pages))
+			return intval($this->num_max_pages);
+		else
+			return 1;
 	}
 
 	
@@ -170,7 +206,6 @@ class ProjectManager extends ProjectManagerLoader
 	function setNumPages()
 	{
 		$this->num_max_pages = ( 'NaN' == $this->getPerPage() || 0 == $this->getPerPage() || $this->isSearch() ) ? 1 : ceil( $this->num_items/$this->getPerPage() );
-		//$this->num_max_pages = $num_max_pages;
 	}
 	
 	
@@ -190,18 +225,6 @@ class ProjectManager extends ProjectManagerLoader
 
 
 	/**
-	 * set number of items
-	 *
-	 * @param int $num_datasets
-	 * @return none
-	 */
-	function setNumDatasets($num_datasets)
-	{
-		$this->num_items = $num_datasets;
-	}
-	
-	
-	/**
 	 * gets object limit per page
 	 *
 	 * @param none
@@ -211,8 +234,20 @@ class ProjectManager extends ProjectManagerLoader
 	{
 		return $this->per_page;
 	}
-		
-		
+	
+	
+	/**
+	 * set number of items
+	 *
+	 * @param int $num_datasets
+	 * @return none
+	 */
+	function setNumDatasets($num_datasets)
+	{
+		$this->num_items = intval($num_datasets);
+	}
+	
+	
 	/**
 	 * save current project ID
 	 *
@@ -234,6 +269,18 @@ class ProjectManager extends ProjectManagerLoader
 	function getProjectID()
 	{
 		return intval($this->project_id);
+	}
+	
+	
+	/**
+	 * set project
+	 *
+	 * @param object $project
+	 * @return void
+	 */
+	function setProject($project)
+	{
+		$this->project = $project;
 	}
 	
 	
@@ -270,16 +317,16 @@ class ProjectManager extends ProjectManagerLoader
 	function setCatID( $cat_id = false )
 	{
 		if ( $cat_id ) {
-			$this->cat_id = $cat_id;
+			$this->cat_id = intval($cat_id);
 		} elseif ( isset($_POST['cat_id']) ) {
 			$this->cat_id = intval($_POST['cat_id']);
-			$this->query_args['cat_id'] = $this->cat_id;
 		} elseif ( isset($_GET['cat_id']) ) {
 			$this->cat_id = intval($_GET['cat_id']);
-			$this->query_args['cat_id'] = $this->cat_id;
+			//$this->query_args['cat_id'] = $this->cat_id;
 		} else {
 			$this->cat_id = null;
 		}
+		$this->setQueryArg('cat_id', $this->cat_id);
 			
 		return;
 	}
@@ -324,7 +371,7 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function isCategory()
 	{
-		if ( null != $this->getCatID() )
+		if ( null != $this->getCatID() && $this->getCatID() != 0 )
 			return true;
 		
 		return false;
@@ -376,8 +423,8 @@ class ProjectManager extends ProjectManagerLoader
 			$formfield_id = isset($orderby[1]) ? $orderby[1] : false;
 			$this->order = ( $_POST['order'] != '' ) ? htmlspecialchars($_POST['order']) : 'ASC';
 
-			$this->query_args['order'] = $this->order;
-			$this->query_args['orderby'] = $this->orderby;
+			$this->setQueryArg('order', $this->order);
+			$this->setQueryArg('orderby', $this->orderby);
 
 			$this->override_order = true;
 		}
@@ -574,7 +621,7 @@ class ProjectManager extends ProjectManagerLoader
 				$out .= "document_excel.png";
 				break;
 			case 'csv':
-				$out .= "document_excel_csv";
+				$out .= "document_excel_csv.png";
 				break;
 			case 'ppt':
 			case 'odp':
@@ -588,7 +635,7 @@ class ProjectManager extends ProjectManagerLoader
 			case 'tar.gz':
 			case 'bzip2':
 			case 'tar.bz2':
-				$out .= "document_zipper";
+				$out .= "document_zipper.png";
 				break;
 			case 'divx':
 			case 'mpg':
@@ -695,7 +742,7 @@ class ProjectManager extends ProjectManagerLoader
 		global $wpdb;
 		$num_projects = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_projects}" );
 				
-		return $num_projects;
+		return intval($num_projects);
 	}
 	
 	
@@ -780,8 +827,7 @@ class ProjectManager extends ProjectManagerLoader
 		else
 			$search = "`project_id` = ".intval($this->getProjectID()); 
 
-		$sql = "SELECT `label`, `type`, `order`, `order_by`, `show_on_startpage`, `show_in_profile`, `options`, `id` FROM {$wpdb->projectmanager_projectmeta} WHERE $search ORDER BY `order` ASC;";
-		$formfields = $wpdb->get_results( $sql );
+		$formfields = $wpdb->get_results( $wpdb->prepare("SELECT `label`, `type`, `order`, `order_by`, `show_on_startpage`, `show_in_profile`, `options`, `id` FROM {$wpdb->projectmanager_projectmeta} WHERE %s ORDER BY `order` ASC;", $search) );
 		
 		if ($id)
 			return $formfields[0];
@@ -801,7 +847,7 @@ class ProjectManager extends ProjectManagerLoader
 		global $wpdb;
 	
 		$num_form_fields = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = ".$this->getProjectID() );
-		return $num_form_fields;
+		return intval($num_form_fields);
 	}
 	
 
@@ -846,7 +892,7 @@ class ProjectManager extends ProjectManagerLoader
 	{
 		global $wpdb;
 		
-		$datasets = $wpdb->get_results( $wpdb->prepare("SELECT `id`, `cat_ids` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = '%d' ORDER BY `name` ASC", intval($this->project_id)) );
+		$datasets = $wpdb->get_results( $wpdb->prepare("SELECT `id`, `cat_ids` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = '%d' ORDER BY `name` ASC", intval($this->getProjectID())) );
 								
 		$selected_datasets = array();
 		foreach ( (array)$datasets AS $dataset ) {
@@ -876,7 +922,7 @@ class ProjectManager extends ProjectManagerLoader
 		$project_id = intval($project_id);
 		$sql = "SELECT COUNT(ID) FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$project_id}";
 		if ( $all ) {
-			return $wpdb->get_var( $sql );
+			return intval($wpdb->get_var( $sql ));
 		} elseif ( $this->isSearch() ) {
 			if (isset($this->datasets)) return count($this->datasets);
 			else return 0;
@@ -884,7 +930,7 @@ class ProjectManager extends ProjectManagerLoader
 			if ( $this->isCategory() )
 				$sql .= $this->getCategorySearchString();
 
-			return $wpdb->get_var( $sql );
+			return intval($wpdb->get_var( $sql ));
 		}
 	}
 		
@@ -905,14 +951,14 @@ class ProjectManager extends ProjectManagerLoader
 		$project = $this->getCurrentProject();
 
 		// Start basic MySQL Query
-		$sql = "SELECT dataset.`id` AS id, dataset.`name` AS name, dataset.`image` AS image, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} AS dataset  WHERE dataset.`project_id` = '".intval($this->project_id)."'";
+		$sql = "SELECT dataset.`id` AS id, dataset.`name` AS name, dataset.`image` AS image, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} AS dataset  WHERE dataset.`project_id` = '".intval($this->getProjectID())."'";
 
 		if ( $random ) {
 			if ( $meta_key && !empty($meta_value) ) {
 				if ( $meta_key != 'name' )
-					$sql .= " AND `id` IN ( SELECT `dataset_id` FROM {$wpdb->projectmanager_datasetmeta} AS meta WHERE meta.form_id = '".intval($meta_key)."' AND meta.value LIKE '".$meta_value."' )";
+					$sql .= " AND `id` IN ( SELECT `dataset_id` FROM {$wpdb->projectmanager_datasetmeta} AS meta WHERE meta.form_id = '".intval($meta_key)."' AND meta.value LIKE '".htmlspecialchars($meta_value)."' )";
 				else
-					$sql .= " AND `name` = '".$meta_value."'";
+					$sql .= " AND `name` = '".htmlspecialchars($meta_value)."'";
 			}		
 
 			// get all datasets of project
@@ -946,13 +992,13 @@ class ProjectManager extends ProjectManagerLoader
 			}
 
 			if (!isset($current_page)) $current_page = $this->getCurrentPage();
-			if ( $limit && $this->per_page != 'NaN' ) $offset = ( $current_page - 1 ) * $this->per_page;
+			if ( $limit && $this->getPerPage() != 'NaN' ) $offset = ( $current_page - 1 ) * $this->getPerPage();
 
 			if ( isset($meta_key )&& !empty($meta_value) ) {
 				if ( $meta_key != 'name' )
-					$sql .= " AND `id` IN ( SELECT `dataset_id` FROM {$wpdb->projectmanager_datasetmeta} AS meta WHERE meta.form_id = '".intval($meta_key)."' AND meta.value LIKE '".$meta_value."' )";
+					$sql .= " AND `id` IN ( SELECT `dataset_id` FROM {$wpdb->projectmanager_datasetmeta} AS meta WHERE meta.form_id = '".intval($meta_key)."' AND meta.value LIKE '".htmlspecialchars($meta_value)."' )";
 				else
-					$sql .= " AND `name` = '".$meta_value."'";
+					$sql .= " AND `name` = '".htmlspecialchars($meta_value)."'";
 			}		
 
 			if ( $this->isCategory() )
@@ -961,9 +1007,9 @@ class ProjectManager extends ProjectManagerLoader
 			$sql .=  " ORDER BY ".$sql_order;
 
 			if ( is_numeric($limit) && $limit > 0 ) 
-				$sql .= " LIMIT 0, ".$limit.";";
-			elseif ( $limit && $this->per_page != 'NaN' )
-				$sql .= " LIMIT ".$offset.",".$this->per_page.";";
+				$sql .= " LIMIT 0, ".intval($limit).";";
+			elseif ( $limit && $this->getPerPage() != 'NaN' )
+				$sql .= " LIMIT ".intval($offset).",".$this->getPerPage().";";
 			else
 				$sql .= ";";	
 
@@ -1208,8 +1254,8 @@ class ProjectManager extends ProjectManagerLoader
 
 		if ( !empty($args) ) {
 			if ( isset($args['meta_id']) && is_numeric($args['meta_id']) ) $sql .= " AND form.`id` = '".intval($args['meta_id'])."'";
-			elseif ( isset($args['type']) && is_string($args['type']) ) $sql .= " AND form.type = '".$args['type']."'";
-			elseif ( isset($args['label']) && is_string($args['label']) ) $sql .= " AND form.label = '".$args['label']."'";
+			elseif ( isset($args['type']) && is_string($args['type']) ) $sql .= " AND form.type = '".htmlspecialchars($args['type'])."'";
+			elseif ( isset($args['label']) && is_string($args['label']) ) $sql .= " AND form.label = '".htmlspecialchars($args['label'])."'";
 		}
 
 		$sql .= " ORDER BY form.order ASC";
@@ -1602,6 +1648,7 @@ class ProjectManager extends ProjectManagerLoader
 		global $wpdb, $projectmanager;
 
 		$project = $this->getProject(intval($project_id));
+		$name = htmlspecialchars($name);
 		$datasets = $wpdb->get_results( $wpdb->prepare("SELECT `id`, `name` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = '%d' ORDER BY `name` ASC", intval($project_id)) );
 		
 		if ($datasets) {
@@ -1633,6 +1680,7 @@ class ProjectManager extends ProjectManagerLoader
 		$options = get_option('projectmanager');
 		
 		$form_id = intval($form_id);
+		$name = htmlspecialchars($name);
 		$formfield = $this->getFormFields($form_id);
 		$options = explode(";", $formfield->options);
 		
@@ -1666,6 +1714,7 @@ class ProjectManager extends ProjectManagerLoader
 	function printFormFieldCheckboxList( $form_id, $selected=array(), $dataset_id, $name, $echo = true )
 	{
 		$form_id = intval($form_id);
+		$name = htmlspecialchars($name);
 		$formfield = $this->getFormFields($form_id);
 		$options = explode(";", $formfield->options);
 	
@@ -1699,6 +1748,7 @@ class ProjectManager extends ProjectManagerLoader
 	function printFormFieldRadioList( $form_id, $selected, $dataset_id, $name, $echo = true )
 	{
 		$form_id = intval($form_id);
+		$name = htmlspecialchars($name);
 		$formfield = $this->getFormFields($form_id);
 		$options = explode(";", $formfield->options);
 		
@@ -1733,7 +1783,7 @@ class ProjectManager extends ProjectManagerLoader
 		
 		if ( !$single ) return false;
 		
-		$num_form_fields = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = '".intval($this->project_id)."' AND `show_on_startpage` = 0" );
+		$num_form_fields = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = '".intval($this->getProjectID())."' AND `show_on_startpage` = 0" );
 			
 		if ( $num_form_fields > 0 )
 			return true;
@@ -1756,7 +1806,7 @@ class ProjectManager extends ProjectManagerLoader
 		$option = $this->getSearchOption();
 			
 		if ( 0 == $option ) {
-			$datasets = $wpdb->get_results( "SELECT `id`, `name`, `image`, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = '".intval($this->project_id)."' AND `name` REGEXP CONVERT( _utf8 '".$search."' USING latin1 ) ORDER BY `name` ASC" );
+			$datasets = $wpdb->get_results($wpdb->prepare("SELECT `id`, `name`, `image`, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = '%d' AND `name` REGEXP CONVERT( _utf8 '%s' USING latin1 ) ORDER BY `name` ASC", intval($this->getProjectID()), $search) );
 		} elseif ( -1 == $option ) {
 			$categories = explode(",", $search);
 			$cat_ids = array();
@@ -1764,7 +1814,7 @@ class ProjectManager extends ProjectManagerLoader
 				$c = $wpdb->get_results( $wpdb->prepare ( "SELECT `term_id` FROM $wpdb->terms WHERE `name` = '%s'", trim($category) ) );
 				$cat_ids[] = $c[0]->term_id;;
 			}
-			$sql = "SELECT `id`, `name`, `image`, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = '".intval($this->project_id)."'";
+			$sql = "SELECT `id`, `name`, `image`, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = '".intval($this->getProjectID())."'";
 				
 			foreach ( $cat_ids AS $cat_id ) {
 				$this->setCatID($cat_id);
@@ -1781,11 +1831,11 @@ class ProjectManager extends ProjectManagerLoader
 					t2.image,
 					t2.cat_ids
 				FROM {$wpdb->projectmanager_datasetmeta} AS t1, {$wpdb->projectmanager_dataset} AS t2
-				WHERE t1.value REGEXP CONVERT( _utf8 '".$search."' USING latin1 )
-					AND t1.form_id = '".intval($option)."'
+				WHERE t1.value REGEXP CONVERT( _utf8 '%s' USING latin1 )
+					AND t1.form_id = '%d'
 					AND t1.dataset_id = t2.id
 				ORDER BY t1.dataset_id ASC";
-			$datasets = $wpdb->get_results( $sql );
+			$datasets = $wpdb->get_results($wpdb->prepare($sql, $search, intval($option)) );
 		}
 		
 		$this->datasets = $datasets;

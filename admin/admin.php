@@ -819,6 +819,9 @@ class ProjectManagerAdminPanel extends ProjectManager
 	function editDataset( $project_id, $name, $cat_ids, $dataset_id, $dataset_meta = false, $user_id, $del_image = false, $image_file = '', $overwrite_image = false, $owner = false )
 	{
 		global $wpdb, $current_user, $projectmanager;
+		
+		require_once (PROJECTMANAGER_PATH . '/lib/image.php');
+		
 		$this->project_id = $project_id;
 		$project = $this->project = $projectmanager->getProject($this->project_id);
 		$dataset = $projectmanager->getDataset($dataset_id);
@@ -908,7 +911,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 			$wpdb->query("UPDATE {$wpdb->projectmanager_dataset} SET `image` = '' WHERE `id` = {$dataset_id}");
 			$this->delImage( $image_file );
 		}
-				
+			
 		if ( isset($_FILES['projectmanager_image']) ) {
 			if ( is_array($_FILES['projectmanager_image']['name']) ) {
 				$file = array(
@@ -1018,6 +1021,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 	{
 		global $wpdb;
 		
+		require_once (PROJECTMANAGER_PATH . '/lib/image.php');
+
 		$project = $this->project;
 		$dataset_id = intval($dataset_id);
 		

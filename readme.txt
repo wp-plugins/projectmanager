@@ -61,6 +61,7 @@ The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons
 
 = 3.1.7 =
 * NEW: more options in TinyMCE Button
+* UPDATE: code cleaning
 
 = 3.1.6 =
 * NEW: more functionalities with multiple projects on the same page including parallel pagination, search, category selection and dataset ordering

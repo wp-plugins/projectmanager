@@ -188,7 +188,10 @@ class ProjectManagerShortcodes
 		$category = ( -1 != $project->category ) ? $project->category : false;
 		$selected_cat = $projectmanager->getCatID();
 		
-		$out = $this->loadTemplate( 'selections', array( 'project_id' => $project_id, 'category' => $category, 'selected_cat' => $selected_cat, 'orderby' => $orderby, 'order' => $order) );
+		$orderby_request = (isset($_GET['orderby_'.$project_id])) ? htmlspecialchars($_GET['orderby_'.$project_id]) : '';
+		$order_request = (isset($_GET['order_'.$project_id]) ) ? htmlspecialchars($_GET['order_'.$project_id]) : '';
+		
+		$out = $this->loadTemplate( 'selections', array( 'project_id' => $project_id, 'category' => $category, 'orderby' => $orderby, 'order' => $order, 'selected' => array('category' => $selected_cat, 'orderby' => $orderby_request, 'order' => $order_request) ) );
 
 		echo $out;
 	}
