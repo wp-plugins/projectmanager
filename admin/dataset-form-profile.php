@@ -41,15 +41,15 @@ document.forms[0].encoding = "multipart/form-data";
 				</div>
 				<?php elseif ( 'date' == $form_field->type ) : ?>
 				<select size="1" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>][day]">
-					<option value=""><?php _e( 'Day', 'projectmanager' ) ?></option>
-					<option value="">&#160;</option>
+					<option value="00"><?php _e( 'Day', 'projectmanager' ) ?></option>
+					<option value="00">&#160;</option>
 					<?php for ( $day = 1; $day <= 31; $day++ ) : ?>
 						<option value="<?php echo str_pad($day, 2, 0, STR_PAD_LEFT) ?>"<?php selected ( $day , intval(substr($meta_data[$form_field->id], 8, 2)) ); ?>><?php echo $day ?></option>
 					<?php endfor; ?>
 				</select>
 				<select size="1" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>][month]">
-					<option value=""><?php _e( 'Month', 'projectmanager' ) ?></option>
-					<option value="">&#160;</option>
+					<option value="00"><?php _e( 'Month', 'projectmanager' ) ?></option>
+					<option value="00">&#160;</option>
 					<?php foreach ( $projectmanager->getMonths() AS $key => $month ) : ?>
 						<option value="<?php echo $key ?>"<?php selected ( $key, intval(substr($meta_data[$form_field->id], 5, 2)) ); ?>><?php echo $month ?></option>
 					<?php endforeach; ?>

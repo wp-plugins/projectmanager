@@ -765,7 +765,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 				} elseif ( 'numeric' == $formfield->type || 'currency' == $formfield->type ) {
 					$meta_value += 0; // convert value to numeric type
 				}
-					
+				
 				if ( is_array($meta_value) ) {
 					// form field value is a date
 					if ( array_key_exists('day', $meta_value) && array_key_exists('month', $meta_value) && array_key_exists('year', $meta_value) ) {

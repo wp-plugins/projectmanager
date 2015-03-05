@@ -1073,7 +1073,7 @@ class ProjectManager extends ProjectManagerLoader
 		if ( $meta ) {
 			foreach ( $meta AS $m ) {
 				$key = sanitize_title($m->label);
-				$dataset->{$key} = $m->value;
+				if ($key != "") $dataset->{$key} = $m->value;
 			}
 		}
 					
@@ -1271,6 +1271,7 @@ class ProjectManager extends ProjectManagerLoader
 		$i = 0;
 		foreach ( $meta AS $item ) {
 			$meta[$i]->value = stripslashes_deep(maybe_unserialize($item->value));
+			if ($meta[$i]->form_field_id == "") unset($meta[$i]);
 			$i++;
 		}
 
@@ -1354,11 +1355,13 @@ class ProjectManager extends ProjectManagerLoader
 			if ( (empty($exclude) && empty($include)) || ( empty($include) && !empty($exclude) && !in_array($meta->type, $exclude) && !in_array($meta->form_field_id, $exclude) ) || ( !empty($include) && in_array($meta->type, $include) || in_array($meta->form_field_id, $include) ) ) {
 				$meta->label = stripslashes($meta->label);
 				$meta_value = ( is_string($meta->value) && 'tinymce' != $meta->type ) ? htmlspecialchars( $meta->value, ENT_QUOTES ) : $meta->value;
-
+				
 				$custom = false;
 				// Custom Formfield without callback function
+				//var_dump($meta->type);
 				if ( is_array($this->getFormFieldTypes($meta->type)) ) {
 					$field = $this->getFormFieldTypes($meta->type);
+					//var_dump($field);
 					if ( !isset($field['callback']) ) {
 						$custom = $meta->type;
 						$meta->type = $field['html_type'];
@@ -1412,7 +1415,7 @@ class ProjectManager extends ProjectManagerLoader
 					$meta_value = sprintf($pattern, $meta_value);
 				} elseif ( 'date' == $meta->type ) {
 					$meta_value = ( $meta_value == '0000-00-00' ) ? '' : $meta_value;
-					$meta_value = mysql2date(get_option('date_format'), $meta_value );
+					$meta_value = ( $meta_value != '') ? mysql2date(get_option('date_format'), $meta_value ) : $meta_value;
 					$meta_value = apply_filters( 'projectmanager_date', $meta_value, $dataset );
 					$meta_value = sprintf($pattern, $meta_value);
 				} elseif ( 'time' == $meta->type ) {
