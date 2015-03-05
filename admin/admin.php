@@ -393,7 +393,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 */
 	function categoryChecklist( $child_of, $selected_cats )
 	{
-		$walker = new Walker_Category_Checklist;
+		$walker = new Walker_Category_Checklist();
 		$child_of = (int) $child_of;
 		
 		$args = array();
@@ -495,7 +495,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projects} SET `title` = '%s' WHERE `id` = '%d'", htmlspecialchars($title), intval($project_id) ) );
 		$this->setMessage( __('Project updated','projectmanager') );
 		
-		do_action('projectmanager_edit_project', $project_id);
+		do_action('projectmanager_edit_project', intval($project_id));
 	}
 	
 	
@@ -517,8 +517,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 		foreach ( $projectmanager->getDatasets() AS $dataset )
 			$this->delDataset( $dataset->id );
 		
-		$wpdb->query( "DELETE FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = {$project_id}" );
-		$wpdb->query( "DELETE FROM {$wpdb->projectmanager_projects} WHERE `id` = {$project_id}" );
+		$wpdb->query( $wpdb->prepare("DELETE FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = '%d'", $project_id) );
+		$wpdb->query( $wpdb->prepare("DELETE FROM {$wpdb->projectmanager_projects} WHERE `id` = '%d'", $project_id) );
 		
 		do_action('projectmanager_del_project', $project_id);
 	}
@@ -584,17 +584,18 @@ class ProjectManagerAdminPanel extends ProjectManager
 						  if ( $l > 0 && $line ) {
   						  $name = $line[0];
   						  $categories = empty($line[1]) ? '' : explode(",", $line[1]);
-                /*
-    						* get Category IDs from titles
-    						*/						
+							/*
+    						 * get Category IDs from titles
+    						 */						
     						$cat_ids = array();
     						if ( !empty($categories) ) {
-    						  foreach ( $categories AS $category ) {
-    						    $cat_ids[] = get_cat_ID($category);
-                 				  }
-                				}
+								foreach ( $categories AS $category ) {
+									$cat_ids[] = get_cat_ID($category);
+								}
+                			}
                 
     						// assign column values to form fields
+							$meta = array();
     						foreach ( $cols AS $col => $form_field_id ) {
     							$meta[$form_field_id] = $line[$col];
     						}
@@ -822,7 +823,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 		
 		require_once (PROJECTMANAGER_PATH . '/lib/image.php');
 		
-		$this->project_id = $project_id;
+		$this->project_id = intval($project_id);
 		$project = $this->project = $projectmanager->getProject($this->project_id);
 		$dataset = $projectmanager->getDataset($dataset_id);
 
@@ -908,7 +909,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 			
 		// Delete Image if option is checked
 		if ($del_image) {
-			$wpdb->query("UPDATE {$wpdb->projectmanager_dataset} SET `image` = '' WHERE `id` = {$dataset_id}");
+			$wpdb->query($wpdb->prepare("UPDATE {$wpdb->projectmanager_dataset} SET `image` = '' WHERE `id` ='%d'", $dataset_id) );
 			$this->delImage( $image_file );
 		}
 			
@@ -987,8 +988,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 				@unlink(parent::getFilePath("tiny.".$dataset_meta->value));
 			}
 		}
-		$wpdb->query("DELETE FROM {$wpdb->projectmanager_datasetmeta} WHERE `dataset_id` = {$dataset_id}");
-		$wpdb->query("DELETE FROM {$wpdb->projectmanager_dataset} WHERE `id` = {$dataset_id}");
+		$wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->projectmanager_datasetmeta} WHERE `dataset_id` = '%d'", $dataset_id) );
+		$wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->projectmanager_dataset} WHERE `id` ='%d'", $dataset_id) );
 		
 		do_action('projectmanager_del_dataset', $dataset_id);
 	}
@@ -1133,7 +1134,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 
 		
 		// get maximum order number
-		$max_order_sql = "SELECT MAX(`order`) AS `order` FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = {$project_id};";
+		$max_order_sql = $wpdb->prepare("SELECT MAX(`order`) AS `order` FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = '%d'", $project_id);
 		if (isset($formfield['order']) && $formfield['order'] != '') {
 			$order = $formfield['order'];
 		} else {
@@ -1243,51 +1244,15 @@ class ProjectManagerAdminPanel extends ProjectManager
 			}
 				
 			foreach ( $formfields AS $id => $formfield ) {
-				/*
-				$order_by = isset($formfield['orderby']) ? 1 : 0;
-				$show_on_startpage = isset($formfield['show_on_startpage']) ? 1 : 0;
-				$show_in_profile = isset($formfield['show_in_profile']) ? 1 : 0;
-					
-				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projectmeta} SET `label` = '%s', `type` = '%s', `show_on_startpage` = '%d', `show_in_profile` = '%d', `order` = '%d', `order_by` = '%d' WHERE `id` = '%d' LIMIT 1 ;", $formfield['name'], $formfield['type'], $show_on_startpage, $show_in_profile, $formfield['order'], $order_by, $id ) );
-				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `form_id` = '%d' WHERE `form_id` = '%d'", $id, $id ) );
-				*/
 				$formfield['id'] = $id;
 				$this->editFormField( $formfield );
 			}
 		} else {
-			$wpdb->query( "DELETE FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = {$project_id}"  );
+			$wpdb->query( $wpdb->prepare("DELETE FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = '%d'", $project_id)  );
 		}
 			
 		if ( !empty($new_formfields) ) {
 			foreach ($new_formfields AS $tmp_id => $formfield) {
-				/*
-				$order_by = isset($formfield['orderby']) ? 1 : 0;
-				$show_on_startpage = isset($formfield['show_on_startpage']) ? 1 : 0;
-				$show_in_profile = isset($formfield['show_in_profile']) ? 1 : 0;
-				
-				$max_order_sql = "SELECT MAX(`order`) AS `order` FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = {$project_id};";
-				if ($formfield['order'] != '') {
-					$order = $formfield['order'];
-				} else {
-					$max_order_sql = $wpdb->get_results($max_order_sql, ARRAY_A);
-					$order = $max_order_sql[0]['order'] +1;
-				}
-				
-				$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_projectmeta} (`label`, `type`, `show_on_startpage`, `show_in_profile`, `order`, `order_by`, `project_id`) VALUES ( '%s', '%s', '%d', '%d', '%d', '%d', '%d');", $formfield['name'], $formfield['type'], $show_on_startpage, $show_in_profile, $order, $order_by, $project_id ) );
-				$id = $wpdb->insert_id;
-					
-				// Redirect form field options to correct $form_id if present
-				if ( isset($options['form_field_options'][$tmp_id]) ) {
-					$options['form_field_options'][$id] = $options['form_field_options'][$tmp_id];
-					unset($options['form_field_options'][$tmp_id]);
-				}
-
-				if ( $datasets = $wpdb->get_results( "SELECT `id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$project_id}" ) ) {
-					foreach ( $datasets AS $dataset ) {
-						$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_datasetmeta} (form_id, dataset_id, value) VALUES ( '%d', '%d', '' );", $id, $dataset->id ) );
-					}
-				}
-				*/
 				$this->addFormField( $project_id, $formfield);
 			}
 		}
@@ -1352,7 +1317,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 				$project = $projectmanager->getProject();
 			
 				$is_profile_page = true;
-				$dataset = $wpdb->get_results( "SELECT `id`, `name`, `image`, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id} AND `user_id` = '".intval($current_user->ID)."' LIMIT 0,1" );
+				$dataset = $wpdb->get_results( $wpdb->prepare("SELECT `id`, `name`, `image`, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = '%d' AND `user_id` = '%d' LIMIT 0,1", $this->project_id, intval($current_user->ID)) );
 				$dataset = $dataset[0];
 					
 				if ( $dataset ) {

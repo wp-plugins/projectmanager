@@ -9,7 +9,7 @@ if ( isset($_POST['saveSettings']) ) {
 	$this->editProject( htmlspecialchars($_POST['project_title']), intval($_POST['project_id']) );
 	$this->saveSettings( $_POST['settings'], intval($_POST['project_id']) );
 
-     	$this->printMessage();
+	$this->printMessage();
 	$projectmanager->getProject(intval($_POST['project_id']));
 }
 $project = $projectmanager->getCurrentProject();

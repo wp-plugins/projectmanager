@@ -340,7 +340,10 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function getCatID()
 	{
-		return intval($this->cat_id);
+		if ($this->cat_id == null)
+			return null;
+		else
+			return intval($this->cat_id);
 	}
 
               	
@@ -479,7 +482,9 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function getDatasetOrder()
 	{
-		return "`{$this->orderby}` {$this->order}";
+		global $wpdb;
+		//return "`{$this->orderby}` {$this->order}";
+		return $wpdb->prepare("%s %s", $this->orderby, $this->order);
 	}
 
 
@@ -760,6 +765,7 @@ class ProjectManager extends ProjectManagerLoader
 		foreach ( $projects AS $project ) {
 			$projects[$i] = (object) array_merge( (array)$project, (array)maybe_unserialize($project->settings) );
 			unset($projects[$i]->settings);
+			$projects[$i] = $this->getDefaultProjectSettings($projects[$i]);
 			$i++;
 		}
 		return $projects;
@@ -827,8 +833,9 @@ class ProjectManager extends ProjectManagerLoader
 		else
 			$search = "`project_id` = ".intval($this->getProjectID()); 
 
-		$formfields = $wpdb->get_results( $wpdb->prepare("SELECT `label`, `type`, `order`, `order_by`, `show_on_startpage`, `show_in_profile`, `options`, `id` FROM {$wpdb->projectmanager_projectmeta} WHERE %s ORDER BY `order` ASC;", $search) );
-		
+		$sql = "SELECT `label`, `type`, `order`, `order_by`, `show_on_startpage`, `show_in_profile`, `options`, `id` FROM {$wpdb->projectmanager_projectmeta} WHERE $search ORDER BY `order` ASC;";
+		$formfields = $wpdb->get_results( $sql );
+	
 		if ($id)
 			return $formfields[0];
 		else
@@ -956,9 +963,9 @@ class ProjectManager extends ProjectManagerLoader
 		if ( $random ) {
 			if ( $meta_key && !empty($meta_value) ) {
 				if ( $meta_key != 'name' )
-					$sql .= " AND `id` IN ( SELECT `dataset_id` FROM {$wpdb->projectmanager_datasetmeta} AS meta WHERE meta.form_id = '".intval($meta_key)."' AND meta.value LIKE '".htmlspecialchars($meta_value)."' )";
+					$sql .= $wpdb->prepare(" AND `id` IN ( SELECT `dataset_id` FROM {$wpdb->projectmanager_datasetmeta} AS meta WHERE meta.form_id = '%d' AND meta.value LIKE '%s' )", intval($meta_key), $meta_value);
 				else
-					$sql .= " AND `name` = '".htmlspecialchars($meta_value)."'";
+					$sql .= $wpdb->prepare(" AND `name` = '%s'", $meta_value);
 			}		
 
 			// get all datasets of project
@@ -986,9 +993,10 @@ class ProjectManager extends ProjectManagerLoader
 			$tmp = explode("_",$orderby);
 			$orderby = $tmp[0];
 			if ( $orderby && $orderby != 'formfields' ) {
-				$sql_order = "`$orderby` $order";
+				//$sql_order = "`$orderby` $order";
+				$sql_order = $wpdb->prepare("%s %s", $orderby, $order);
 			} else {
-				$sql_order = ( $this->orderby != 'name' && $this->orderby != 'id' && $this->orderby != 'order' ) ? '`name` '.$this->order : $this->getDatasetOrder();
+				$sql_order = ( $this->orderby != 'name' && $this->orderby != 'id' && $this->orderby != 'order' ) ? '`name` '.$this->order : $wpdb->prepare("%s %s", $this->orderby, $this->order);
 			}
 
 			if (!isset($current_page)) $current_page = $this->getCurrentPage();
@@ -996,9 +1004,9 @@ class ProjectManager extends ProjectManagerLoader
 
 			if ( isset($meta_key )&& !empty($meta_value) ) {
 				if ( $meta_key != 'name' )
-					$sql .= " AND `id` IN ( SELECT `dataset_id` FROM {$wpdb->projectmanager_datasetmeta} AS meta WHERE meta.form_id = '".intval($meta_key)."' AND meta.value LIKE '".htmlspecialchars($meta_value)."' )";
+					$sql .= $wpdb->prepare(" AND `id` IN ( SELECT `dataset_id` FROM {$wpdb->projectmanager_datasetmeta} AS meta WHERE meta.form_id = '%d' AND meta.value LIKE '%s' )", intval($meta_key), $meta_value);
 				else
-					$sql .= " AND `name` = '".htmlspecialchars($meta_value)."'";
+					$sql .= $wpdb->prepare(" AND `name` = '%s'", $meta_value);
 			}		
 
 			if ( $this->isCategory() )

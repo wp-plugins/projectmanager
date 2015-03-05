@@ -97,7 +97,7 @@ class ProjectManagerShortcodes
 		
 		$filename = 'searchform-'.$template;
 		if ( !isset($_GET['show'])) {
-			$out = $this->loadTemplate( $filename, array( 'project_id' => $project_id, 'form_fields' => $form_fields, 'search' => $search_string, 'search_option' => $search_option ) );
+			$out = $this->loadTemplate( $filename, array( 'project_id' => intval($project_id), 'form_fields' => $form_fields, 'search' => $search_string, 'search_option' => $search_option ) );
 		} else {
 			$out = "";
 		}
@@ -122,6 +122,7 @@ class ProjectManagerShortcodes
 			'project_id' => 0,
 		), $atts ));
 
+		$project_id = intval($project_id);
 		$projectmanager->init(intval($project_id));
 		$project = $projectmanager->getCurrentProject();
 		

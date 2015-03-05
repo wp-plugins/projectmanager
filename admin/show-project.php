@@ -7,6 +7,7 @@ global $current_user;
 $project_id = $projectmanager->getProjectID();
 $project = $projectmanager->getCurrentProject();
 
+
 if ( isset($_POST['updateProjectManager']) AND !isset($_POST['doaction']) ) {
 	/*
 	* Add or Edit Dataset
@@ -14,7 +15,7 @@ if ( isset($_POST['updateProjectManager']) AND !isset($_POST['doaction']) ) {
 	if ( 'dataset' == $_POST['updateProjectManager'] ) {
 		check_admin_referer( 'projectmanager_edit-dataset' );
 		if ( '' == $_POST['dataset_id'] ) {
-			$user_id = !empty($_POST['user_id']) ? (int)$_POST['user_id'] : false;
+			$user_id = !empty($_POST['user_id']) ? intval($_POST['user_id']) : false;
 			$category = isset($_POST['post_category']) ? $_POST['post_category'] : '';
 			$this->addDataset( intval($_POST['project_id']), htmlspecialchars($_POST['name']), $category, $_POST['form_field'], $user_id );
 		} else {

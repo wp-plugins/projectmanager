@@ -52,8 +52,6 @@ function projectmanager_upgrade() {
 							unlink($dir_src."/".$file);
 					}
 				}
-				
-				
 			}
 			closedir($dir_handle);
 			@rmdir($dir_src);
@@ -120,7 +118,7 @@ function projectmanager_upgrade() {
 		$wpdb->query( "ALTER TABLE {$wpdb->projectmanager_projects} ADD `settings` LONGTEXT NOT NULL default ''" );
 		foreach ( $projectmanager->getProjects() AS $project ) {
 			$settings = $options['project_options'][$project->id];
-			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projects} SET `settings` = '%s' WHERE `id` = '%d'", maybe_serialize($settings), $project_id ) );
+			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projects} SET `settings` = '%s' WHERE `id` = '%d'", maybe_serialize($settings), $project->id ) );
 		}
 		unset($options['project_options']);
 	}
