@@ -60,9 +60,13 @@ The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons
 == Changelog ==
 
 = 3.1.7 =
+* NEW: add default image for project, which is used for datasets without image
+* NEW: only show images in frontend if setting is activated
 * NEW: more options in TinyMCE Button
 * UPDATE: code cleaning
+* UPDATE: converted menu icons to grayscale to fit wordpress design
 * BUGFIX: fixed some small bugs
+* BUGFIX: fixed frontend templates to display multiple projects on the same page
 
 = 3.1.6 =
 * NEW: more functionalities with multiple projects on the same page including parallel pagination, search, category selection and dataset ordering

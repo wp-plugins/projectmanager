@@ -16,8 +16,9 @@ if ( isset($_POST['saveFormFields']) ) {
 
 if (isset($_POST['addFormField'])) {
 	check_admin_referer('projectmanager_manager-formfields');
-	$new_formfields = isset($_POST['new_formfields']) ? $_POST['new_formfields'] : false;
-	$this->setFormFields( intval($_POST['project_id']), $_POST['formfields'], $new_formfields );
+	$new_formfields = isset($_POST['new_formfields']) ? $_POST['new_formfields'] : array();
+	$formfields = isset($_POST['formfields']) ? $_POST['formfields'] : array();
+	$this->setFormFields( intval($_POST['project_id']), $formfields, $new_formfields );
 	$this->addFormField(intval($_POST['project_id']));
 }
 

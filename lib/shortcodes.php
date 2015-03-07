@@ -241,7 +241,6 @@ class ProjectManagerShortcodes
 		
 		$projectmanager->init($project_id);
 		$project = $projectmanager->getCurrentProject();
-		
 		$single = ( $single == 'true' ) ? true : false;
 		$random = ( $orderby == 'rand' ) ? true : false;
 		
@@ -305,9 +304,15 @@ class ProjectManagerShortcodes
 					$url = add_query_arg($key, $_GET[$key], $url);
 				foreach ( $matches = preg_grep("/order_\d+/", array_keys($_GET)) AS $key )
 					$url = add_query_arg($key, $_GET[$key], $url);
+				foreach ( $matches = preg_grep("/show_\d+/", array_keys($_GET)) AS $key )
+					$url = add_query_arg($key, $_GET[$key], $url);
 
 				$datasets[$i]->class = $class;
 				$datasets[$i]->URL = $url;
+				if ($dataset->image == "") {
+					$dataset->image = $project->default_image;
+					$datasets[$i]->image = $dataset->image;
+				}
 				$datasets[$i]->thumbURL = $projectmanager->getFileURL('/thumb.'.$dataset->image);
 				$datasets[$i]->nameURL = ($projectmanager->hasDetails($single)) ? '<a href="'.$url.'">'.$dataset->name.'</a>' : $dataset->name;
 				
@@ -346,6 +351,10 @@ class ProjectManagerShortcodes
 		$id = intval($id);
 
 		$dataset = $projectmanager->getDataset($id);
+		if ($dataset->image == "") {
+			$project = $projectmanager->getProject($dataset->project_id);
+			$dataset->image = $project->default_image;
+		}
 		$dataset->imgURL = $projectmanager->getFileURL($dataset->image);
 		$dataset->name = stripslashes($dataset->name);
 				
@@ -362,7 +371,10 @@ class ProjectManagerShortcodes
 				$url = add_query_arg($key, $_GET[$key], $url);
 			foreach ( $matches = preg_grep("/order_\d+/", array_keys($_GET)) AS $key )
 				$url = add_query_arg($key, $_GET[$key], $url);
-				
+			foreach ( $matches = preg_grep("/show_\d+/", array_keys($_GET)) AS $key )
+				$url = add_query_arg($key, $_GET[$key], $url);
+			
+			$url = remove_query_arg('show_'.$dataset->project_id, $url);
 			$url = remove_query_arg('paged_'.$dataset->project_id, $url);
 			$url = add_query_arg('paged_'.$dataset->project_id, $projectmanager->getDatasetPage($id), $url);
 			

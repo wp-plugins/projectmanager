@@ -810,6 +810,7 @@ class ProjectManager extends ProjectManagerLoader
 		if (!isset($project->menu_icon)) $project->menu_icon = "databases.png";
 		if (!isset($project->gallery_num_cols)) $project->gallery_num_cols = "";
 		if (!isset($project->show_image)) $project->show_image = 0;
+		if (!isset($project->default_image)) $project->default_image = "";
 		if (!isset($project->thumb_size)) $project->thumb_size = array("width" => "", "height" => "");
 		if (!isset($project->medium_size)) $project->medium_size = array("width" => "", "height" => "");
 		if (!isset($project->chmod)) $project->chmod = "755";
@@ -988,15 +989,14 @@ class ProjectManager extends ProjectManagerLoader
 			$formfield_id = $this->setDatasetOrder($orderby, $order);
 			$orderby = $this->orderby;
 			$order = $this->order;
-			
 			// get MySQL Ordering String
 			$tmp = explode("_",$orderby);
 			$orderby = $tmp[0];
 			if ( $orderby && $orderby != 'formfields' ) {
 				//$sql_order = "`$orderby` $order";
-				$sql_order = $wpdb->prepare("%s %s", $orderby, $order);
+				$sql_order = "$orderby $order";
 			} else {
-				$sql_order = ( $this->orderby != 'name' && $this->orderby != 'id' && $this->orderby != 'order' ) ? '`name` '.$this->order : $wpdb->prepare("%s %s", $this->orderby, $this->order);
+				$sql_order = ( $this->orderby != 'name' && $this->orderby != 'id' && $this->orderby != 'order' ) ? '`name` '.$this->order : "$this->orderby $this->order";
 			}
 
 			if (!isset($current_page)) $current_page = $this->getCurrentPage();

@@ -22,7 +22,7 @@ if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) 
 <div class="wrap">
 	<?php $this->printBreadcrumb( __( 'Settings', 'projectmanager' ) ) ?>
 	
-	<form action="" method="post">
+	<form action="" method="post" enctype="multipart/form-data">
 		<?php wp_nonce_field( 'projectmanager_manage-settings' ) ?>
 		
 		<h2><?php _e( 'Settings', 'projectmanager' ) ?></h2>
@@ -73,6 +73,14 @@ if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) 
 		<tr valign="top">
 			<th scope="row"><label for="show_image"><?php _e( 'Show Image', 'projectmanager' ) ?></label></th><td><input type="checkbox" name="settings[show_image]" id="show_image"<?php if ( 1 == $project->show_image ) echo ' checked="checked"' ?> value="1"></td>
 		</tr>
+			<tr valign="top">
+		<th scope="row"><label for="default_image"><?php _e( 'Default Image', 'projectmanager' ) ?></label></th>
+		<td>
+			<input type="file" name="project_default_image" id="default_image" size="45"/>
+			<p><?php _e( 'Supported file types', 'projectmanager' ) ?>: <?php echo implode( ',',$projectmanager->getSupportedImageTypes() ); ?></p>
+			<p><?php _e('Current Image:', 'projectmanager') ?><?php if ($project->default_image != "") : ?><a href="<?php echo $projectmanager->getFileURL($project->default_image) ?>" target="_blank"><?php echo $project->default_image ?></a><input type="checkbox" id="del_default_image" name="settings[del_default_image]" value="1" style="margin-left: 1em;" />&#160;<label for="del_default_image"><?php _e( 'Delete', 'projectmanager' ) ?></label><?php endif; ?></p>
+		</td>
+	</tr>
 		<tr valign="top">
 			<th scope="row"><label for="thumb_size"><?php _e( 'Thumbnail size', 'projectmanager' ) ?></label></th><td><label for="thumb_width"><?php _e( 'Width' ) ?>&#160;</label><input type="text" name="settings[thumb_size][width]" id="thumb_width" size="3" value="<?php echo $project->thumb_size['width'] ?>" />  <label for="thumb_height"><?php _e( 'Height' ) ?>&#160;</label><input type="text" name="settings[thumb_size][height]" id="thumb_height" size="3" value="<?php echo $project->thumb_size['height'] ?>" /></td>
 		</tr>

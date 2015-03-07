@@ -25,7 +25,7 @@ The following variables are usable:
 	
 	<div class='gallery-item' style='width: <?php echo $project->dataset_width ?>%;'>
 		<div class="gallery-image" style="margin: 0 <?php echo $project->dataset_width/2 ?>%;">
-			<?php if ( !empty($dataset->image) ) : ?>
+			<?php if ( $project->show_image == 1 && !empty($dataset->image) ) : ?>
 			<a href="<?php echo $dataset->URL ?>"><img src="<?php echo $dataset->thumbURL ?>" alt="<?php echo $dataset->name ?>" title="<?php echo $dataset->name ?>" /></a>
 			<?php endif; ?>
 	

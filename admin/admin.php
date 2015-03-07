@@ -533,7 +533,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 */
 	function saveSettings( $settings, $project_id )
 	{
-		global $wpdb;
+		global $wpdb, $projectmanager;
 
 		if ( !current_user_can('edit_projects_settings') ) {
 			$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
@@ -541,6 +541,49 @@ class ProjectManagerAdminPanel extends ProjectManager
 		}
 
 		$project_id = intval($project_id);
+		$project = $projectmanager->getProject($project_id);
+		$settings['default_image'] = $project->default_image;
+		
+		if (isset($settings['del_default_image']) && $settings['del_default_image'] == 1) {
+			$this->delImage($project->default_image);
+			$settings['default_image'] = "";
+			unset($settings['del_default_image']);
+		}
+		
+		if ( isset($_FILES['project_default_image']) && $_FILES['project_default_image']['name'] != '' && file_exists($_FILES['project_default_image']['tmp_name']) ) {
+			require_once (PROJECTMANAGER_PATH . '/lib/image.php');
+			$file = $_FILES['project_default_image'];
+		
+			$new_file = parent::getFilePath().'/'.basename($file['name']);
+			$image = new ProjectManagerImage($new_file);
+			if ( $image->supported($file['name']) ) {
+				if ( $file['size'] > 0 ) {
+					if ( move_uploaded_file($file['tmp_name'], $new_file) ) {
+						// delete old image if present
+						if ( $project->default_image != "" && $project->default_image != basename($file['name'])) $this->delImage($project->default_image);
+						
+						if (file_exists($new_file)) {
+							// Resize original file and create thumbnails
+							$dims = array( 'width' => $project->medium_size['width'], 'height' => $project->medium_size['height'] );
+							$image->createThumbnail( $dims, $new_file, $project->chmod );
+
+							$dims = array( 'width' => $project->thumb_size['width'], 'height' => $project->thumb_size['height'] );
+							$image->createThumbnail( $dims, parent::getFilePath().'/thumb.'.basename($file['name']), $project->chmod );
+									
+							$dims = array( 'width' => 80, 'height' => 50 );
+							$image->createThumbnail( $dims, parent::getFilePath().'/tiny.'.basename($file['name']), $project->chmod );
+						}
+						// set image filename in settings
+						$settings['default_image'] = basename($file['name']);
+					} else {		
+						$this->setMessage( sprintf( __('The uploaded file could not be moved to %s.' ), parent::getFilePath() ), true );
+					}
+				}
+			} else {
+				$this->setMessage( __('The file type is not supported.','projectmanager'), true );
+			}
+		}
+		
 		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projects} SET `settings` = '%s' WHERE `id` = '%d'", maybe_serialize($settings), $project_id ) );
 		$this->setMessage(__('Settings saved', 'projectmanager'));
 		
@@ -1037,19 +1080,21 @@ class ProjectManagerAdminPanel extends ProjectManager
 				} else {
 					if ( move_uploaded_file($file['tmp_name'], $new_file) ) {
 						if ( $dataset = parent::getDataset($dataset_id) )
-							if ( $dataset->image != '' ) $this->delImage($dataset->image);
+							if ( $dataset->image != '' && $dataset->image != basename($file['name']) ) $this->delImage($dataset->image);
 
 						$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `image` = '%s' WHERE id = '%d'", basename($file['name']), $dataset_id ) );
 			
-						// Resize original file and create thumbnails
-						$dims = array( 'width' => $project->medium_size['width'], 'height' => $project->medium_size['height'] );
-						$image->createThumbnail( $dims, $new_file, $project->chmod );
+						if (file_exists($new_file)) {
+							// Resize original file and create thumbnails
+							$dims = array( 'width' => $project->medium_size['width'], 'height' => $project->medium_size['height'] );
+							$image->createThumbnail( $dims, $new_file, $project->chmod );
 
-						$dims = array( 'width' => $project->thumb_size['width'], 'height' => $project->thumb_size['height'] );
-						$image->createThumbnail( $dims, parent::getFilePath().'/thumb.'.basename($file['name']), $project->chmod );
-						
-						$dims = array( 'width' => 80, 'height' => 50 );
-						$image->createThumbnail( $dims, parent::getFilePath().'/tiny.'.basename($file['name']), $project->chmod );
+							$dims = array( 'width' => $project->thumb_size['width'], 'height' => $project->thumb_size['height'] );
+							$image->createThumbnail( $dims, parent::getFilePath().'/thumb.'.basename($file['name']), $project->chmod );
+							
+							$dims = array( 'width' => 80, 'height' => 50 );
+							$image->createThumbnail( $dims, parent::getFilePath().'/tiny.'.basename($file['name']), $project->chmod );
+						}
 					} else {
 						$this->setMessage( sprintf( __('The uploaded file could not be moved to %s.' ), parent::getFilePath() ), true );
 					}
