@@ -78,7 +78,7 @@ if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) 
 		<td>
 			<input type="file" name="project_default_image" id="default_image" size="45"/>
 			<p><?php _e( 'Supported file types', 'projectmanager' ) ?>: <?php echo implode( ',',$projectmanager->getSupportedImageTypes() ); ?></p>
-			<p><?php _e('Current Image:', 'projectmanager') ?><?php if ($project->default_image != "") : ?><a href="<?php echo $projectmanager->getFileURL($project->default_image) ?>" target="_blank"><?php echo $project->default_image ?></a><input type="checkbox" id="del_default_image" name="settings[del_default_image]" value="1" style="margin-left: 1em;" />&#160;<label for="del_default_image"><?php _e( 'Delete', 'projectmanager' ) ?></label><?php endif; ?></p>
+			<p><?php _e('Current Image:', 'projectmanager') ?><?php if ($project->default_image != "") : ?> <a href="<?php echo $projectmanager->getFileURL($project->default_image) ?>" target="_blank"><?php echo $project->default_image ?></a><input type="checkbox" id="del_default_image" name="settings[del_default_image]" value="1" style="margin-left: 1em;" />&#160;<label for="del_default_image"><?php _e( 'Delete', 'projectmanager' ) ?></label><?php endif; ?></p>
 		</td>
 	</tr>
 		<tr valign="top">

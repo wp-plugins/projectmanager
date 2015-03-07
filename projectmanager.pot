@@ -100,6 +100,7 @@ msgstr ""
 #: admin/dataset-form.php:19 admin/formfields.php:96 admin/formfields.php:116
 #: admin/index.php:40 admin/show-project.php:112 admin/tinymce/window.php:38
 #: lib/ajax.php:332 lib/core.php:1345 templates/dataset-form.php:19
+#: admin/settings.php
 msgid "Delete"
 msgstr ""
 
@@ -909,6 +910,14 @@ msgstr ""
 
 #: admin/settings.php:74
 msgid "Show Image"
+msgstr ""
+
+#: admin/settings.php:
+msgid "Default Image"
+msgstr ""
+
+#: admin/settings.php:
+msgid "Current Image:"
 msgstr ""
 
 #: admin/settings.php:77

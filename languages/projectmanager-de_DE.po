@@ -443,6 +443,14 @@ msgstr "Bilder"
 msgid "Show Image"
 msgstr "Zeige Bild"
 
+#: admin/settings.php:
+msgid "Default Image"
+msgstr "Standardbild"
+
+#: admin/settings.php:
+msgid "Current Image:"
+msgstr "Aktuelles Bild:"
+
 #: admin/settings.php:85
 msgid "Thumbnail size"
 msgstr "Vorschaubild-Größe"
