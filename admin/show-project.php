@@ -7,7 +7,6 @@ global $current_user;
 $project_id = $projectmanager->getProjectID();
 $project = $projectmanager->getCurrentProject();
 
-
 if ( isset($_POST['updateProjectManager']) AND !isset($_POST['doaction']) ) {
 	/*
 	* Add or Edit Dataset

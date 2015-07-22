@@ -89,9 +89,10 @@ function ProjectManagerInsertLink() {
 
 	if (datasetform.className.indexOf('current') != -1) {
 		var projectId = document.getElementById('datasetform_projects').value;
+		var template = document.getElementById('datasetform_templates').value;
 		
 		if (projectId != 0)
-			tagtext = "[dataset_form project_id=" + projectId + "]";
+			tagtext = "[dataset_form project_id=" + projectId + " template=" + template + "]";
 		else
 			tinyMCEPopup.close();
 	}

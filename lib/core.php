@@ -498,7 +498,7 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function getFormFieldTypes($index = false)
 	{
-		$form_field_types = array( 'text' => __('Text', 'projectmanager'), 'textfield' => __('Textfield', 'projectmanager'), 'tinymce' => __('TinyMCE Editor', 'projectmanager'), 'email' => __('E-Mail', 'projectmanager'), 'date' => __('Date', 'projectmanager'), 'uri' => __('URL', 'projectmanager'), 'select' => __('Selection', 'projectmanager'), 'checkbox' => __( 'Checkbox List', 'projectmanager'), 'radio' => __( 'Radio List', 'projectmanager'), 'file' => __('File', 'projectmanager'), 'image' => __( 'Image', 'projectmanager' ), 'video' => __('Video', 'projectmanager'), 'numeric' => __( 'Numeric', 'projectmanager' ), 'currency' => __('Currency', 'projectmanager'), 'project' => __( 'Internal Link', 'projectmanager' ), 'time' => __('Time', 'projectmanager'), 'wp_user' => __( 'WP User', 'projectmanager' ) );
+		$form_field_types = array( 'text' => __('Text', 'projectmanager'), 'textfield' => __('Textfield', 'projectmanager'), 'tinymce' => __('TinyMCE Editor', 'projectmanager'), 'email' => __('E-Mail', 'projectmanager'), 'date' => __('Date', 'projectmanager'), 'uri' => __('URL', 'projectmanager'), 'select' => __('Selection', 'projectmanager'), 'checkbox' => __( 'Checkbox List', 'projectmanager'), 'radio' => __( 'Radio List', 'projectmanager'), 'file' => __('File', 'projectmanager'), 'image' => __( 'Image', 'projectmanager' ), 'video' => __('Video', 'projectmanager'), 'numeric' => __( 'Numeric', 'projectmanager' ), 'currency' => __('Currency', 'projectmanager'), 'country' => __('Country', 'projectmanager'), 'project' => __( 'Internal Link', 'projectmanager' ), 'time' => __('Time', 'projectmanager'), 'wp_user' => __( 'WP User', 'projectmanager' ) );
 		//$form_field_types = array( 'text' => __('Text', 'projectmanager'), 'textfield' => __('Textfield', 'projectmanager'), 'email' => __('E-Mail', 'projectmanager'), 'date' => __('Date', 'projectmanager'), 'uri' => __('URL', 'projectmanager'), 'select' => __('Selection', 'projectmanager'), 'checkbox' => __( 'Checkbox List', 'projectmanager'), 'radio' => __( 'Radio List', 'projectmanager'), 'file' => __('File', 'projectmanager'), 'image' => __( 'Image', 'projectmanager' ), 'video' => __('Video', 'projectmanager'), 'numeric' => __( 'Numeric', 'projectmanager' ), 'currency' => __('Currency', 'projectmanager'), 'project' => __( 'Internal Link', 'projectmanager' ), 'time' => __('Time', 'projectmanager'), 'wp_user' => __( 'WP User', 'projectmanager' ) );
 		
 		$form_field_types = apply_filters( 'projectmanager_formfields', $form_field_types );
@@ -529,6 +529,38 @@ class ProjectManager extends ProjectManagerLoader
 	
 	
 	/**
+	 * retrieve countries from mysql database
+	 *
+	 * @param none
+	 * @return array
+	 */
+	function getCountries()
+	{
+		global $wpdb;
+		$countries = $wpdb->get_results( "SELECT `code`, `name`, `id` FROM {$wpdb->projectmanager_countries} ORDER BY `name` ASC" );
+		return $countries;
+	}
+	
+	
+	/**
+	 * get country name`
+	 *
+	 * @param $code
+	 * @return string
+	 */
+	function getCountryName($code)
+	{
+		global $wpdb;
+		
+		if ($code == "")
+			return "";
+		
+		$country = $wpdb->get_results( $wpdb->prepare( "SELECT `code`, `name`, `id` FROM {$wpdb->projectmanager_countries} WHERE `code` = '%s'", $code ) );
+		return $country[0]->name;
+	}
+	
+	
+	/**
 	 * set a message
 	 *
 	 * @param string $message
@@ -539,7 +571,7 @@ class ProjectManager extends ProjectManagerLoader
 	{
 		$type = 'success';
 		if ( $error ) {
-			$this->error = true;
+			if ($message != "") $this->error = true;
 			$type = 'error';
 		}
 		$this->message[$type] = $message;
@@ -553,9 +585,9 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function printMessage()
 	{
-		if ( $this->error )
+		if ( $this->error && $this->message['error'] != "" )
 			echo "<div class='error'><p>".$this->message['error']."</p></div>";
-		else
+		elseif ($this->message['success'] != "")
 			echo "<div id='message' class='updated fade'><p><strong>".$this->message['success']."</strong></p></div>";
 	}
 	
@@ -675,8 +707,6 @@ class ProjectManager extends ProjectManagerLoader
 
 		return $out;
 	}
-	
-	
 	
 
 	/**
@@ -834,7 +864,7 @@ class ProjectManager extends ProjectManagerLoader
 		else
 			$search = "`project_id` = ".intval($this->getProjectID()); 
 
-		$sql = "SELECT `label`, `type`, `order`, `order_by`, `show_on_startpage`, `show_in_profile`, `options`, `id` FROM {$wpdb->projectmanager_projectmeta} WHERE $search ORDER BY `order` ASC;";
+		$sql = "SELECT `label`, `type`, `order`, `order_by`, `mandatory`, `unique`, `show_on_startpage`, `show_in_profile`, `options`, `id` FROM {$wpdb->projectmanager_projectmeta} WHERE $search ORDER BY `order` ASC;";
 		$formfields = $wpdb->get_results( $sql );
 	
 		if ($id)
@@ -1422,6 +1452,8 @@ class ProjectManager extends ProjectManagerLoader
 					$meta_value = mysql2date(get_option('time_format'), $meta_value);
 					$meta_value = apply_filters( 'projectmanager_time', $meta_value, $dataset );
 					$meta_value = sprintf($pattern, $meta_value);
+				} elseif ( 'country' == $meta->type ) {
+					$meta_value = $this->getCountryName($meta_value);
 				} elseif ( 'uri' == $meta->type && !empty($meta_value) ) {
 					$meta_value = "<a class='projectmanager_url' href='http://".$this->extractURL($meta_value, 'url')."' target='_blank' title='".$this->extractURL($meta_value, 'title')."'>".$this->extractURL($meta_value, 'title')."</a>";
 					$meta_value = apply_filters( 'projectmanager_uri', $meta_value, $dataset );

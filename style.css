@@ -112,19 +112,19 @@ ul.projectmanager, ol.projectmanager {
 	}
 
 /* dataset form in frontend */
-#datasetform {
+.datasetform {
 	margin: 1.5em auto;
 }
-#datasetform br {
+.datasetform br {
 	clear: both;
 	}
-#datasetform label {
+.datasetform label {
 	text-align: left;
 	width: 8em;
 	float: left;
 	margin-bottom: 1.75em;
 	}
-#datasetform input, #datasetform select {
+.datasetform input, .datasetform select {
 /*	border: 1px solid;
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
@@ -132,15 +132,15 @@ ul.projectmanager, ol.projectmanager {
 	margin-left: 0;
 	margin-bottom: 1em;
 	}
-#datasetform p {
+.datasetform p {
 	margin: 0;
 	padding: 0;
 	}
-#datasetform p.submit {
+.datasetform p.submit {
 	margin-top: 1em;
 	float: right;
 	}
-#datasetform ul.radiolist {
+.datasetform ul.radiolist {
 	text-align: left;
 	}
 

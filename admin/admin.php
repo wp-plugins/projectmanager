@@ -9,6 +9,15 @@
 
 class ProjectManagerAdminPanel extends ProjectManager
 {
+	
+	/**
+	 * error handling
+	 *
+	 * @param boolean
+	 */
+	var $error = false;
+	
+	
 	/**
 	 * load admin area
 	 *
@@ -734,6 +743,27 @@ class ProjectManagerAdminPanel extends ProjectManager
 	
 	
 	/**
+	 * make sure that meta value is unique
+	 *
+	 * @param int $project_id
+	 * @param array $formfield
+	 * @param string $value
+	 * @return boolean
+	 */
+	function datasetMetaValueIsUnique($project_id, $formfield_id, $value, $dataset_id = false) {
+		global $wpdb;
+		
+		$data = $wpdb->get_results( $wpdb->prepare("SELECT dataset.id AS dataset_id, data.value AS value FROM {$wpdb->projectmanager_dataset} AS dataset LEFT JOIN {$wpdb->projectmanager_datasetmeta} AS data ON dataset.id = data.dataset_id WHERE dataset.project_id = '%d' AND data.form_id = '%d'", $project_id, $formfield_id) );
+		foreach ($data AS $d) {
+			if ($value == $d->value && $d->dataset_id != $dataset_id)
+				return false;
+		}
+		
+		return true;
+	}	
+	
+	
+	/**
 	 * add new dataset
 	 *
 	 * @param int $project_id
@@ -741,9 +771,10 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 * @param array $cat_ids
 	 * @param array $dataset_meta
 	 * @param false|int $user_id
+	 * @param boolean is_admin
 	 * @return string
 	 */
-	function addDataset( $project_id, $name, $cat_ids, $dataset_meta = false, $user_id = false )
+	function addDataset( $project_id, $name, $cat_ids, $dataset_meta = false, $user_id = false, $is_admin = true )
 	{
 		global $wpdb, $current_user, $projectmanager;
 		require_once (PROJECTMANAGER_PATH . '/lib/image.php');
@@ -760,21 +791,65 @@ class ProjectManagerAdminPanel extends ProjectManager
 		if ( !$user_id ) $user_id = $current_user->ID;
 		$user_id = intval($user_id);
 
-		// Negative check on capability: user can't edit datasets
-		if ( !current_user_can('edit_datasets') && !current_user_can('projectmanager_user') && !current_user_can('import_datasets') ) {
-			$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
-			return;
-		}
-
-		// user has only cap 'projectmanager_user' but not 'edit_other_datasets' and 'edit_datasets'
-		if ( current_user_can('projectmanager_user') && !current_user_can('edit_other_datasets') && !current_user_can('edit_datasets') && !current_user_can('import_datasets') ) {
-			// and dataset with this user ID already exists
-			if ( $this->datasetExists($project_id, $user_id) ) {
+		if ($is_admin) {
+			// Negative check on capability: user can't edit datasets
+			if ( !current_user_can('edit_datasets') && !current_user_can('projectmanager_user') && !current_user_can('import_datasets') ) {
 				$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
 				return;
 			}
-		}
 
+			// user has only cap 'projectmanager_user' but not 'edit_other_datasets' and 'edit_datasets'
+			if ( current_user_can('projectmanager_user') && !current_user_can('edit_other_datasets') && !current_user_can('edit_datasets') && !current_user_can('import_datasets') ) {
+				// and dataset with this user ID already exists
+				if ( $this->datasetExists($project_id, $user_id) ) {
+					$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
+					return;
+				}
+			}
+		}
+		
+		$this->error = false;
+		// Make sure that a dataset name was provided
+		if ($name == "") {
+			$this->setMessage( __("You have to provide a name", 'projectmanager'), true );
+			$this->printMessage();
+			$this->error = true;
+		}
+		// Check each formfield for mandatory and unique values
+		foreach (parent::getFormFields() AS $formfield) {
+			// make sure that mandatory fields are not empty
+			if ($formfield->mandatory == 1) {
+				if( !isset($dataset_meta[$formfield->id]) || (isset($dataset_meta[$formfield->id]) && $dataset_meta[$formfield->id] == "") ) {
+					$this->setMessage( __(sprintf("Mandatory field %s is empty", $formfield->label), 'projectmanager'), true );
+					$this->printMessage();
+					$this->error = true;
+				}
+			}
+			
+			// make sure unique fields have no match in database
+			if ($formfield->unique == 1) {
+				if (!$this->datasetMetaValueIsUnique($project_id, $formfield->id, $dataset_meta[$formfield->id])) {
+					$this->setMessage(__(sprintf("Provided %s `%s` is already present in the database", $formfield->label, $dataset_meta[$formfield->id]), 'projectmanager'), true);
+					$this->printMessage();
+					$this->error = true;				
+				}
+			}
+			
+			// check email validity
+			if ($formfield->type == "email") {
+				if (!filter_var($dataset_meta[$formfield->id], FILTER_VALIDATE_EMAIL)) {
+					$this->setMessage(__(sprintf("Provided %s `%s` is not a valid e-mail address", $formfield->label, $dataset_meta[$formfield->id]), "projectmanager"), true);
+					$this->printMessage();
+					$this->error = true;
+				}
+			}
+		}
+		$this->setMessage("");
+		$this->setMessage("", true);
+		
+		// stop if an error occured
+		if ($this->error) return;
+		
 		$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_dataset} (name, cat_ids, project_id, user_id) VALUES ('%s', '%s', '%d', '%d')", $name, maybe_serialize($cat_ids), $project_id, $user_id ) );
 		$dataset_id = $wpdb->insert_id;
 				
@@ -888,6 +963,48 @@ class ProjectManagerAdminPanel extends ProjectManager
 		$dataset_id = intval($dataset_id);
 		$user_id = intval($user_id);
 		
+		$this->error = false;
+		// Make sure that a dataset name was provided
+		if ($name == "") {
+			$this->setMessage( __("You have to provide a name", 'projectmanager'), true );
+			$this->printMessage();
+			$this->error = true;
+		}
+		// Check each formfield for mandatory and unique values
+		foreach (parent::getFormFields() AS $formfield) {
+			// make sure that mandatory fields are not empty
+			if ($formfield->mandatory == 1) {
+				if( !isset($dataset_meta[$formfield->id]) || (isset($dataset_meta[$formfield->id]) && $dataset_meta[$formfield->id] == "") ) {
+					$this->setMessage( __(sprintf("Mandatory field %s is empty", $formfield->label), 'projectmanager'), true );
+					$this->printMessage();
+					$this->error = true;
+				}
+			}
+			
+			// make sure unique fields have no match in database
+			if ($formfield->unique == 1) {
+				if (!$this->datasetMetaValueIsUnique($project_id, $formfield->id, $dataset_meta[$formfield->id], $dataset_id)) {
+					$this->setMessage(__(sprintf("Provided %s `%s` is already present in the database", $formfield->label, $dataset_meta[$formfield->id]), 'projectmanager'), true);
+					$this->printMessage();
+					$this->error = true;				
+				}
+			}
+
+			// check email validity
+			if ($formfield->type == "email") {
+				if (!filter_var($dataset_meta[$formfield->id], FILTER_VALIDATE_EMAIL)) {
+					$this->setMessage(__(sprintf("Provided %s `%s` is not a valid e-mail address", $formfield->label, $dataset_meta[$formfield->id]), "projectmanager"), true);
+					$this->printMessage();
+					$this->error = true;
+				}
+			}
+		}
+		$this->setMessage("");
+		$this->setMessage("", true);
+		
+		// stop if an error occured
+		if ($this->error) return;
+		
 		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `name` = '%s', `cat_ids` = '%s' WHERE `id` = '%d'", $name, maybe_serialize($cat_ids), $dataset_id ) );
 			
 		// Change Dataset owner if supplied
@@ -972,7 +1089,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 				$this->uploadImage($dataset_id, $file, $overwrite_image);
 		}
 			
-		$this->setmessage( __('Dataset updated.', 'projectmanager') );
+		$this->setMessage( __('Dataset updated.', 'projectmanager') );
 		
 		do_action('projectmanager_edit_dataset', $dataset_id);
 	}
@@ -1174,6 +1291,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 			$formfield['options'] = '';
 		}		
 		$order_by = isset($formfield['orderby']) ? 1 : 0;
+		$mandatory = isset($formfield['mandatory']) ? 1 : 0;
+		$unique = isset($formfield['unique']) ? 1 : 0;
 		$show_on_startpage = isset($formfield['show_on_startpage']) ? 1 : 0;
 		$show_in_profile = isset($formfield['show_in_profile']) ? 1 : 0;
 
@@ -1187,7 +1306,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 			$order = $max_order_sql[0]['order'] +1;
 		}
 				
-		$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_projectmeta} (`label`, `type`, `show_on_startpage`, `show_in_profile`, `order`, `order_by`, `options`, `project_id`) VALUES ( '%s', '%s', '%d', '%d', '%d', '%d', '%s', '%d');", $formfield['name'], $formfield['type'], $show_on_startpage, $show_in_profile, $order, $order_by, $formfield['options'], $project_id ) );
+		$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_projectmeta} (`label`, `type`, `show_on_startpage`, `show_in_profile`, `order`, `order_by`, `mandatory`, `unique`, `options`, `project_id`) VALUES ( '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%d', '%s', '%d');", $formfield['name'], $formfield['type'], $show_on_startpage, $show_in_profile, $order, $order_by, $mandatory, $unique, $formfield['options'], $project_id ) );
 		$formfield_id = $wpdb->insert_id;
 				
 		/*
@@ -1219,10 +1338,12 @@ class ProjectManagerAdminPanel extends ProjectManager
 		$formfield_id = intval($formfield['id']);
 		
 		$order_by = isset($formfield['orderby']) ? 1 : 0;
+		$mandatory = isset($formfield['mandatory']) ? 1 : 0;
+		$unique = isset($formfield['unique']) ? 1 : 0;
 		$show_on_startpage = isset($formfield['show_on_startpage']) ? 1 : 0;
 		$show_in_profile = isset($formfield['show_in_profile']) ? 1 : 0;
 					
-		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projectmeta} SET `label` = '%s', `type` = '%s', `show_on_startpage` = '%d', `show_in_profile` = '%d', `order` = '%d', `order_by` = '%d', `options` = '%s' WHERE `id` = '%d' LIMIT 1 ;", $formfield['name'], $formfield['type'], $show_on_startpage, $show_in_profile, $formfield['order'], $order_by, $formfield['options'], $formfield_id ) );
+		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projectmeta} SET `label` = '%s', `type` = '%s', `show_on_startpage` = '%d', `show_in_profile` = '%d', `order` = '%d', `order_by` = '%d', `mandatory` = '%d', `unique` = '%d', `options` = '%s' WHERE `id` = '%d' LIMIT 1 ;", $formfield['name'], $formfield['type'], $show_on_startpage, $show_in_profile, $formfield['order'], $order_by, $mandatory, $unique, $formfield['options'], $formfield_id ) );
 		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `form_id` = '%d' WHERE `form_id` = '%d'", $formfield_id, $formfield_id ) );
 	}
 	
@@ -1280,11 +1401,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 		if ( !empty($formfields) ) {
 			foreach ( $wpdb->get_results( "SELECT `id`, `project_id` FROM {$wpdb->projectmanager_projectmeta}" ) AS $form_field) {
 				if ( !array_key_exists( $form_field->id, $formfields ) ) {
-					//$del = (bool) $wpdb->query( "DELETE FROM {$wpdb->projectmanager_projectmeta} WHERE `id` = {$form_field->id} AND `project_id` = {$project_id}"  );
-					//if ( $del ) unset($options['form_field_options'][$form_field->id]);
 					if ( $project_id == $form_field->project_id )
 						$this->delFormField($form_field->id);
-						//$wpdb->query( "DELETE FROM {$wpdb->projectmanager_datasetmeta} WHERE `form_id` = {$form_field->id}" );
 				}
 			}
 				

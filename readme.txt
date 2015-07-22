@@ -59,6 +59,12 @@ The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons
 
 == Changelog ==
 
+= 3.1.7.2 =
+* NEW: mark formfields as mandatory to force data input
+* NEW: mark formfields as unique to avoid double database
+* NEW: new formfield type 'country' with selection dropdown retrieved from new MySQL database table consisting of 3-digit code and country name
+* BUGFIX: fixed frontend dataset form
+
 = 3.1.7.1 =
 * UPDATE: German translation
 

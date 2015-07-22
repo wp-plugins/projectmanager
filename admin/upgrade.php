@@ -152,6 +152,30 @@ function projectmanager_upgrade() {
 	}
 
 
+	if (version_compare($installed, '3.1.2', '<')) {
+		$wpdb->query( "ALTER TABLE {$wpdb->projectmanager_projectmeta} ADD `mandatory` tinyint( 1 ) NOT NULL default '0' AFTER `order_by`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->projectmanager_projectmeta} ADD `unique` tinyint( 1 ) NOT NULL default '0' AFTER `mandatory`" );
+		
+		/*
+		* create countries table and dump data
+		*/
+		include_once( ABSPATH.'/wp-admin/includes/upgrade.php' );
+		$charset_collate = '';
+		if ( $wpdb->supports_collation() ) {
+			if ( ! empty($wpdb->charset) )
+				$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
+			if ( ! empty($wpdb->collate) )
+				$charset_collate .= " COLLATE $wpdb->collate";
+		}
+		$create_countries_sql = "CREATE TABLE {$wpdb->projectmanager_countries} (
+						`id` int( 11 ) NOT NULL AUTO_INCREMENT,
+						`code` varchar( 3 ) NOT NULL default '',
+						`name` varchar( 200 ) NOT NULL default '',
+						PRIMARY KEY ( `id` )) $charset_collate";
+		maybe_create_table( $wpdb->projectmanager_countries, $create_countries_sql );
+		require_once(PROJECTMANAGER_PATH . "/CountriesSQL.php");
+	}
+	
 	// Update dbversion
 	$options['dbversion'] = PROJECTMANAGER_DBVERSION;
 	$options['version'] = PROJECTMANAGER_VERSION;

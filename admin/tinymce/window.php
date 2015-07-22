@@ -200,7 +200,16 @@ global $wpdb;
 					echo '<option value="'.$project->id.'" >'.$project->title.'</option>'."\n";
 			}
 		?>
-        	</select>
+        </select>
+		</td>
+	</tr>
+	<tr>
+		<td><label for="datasetform_templates"><?php _e("Template", 'projectmanager'); ?></label></td>
+		<td>
+		<select id="datasetform_templates" name="datasetform_templates", style="width: 200px">
+		<option value=""><?php _e('Default', 'projectmanager'); ?></option>
+		<option value="petition"><?php _e('Petition', 'projectmanager'); ?></option>
+		</select>
 		</td>
 	</tr>
 	</table>

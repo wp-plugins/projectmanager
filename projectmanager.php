@@ -3,7 +3,7 @@
 Plugin Name: ProjectManager
 Description: This Plugin can be used to manage several different types of projects with redundant data. This could be athlet portraits, DVD database, architect projects. You can define different form field types and groups to sort your project entries.
 Plugin URI: http://wordpress.org/extend/plugins/projectmanager/
-Version: 3.1.7.1
+Version: 3.1.7.2
 Author: Kolja Schleich
 
 Copyright 2008-2015  Kolja Schleich  (email : kolja.schleich@googlemail.com)
@@ -35,7 +35,7 @@ class ProjectManagerLoader
 	 *
 	 * @var string
 	 */
-	 var $version = '3.1.7.1';
+	 var $version = '3.1.7.2';
 	 
 	 
 	 /**
@@ -43,7 +43,7 @@ class ProjectManagerLoader
 	  *
 	  * @var string
 	  */
-	 var $dbversion = '3.1.1';
+	 var $dbversion = '3.1.2';
 	 
 
 	 /**
@@ -157,6 +157,7 @@ class ProjectManagerLoader
 		$wpdb->projectmanager_projectmeta = $wpdb->prefix . 'projectmanager_projectmeta';
 		$wpdb->projectmanager_dataset = $wpdb->prefix . 'projectmanager_dataset';
 		$wpdb->projectmanager_datasetmeta = $wpdb->prefix . 'projectmanager_datasetmeta';
+		$wpdb->projectmanager_countries = $wpdb->prefix . 'projectmanager_countries';
 	}
 	
 	
@@ -335,6 +336,8 @@ class ProjectManagerLoader
 						`label` varchar( 100 ) NOT NULL default '',
 						`order` int( 10 ) NOT NULL default '0',
 						`order_by` tinyint( 1 ) NOT NULL default '0',
+						`mandatory` tinyint( 1 ) NOT NULL default '0',
+						`unique` tinyint( 1 ) NOT NULL default '0',
 						`show_on_startpage` tinyint( 1 ) NOT NULL default '0',
 						`show_in_profile` tinyint( 1 ) NOT NULL default '0',
 						`options` longtext NOT NULL default '',
@@ -354,12 +357,20 @@ class ProjectManagerLoader
 		maybe_create_table( $wpdb->projectmanager_dataset, $create_dataset_sql );
 			
 		$create_datasetmeta_sql = "CREATE TABLE {$wpdb->projectmanager_datasetmeta} (
-						`id` int( 11 ) NOT NULL AUTO_INCREMENT ,
+						`id` int( 11 ) NOT NULL AUTO_INCREMENT,
 						`form_id` int( 11 ) NOT NULL,
 						`dataset_id` int( 11 ) NOT NULL,
 						`value` longtext NOT NULL default '',
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->projectmanager_datasetmeta, $create_datasetmeta_sql );
+		
+		$create_countries_sql = "CREATE TABLE {$wpdb->projectmanager_countries} (
+						`id` int( 11 ) NOT NULL AUTO_INCREMENT,
+						`code` varchar( 3 ) NOT NULL default '',
+						`name` varchar( 200 ) NOT NULL default '',
+						PRIMARY KEY ( `id` )) $charset_collate";
+		maybe_create_table( $wpdb->projectmanager_countries, $create_countries_sql );
+		require_once("CountriesSQL.php");
 
 
 		// Set default options

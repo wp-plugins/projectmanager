@@ -12,20 +12,7 @@ if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) 
 <form name="datasetform" id="datasetform_<?php echo $project->id ?>" class="datasetform" action="" method="post" enctype="multipart/form-data">
 	<?php wp_nonce_field('projectmanager_insert_dataset'); ?>
 	<label for="d_name"><?php _e( 'Name', 'projectmanager' ) ?>*</label><input type="text" name="d_name" id="d_name" value="<?php echo $name ?>" size="30" /><br />
-	<?php if ( 1 == $project->show_image ) : ?>
-	<label for="projectmanager_image"><?php _e( 'Image', 'projectmanager' ) ?></label>
-	<?php if ( '' != $img_filename ) : ?>
-	<div class="alignright">
-		<img src="<?php echo $projectmanager->getFileURL('tiny.'.$img_filename)?>" />
-		<p style="text-align: center;"><input type="checkbox" id="del_old_image" name="del_old_image" value="1" style="margin-left: 1em;" />&#160;<label for="del_old_image"><?php _e( 'Delete', 'projectmanager' ) ?></label></p>
-	</div>
-	<?php endif; ?>
-	<input type="file" name="projectmanager_image" id="projectmanager_image" size="25" />
-	<?php if ( '' != $img_filename ) : ?>
-		<p class="alignleft"><label for="overwrite_image"><?php _e( 'Overwrite existing image', 'projectmanager' ) ?></label><input type="checkbox" id="overwrite_image" name="overwrite_image" value="1" style="margin-left: 1em;" /></p>
-		<input type="hidden" name="image_file" value="<?php echo $img_filename ?>" />
-	<?php endif; ?>
-	<?php endif; ?><br />
+	
 	<?php if ( $form_fields = $projectmanager->getFormFields() ) : ?>
 		<?php foreach ( $form_fields AS $form_field ) : $dat = isset($meta_data[$form_field->id]) ? $meta_data[$form_field->id] : ''; $formfield_options = explode(";", $form_field->options); ?>
 		
@@ -120,10 +107,8 @@ if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) 
 	<?php endif; ?>
 
 <input type="hidden" name="project_id" value="<?php echo intval($project->id) ?>" />
-<input type="hidden" name="dataset_id" value="<?php echo $dataset_id ?>" />
-<input type="hidden" name="user_id" value="<?php if ($dataset) echo intval($dataset->user_id) ?>" />
-<input type="hidden" name="d_message" value="Dataset added to the database" />
+<input type="hidden" name="d_message" value="Thank you for signing our petition" />
 
-<p class="submit"><input type="submit" name="insertDataset" value="<?php echo $form_title ?> &raquo;" class="button" /></p>
+<p class="submit"><input type="submit" name="insertDataset" value="<?php _e('Sign Petition', 'projectmanager') ?> &raquo;" class="button" /></p>
 </form>
 <?php endif; ?>

@@ -1,6 +1,6 @@
 <table class="form-table">
 	<tr valign="top">
-		<th scope="row"><label for="name"><?php _e( 'Name', 'projectmanager' ) ?></label></th>
+		<th scope="row"><label for="name"><?php _e( 'Name', 'projectmanager' ) ?>*</label></th>
 		<td>
 			<input type="text" name="name" id="name" value="<?php echo $name ?>" size="45" />
 			<?php if ( current_user_can('edit_other_datasets') && !$edit ) : ?>
@@ -27,16 +27,16 @@
 	</tr>
 	<?php endif; ?>
 	<?php if ( $form_fields = $projectmanager->getFormFields() ) : ?>
-		<?php foreach ( $form_fields AS $form_field ) : $dat = isset($meta_data[$form_field->id]) ? $meta_data[$form_field->id] : ''; ?>
+		<?php foreach ( $form_fields AS $form_field ) : $dat = isset($meta_data[$form_field->id]) ? $meta_data[$form_field->id] : ''; $formfield_options = explode(";", $form_field->options); ?>
 		
 		<tr valign="top">
-			<th scope="row"><label for="form_field_<?php echo $form_field->id ?>"><?php echo $form_field->label ?></label></th>
+			<th scope="row"><label for="form_field_<?php echo $form_field->id ?>"><?php echo $form_field->label ?><?php if ($form_field->mandatory == 1) echo '*'; ?></label></th>
 			<td>
 				<?php if ( 'text' == $form_field->type || 'email' == $form_field->type || 'uri' == $form_field->type || 'numeric' == $form_field->type || 'currency' == $form_field->type ) : ?>
 				<input type="text" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" value="<?php echo $dat ?>" size="45" />
 				<?php elseif ( 'textfield' == $form_field->type ) : ?>
 				<div style="width: 80%;">
-					<textarea name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" cols="70" rows="15"><?php echo $dat ?></textarea>
+					<textarea name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" cols="<?php if (empty($formfield_options[0])) echo '50'; else echo $formfield_options[0]; ?>" rows="<?php if (empty($formfield_options[1])) echo '10'; else echo $formfield_options[1]; ?>"><?php echo $dat ?></textarea>
 				</div>
 				<?php elseif ( 'tinymce' == $form_field->type ) : ?>
 				<div style="width: 80%;">
@@ -74,6 +74,13 @@
 					<?php for ( $minute = 0; $minute <= 59; $minute++ ) : ?>
 					<option value="<?php  echo str_pad($minute, 2, 0, STR_PAD_LEFT) ?>"<?php selected( $minute, intval(substr($dat, 3, 2)) ) ?>><?php echo str_pad($minute, 2, 0, STR_PAD_LEFT) ?></option>
 					<?php endfor; ?>
+				</select>
+				<?php elseif ( 'country' == $form_field->type ) : ?>
+				<select size="1" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>">
+					<option value="">&#160;</option>
+					<?php foreach ( $projectmanager->getCountries() AS $country ) : ?>
+					<option value="<?php echo $country->code ?>"<?php selected( $country->code, $dat ) ?>><?php echo $country->name ?></option>
+					<?php endforeach; ?>
 				</select>
 				<?php elseif ( 'file' == $form_field->type || 'image' == $form_field->type || 'video' == $form_field->type ) : ?>
 					<input type="file" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" size="40" />

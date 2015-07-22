@@ -120,11 +120,25 @@ class ProjectManagerShortcodes
 
 		extract(shortcode_atts(array(
 			'project_id' => 0,
+			'template' => '',
 		), $atts ));
 
 		$project_id = intval($project_id);
 		$projectmanager->init(intval($project_id));
 		$project = $projectmanager->getCurrentProject();
+		
+		$message = "";
+		if (isset($_POST['insertDataset'])) {
+			require_once (PROJECTMANAGER_PATH . '/admin/admin.php');	
+			$admin = new ProjectManagerAdminPanel();
+
+			check_admin_referer( 'projectmanager_insert_dataset' );
+			$user_id = !empty($_POST['user_id']) ? intval($_POST['user_id']) : false;
+			$category = isset($_POST['post_category']) ? $_POST['post_category'] : '';
+			$admin->addDataset( intval($_POST['project_id']), htmlspecialchars($_POST['d_name']), $category, $_POST['form_field'], $user_id, false );
+			
+			$message = htmlspecialchars($_POST['d_message']);
+		}
 		
 		$options = get_option('projectmanager');
 		if ( isset($_GET['d_id']) ) {
@@ -156,7 +170,8 @@ class ProjectManagerShortcodes
 		$projectmanager->loadTinyMCE(); 
 
 		$filename = 'dataset-form';
-		$out = $this->loadTemplate( $filename, array('projectmanager' => $projectmanager, 'dataset_id' => $dataset_id, 'dataset' => $dataset, 'project' => $project, 'name' => $name, 'img_filename' => $img_filename, 'meta_data' => $meta_data, 'edit' => $edit, 'cat_ids' => $cat_ids, 'form_title' => $form_title) );
+		if ($template != "") $filename = 'dataset-form-'.$template;
+		$out = $this->loadTemplate( $filename, array('projectmanager' => $projectmanager, 'dataset_id' => $dataset_id, 'dataset' => $dataset, 'project' => $project, 'name' => $name, 'img_filename' => $img_filename, 'meta_data' => $meta_data, 'edit' => $edit, 'cat_ids' => $cat_ids, 'form_title' => $form_title, 'message' => $message) );
 
 		return $out;
 	}

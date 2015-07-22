@@ -23,17 +23,17 @@ document.forms[0].encoding = "multipart/form-data";
 	</tr>
 	<?php endif; ?>
 	<?php if ( $form_fields = $projectmanager->getFormFields() ) : ?>
-		<?php foreach ( $form_fields AS $form_field ) : ?>
+		<?php foreach ( $form_fields AS $form_field ) : $formfield_options = explode(";", $form_field->options); ?>
 		
 		<?php if ( $form_field->show_in_profile == 1 ) : ?>
 		<tr valign="top">
-			<th scope="row"><label for="form_field_<?php echo $form_field->id ?>"><?php echo $form_field->label ?></label></th>
+			<th scope="row"><label for="form_field_<?php echo $form_field->id ?>"><?php echo $form_field->label ?><?php if ($form_field->mandatory == 1) echo '*'; ?></label></th>
 			<td>
 				<?php if ( 'text' == $form_field->type || 'email' == $form_field->type || 'uri' == $form_field->type || 'numeric' == $form_field->type || 'currency' == $form_field->type ) : ?>
 				<input type="text" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" value="<?php echo $meta_data[$form_field->id] ?>" size="45" />
 				<?php elseif ( 'textfield' == $form_field->type ) : ?>
 				<div style="width: 80%;">
-					<textarea name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" cols="70" rows="15"><?php echo $meta_data[$form_field->id] ?></textarea>
+					<textarea name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" cols="<?php if (empty($formfield_options[0])) echo '50'; else echo $formfield_options[0]; ?>" rows="<?php if (empty($formfield_options[1])) echo '10'; else echo $formfield_options[1]; ?>"><?php echo $meta_data[$form_field->id] ?></textarea>
 				</div>
 				<?php elseif ( 'tinymce' == $form_field->type ) : ?>
 				<div style="width: 80%;">
