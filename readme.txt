@@ -2,10 +2,10 @@
 Contributors: Kolja Schleich
 Tags: datamanager, CMS, Content Management System
 Requires at least: 3.9
-Tested up to 4.1
-Stable tag: 3.1.7.1
+Tested up to 4.2.2
+Stable tag: 3.1.7.2
 
-This plugin can be used to manage any number of projects with recurrent datasets (e.g. portrait system, dvd collection)
+This plugin can be used to manage any number of projects with recurrent datasets (e.g. portrait system, dvd collection, petition)
 
 == Description ==
 
@@ -63,6 +63,7 @@ The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons
 * NEW: mark formfields as mandatory to force data input
 * NEW: mark formfields as unique to avoid double database
 * NEW: new formfield type 'country' with selection dropdown retrieved from new MySQL database table consisting of 3-digit code and country name
+* NEW: new template for simplified dataset form for petitions
 * BUGFIX: fixed frontend dataset form
 
 = 3.1.7.1 =
