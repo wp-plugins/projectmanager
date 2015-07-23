@@ -193,6 +193,37 @@ else :
 	</tbody>
 	</table>
 
+	<!-- Shortcode to include number of dataset -->
+	<p><?php _e( 'It is possible to include the number datasets', 'projectmanager' ) ?></p>
+	<blockquote><p>[projectmanager_num_datasets project_id=ID]</p></blockquote>
+	<table class="widefat">
+	<thead>
+		<tr>
+			<th scope="col"><?php _e( 'Parameter', 'projectmanager' ) ?></th>
+			<th scope="col"><?php _e( 'Description', 'projectmanager' ) ?></th>
+			<th scope="col"><?php _e( 'Possible Values', 'projectmanager' ) ?></th>
+			<th scope="col"><?php _e( 'Default', 'projectmanager' ) ?></th>
+			<th scope="col"><?php _e( 'Optional', 'projectmanager' ) ?></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr class="" valign="top">
+			<td>project_id</td>
+			<td><?php _e( 'ID of Project', 'projectmanager' ) ?></td>
+			<td><em>integer</em></td>
+			<td>&#160;</td>
+			<td><?php _e( 'No', 'projectmanager' ) ?></td>
+		</tr>
+		<tr class="" valign="top">
+			<td>text</td>
+			<td><?php _e( 'additional text', 'projectmanager' ) ?></td>
+			<td><em>string</em></td>
+			<td>&#160;</td>
+			<td><?php _e( 'Yes', 'projectmanager' ) ?></td>
+		</tr>
+	</tbody>
+	</table>
+	
 	<a href="#top" class="alignright"><?php _e( 'Top', 'projectmanager' ) ?></a>
   	<h3 id="templates"><?php _e( 'Templates', 'projectmanager' ) ?></h3>
     <p><?php _e( 'Templates are special files that are used to display plugin data in the website frontend. They reside in the following directory', 'projectmanager' ) ?></p>
@@ -229,6 +260,10 @@ else :
 		<tr class="" valign="top">
 			<td>dataset-form.php</td>
 			<td><?php _e( 'Dataset input formular', 'projectmanager' ) ?></td>
+		</tr>
+		<tr class="" valign="top">
+			<td>dataset-form-petition.php</td>
+			<td><?php _e( 'Dataset input formular for petition (does not show main image).', 'projectmanager' ) ?></td>
 		</tr>
 		<tr class="alternate" valign="top">
 			<td>search-extend.php</td>

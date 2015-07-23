@@ -19,7 +19,7 @@
 			ed.addCommand('mceProjectManager', function() {
 				ed.windowManager.open({
 					file : url + '/window.php',
-					width : 500, // + ed.getLang('ProjectManager.delta_width', 0),
+					width : 600, // + ed.getLang('ProjectManager.delta_width', 0),
 					height : 270, // + ed.getLang('ProjectManager.delta_height', 0),
 					inline : 1
 				}, {

@@ -28,6 +28,7 @@ function ProjectManagerInsertLink() {
 	var dataset = document.getElementById('dataset_panel');
 	var search = document.getElementById('search_panel');
 	var datasetform = document.getElementById('datasetform_panel');
+	var num_datasets = document.getElementById('num_datasets_panel');
 	
 	// who is active ?
 	if (project.className.indexOf('current') != -1) {
@@ -97,6 +98,16 @@ function ProjectManagerInsertLink() {
 			tinyMCEPopup.close();
 	}
 
+	if (num_datasets.className.indexOf('current') != -1) {
+		var projectId = document.getElementById('num_datasets_projects').value;
+		var text = document.getElementById('num_datasets_text').value;
+		
+		if (projectId != 0)
+			tagtext = "[projectmanager_num_datasets project_id=" + projectId + " text='" + text + "']";
+		else
+			tinyMCEPopup.close();
+	}
+	
 	if(window.tinyMCE) {
 		/* get the TinyMCE version to account for API diffs */
 		var tmce_ver=window.tinyMCE.majorVersion;

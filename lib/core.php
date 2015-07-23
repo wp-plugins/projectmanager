@@ -529,6 +529,30 @@ class ProjectManager extends ProjectManagerLoader
 	
 	
 	/**
+	 * sort array with umlaute
+	 * 
+	 * @param array to sort
+	 * @return sorted array
+	 */
+	function sortArray($tArray) {
+		$aOriginal = $tArray;
+		if (count($aOriginal) == 0) { return $aOriginal; }
+		$aModified = array();
+		$aReturn   = array();
+		$aSearch   = array("Ä","ä","Ö","ö","Ü","ü","ß","-");
+		$aReplace  = array("Ae","ae","Oe","oe","Ue","ue","ss"," ");
+		foreach($aOriginal as $key => $val) {
+			$aModified[$key] = str_replace($aSearch, $aReplace, $val);
+		}
+		natcasesort($aModified);
+		foreach($aModified as $key => $val) {
+			$aReturn[$key] = $aOriginal[$key];
+		}
+		return $aReturn;
+	}
+
+	
+	/**
 	 * retrieve countries from mysql database
 	 *
 	 * @param none
@@ -538,12 +562,29 @@ class ProjectManager extends ProjectManagerLoader
 	{
 		global $wpdb;
 		$countries = $wpdb->get_results( "SELECT `code`, `name`, `id` FROM {$wpdb->projectmanager_countries} ORDER BY `name` ASC" );
-		return $countries;
+		
+		/*
+		* re-sort contries based on translated names
+		*/
+		$to_sort = array();
+		foreach ($countries AS $country) {
+			$to_sort[] = __($country->name, 'projectmanager');
+		}
+		//setlocale(LC_ALL, get_locale() . "@euro", get_locale(), substr(get_locale(), 0, 2));
+		//asort($to_sort, SORT_LOCALE_STRING);
+		$to_sort = $this->sortArray($to_sort);
+		
+		$c = array();
+		foreach ($to_sort AS $key => $name) {
+			$c[] = (object) array("code" => $countries[$key]->code, "name" => $name, "id" => $countries[$key]->id);
+		}
+		
+		return $c;
 	}
 	
 	
 	/**
-	 * get country name`
+	 * get country name
 	 *
 	 * @param $code
 	 * @return string
@@ -557,6 +598,24 @@ class ProjectManager extends ProjectManagerLoader
 		
 		$country = $wpdb->get_results( $wpdb->prepare( "SELECT `code`, `name`, `id` FROM {$wpdb->projectmanager_countries} WHERE `code` = '%s'", $code ) );
 		return $country[0]->name;
+	}
+	
+	
+	/**
+	 * get country code
+	 *
+	 * @param $name
+	 * @return string
+	 */
+	function getCountryCode($name)
+	{
+		global $wpdb;
+		
+		if ($name == "")
+			return "";
+		
+		$country = $wpdb->get_results( $wpdb->prepare( "SELECT `code`, `name`, `id` FROM {$wpdb->projectmanager_countries} WHERE `name` = '%s'", $name ) );
+		return $country[0]->code;
 	}
 	
 	
@@ -1453,7 +1512,7 @@ class ProjectManager extends ProjectManagerLoader
 					$meta_value = apply_filters( 'projectmanager_time', $meta_value, $dataset );
 					$meta_value = sprintf($pattern, $meta_value);
 				} elseif ( 'country' == $meta->type ) {
-					$meta_value = $this->getCountryName($meta_value);
+					$meta_value = __($this->getCountryName($meta_value), 'projectmanager');
 				} elseif ( 'uri' == $meta->type && !empty($meta_value) ) {
 					$meta_value = "<a class='projectmanager_url' href='http://".$this->extractURL($meta_value, 'url')."' target='_blank' title='".$this->extractURL($meta_value, 'title')."'>".$this->extractURL($meta_value, 'title')."</a>";
 					$meta_value = apply_filters( 'projectmanager_uri', $meta_value, $dataset );

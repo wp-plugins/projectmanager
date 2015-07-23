@@ -7,75 +7,59 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/projectmanager\n"
 "POT-Creation-Date: 2009-02-05 22:08+0000\n"
-"PO-Revision-Date: 2009-07-29 11:21-0500\n"
+"PO-Revision-Date: 2015-07-23 18:38+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: de_DE\n"
+"X-Generator: Poedit 1.7.1\n"
 
 #: admin/formfields.php:
 msgid "Add Form Field"
 msgstr "Formularfeld hinzufügen"
 
 #: admin/formfields.php:
-msgid "The Options field is used to store meta-data of formfields. Separate values by ; to save options for selectable fields (i.e. dropdown, checkbox or radio list)."
-msgstr "Das Optionen Feld wird verwendet um Metadaten von Formularfeldern zu speichern. Trenne Werte mit ; um Optionen für selektierbare Felder (z.B. Dropdown, Checkbox- oder Radiolisten) zu speichern."
+msgid "The Options field is used to store meta-data of formfields. Separate values by ; to save options for selectable fields (i.e. dropdown, checkbox or radio list). It can be also used to specify the columns and rows of a Textfield."
+msgstr "Das Optionen Feld wird verwendet um Metadaten von Formularfeldern zu speichern. Trenne Werte mit ; um Optionen für selektierbare Felder (z.B. Dropdown, Checkbox- oder Radiolisten) zu speichern. Es kann auch verwendet werden, um die Spalten und Zeilen eines Textfeldes einzustellen."
 
-#: admin/admin.php:47
-#: admin/admin.php:59
+#: admin/admin.php:47 admin/admin.php:59
 msgid "Overview"
 msgstr "Übersicht"
 
-#: admin/admin.php:48
-#: admin/dataset.php:22
-#: admin/index.php:71
+#: admin/admin.php:48 admin/dataset.php:22 admin/index.php:71
 #: admin/show-project.php:70
 msgid "Add Dataset"
 msgstr "Datensatz hinzufügen"
 
-#: admin/admin.php:49
-#: admin/formfields.php:18
-#: admin/formfields.php:20
+#: admin/admin.php:49 admin/formfields.php:18 admin/formfields.php:20
 #: admin/show-project.php:69
 msgid "Form Fields"
 msgstr "Formularfelder"
 
-#: admin/admin.php:50
-#: admin/admin.php:60
-#: admin/admin.php:144
-#: admin/index.php:71
-#: admin/settings.php:39
-#: admin/settings.php:44
+#: admin/admin.php:50 admin/admin.php:60 admin/admin.php:144
+#: admin/index.php:71 admin/settings.php:39 admin/settings.php:44
 #: admin/show-project.php:68
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: admin/admin.php:51
-#: admin/dataset-form.php:68
-#: admin/show-project.php:58
-#: admin/show-project.php:71
-#: admin/show-project.php:127
-#: admin/show-project.php:137
-#: admin/tinymce/window.php:48
+#: admin/admin.php:51 admin/dataset-form.php:68 admin/show-project.php:58
+#: admin/show-project.php:71 admin/show-project.php:127
+#: admin/show-project.php:137 admin/tinymce/window.php:48
 #: view/searchform.php:25
 msgid "Categories"
 msgstr "Kategorien"
 
-#: admin/admin.php:52
-#: admin/import.php:16
-#: admin/show-project.php:72
+#: admin/admin.php:52 admin/import.php:16 admin/show-project.php:72
 msgid "Import/Export"
 msgstr "Import/Export"
 
-#: admin/admin.php:58
-#: admin/admin.php:59
+#: admin/admin.php:58 admin/admin.php:59
 msgid "Projects"
 msgstr "Projekte"
 
-#: admin/admin.php:175
-#: admin/show-project.php:162
-#: admin/show-project.php:177
+#: admin/admin.php:175 admin/show-project.php:162 admin/show-project.php:177
 #: lib/core.php:932
 msgid "Edit"
 msgstr "Bearbeiten"
@@ -84,22 +68,14 @@ msgstr "Bearbeiten"
 msgid "Post"
 msgstr "Post"
 
-#: admin/admin.php:175
-#: admin/formfields.php:56
-#: admin/formfields.php:68
-#: admin/show-project.php:159
-#: admin/show-project.php:173
-#: lib/core.php:989
+#: admin/admin.php:175 admin/formfields.php:56 admin/formfields.php:68
+#: admin/show-project.php:159 admin/show-project.php:173 lib/core.php:989
 msgid "Save"
 msgstr "Speichern"
 
-#: admin/admin.php:175
-#: admin/formfields.php:56
-#: admin/formfields.php:68
-#: admin/show-project.php:159
-#: admin/show-project.php:173
-#: admin/tinymce/window.php:198
-#: lib/core.php:989
+#: admin/admin.php:175 admin/formfields.php:56 admin/formfields.php:68
+#: admin/show-project.php:159 admin/show-project.php:173
+#: admin/tinymce/window.php:198 lib/core.php:989
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -115,42 +91,33 @@ msgstr "Seiten Revisionen"
 msgid "Insert time"
 msgstr "Einfügungszeit"
 
-#: admin/admin.php:175
-#: admin/formfields.php:56
-#: admin/formfields.php:70
+#: admin/admin.php:175 admin/formfields.php:56 admin/formfields.php:70
 msgid "Options"
 msgstr "Optionen"
 
-#: admin/admin.php:175
-#: admin/formfields.php:77
-#: admin/index.php:37
+#: admin/admin.php:175 admin/formfields.php:77 admin/index.php:37
 #: admin/show-project.php:85
 msgid "Delete"
 msgstr "Löschen"
 
-#: admin/admin.php:238
-#: admin/settings.php:28
+
+#: admin/show-project.php
+msgid "Duplicate"
+msgstr "Duplizieren"
+
+#: admin/admin.php:238 admin/settings.php:28
 msgid "Settings saved"
 msgstr "Einstellungen gespeichert"
 
-#: admin/admin.php:308
-#: admin/index.php:47
-#: admin/index.php:56
-#: admin/show-project.php:30
-#: lib/shortcodes.php:187
+#: admin/admin.php:308 admin/index.php:47 admin/index.php:56
+#: admin/show-project.php:30 lib/shortcodes.php:187
 msgid "ID"
 msgstr "ID"
 
-#: admin/admin.php:308
-#: admin/dataset-form.php:4
-#: admin/import.php:36
-#: admin/show-project.php:30
-#: admin/show-project.php:53
-#: admin/show-project.php:125
-#: admin/show-project.php:135
-#: admin/show-project.php:162
-#: lib/shortcodes.php:187
-#: view/list.php:27
+#: admin/admin.php:308 admin/dataset-form.php:4 admin/import.php:36
+#: admin/show-project.php:30 admin/show-project.php:53
+#: admin/show-project.php:125 admin/show-project.php:135
+#: admin/show-project.php:162 lib/shortcodes.php:187 view/list.php:27
 #: view/searchform.php:21
 msgid "Name"
 msgstr "Name"
@@ -208,9 +175,7 @@ msgstr "Der Dateityp wird nicht unterstützt"
 msgid "Form Fields updated"
 msgstr "Formularfelder aktualisiert"
 
-#: admin/admin.php:749
-#: admin/index.php:24
-#: admin/index.php:43
+#: admin/admin.php:749 admin/index.php:24 admin/index.php:43
 #: admin/tinymce/window.php:31
 msgid "Projectmanager"
 msgstr "Projektmanager"
@@ -239,32 +204,32 @@ msgstr "Besitzer"
 msgid "Edit Dataset"
 msgstr "Datensatz bearbeiten"
 
-#: admin/formfields.php:29
-#: admin/formfields.php:39
+#: admin/formfields.php:29 admin/formfields.php:39
 msgid "Label"
 msgstr "Label"
 
-#: admin/formfields.php:30
-#: admin/formfields.php:40
+#: admin/formfields.php:30 admin/formfields.php:40
 msgid "Type"
 msgstr "Typ"
 
-#: admin/formfields.php:31
-#: admin/formfields.php:41
+#: admin/formfields.php
+msgid "Mandatory"
+msgstr "Pflichtfeld"
+
+#: admin/formfields.php
+msgid "Unique"
+msgstr "Einmalig"
+
+#: admin/formfields.php:31 admin/formfields.php:41
 msgid "Startpage"
 msgstr "Startseite"
 
-#: admin/formfields.php:32
-#: admin/formfields.php:42
-#: admin/show-project.php:34
-#: lib/shortcodes.php:191
-#: lib/widget.php:155
+#: admin/formfields.php:32 admin/formfields.php:42 admin/show-project.php:34
+#: lib/shortcodes.php:191 lib/widget.php:155
 msgid "Order"
 msgstr "Reihenfolge"
 
-#: admin/formfields.php:33
-#: admin/formfields.php:43
-#: admin/show-project.php:30
+#: admin/formfields.php:33 admin/formfields.php:43 admin/show-project.php:30
 #: lib/shortcodes.php:187
 msgid "Order By"
 msgstr "Sortieren"
@@ -281,8 +246,7 @@ msgstr "Neues Formularfeld hinzufügen"
 msgid "Save Form Fields"
 msgstr "Formularfelder speichern"
 
-#: admin/import.php:17
-#: admin/import.php:52
+#: admin/import.php:17 admin/import.php:52
 msgid "Import Datasets"
 msgstr "Datensätze importieren"
 
@@ -310,44 +274,34 @@ msgstr "Alle Formularfelder müssen zugeordnet werden, auch wenn einige keine Da
 msgid "Dates must have the format <strong>YYYY-MM-DD</strong>."
 msgstr "Daten müssen das Format <strong>JJJJ-MM-TT</strong> haben."
 
-#: admin/import.php:36
-#: admin/import.php:40
+#: admin/import.php:36 admin/import.php:40
 #, php-format
 msgid "Column %d"
 msgstr "Spalte %d"
 
-#: admin/import.php:57
-#: admin/import.php:60
+#: admin/import.php:57 admin/import.php:60
 msgid "Export Datasets"
 msgstr "Datensätze exportieren"
 
-#: admin/index.php:48
-#: admin/index.php:57
-#: admin/tinymce/window.php:58
-#: admin/tinymce/window.php:89
-#: admin/tinymce/window.php:119
+#: admin/index.php:48 admin/index.php:57 admin/tinymce/window.php:58
+#: admin/tinymce/window.php:89 admin/tinymce/window.php:119
 #: admin/tinymce/window.php:158
 msgid "Project"
 msgstr "Projekt"
 
-#: admin/index.php:49
-#: admin/index.php:58
+#: admin/index.php:49 admin/index.php:58
 msgid "Datasets"
 msgstr "Datensätze"
 
-#: admin/index.php:50
-#: admin/index.php:59
+#: admin/index.php:50 admin/index.php:59
 msgid "Action"
 msgstr "Aktion"
 
-#: admin/index.php:90
-#: admin/index.php:96
+#: admin/index.php:90 admin/index.php:96
 msgid "Add Project"
 msgstr "Projekt hinzufügen"
 
-#: admin/index.php:92
-#: admin/settings.php:47
-#: lib/widget.php:138
+#: admin/index.php:92 admin/settings.php:47 lib/widget.php:138
 msgid "Title"
 msgstr "Titel"
 
@@ -395,14 +349,11 @@ msgstr "Einstellungen speichern"
 msgid "Datasets per page"
 msgstr "Datensätze pro Seite"
 
-#: admin/settings.php:53
-#: functions.php:40
+#: admin/settings.php:53 functions.php:40
 msgid "Category"
 msgstr "Kategorie"
 
-#: admin/settings.php:53
-#: admin/show-project.php:150
-#: functions.php:32
+#: admin/settings.php:53 admin/show-project.php:150 functions.php:32
 #: functions.php:88
 msgid "None"
 msgstr "Keine"
@@ -455,13 +406,11 @@ msgstr "Aktuelles Bild:"
 msgid "Thumbnail size"
 msgstr "Vorschaubild-Größe"
 
-#: admin/settings.php:85
-#: lib/widget.php:151
+#: admin/settings.php:85 lib/widget.php:151
 msgid "Width"
 msgstr "Breite"
 
-#: admin/settings.php:85
-#: lib/widget.php:152
+#: admin/settings.php:85 lib/widget.php:152
 msgid "Height"
 msgstr "Höhe"
 
@@ -481,23 +430,19 @@ msgstr "Max. Höhe"
 msgid "Save Settings"
 msgstr "Einstellungen speichern"
 
-#: admin/show-project.php:34
-#: lib/shortcodes.php:191
+#: admin/show-project.php:34 lib/shortcodes.php:191
 msgid "Ascending"
 msgstr "Aufsteigend"
 
-#: admin/show-project.php:34
-#: lib/shortcodes.php:191
+#: admin/show-project.php:34 lib/shortcodes.php:191
 msgid "Descending"
 msgstr "Absteigend"
 
-#: admin/show-project.php:63
-#: view/searchform.php:31
+#: admin/show-project.php:63 view/searchform.php:31
 msgid "Search"
 msgstr "Suchen"
 
-#: admin/show-project.php:91
-#: view/tablenav.php:20
+#: admin/show-project.php:91 view/tablenav.php:20
 msgid "View all categories"
 msgstr "Alle Kategorien anzeigen"
 
@@ -511,9 +456,7 @@ msgstr "Angezeigt %s&#8211;%s von %s"
 msgid "Categories of %s"
 msgstr "Kategorien von %s"
 
-#: admin/show-project.php:188
-#: view/gallery.php:54
-#: view/list.php:57
+#: admin/show-project.php:188 view/gallery.php:54 view/list.php:57
 msgid "Nothing found"
 msgstr "Nichts gefunden"
 
@@ -529,15 +472,12 @@ msgstr "Galerie"
 msgid "Search Form"
 msgstr "Suchformular"
 
-#: admin/tinymce/window.php:61
-#: admin/tinymce/window.php:92
-#: admin/tinymce/window.php:122
-#: admin/tinymce/window.php:161
+#: admin/tinymce/window.php:61 admin/tinymce/window.php:92
+#: admin/tinymce/window.php:122 admin/tinymce/window.php:161
 msgid "No Project"
 msgstr "Kein Projekt"
 
-#: admin/tinymce/window.php:75
-#: admin/tinymce/window.php:134
+#: admin/tinymce/window.php:75 admin/tinymce/window.php:134
 msgid "Show as"
 msgstr "Zeige als"
 
@@ -565,28 +505,23 @@ msgstr "Dropdown Menu"
 msgid "List"
 msgstr "Liste"
 
-#: admin/tinymce/window.php:141
-#: admin/tinymce/window.php:173
+#: admin/tinymce/window.php:141 admin/tinymce/window.php:173
 msgid "Alignment"
 msgstr "Ausrichtung"
 
-#: admin/tinymce/window.php:144
-#: admin/tinymce/window.php:176
+#: admin/tinymce/window.php:144 admin/tinymce/window.php:176
 msgid "Left"
 msgstr "Links"
 
-#: admin/tinymce/window.php:145
-#: admin/tinymce/window.php:177
+#: admin/tinymce/window.php:145 admin/tinymce/window.php:177
 msgid "Center"
 msgstr "Zentriert"
 
-#: admin/tinymce/window.php:146
-#: admin/tinymce/window.php:178
+#: admin/tinymce/window.php:146 admin/tinymce/window.php:178
 msgid "Right"
 msgstr "Rechts"
 
-#: admin/tinymce/window.php:183
-#: lib/widget.php:139
+#: admin/tinymce/window.php:183 lib/widget.php:139
 msgid "Display"
 msgstr "Anzeige"
 
@@ -610,8 +545,7 @@ msgstr "Aktualisieren der Datenbankstruktur..."
 msgid "finished"
 msgstr "fertig"
 
-#: admin/upgrade.php:101
-#: admin/upgrade.php:120
+#: admin/upgrade.php:101 admin/upgrade.php:120
 msgid "Upgrade ProjectManager"
 msgstr "Projektmanager aktualisieren"
 
@@ -642,6 +576,10 @@ msgstr "Text"
 #: lib/core.php:254
 msgid "Textfield"
 msgstr "Textfeld"
+
+#: lib/core.php:254
+msgid "Country"
+msgstr "Land"
 
 #: lib/core.php:254
 msgid "E-Mail"
@@ -748,8 +686,7 @@ msgstr "Zoom UL"
 msgid "Zoom TL"
 msgstr "Zoom OL"
 
-#: lib/widget.php:172
-#: lib/widget.php:193
+#: lib/widget.php:172 lib/widget.php:193
 msgid "Random"
 msgstr "Zufällig"
 
@@ -787,7 +724,7 @@ msgid "Number of Columns"
 msgstr "Anzahl Spalten"
 
 msgid "Needed for multicolumn output, e.g. gallery"
-msgstr "Benögigt für Mehrspaltige Ausgabe, z.B. Galerie"
+msgstr "Benötigt für Mehrspaltige Ausgabe, z.B. Galerie"
 
 msgid "Display all Datasets"
 msgstr "Alle Datensätze anzeigen"
@@ -957,7 +894,970 @@ msgstr "Limit"
 msgid "Show all datasets"
 msgstr "Alle Datensätze anzeigen"
 
-
 #: admin/admin.php:
 msgid "Documentation"
 msgstr "Dokumentation"
+
+#: Countries Database
+msgid "Afghanistan"
+msgstr "Afghanistan"
+
+#: Countries Database
+msgid "Åland Islands"
+msgstr "Åland Inseln"
+
+#: Countries Database
+msgid "Albania"
+msgstr "Albanien"
+
+#: Countries Database
+msgid "Algeria"
+msgstr "Algerien"
+
+#: Countries Database
+msgid "American Samoa"
+msgstr "Amerikanisch Samoa"
+
+#: Countries Database
+msgid "Andorra"
+msgstr "Andorra"
+
+#: Countries Database
+msgid "Angola"
+msgstr "Angola"
+
+#: Countries Database
+msgid "Anguilla"
+msgstr "Anguilla"
+
+#: Countries Database
+msgid "Antigua and Barbuda"
+msgstr "Antigua und Barbuda"
+
+#: Countries Database
+msgid "Argentina"
+msgstr "Argentinien"
+
+#: Countries Database
+msgid "Armenia"
+msgstr "Armenien"
+
+#: Countries Database
+msgid "Aruba"
+msgstr "Aruba"
+
+#: Countries Database
+msgid "Australia"
+msgstr "Australien"
+
+#: Countries Database
+msgid "Austria"
+msgstr "Österreich"
+
+#: Countries Database
+msgid "Azerbaijan"
+msgstr "Aserbaidschan"
+
+#: Countries Database
+msgid "Bahamas"
+msgstr "Bahamas"
+
+#: Countries Database
+msgid "Bahrain"
+msgstr "Bahrain"
+
+#: Countries Database
+msgid "Bangladesh"
+msgstr "Bangladesh"
+
+#: Countries Database
+msgid "Barbados"
+msgstr "Barbados"
+
+#: Countries Database
+msgid "Belarus"
+msgstr "Weißrussland"
+
+#: Countries Database
+msgid "Belgium"
+msgstr "Belgien"
+
+#: Countries Database
+msgid "Belize"
+msgstr "Belize"
+
+#: Countries Database
+msgid "Benin"
+msgstr "Benin"
+
+#: Countries Database
+msgid "Bermuda"
+msgstr "Bermuda"
+
+#: Countries Database
+msgid "Bhutan"
+msgstr "Bihutan"
+
+#: Countries Database
+msgid "Bolivia (Plurinational State of)"
+msgstr "Bolivien"
+
+#: Countries Database
+msgid "Bonaire, Sint Eustatius and Saba"
+msgstr "Bonaire, Sint Eustatius und Saba"
+
+#: Countries Database
+msgid "Bosnia and Herzegovina"
+msgstr "Bosnien und Herzegowina"
+
+#: Countries Database
+msgid "Botswana"
+msgstr "Botswana"
+
+#: Countries Database
+msgid "Brazil"
+msgstr "Brasilien"
+
+#: Countries Database
+msgid "British Virgin Islands"
+msgstr "Britishe Jungferninseln"
+
+#: Countries Database
+msgid "Brunei Darussalam"
+msgstr "Brunei"
+
+#: Countries Database
+msgid "Bulgaria"
+msgstr "Bulgarien"
+
+#: Countries Database
+msgid "Burkina Faso"
+msgstr "Burkina Faso"
+
+#: Countries Database
+msgid "Burundi"
+msgstr "Burundi"
+
+#: Countries Database
+msgid "Cabo Verde"
+msgstr "Kap Verde"
+
+#: Countries Database
+msgid "Cambodia"
+msgstr "Kambodscha"
+
+#: Countries Database
+msgid "Cameroon"
+msgstr "Kamerun"
+
+#: Countries Database
+msgid "Canada"
+msgstr "Kanada"
+
+#: Countries Database
+msgid "Cayman Islands"
+msgstr "Cayman Islands"
+
+#: Countries Database
+msgid "Central African Republic"
+msgstr "Zentralafrikanische Republik"
+
+#: Countries Database
+msgid "Chad"
+msgstr "Tschad"
+
+#: Countries Database
+msgid "Channel Islands"
+msgstr "Channel Islands"
+
+#: Countries Database
+msgid "Chile"
+msgstr "Chile"
+
+#: Countries Database
+msgid "China"
+msgstr "China"
+
+#: Countries Database
+msgid "China, Hong Kong Special Administrative Region"
+msgstr "China, Hong Kong"
+
+#: Countries Database
+msgid "China, Macao Special Administrative Region"
+msgstr "China, Macao"
+
+#: Countries Database
+msgid "Colombia"
+msgstr "Kolumbien"
+
+#: Countries Database
+msgid "Comoros"
+msgstr "Komoren"
+
+#: Countries Database
+msgid "Congo"
+msgstr "Kongo"
+
+#: Countries Database
+msgid "Cook Islands"
+msgstr "Cookinseln"
+
+#: Countries Database
+msgid "Costa Rica"
+msgstr "Costa Rica"
+
+#: Countries Database
+msgid "Côte d'Ivoire"
+msgstr "Elfenbeinküste"
+
+#: Countries Database
+msgid "Croatia"
+msgstr "Kroatien"
+
+#: Countries Database
+msgid "Cuba"
+msgstr "Kuba"
+
+#: Countries Database
+msgid "Curaçao"
+msgstr "Curaçao"
+
+#: Countries Database
+msgid "Cyprus"
+msgstr "Zypern"
+
+#: Countries Database
+msgid "Czech Republic"
+msgstr "Tschechische Republik"
+
+#: Countries Database
+msgid "Democratic People's Republic of Korea"
+msgstr "Demokratische Volksrepublik Korea"
+
+#: Countries Database
+msgid "Democratic Republic of the Congo"
+msgstr "Demokratische Republik Kongo"
+
+#: Countries Database
+msgid "Denmark"
+msgstr "Dänemark"
+
+#: Countries Database
+msgid "Djibouti"
+msgstr "Dschibuti"
+
+#: Countries Database
+msgid "Dominica"
+msgstr "Dominica"
+
+#: Countries Database
+msgid "Dominican Republic"
+msgstr "Dominikanische Republik"
+
+#: Countries Database
+msgid "Ecuador"
+msgstr "Ecuador"
+
+#: Countries Database
+msgid "Egypt"
+msgstr "Ägypten"
+
+#: Countries Database
+msgid "El Salvador"
+msgstr "El Salvador"
+
+#: Countries Database
+msgid "Equatorial Guinea"
+msgstr "Äquatorial Guinea"
+
+#: Countries Database
+msgid "Eritrea"
+msgstr "Eritrea"
+
+#: Countries Database
+msgid "Estonia"
+msgstr "Estland"
+
+#: Countries Database
+msgid "Ethiopia"
+msgstr "Äthiopien"
+
+#: Countries Database
+msgid "Faeroe Islands"
+msgstr "Färöer"
+
+#: Countries Database
+msgid "Falkland Islands (Malvinas)"
+msgstr "Falklandinseln"
+
+#: Countries Database
+msgid "Fiji"
+msgstr "Fiji"
+
+#: Countries Database
+msgid "Finland"
+msgstr "Finnland"
+
+#: Countries Database
+msgid "France"
+msgstr "Frankreich"
+
+#: Countries Database
+msgid "French Guiana"
+msgstr "Französisch-Guayana"
+
+#: Countries Database
+msgid "French Polynesia"
+msgstr "Französisch-Polynesien"
+
+#: Countries Database
+msgid "Gabon"
+msgstr "Gabon"
+
+#: Countries Database
+msgid "Gambia"
+msgstr "Gambia"
+
+#: Countries Database
+msgid "Georgia"
+msgstr "Georgien"
+
+#: Countries Database
+msgid "Germany"
+msgstr "Deutschland"
+
+#: Countries Database
+msgid "Ghana"
+msgstr "Ghana"
+
+#: Countries Database
+msgid "Gibraltar"
+msgstr "Gibraltar"
+
+#: Countries Database
+msgid "Greece"
+msgstr "Griechenland"
+
+#: Countries Database
+msgid "Greenland"
+msgstr "Grönland"
+
+#: Countries Database
+msgid "Grenada"
+msgstr "Grenada"
+
+#: Countries Database
+msgid "Guadeloupe"
+msgstr "Guadeloupe"
+
+#: Countries Database
+msgid "Guam"
+msgstr "Guam"
+
+#: Countries Database
+msgid "Guatemala"
+msgstr "Guatemala"
+
+#: Countries Database
+msgid "Guernsey"
+msgstr "Guernsey"
+
+#: Countries Database
+msgid "Guinea"
+msgstr "Guinea"
+
+#: Countries Database
+msgid "Guinea-Bissau"
+msgstr "Guinea-Bissau"
+
+#: Countries Database
+msgid "Guyana"
+msgstr "Guyana"
+
+#: Countries Database
+msgid "Haiti"
+msgstr "Haiti"
+
+#: Countries Database
+msgid "Holy See"
+msgstr "Heiliger Stuhl"
+
+#: Countries Database
+msgid "Honduras"
+msgstr "Honduras"
+
+#: Countries Database
+msgid "Hungary"
+msgstr "Ungarn"
+
+#: Countries Database
+msgid "Iceland"
+msgstr "Island"
+
+#: Countries Database
+msgid "India"
+msgstr "Indien"
+
+#: Countries Database
+msgid "Indonesia"
+msgstr "Indonesien"
+
+#: Countries Database
+msgid "Iran (Islamic Republic of)"
+msgstr "Iran"
+
+#: Countries Database
+msgid "Iraq"
+msgstr "Irak"
+
+#: Countries Database
+msgid "Ireland"
+msgstr "Irland"
+
+#: Countries Database
+msgid "Isle of Man"
+msgstr "Isle of Man"
+
+#: Countries Database
+msgid "Israel"
+msgstr "Israel"
+
+#: Countries Database
+msgid "Italy"
+msgstr "Italien"
+
+#: Countries Database
+msgid "Jamaica"
+msgstr "Jamaika"
+
+#: Countries Database
+msgid "Japan"
+msgstr "Japan"
+
+#: Countries Database
+msgid "Jersey"
+msgstr "Jersey"
+
+#: Countries Database
+msgid "Jordan"
+msgstr "Jordanien"
+
+#: Countries Database
+msgid "Kazakhstan"
+msgstr "Kasachstan"
+
+#: Countries Database
+msgid "Kenya"
+msgstr "Kenia"
+
+#: Countries Database
+msgid "Kiribati"
+msgstr "Kiribati"
+
+#: Countries Database
+msgid "Kuwait"
+msgstr "Kuwait"
+
+#: Countries Database
+msgid "Kyrgyzstan"
+msgstr "Kirgisistan"
+
+#: Countries Database
+msgid "Lao People's Democratic Republic"
+msgstr "Laos"
+
+#: Countries Database
+msgid "Latvia"
+msgstr "Lettland"
+
+#: Countries Database
+msgid "Lebanon"
+msgstr "Libanon"
+
+#: Countries Database
+msgid "Lesotho"
+msgstr "Lesotho"
+
+#: Countries Database
+msgid "Liberia"
+msgstr "Liberia"
+
+#: Countries Database
+msgid "Libya"
+msgstr "Libyen"
+
+#: Countries Database
+msgid "Liechtenstein"
+msgstr "Liechtenstein"
+
+#: Countries Database
+msgid "Lithuania"
+msgstr "Litauen"
+
+#: Countries Database
+msgid "Luxembourg"
+msgstr "Luxemburg"
+
+#: Countries Database
+msgid "Madagascar"
+msgstr "Madagaskar"
+
+#: Countries Database
+msgid "Malawi"
+msgstr "Malawi"
+
+#: Countries Database
+msgid "Malaysia"
+msgstr "Malaysia"
+
+#: Countries Database
+msgid "Maldives"
+msgstr "Malediven"
+
+#: Countries Database
+msgid "Mali"
+msgstr "Mali"
+
+#: Countries Database
+msgid "Malta"
+msgstr "Malta"
+
+#: Countries Database
+msgid "Marshall Islands"
+msgstr "Marshallinseln"
+
+#: Countries Database
+msgid "Martinique"
+msgstr "Martinique"
+
+#: Countries Database
+msgid "Mauritania"
+msgstr "Mauretanien"
+
+#: Countries Database
+msgid "Mauritius"
+msgstr "Mauritius"
+
+#: Countries Database
+msgid "Mayotte"
+msgstr "Mayotte"
+
+#: Countries Database
+msgid "Mexico"
+msgstr "Mexiko"
+
+#: Countries Database
+msgid "Micronesia (Federated States of)"
+msgstr "Mikronesien"
+
+#: Countries Database
+msgid "Monaco"
+msgstr "Monaco"
+
+#: Countries Database
+msgid "Mongolia"
+msgstr "Mongolei"
+
+#: Countries Database
+msgid "Montenegro"
+msgstr "Montenegro"
+
+#: Countries Database
+msgid "Montserrat"
+msgstr "Montserrat"
+
+#: Countries Database
+msgid "Morocco"
+msgstr "Marokko"
+
+#: Countries Database
+msgid "Mozambique"
+msgstr "Mosambik"
+
+#: Countries Database
+msgid "Myanmar"
+msgstr "Myanmar"
+
+#: Countries Database
+msgid "Namibia"
+msgstr "Namibia"
+
+#: Countries Database
+msgid "Nauru"
+msgstr "Nauru"
+
+#: Countries Database
+msgid "Nepal"
+msgstr "Nepal"
+
+#: Countries Database
+msgid "Netherlands"
+msgstr "Niederlande"
+
+#: Countries Database
+msgid "New Caledonia"
+msgstr "New Caledonia"
+
+#: Countries Database
+msgid "New Zealand"
+msgstr "Neuseeland"
+
+#: Countries Database
+msgid "Nicaragua"
+msgstr "Nicaragua"
+
+#: Countries Database
+msgid "Niger"
+msgstr "Niger"
+
+#: Countries Database
+msgid "Nigeria"
+msgstr "Nigeria"
+
+#: Countries Database
+msgid "Niue"
+msgstr "Niue"
+
+#: Countries Database
+msgid "Norfolk Island"
+msgstr "Norfolkinseln"
+
+#: Countries Database
+msgid "Northern Mariana Islands"
+msgstr "Northern Mariana Islands"
+
+#: Countries Database
+msgid "Norway"
+msgstr "Norwegen"
+
+#: Countries Database
+msgid "Oman"
+msgstr "Oman"
+
+#: Countries Database
+msgid "Pakistan"
+msgstr "Pakistan"
+
+#: Countries Database
+msgid "Palau"
+msgstr "Palau"
+
+#: Countries Database
+msgid "Panama"
+msgstr "Panama"
+
+#: Countries Database
+msgid "Papua New Guinea"
+msgstr "Papua-Neuguinea"
+
+#: Countries Database
+msgid "Paraguay"
+msgstr "Paraguay"
+
+#: Countries Database
+msgid "Peru"
+msgstr "Peru"
+
+#: Countries Database
+msgid "Philippines"
+msgstr "Philippinen"
+
+#: Countries Database
+msgid "Pitcairn"
+msgstr "Pitcairn"
+
+#: Countries Database
+msgid "Poland"
+msgstr "Polen"
+
+#: Countries Database
+msgid "Portugal"
+msgstr "Portugal"
+
+#: Countries Database
+msgid "Puerto Rico"
+msgstr "Puerto Rico"
+
+#: Countries Database
+msgid "Qatar"
+msgstr "Katar"
+
+#: Countries Database
+msgid "Republic of Korea"
+msgstr "Republik Korea"
+
+#: Countries Database
+msgid "Republic of Moldova"
+msgstr "Moldawien"
+
+#: Countries Database
+msgid "Réunion"
+msgstr "Réunion"
+
+#: Countries Database
+msgid "Romania"
+msgstr "Rumänien"
+
+#: Countries Database
+msgid "Russian Federation"
+msgstr "Russland"
+
+#: Countries Database
+msgid "Rwanda"
+msgstr "Ruanda"
+
+#: Countries Database
+msgid "Saint Barthélemy"
+msgstr "Saint Barthélemy"
+
+#: Countries Database
+msgid "Saint Helena"
+msgstr "St. Helena"
+
+#: Countries Database
+msgid "Saint Kitts and Nevis"
+msgstr "St. Kitts und Nevis"
+
+#: Countries Database
+msgid "Saint Lucia"
+msgstr "St. Lucia"
+
+#: Countries Database
+msgid "Saint Martin (French part)"
+msgstr "St. Martin (Französischer Teil)"
+
+#: Countries Database
+msgid "Saint Pierre and Miquelon"
+msgstr "Saint-Pierre und Miquelon"
+
+#: Countries Database
+msgid "Saint Vincent and the Grenadines"
+msgstr "St. Vincent und die Grenadinen"
+
+#: Countries Database
+msgid "Samoa"
+msgstr "Samoa"
+
+#: Countries Database
+msgid "San Marino"
+msgstr "San Marino"
+
+#: Countries Database
+msgid "Sao Tome and Principe"
+msgstr "São Tomé und Príncipe"
+
+#: Countries Database
+msgid "Sark"
+msgstr "Sark"
+
+#: Countries Database
+msgid "Saudi Arabia"
+msgstr "Saudi-Arabien"
+
+#: Countries Database
+msgid "Senegal"
+msgstr "Senegal"
+
+#: Countries Database
+msgid "Serbia"
+msgstr "Serbien"
+
+#: Countries Database
+msgid "Seychelles"
+msgstr "Seychellen"
+
+#: Countries Database
+msgid "Sierra Leone"
+msgstr "Sierra Leone"
+
+#: Countries Database
+msgid "Singapore"
+msgstr "Singapur"
+
+#: Countries Database
+msgid "Sint Maarten (Dutch part)"
+msgstr "Sint Maarten (Holländischer Teil)"
+
+#: Countries Database
+msgid "Slovakia"
+msgstr "Slowakei"
+
+#: Countries Database
+msgid "Slovenia"
+msgstr "Slowenien"
+
+#: Countries Database
+msgid "Solomon Islands"
+msgstr "Salomonen"
+
+#: Countries Database
+msgid "Somalia"
+msgstr "Somalia"
+
+#: Countries Database
+msgid "South Africa"
+msgstr "Südafrika"
+
+#: Countries Database
+msgid "South Sudan"
+msgstr "Südsudan"
+
+#: Countries Database
+msgid "Spain"
+msgstr "Spanien"
+
+#: Countries Database
+msgid "Sri Lanka"
+msgstr "Sri Lanka"
+
+#: Countries Database
+msgid "State of Palestine"
+msgstr "Palästina"
+
+#: Countries Database
+msgid "Sudan"
+msgstr "Sudan"
+
+#: Countries Database
+msgid "Suriname"
+msgstr "Suriname"
+
+#: Countries Database
+msgid "Svalbard and Jan Mayen Islands"
+msgstr "Svalbard and Jan Mayen"
+
+#: Countries Database
+msgid "Swaziland"
+msgstr "Swasiland"
+
+#: Countries Database
+msgid "Sweden"
+msgstr "Schweden"
+
+#: Countries Database
+msgid "Switzerland"
+msgstr "Schweiz"
+
+#: Countries Database
+msgid "Syrian Arab Republic"
+msgstr "Syrien"
+
+#: Countries Database
+msgid "Tajikistan"
+msgstr "Tadschikistan"
+
+#: Countries Database
+msgid "Thailand"
+msgstr "Thailand"
+
+#: Countries Database
+msgid "The former Yugoslav Republic of Macedonia"
+msgstr "Ehemalige jugoslawische Republik Mazedonien"
+
+#: Countries Database
+msgid "Timor-Leste"
+msgstr "Timor-Leste"
+
+#: Countries Database
+msgid "Togo"
+msgstr "Togo"
+
+#: Countries Database
+msgid "Tokelau"
+msgstr "Tokelau"
+
+#: Countries Database
+msgid "Tonga"
+msgstr "Tonga"
+
+#: Countries Database
+msgid "Trinidad and Tobago"
+msgstr "Trinidad und Tobago"
+
+#: Countries Database
+msgid "Tunisia"
+msgstr "Tunesien"
+
+#: Countries Database
+msgid "Turkey"
+msgstr "Türkei"
+
+#: Countries Database
+msgid "Turkmenistan"
+msgstr "Turkmenistan"
+
+#: Countries Database
+msgid "Turks and Caicos Islands"
+msgstr "Turks- und Caicosinseln"
+
+#: Countries Database
+msgid "Tuvalu"
+msgstr "Tuvalu"
+
+#: Countries Database
+msgid "Uganda"
+msgstr "Uganda"
+
+#: Countries Database
+msgid "Ukraine"
+msgstr "Ukraine"
+
+#: Countries Database
+msgid "United Arab Emirates"
+msgstr "Vereinigte Arabische Emirate"
+
+#: Countries Database
+msgid "United Kingdom of Great Britain and Northern Ireland"
+msgstr "Vereinigtes Königreich Großbritannien und Nordirland"
+
+#: Countries Database
+msgid "United Republic of Tanzania"
+msgstr "Vereinigte Republik Tansania"
+
+#: Countries Database
+msgid "United States of America"
+msgstr "Vereinigte Staaten von Amerika"
+
+#: Countries Database
+msgid "United States Virgin Islands"
+msgstr "Amerikanische Jungferninseln"
+
+#: Countries Database
+msgid "Uruguay"
+msgstr "Uruguay"
+
+#: Countries Database
+msgid "Uzbekistan"
+msgstr "Usbekistan"
+
+#: Countries Database
+msgid "Vanuatu"
+msgstr "Vanuatu"
+
+#: Countries Database
+msgid "Venezuela (Bolivarian Republic of)"
+msgstr "Venezuela"
+
+#: Countries Database
+msgid "Viet Nam"
+msgstr "Vietnam"
+
+#: Countries Database
+msgid "Wallis and Futuna Islands"
+msgstr "Wallis und Futuna"
+
+#: Countries Database
+msgid "Western Sahara"
+msgstr "Westsahara"
+
+#: Countries Database
+msgid "Yemen"
+msgstr "Jemen"
+
+#: Countries Database
+msgid "Zambia"
+msgstr "Sambia"
+
+#: Countries Database
+msgid "Zimbabwe"
+msgstr "Simbabwe"

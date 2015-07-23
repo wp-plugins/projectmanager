@@ -19,3 +19,12 @@ for (r in 1:nrow(countries)) {
 		cat(paste("INSERT INTO {", mysql_table, "} (code, name) VALUES ('", countries[r,]$Code, "', '", countries[r,]$Name, "');\n", sep=""))
 }
 sink()
+
+
+sink("Countries.pot", split=T)
+for (r in 1:nrow(countries)) {
+	cat("#: Countries Database\n")
+	cat(paste("msgid \"", countries[r,]$Name, "\"\n", sep=""))
+	cat("msgstr \"\"\n\n")
+}
+sink()

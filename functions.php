@@ -1,6 +1,19 @@
 <?php
 
 /**
+ * get number of dataset for given project
+ *
+ * @param int $project_id
+ * @return int
+ */
+function projectmanager_get_num_datasets( $project_id ) {
+		global $projectmanager;
+		
+		return $projectmanager->getNumDatasets($project_id, true);
+}
+
+
+/**
  * display widget
  *
  * @param int $number

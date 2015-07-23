@@ -59,6 +59,13 @@ The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons
 
 == Changelog ==
 
+= 3.1.7.3 =
+* NEW: new shortcode to display number of datasets of certain project in frontend
+* NEW: updated TinyMCE button to include new shortcode and static function
+* UPDATE: updated pot translation template
+* UPDATE: updated german translation including countries names from MySQL database
+* BUGFIX: filter country name through translation system and re-sort after translation
+
 = 3.1.7.2 =
 * NEW: mark formfields as mandatory to force data input
 * NEW: mark formfields as unique to avoid double database

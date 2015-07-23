@@ -64,6 +64,7 @@ global $wpdb;
 			<li id="dataset_tab"><span><a href="javascript:mcTabs.displayTab('dataset_tab', 'dataset_panel');" onmouseover="return false;"><?php _e( 'Dataset', 'projectmanager' ); ?></a></span></li>
 			<li id="search_tab"><span><a href="javascript:mcTabs.displayTab('search_tab', 'search_panel');" onmouseover="return false;"><?php _e('Search Form','projectmanager') ?></a></span></li>
 			<li id="datasetform_tab"><span><a href="javascript:mcTabs.displayTab('datasetform_tab', 'datasetform_panel');" onmouseover="return false;"><?php _e('Dataset Form','projectmanager') ?></a></span></li>
+			<li id="num_datasets_tab"><span><a href="javascript:mcTabs.displayTab('num_datasets_tab', 'num_datasets_panel');" onmouseover="return false;"><?php _e('Number of datasets','projectmanager') ?></a></span></li>
 		</ul>
 	</div>
 	<div class="panel_wrapper" style="height: 165px;">
@@ -185,7 +186,7 @@ global $wpdb;
 	</table>
 	</div>
 	
-	<!-- datast form panel -->
+	<!-- dataset form panel -->
 	<div id="datasetform_panel" class="panel">
 	<table style="border: 0;">
 	<tr>
@@ -211,6 +212,31 @@ global $wpdb;
 		<option value="petition"><?php _e('Petition', 'projectmanager'); ?></option>
 		</select>
 		</td>
+	</tr>
+	</table>
+	</div>
+	
+	<!-- num_dataset form panel -->
+	<div id="num_datasets_panel" class="panel">
+	<table style="border: 0;">
+	<tr>
+		<td><label for="num_datasets_projects"><?php _e("Project", 'projectmanager'); ?></label></td>
+		<td>
+		<select id="num_datasets_projects" name="num_datasets_projects" style="width: 200px">
+		<option value="0"><?php _e("No Project", 'projectmanager'); ?></option>
+		<?php
+			$projects = $wpdb->get_results("SELECT * FROM {$wpdb->projectmanager_projects} ORDER BY id ASC");
+			if( ($projects) ) {
+				foreach( $projects as $project )
+					echo '<option value="'.$project->id.'" >'.$project->title.'</option>'."\n";
+			}
+		?>
+        </select>
+		</td>
+	</tr>
+	<tr>
+		<td><label for="num_datasets_text"><?php _e("Optional Text", 'projectmanager'); ?></label></td>
+		<td><input type="text" size="40" name="num_datasets_text" id="num_datasets_text" /></td>
 	</tr>
 	</table>
 	</div>

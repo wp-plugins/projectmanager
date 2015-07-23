@@ -1,0 +1,964 @@
+#: Countries Database
+msgid "Afghanistan"
+msgstr ""
+
+#: Countries Database
+msgid "Åland Islands"
+msgstr ""
+
+#: Countries Database
+msgid "Albania"
+msgstr ""
+
+#: Countries Database
+msgid "Algeria"
+msgstr ""
+
+#: Countries Database
+msgid "American Samoa"
+msgstr ""
+
+#: Countries Database
+msgid "Andorra"
+msgstr ""
+
+#: Countries Database
+msgid "Angola"
+msgstr ""
+
+#: Countries Database
+msgid "Anguilla"
+msgstr ""
+
+#: Countries Database
+msgid "Antigua and Barbuda"
+msgstr ""
+
+#: Countries Database
+msgid "Argentina"
+msgstr ""
+
+#: Countries Database
+msgid "Armenia"
+msgstr ""
+
+#: Countries Database
+msgid "Aruba"
+msgstr ""
+
+#: Countries Database
+msgid "Australia"
+msgstr ""
+
+#: Countries Database
+msgid "Austria"
+msgstr ""
+
+#: Countries Database
+msgid "Azerbaijan"
+msgstr ""
+
+#: Countries Database
+msgid "Bahamas"
+msgstr ""
+
+#: Countries Database
+msgid "Bahrain"
+msgstr ""
+
+#: Countries Database
+msgid "Bangladesh"
+msgstr ""
+
+#: Countries Database
+msgid "Barbados"
+msgstr ""
+
+#: Countries Database
+msgid "Belarus"
+msgstr ""
+
+#: Countries Database
+msgid "Belgium"
+msgstr ""
+
+#: Countries Database
+msgid "Belize"
+msgstr ""
+
+#: Countries Database
+msgid "Benin"
+msgstr ""
+
+#: Countries Database
+msgid "Bermuda"
+msgstr ""
+
+#: Countries Database
+msgid "Bhutan"
+msgstr ""
+
+#: Countries Database
+msgid "Bolivia (Plurinational State of)"
+msgstr ""
+
+#: Countries Database
+msgid "Bonaire, Sint Eustatius and Saba"
+msgstr ""
+
+#: Countries Database
+msgid "Bosnia and Herzegovina"
+msgstr ""
+
+#: Countries Database
+msgid "Botswana"
+msgstr ""
+
+#: Countries Database
+msgid "Brazil"
+msgstr ""
+
+#: Countries Database
+msgid "British Virgin Islands"
+msgstr ""
+
+#: Countries Database
+msgid "Brunei Darussalam"
+msgstr ""
+
+#: Countries Database
+msgid "Bulgaria"
+msgstr ""
+
+#: Countries Database
+msgid "Burkina Faso"
+msgstr ""
+
+#: Countries Database
+msgid "Burundi"
+msgstr ""
+
+#: Countries Database
+msgid "Cabo Verde"
+msgstr ""
+
+#: Countries Database
+msgid "Cambodia"
+msgstr ""
+
+#: Countries Database
+msgid "Cameroon"
+msgstr ""
+
+#: Countries Database
+msgid "Canada"
+msgstr ""
+
+#: Countries Database
+msgid "Cayman Islands"
+msgstr ""
+
+#: Countries Database
+msgid "Central African Republic"
+msgstr ""
+
+#: Countries Database
+msgid "Chad"
+msgstr ""
+
+#: Countries Database
+msgid "Channel Islands"
+msgstr ""
+
+#: Countries Database
+msgid "Chile"
+msgstr ""
+
+#: Countries Database
+msgid "China"
+msgstr ""
+
+#: Countries Database
+msgid "China, Hong Kong Special Administrative Region"
+msgstr ""
+
+#: Countries Database
+msgid "China, Macao Special Administrative Region"
+msgstr ""
+
+#: Countries Database
+msgid "Colombia"
+msgstr ""
+
+#: Countries Database
+msgid "Comoros"
+msgstr ""
+
+#: Countries Database
+msgid "Congo"
+msgstr ""
+
+#: Countries Database
+msgid "Cook Islands"
+msgstr ""
+
+#: Countries Database
+msgid "Costa Rica"
+msgstr ""
+
+#: Countries Database
+msgid "Côte d'Ivoire"
+msgstr ""
+
+#: Countries Database
+msgid "Croatia"
+msgstr ""
+
+#: Countries Database
+msgid "Cuba"
+msgstr ""
+
+#: Countries Database
+msgid "Curaçao"
+msgstr ""
+
+#: Countries Database
+msgid "Cyprus"
+msgstr ""
+
+#: Countries Database
+msgid "Czech Republic"
+msgstr ""
+
+#: Countries Database
+msgid "Democratic People's Republic of Korea"
+msgstr ""
+
+#: Countries Database
+msgid "Democratic Republic of the Congo"
+msgstr ""
+
+#: Countries Database
+msgid "Denmark"
+msgstr ""
+
+#: Countries Database
+msgid "Djibouti"
+msgstr ""
+
+#: Countries Database
+msgid "Dominica"
+msgstr ""
+
+#: Countries Database
+msgid "Dominican Republic"
+msgstr ""
+
+#: Countries Database
+msgid "Ecuador"
+msgstr ""
+
+#: Countries Database
+msgid "Egypt"
+msgstr ""
+
+#: Countries Database
+msgid "El Salvador"
+msgstr ""
+
+#: Countries Database
+msgid "Equatorial Guinea"
+msgstr ""
+
+#: Countries Database
+msgid "Eritrea"
+msgstr ""
+
+#: Countries Database
+msgid "Estonia"
+msgstr ""
+
+#: Countries Database
+msgid "Ethiopia"
+msgstr ""
+
+#: Countries Database
+msgid "Faeroe Islands"
+msgstr ""
+
+#: Countries Database
+msgid "Falkland Islands (Malvinas)"
+msgstr ""
+
+#: Countries Database
+msgid "Fiji"
+msgstr ""
+
+#: Countries Database
+msgid "Finland"
+msgstr ""
+
+#: Countries Database
+msgid "France"
+msgstr ""
+
+#: Countries Database
+msgid "French Guiana"
+msgstr ""
+
+#: Countries Database
+msgid "French Polynesia"
+msgstr ""
+
+#: Countries Database
+msgid "Gabon"
+msgstr ""
+
+#: Countries Database
+msgid "Gambia"
+msgstr ""
+
+#: Countries Database
+msgid "Georgia"
+msgstr ""
+
+#: Countries Database
+msgid "Germany"
+msgstr ""
+
+#: Countries Database
+msgid "Ghana"
+msgstr ""
+
+#: Countries Database
+msgid "Gibraltar"
+msgstr ""
+
+#: Countries Database
+msgid "Greece"
+msgstr ""
+
+#: Countries Database
+msgid "Greenland"
+msgstr ""
+
+#: Countries Database
+msgid "Grenada"
+msgstr ""
+
+#: Countries Database
+msgid "Guadeloupe"
+msgstr ""
+
+#: Countries Database
+msgid "Guam"
+msgstr ""
+
+#: Countries Database
+msgid "Guatemala"
+msgstr ""
+
+#: Countries Database
+msgid "Guernsey"
+msgstr ""
+
+#: Countries Database
+msgid "Guinea"
+msgstr ""
+
+#: Countries Database
+msgid "Guinea-Bissau"
+msgstr ""
+
+#: Countries Database
+msgid "Guyana"
+msgstr ""
+
+#: Countries Database
+msgid "Haiti"
+msgstr ""
+
+#: Countries Database
+msgid "Holy See"
+msgstr ""
+
+#: Countries Database
+msgid "Honduras"
+msgstr ""
+
+#: Countries Database
+msgid "Hungary"
+msgstr ""
+
+#: Countries Database
+msgid "Iceland"
+msgstr ""
+
+#: Countries Database
+msgid "India"
+msgstr ""
+
+#: Countries Database
+msgid "Indonesia"
+msgstr ""
+
+#: Countries Database
+msgid "Iran (Islamic Republic of)"
+msgstr ""
+
+#: Countries Database
+msgid "Iraq"
+msgstr ""
+
+#: Countries Database
+msgid "Ireland"
+msgstr ""
+
+#: Countries Database
+msgid "Isle of Man"
+msgstr ""
+
+#: Countries Database
+msgid "Israel"
+msgstr ""
+
+#: Countries Database
+msgid "Italy"
+msgstr ""
+
+#: Countries Database
+msgid "Jamaica"
+msgstr ""
+
+#: Countries Database
+msgid "Japan"
+msgstr ""
+
+#: Countries Database
+msgid "Jersey"
+msgstr ""
+
+#: Countries Database
+msgid "Jordan"
+msgstr ""
+
+#: Countries Database
+msgid "Kazakhstan"
+msgstr ""
+
+#: Countries Database
+msgid "Kenya"
+msgstr ""
+
+#: Countries Database
+msgid "Kiribati"
+msgstr ""
+
+#: Countries Database
+msgid "Kuwait"
+msgstr ""
+
+#: Countries Database
+msgid "Kyrgyzstan"
+msgstr ""
+
+#: Countries Database
+msgid "Lao People's Democratic Republic"
+msgstr ""
+
+#: Countries Database
+msgid "Latvia"
+msgstr ""
+
+#: Countries Database
+msgid "Lebanon"
+msgstr ""
+
+#: Countries Database
+msgid "Lesotho"
+msgstr ""
+
+#: Countries Database
+msgid "Liberia"
+msgstr ""
+
+#: Countries Database
+msgid "Libya"
+msgstr ""
+
+#: Countries Database
+msgid "Liechtenstein"
+msgstr ""
+
+#: Countries Database
+msgid "Lithuania"
+msgstr ""
+
+#: Countries Database
+msgid "Luxembourg"
+msgstr ""
+
+#: Countries Database
+msgid "Madagascar"
+msgstr ""
+
+#: Countries Database
+msgid "Malawi"
+msgstr ""
+
+#: Countries Database
+msgid "Malaysia"
+msgstr ""
+
+#: Countries Database
+msgid "Maldives"
+msgstr ""
+
+#: Countries Database
+msgid "Mali"
+msgstr ""
+
+#: Countries Database
+msgid "Malta"
+msgstr ""
+
+#: Countries Database
+msgid "Marshall Islands"
+msgstr ""
+
+#: Countries Database
+msgid "Martinique"
+msgstr ""
+
+#: Countries Database
+msgid "Mauritania"
+msgstr ""
+
+#: Countries Database
+msgid "Mauritius"
+msgstr ""
+
+#: Countries Database
+msgid "Mayotte"
+msgstr ""
+
+#: Countries Database
+msgid "Mexico"
+msgstr ""
+
+#: Countries Database
+msgid "Micronesia (Federated States of)"
+msgstr ""
+
+#: Countries Database
+msgid "Monaco"
+msgstr ""
+
+#: Countries Database
+msgid "Mongolia"
+msgstr ""
+
+#: Countries Database
+msgid "Montenegro"
+msgstr ""
+
+#: Countries Database
+msgid "Montserrat"
+msgstr ""
+
+#: Countries Database
+msgid "Morocco"
+msgstr ""
+
+#: Countries Database
+msgid "Mozambique"
+msgstr ""
+
+#: Countries Database
+msgid "Myanmar"
+msgstr ""
+
+#: Countries Database
+msgid "Namibia"
+msgstr ""
+
+#: Countries Database
+msgid "Nauru"
+msgstr ""
+
+#: Countries Database
+msgid "Nepal"
+msgstr ""
+
+#: Countries Database
+msgid "Netherlands"
+msgstr ""
+
+#: Countries Database
+msgid "New Caledonia"
+msgstr ""
+
+#: Countries Database
+msgid "New Zealand"
+msgstr ""
+
+#: Countries Database
+msgid "Nicaragua"
+msgstr ""
+
+#: Countries Database
+msgid "Niger"
+msgstr ""
+
+#: Countries Database
+msgid "Nigeria"
+msgstr ""
+
+#: Countries Database
+msgid "Niue"
+msgstr ""
+
+#: Countries Database
+msgid "Norfolk Island"
+msgstr ""
+
+#: Countries Database
+msgid "Northern Mariana Islands"
+msgstr ""
+
+#: Countries Database
+msgid "Norway"
+msgstr ""
+
+#: Countries Database
+msgid "Oman"
+msgstr ""
+
+#: Countries Database
+msgid "Pakistan"
+msgstr ""
+
+#: Countries Database
+msgid "Palau"
+msgstr ""
+
+#: Countries Database
+msgid "Panama"
+msgstr ""
+
+#: Countries Database
+msgid "Papua New Guinea"
+msgstr ""
+
+#: Countries Database
+msgid "Paraguay"
+msgstr ""
+
+#: Countries Database
+msgid "Peru"
+msgstr ""
+
+#: Countries Database
+msgid "Philippines"
+msgstr ""
+
+#: Countries Database
+msgid "Pitcairn"
+msgstr ""
+
+#: Countries Database
+msgid "Poland"
+msgstr ""
+
+#: Countries Database
+msgid "Portugal"
+msgstr ""
+
+#: Countries Database
+msgid "Puerto Rico"
+msgstr ""
+
+#: Countries Database
+msgid "Qatar"
+msgstr ""
+
+#: Countries Database
+msgid "Republic of Korea"
+msgstr ""
+
+#: Countries Database
+msgid "Republic of Moldova"
+msgstr ""
+
+#: Countries Database
+msgid "Réunion"
+msgstr ""
+
+#: Countries Database
+msgid "Romania"
+msgstr ""
+
+#: Countries Database
+msgid "Russian Federation"
+msgstr ""
+
+#: Countries Database
+msgid "Rwanda"
+msgstr ""
+
+#: Countries Database
+msgid "Saint Barthélemy"
+msgstr ""
+
+#: Countries Database
+msgid "Saint Helena"
+msgstr ""
+
+#: Countries Database
+msgid "Saint Kitts and Nevis"
+msgstr ""
+
+#: Countries Database
+msgid "Saint Lucia"
+msgstr ""
+
+#: Countries Database
+msgid "Saint Martin (French part)"
+msgstr ""
+
+#: Countries Database
+msgid "Saint Pierre and Miquelon"
+msgstr ""
+
+#: Countries Database
+msgid "Saint Vincent and the Grenadines"
+msgstr ""
+
+#: Countries Database
+msgid "Samoa"
+msgstr ""
+
+#: Countries Database
+msgid "San Marino"
+msgstr ""
+
+#: Countries Database
+msgid "Sao Tome and Principe"
+msgstr ""
+
+#: Countries Database
+msgid "Sark"
+msgstr ""
+
+#: Countries Database
+msgid "Saudi Arabia"
+msgstr ""
+
+#: Countries Database
+msgid "Senegal"
+msgstr ""
+
+#: Countries Database
+msgid "Serbia"
+msgstr ""
+
+#: Countries Database
+msgid "Seychelles"
+msgstr ""
+
+#: Countries Database
+msgid "Sierra Leone"
+msgstr ""
+
+#: Countries Database
+msgid "Singapore"
+msgstr ""
+
+#: Countries Database
+msgid "Sint Maarten (Dutch part)"
+msgstr ""
+
+#: Countries Database
+msgid "Slovakia"
+msgstr ""
+
+#: Countries Database
+msgid "Slovenia"
+msgstr ""
+
+#: Countries Database
+msgid "Solomon Islands"
+msgstr ""
+
+#: Countries Database
+msgid "Somalia"
+msgstr ""
+
+#: Countries Database
+msgid "South Africa"
+msgstr ""
+
+#: Countries Database
+msgid "South Sudan"
+msgstr ""
+
+#: Countries Database
+msgid "Spain"
+msgstr ""
+
+#: Countries Database
+msgid "Sri Lanka"
+msgstr ""
+
+#: Countries Database
+msgid "State of Palestine"
+msgstr ""
+
+#: Countries Database
+msgid "Sudan"
+msgstr ""
+
+#: Countries Database
+msgid "Suriname"
+msgstr ""
+
+#: Countries Database
+msgid "Svalbard and Jan Mayen Islands"
+msgstr ""
+
+#: Countries Database
+msgid "Swaziland"
+msgstr ""
+
+#: Countries Database
+msgid "Sweden"
+msgstr ""
+
+#: Countries Database
+msgid "Switzerland"
+msgstr ""
+
+#: Countries Database
+msgid "Syrian Arab Republic"
+msgstr ""
+
+#: Countries Database
+msgid "Tajikistan"
+msgstr ""
+
+#: Countries Database
+msgid "Thailand"
+msgstr ""
+
+#: Countries Database
+msgid "The former Yugoslav Republic of Macedonia"
+msgstr ""
+
+#: Countries Database
+msgid "Timor-Leste"
+msgstr ""
+
+#: Countries Database
+msgid "Togo"
+msgstr ""
+
+#: Countries Database
+msgid "Tokelau"
+msgstr ""
+
+#: Countries Database
+msgid "Tonga"
+msgstr ""
+
+#: Countries Database
+msgid "Trinidad and Tobago"
+msgstr ""
+
+#: Countries Database
+msgid "Tunisia"
+msgstr ""
+
+#: Countries Database
+msgid "Turkey"
+msgstr ""
+
+#: Countries Database
+msgid "Turkmenistan"
+msgstr ""
+
+#: Countries Database
+msgid "Turks and Caicos Islands"
+msgstr ""
+
+#: Countries Database
+msgid "Tuvalu"
+msgstr ""
+
+#: Countries Database
+msgid "Uganda"
+msgstr ""
+
+#: Countries Database
+msgid "Ukraine"
+msgstr ""
+
+#: Countries Database
+msgid "United Arab Emirates"
+msgstr ""
+
+#: Countries Database
+msgid "United Kingdom of Great Britain and Northern Ireland"
+msgstr ""
+
+#: Countries Database
+msgid "United Republic of Tanzania"
+msgstr ""
+
+#: Countries Database
+msgid "United States of America"
+msgstr ""
+
+#: Countries Database
+msgid "United States Virgin Islands"
+msgstr ""
+
+#: Countries Database
+msgid "Uruguay"
+msgstr ""
+
+#: Countries Database
+msgid "Uzbekistan"
+msgstr ""
+
+#: Countries Database
+msgid "Vanuatu"
+msgstr ""
+
+#: Countries Database
+msgid "Venezuela (Bolivarian Republic of)"
+msgstr ""
+
+#: Countries Database
+msgid "Viet Nam"
+msgstr ""
+
+#: Countries Database
+msgid "Wallis and Futuna Islands"
+msgstr ""
+
+#: Countries Database
+msgid "Western Sahara"
+msgstr ""
+
+#: Countries Database
+msgid "Yemen"
+msgstr ""
+
+#: Countries Database
+msgid "Zambia"
+msgstr ""
+
+#: Countries Database
+msgid "Zimbabwe"
+msgstr ""
+

@@ -37,6 +37,7 @@ class ProjectManagerShortcodes
 		add_shortcode( 'project', array(&$this, 'displayProject') );
 		add_shortcode( 'dataset_form', array(&$this, 'displayDatasetForm') );
 		add_shortcode( 'project_search', array(&$this, 'displaySearchForm') );
+		add_shortcode( 'projectmanager_num_datasets', array(&$this, 'displayNumDatasets') );
 		add_action( 'projectmanager_selections', array(&$this, 'displaySelections') );
 		add_action( 'projectmanager_tablenav', array(&$this, 'displaySelections') );
 		add_action( 'projectmanager_dataset', array(&$this, 'displayDataset'), 10, 2 );
@@ -407,6 +408,33 @@ class ProjectManagerShortcodes
 			echo $out;
 		
 		return $out;
+	}
+	
+	
+	/**
+	 * Function to display the number of datasets in given project
+	 *
+	 *	[projectmanager_num_datasets project_id="1"]
+	 *
+	 * - project_id is the ID of the project
+	 * - text optional text
+	 */
+	function displayNumDatasets( $atts, $action = false )
+	{
+		global $projectmanager;
+		
+		extract(shortcode_atts(array(
+			'project_id' => 0,
+			'text' => '',
+		), $atts ));
+		
+		$project_id = intval($project_id);
+		$num_datasets = $projectmanager->getNumDatasets($project_id, true);
+		
+		if ($text == "")
+			return "<span class='projectmanager_num_datasets'>".$num_datasets."</span>";
+		else
+			return "<div class='projectmanager_num_datasets'><p><span class='text'>". $text."</span> <span class='num_datasets'>".$num_datasets."</span></p></div>";
 	}
 }
 ?>
