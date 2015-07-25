@@ -59,6 +59,14 @@ The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons
 
 == Changelog ==
 
+= 3.1.7.4 =
+* NEW: limit dataset name to 30 characters in frontend forms
+* NEW: mark formfields as `private` to prevent display in frontend
+* NEW: set maximum number of characters for formfields in the formfield options field in the format `max:XX`
+* NEW: TinyMCE Button for petitions landingpage
+* BUGFIX: fixed some styling issues with respect to formfield input width
+* REMOVED: option to set columns and rows for textarea
+
 = 3.1.7.3 =
 * NEW: new shortcode to display number of datasets of certain project in frontend
 * NEW: updated TinyMCE button to include new shortcode and static function

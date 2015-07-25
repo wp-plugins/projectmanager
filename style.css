@@ -114,7 +114,20 @@ ul.projectmanager, ol.projectmanager {
 /* dataset form in frontend */
 .datasetform {
 	margin: 1.5em auto;
+	width: 100%;
 }
+.datasetform  .form-input {
+	width: 300px;
+}
+table.form-table td  .form-input {
+	width: 30%;
+	}
+table .form-table td .form-input-date {
+	
+}
+table .form-table td .form-input-time {
+	
+	}
 .datasetform br {
 	clear: both;
 	}

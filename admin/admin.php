@@ -40,6 +40,18 @@ class ProjectManagerAdminPanel extends ProjectManager
 	
 
 	/**
+	 * check if there was an error
+	 *
+	 * @param none
+	 * @return boolean
+	 */
+	function isError()
+	{
+		return $this->error;
+	}
+	
+	
+	/**
 	 * get admin menu for subpage
 	 *
 	 * @param none
@@ -815,8 +827,25 @@ class ProjectManagerAdminPanel extends ProjectManager
 			$this->printMessage();
 			$this->error = true;
 		}
+		if (!$is_admin && strlen($name) > 50) {
+			$this->setMessage( __("Your name must not  exceed 50 characters", 'projectmanager'), true );
+			$this->printMessage();
+			$this->error = true;
+		}
+		
 		// Check each formfield for mandatory and unique values
 		foreach (parent::getFormFields() AS $formfield) {
+			$formfield_options = explode(";", $formfield->options);
+			
+			// check if there is a maximum input length given
+			$match = preg_grep("/max:/", $formfield_options);
+			if (count($match) == 1) {
+				$max = explode(":", $match[0]);
+				$max = $max[1];
+			} else {
+				$max = 0;
+			}
+			
 			// make sure that mandatory fields are not empty
 			if ($formfield->mandatory == 1) {
 				if( !isset($dataset_meta[$formfield->id]) || (isset($dataset_meta[$formfield->id]) && $dataset_meta[$formfield->id] == "") ) {
@@ -842,6 +871,13 @@ class ProjectManagerAdminPanel extends ProjectManager
 					$this->printMessage();
 					$this->error = true;
 				}
+			}
+			
+			// check that provided input is not longer than $max
+			if ($max > 0 && strlen($dataset_meta[$formfield->id]) > $max) {
+				$this->setMessage(__(sprintf("Provided %s is longer than the allowed length of %s characters", $formfield->label, $max), "projectmanager"), true);
+				$this->printMessage();
+				$this->error = true;
 			}
 		}
 		$this->setMessage("");
@@ -970,8 +1006,25 @@ class ProjectManagerAdminPanel extends ProjectManager
 			$this->printMessage();
 			$this->error = true;
 		}
+		if (!$is_admin && strlen($name) > 50) {
+			$this->setMessage( __("Your name must not  exceed 50 characters", 'projectmanager'), true );
+			$this->printMessage();
+			$this->error = true;
+		}
+		
 		// Check each formfield for mandatory and unique values
 		foreach (parent::getFormFields() AS $formfield) {
+			$formfield_options = explode(";", $formfield->options);
+			
+			// check if there is a maximum input length given
+			$match = preg_grep("/max:/", $formfield_options);
+			if (count($match) == 1) {
+				$max = explode(":", $match[0]);
+				$max = $max[1];
+			} else {
+				$max = 0;
+			}
+			
 			// make sure that mandatory fields are not empty
 			if ($formfield->mandatory == 1) {
 				if( !isset($dataset_meta[$formfield->id]) || (isset($dataset_meta[$formfield->id]) && $dataset_meta[$formfield->id] == "") ) {
@@ -997,6 +1050,13 @@ class ProjectManagerAdminPanel extends ProjectManager
 					$this->printMessage();
 					$this->error = true;
 				}
+			}
+						
+			// check that provided input is not longer than $max
+			if ($max > 0 && strlen($dataset_meta[$formfield->id]) > $max) {
+				$this->setMessage(__(sprintf("Provided %s is longer than the allowed length of %s characters", $formfield->label, $max), "projectmanager"), true);
+				$this->printMessage();
+				$this->error = true;
 			}
 		}
 		$this->setMessage("");
@@ -1293,6 +1353,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 		$order_by = isset($formfield['orderby']) ? 1 : 0;
 		$mandatory = isset($formfield['mandatory']) ? 1 : 0;
 		$unique = isset($formfield['unique']) ? 1 : 0;
+		$private = isset($formfield['private']) ? 1 : 0;
 		$show_on_startpage = isset($formfield['show_on_startpage']) ? 1 : 0;
 		$show_in_profile = isset($formfield['show_in_profile']) ? 1 : 0;
 
@@ -1306,7 +1367,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 			$order = $max_order_sql[0]['order'] +1;
 		}
 				
-		$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_projectmeta} (`label`, `type`, `show_on_startpage`, `show_in_profile`, `order`, `order_by`, `mandatory`, `unique`, `options`, `project_id`) VALUES ( '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%d', '%s', '%d');", $formfield['name'], $formfield['type'], $show_on_startpage, $show_in_profile, $order, $order_by, $mandatory, $unique, $formfield['options'], $project_id ) );
+		$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_projectmeta} (`label`, `type`, `show_on_startpage`, `show_in_profile`, `order`, `order_by`, `mandatory`, `unique`, `private`, `options`, `project_id`) VALUES ( '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%s', '%d');", $formfield['name'], $formfield['type'], $show_on_startpage, $show_in_profile, $order, $order_by, $mandatory, $unique, $private, $formfield['options'], $project_id ) );
 		$formfield_id = $wpdb->insert_id;
 				
 		/*
@@ -1340,10 +1401,11 @@ class ProjectManagerAdminPanel extends ProjectManager
 		$order_by = isset($formfield['orderby']) ? 1 : 0;
 		$mandatory = isset($formfield['mandatory']) ? 1 : 0;
 		$unique = isset($formfield['unique']) ? 1 : 0;
+		$private = isset($formfield['private']) ? 1 : 0;
 		$show_on_startpage = isset($formfield['show_on_startpage']) ? 1 : 0;
 		$show_in_profile = isset($formfield['show_in_profile']) ? 1 : 0;
 					
-		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projectmeta} SET `label` = '%s', `type` = '%s', `show_on_startpage` = '%d', `show_in_profile` = '%d', `order` = '%d', `order_by` = '%d', `mandatory` = '%d', `unique` = '%d', `options` = '%s' WHERE `id` = '%d' LIMIT 1 ;", $formfield['name'], $formfield['type'], $show_on_startpage, $show_in_profile, $formfield['order'], $order_by, $mandatory, $unique, $formfield['options'], $formfield_id ) );
+		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_projectmeta} SET `label` = '%s', `type` = '%s', `show_on_startpage` = '%d', `show_in_profile` = '%d', `order` = '%d', `order_by` = '%d', `mandatory` = '%d', `unique` = '%d', `private` = '%d', `options` = '%s' WHERE `id` = '%d' LIMIT 1 ;", $formfield['name'], $formfield['type'], $show_on_startpage, $show_in_profile, $formfield['order'], $order_by, $mandatory, $unique, $private, $formfield['options'], $formfield_id ) );
 		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_datasetmeta} SET `form_id` = '%d' WHERE `form_id` = '%d'", $formfield_id, $formfield_id ) );
 	}
 	

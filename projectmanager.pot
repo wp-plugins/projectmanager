@@ -134,6 +134,10 @@ msgstr ""
 msgid "ID"
 msgstr ""
 
+# templates/dataset-form.php templates/dataset-form-petition.php
+msgid "Maximum of %d characters"
+msgstr ""
+
 #: admin/admin.php:390 admin/admin.php:626 admin/dataset-form.php:3
 #: admin/import.php:38 admin/show-project.php:51 admin/show-project.php:73
 #: admin/show-project.php:155 admin/show-project.php:166
@@ -698,6 +702,10 @@ msgstr ""
 msgid "Unique"
 msgstr ""
 
+#: admin/formfields.php
+msgid "Private"
+msgstr ""
+
 #: admin/formfields.php:34 admin/formfields.php:46
 msgid "Profile"
 msgstr ""
@@ -729,7 +737,11 @@ msgid "Add Form Field"
 msgstr ""
 
 #: admin/formfields.php:
-msgid "The Options field is used to store meta-data of formfields. Separate values by ; to save options for selectable fields (i.e. dropdown, checkbox or radio list). It can be also used to specify the columns and rows of a Textfield."
+msgid "The Options field is used to store meta-data of formfields. Separate values by ; to save options for selectable fields (i.e. dropdown, checkbox or radio list)."
+msgstr ""
+
+#: admin/formfields.php:
+msgid "The Options field can be also used to set a maximum number of characters for given formfield in the format `max:XX`."
 msgstr ""
 
 #: admin/formfields.php:96 lib/ajax.php:332
@@ -2306,6 +2318,42 @@ msgstr ""
 
 #: Countries Database
 msgid "Zimbabwe"
+msgstr ""
+
+#: TinyMCE Button
+msgid "Show Selections"
+msgstr ""
+
+#: TinyMCE Button
+msgid "Dataset Form"
+msgstr ""
+
+#: TinyMCE Button
+msgid "Number of datasets"
+msgstr ""
+
+#: TinyMCE Button
+msgid "Optional Text"
+msgstr ""
+
+#: TinyMCE Button
+msgid "Petitions Landingpage"
+msgstr ""
+
+#: TinyMCE Button
+msgid "Formfield ID for Comment"
+msgstr ""
+
+#: TinyMCE Button
+msgid "City"
+msgstr ""
+
+#: TinyMCE Button
+msgid "Signing Page ID"
+msgstr ""
+
+#: TinyMCE Button
+msgid "Supporter Page ID"
 msgstr ""
 
 #. #-#-#-#-#  plugin.pot (ProjectManager 2.9.8)  #-#-#-#-#

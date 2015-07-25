@@ -176,6 +176,10 @@ function projectmanager_upgrade() {
 		require_once(PROJECTMANAGER_PATH . "/CountriesSQL.php");
 	}
 	
+	if (version_compare($installed, '3.1.3', '<')) {
+		$wpdb->query( "ALTER TABLE {$wpdb->projectmanager_projectmeta} ADD `private` tinyint( 1 ) NOT NULL default '0' AFTER `unique`" );
+	}
+	
 	// Update dbversion
 	$options['dbversion'] = PROJECTMANAGER_DBVERSION;
 	$options['version'] = PROJECTMANAGER_VERSION;

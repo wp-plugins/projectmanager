@@ -23,38 +23,49 @@ document.forms[0].encoding = "multipart/form-data";
 	</tr>
 	<?php endif; ?>
 	<?php if ( $form_fields = $projectmanager->getFormFields() ) : ?>
-		<?php foreach ( $form_fields AS $form_field ) : $formfield_options = explode(";", $form_field->options); ?>
+		<?php foreach ( $form_fields AS $form_field ) : ?>
+		<?php 
+			$formfield_options = explode(";", $form_field->options);
+			// check if there is a maximum input length given
+			$match = preg_grep("/max:/", $formfield_options);
+			if (count($match) == 1) {
+				$max = explode(":", $match[0]);
+				$placeholder = "Maximum of ".$max[1]." characters";
+			} else {
+				$placeholder = "";
+			}
+		?>
 		
 		<?php if ( $form_field->show_in_profile == 1 ) : ?>
 		<tr valign="top">
 			<th scope="row"><label for="form_field_<?php echo $form_field->id ?>"><?php echo $form_field->label ?><?php if ($form_field->mandatory == 1) echo '*'; ?></label></th>
 			<td>
 				<?php if ( 'text' == $form_field->type || 'email' == $form_field->type || 'uri' == $form_field->type || 'numeric' == $form_field->type || 'currency' == $form_field->type ) : ?>
-				<input type="text" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" value="<?php echo $meta_data[$form_field->id] ?>" size="45" />
+				<input type="text" placeholder="<?php echo $placeholder ?>" class="form-input" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" value="<?php echo $meta_data[$form_field->id] ?>" size="45" />
 				<?php elseif ( 'textfield' == $form_field->type ) : ?>
-				<div style="width: 80%;">
-					<textarea name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" cols="<?php if (empty($formfield_options[0])) echo '50'; else echo $formfield_options[0]; ?>" rows="<?php if (empty($formfield_options[1])) echo '10'; else echo $formfield_options[1]; ?>"><?php echo $meta_data[$form_field->id] ?></textarea>
+				<div>
+					<textarea placeholder="<?php echo $placeholder ?>" class="form-input" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" rows="4"><?php echo $meta_data[$form_field->id] ?></textarea>
 				</div>
 				<?php elseif ( 'tinymce' == $form_field->type ) : ?>
-				<div style="width: 80%;">
+				<div class="form-input">
 					<?php wp_editor($meta_data[$form_field->id], "form_field_".$form_field->id, $settings = array("textarea_name" => "form_field[".$form_field->id."]")); ?>
 				</div>
 				<?php elseif ( 'date' == $form_field->type ) : ?>
-				<select size="1" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>][day]">
+				<select size="1" class="form-input-date" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>][day]">
 					<option value="00"><?php _e( 'Day', 'projectmanager' ) ?></option>
 					<option value="00">&#160;</option>
 					<?php for ( $day = 1; $day <= 31; $day++ ) : ?>
 						<option value="<?php echo str_pad($day, 2, 0, STR_PAD_LEFT) ?>"<?php selected ( $day , intval(substr($meta_data[$form_field->id], 8, 2)) ); ?>><?php echo $day ?></option>
 					<?php endfor; ?>
 				</select>
-				<select size="1" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>][month]">
+				<select size="1" class="form-input-date" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>][month]">
 					<option value="00"><?php _e( 'Month', 'projectmanager' ) ?></option>
 					<option value="00">&#160;</option>
 					<?php foreach ( $projectmanager->getMonths() AS $key => $month ) : ?>
 						<option value="<?php echo $key ?>"<?php selected ( $key, intval(substr($meta_data[$form_field->id], 5, 2)) ); ?>><?php echo $month ?></option>
 					<?php endforeach; ?>
 				</select>
-				<select size="1" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>][year]">
+				<select size="1" class="form-input-date" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>][year]">
 					<option value="0000"><?php _e( 'Year', 'projectmanager' ) ?></option>
 					<option value="0000">&#160;</option>
 					<?php for ( $year = 1970; $year <= date('Y')+10; $year++ ) : ?>
@@ -62,18 +73,18 @@ document.forms[0].encoding = "multipart/form-data";
 					<?php endfor; ?>
 				</select>
 				<?php elseif ( 'time' == $form_field->type ) : ?>
-				<select size="1" name="form_field[<?php echo $dataset_id ?>][<?php echo  $form_field->id ?>][hour]">
+				<select size="1" class="form-input-time" name="form_field[<?php echo $dataset_id ?>][<?php echo  $form_field->id ?>][hour]">
 					<?php for ( $hour = 0; $hour <= 23; $hour++ ) : ?>
 					<option value="<?php echo str_pad($hour, 2, 0, STR_PAD_LEFT) ?>"<?php selected( $hour, intval(substr($meta_data[$form_field->id], 0, 2)) ) ?>><?php echo str_pad($hour, 2, 0, STR_PAD_LEFT) ?></option>
 					<?php endfor; ?>
 				</select>
-				<select size="1" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>][minute]">
+				<select size="1" class="form-input-time" name="form_field[<?php echo $dataset_id ?>][<?php echo $form_field->id ?>][minute]">
 					<?php for ( $minute = 0; $minute <= 59; $minute++ ) : ?>
 					<option value="<?php  echo str_pad($minute, 2, 0, STR_PAD_LEFT) ?>"<?php selected( $minute, intval(substr($meta_data[$form_field->id], 3, 2)) ) ?>><?php echo str_pad($minute, 2, 0, STR_PAD_LEFT) ?></option>
 					<?php endfor; ?>
 				</select>
 				<?php elseif ( 'country' == $form_field->type ) : ?>
-				<select size="1" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>">
+				<select size="1" class="form-input" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>">
 					<option value="">&#160;</option>
 					<?php foreach ( $projectmanager->getCountries() AS $country ) : ?>
 					<option value="<?php echo $country->code ?>"<?php selected( $country->code, $dat ) ?>><?php echo $country->name ?></option>

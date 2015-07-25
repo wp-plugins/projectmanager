@@ -923,7 +923,12 @@ class ProjectManager extends ProjectManagerLoader
 		else
 			$search = "`project_id` = ".intval($this->getProjectID()); 
 
-		$sql = "SELECT `label`, `type`, `order`, `order_by`, `mandatory`, `unique`, `show_on_startpage`, `show_in_profile`, `options`, `id` FROM {$wpdb->projectmanager_projectmeta} WHERE $search ORDER BY `order` ASC;";
+		// Only get private formfields in admin interface
+		if (!is_admin()) {
+			$search .= " AND `private` = 0";
+		}
+		
+		$sql = "SELECT `label`, `type`, `order`, `order_by`, `mandatory`, `unique`, `private`, `show_on_startpage`, `show_in_profile`, `options`, `id` FROM {$wpdb->projectmanager_projectmeta} WHERE $search ORDER BY `order` ASC;";
 		$formfields = $wpdb->get_results( $sql );
 	
 		if ($id)
@@ -1041,7 +1046,7 @@ class ProjectManager extends ProjectManagerLoader
 	function getDatasets( $args = array() )
 	{
 		global $wpdb;
-		$defaults = array( 'limit' => false, 'orderby' => false, 'order' => false, 'random' => false );
+		$defaults = array( 'limit' => false, 'orderby' => false, 'order' => false, 'random' => false, 'meta_key' => false, 'meta_value' => '' );
 		$args = array_merge($defaults, $args);
 		extract($args, EXTR_SKIP);
 		
@@ -1347,7 +1352,7 @@ class ProjectManager extends ProjectManagerLoader
 	function getDatasetMeta( $dataset_id, $args = array() )
 	{
 	 	global $wpdb;
-		$sql = "SELECT form.id AS form_field_id, form.label AS label, data.value AS value, form.type AS type, form.show_on_startpage AS show_on_startpage FROM {$wpdb->projectmanager_datasetmeta} AS data LEFT JOIN {$wpdb->projectmanager_projectmeta} AS form ON form.id = data.form_id WHERE data.dataset_id = '".intval($dataset_id)."'";
+		$sql = "SELECT form.id AS form_field_id, form.label AS label, form.private AS is_private, form.unique AS is_unique, form.mandatory AS is_mandatory, data.value AS value, form.type AS type, form.show_on_startpage AS show_on_startpage FROM {$wpdb->projectmanager_datasetmeta} AS data LEFT JOIN {$wpdb->projectmanager_projectmeta} AS form ON form.id = data.form_id WHERE data.dataset_id = '".intval($dataset_id)."'";
 
 		if ( !empty($args) ) {
 			if ( isset($args['meta_id']) && is_numeric($args['meta_id']) ) $sql .= " AND form.`id` = '".intval($args['meta_id'])."'";
@@ -1457,7 +1462,6 @@ class ProjectManager extends ProjectManagerLoader
 					}
 				}
 
-
 				// Do some parsing on array datasets
 				if ( 'checkbox' == $meta->type || 'project' == $meta->type ) {
 					$list = "<ul class='".$meta->type."' id='form_field_".$meta->form_field_id."'>";
@@ -1560,15 +1564,18 @@ class ProjectManager extends ProjectManagerLoader
 						//$out .= "<span id='loading_".$meta->form_field_id."_".$dataset->id."'></span>";
 						$out .= "\n\t</td>";
 					} else {
-						if ( 'dl' == $output && !empty($meta_value) ) {
-							$out .= "\n\t<dt>".$meta->label."</dt><dd>".$meta_value."</dd>";
-						} elseif ( 'li' == $output && !empty($meta_value) ) {
-							$out .= "\n\t<li class='".$meta->type." ".$class."'><span class='dataset_label'>".$meta->label."</span>:&#160;".$meta_value."</li>";
-						} else {
-							if ( !empty($output) ) $out .= "<$output class='".$meta->type." ".$class."'>";
-							$out .= $meta_value;
-							
-							if ( !empty($output) ) $out .= "</$output>";
+						// Don't show 'private' formfields in frontend
+						if (0 == $meta->is_private) {
+							if ( 'dl' == $output && !empty($meta_value) ) {
+								$out .= "\n\t<dt>".$meta->label."</dt><dd>".$meta_value."</dd>";
+							} elseif ( 'li' == $output && !empty($meta_value) ) {
+								$out .= "\n\t<li class='".$meta->type." ".$class."'><span class='dataset_label'>".$meta->label."</span>:&#160;".$meta_value."</li>";
+							} else {
+								if ( !empty($output) ) $out .= "<$output class='".$meta->type." ".$class."'>";
+								$out .= $meta_value;
+								
+								if ( !empty($output) ) $out .= "</$output>";
+							}
 						}
 					}
 				}
@@ -1788,7 +1795,7 @@ class ProjectManager extends ProjectManagerLoader
 		
 		$out = '';
 		if ( count($options) > 1 ) {
-			$out .= "<select size='1' name='".$name."' id='form_field_".$form_id."_".$dataset_id."'>";
+			$out .= "<select size='1' class='form-input' name='".$name."' id='form_field_".$form_id."_".$dataset_id."'>";
 			foreach ( $options AS $option_name ) {
 				if ( $option_name == $selected )
 					$out .= "<option value='".$option_name."' selected='selected'>".$option_name."</option>";
@@ -1885,7 +1892,7 @@ class ProjectManager extends ProjectManagerLoader
 		
 		if ( !$single ) return false;
 		
-		$num_form_fields = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = '".intval($this->getProjectID())."' AND `show_on_startpage` = 0" );
+		$num_form_fields = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = '".intval($this->getProjectID())."' AND `show_on_startpage` = 0 AND `private` = 0" );
 			
 		if ( $num_form_fields > 0 )
 			return true;

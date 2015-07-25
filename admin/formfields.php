@@ -71,6 +71,7 @@ $options = get_option('projectmanager');
 		<th scope="col"><?php _e( 'Options', 'projectmanager' ) ?>*</th>
 		<th scope="col"><?php _e( 'Mandatory', 'projectmanager' ) ?></th>
 		<th scope="col"><?php _e( 'Unique', 'projectmanager' ) ?></th>
+		<th scope="col"><?php _e( 'Private', 'projectmanager' ) ?></th>
 		<th scope="col"><?php _e( 'Startpage', 'projectmanager' ) ?></th>
 		<th scope="col"><?php _e( 'Profile', 'projectmanager' ) ?></th>
 		<th scope="col"><?php _e( 'Order', 'projectmanager' ) ?></th>
@@ -87,6 +88,7 @@ $options = get_option('projectmanager');
 		<th scope="col"><?php _e( 'Options', 'projectmanager' ) ?>*</th>
 		<th scope="col"><?php _e( 'Mandatory', 'projectmanager' ) ?></th>
 		<th scope="col"><?php _e( 'Unique', 'projectmanager' ) ?></th>
+		<th scope="col"><?php _e( 'Private', 'projectmanager' ) ?></th>
 		<th scope="col"><?php _e( 'Startpage', 'projectmanager' ) ?></th>
 		<th scope="col"><?php _e( 'Profile', 'projectmanager' ) ?></th>
 		<th scope="col"><?php _e( 'Order', 'projectmanager' ) ?></th>
@@ -128,6 +130,7 @@ $options = get_option('projectmanager');
 			</td>
 			<td><input type="checkbox" name="formfields[<?php echo $form_field->id ?>][mandatory]"<?php checked(1, $form_field->mandatory) ?> value="1" /></td>
 			<td><input type="checkbox" name="formfields[<?php echo $form_field->id ?>][unique]"<?php checked(1, $form_field->unique) ?> value="1" /></td>
+			<td><input type="checkbox" name="formfields[<?php echo $form_field->id ?>][private]"<?php checked(1, $form_field->private) ?> value="1" /></td>
 			<td><input type="checkbox" name="formfields[<?php echo $form_field->id ?>][show_on_startpage]"<?php checked(1, $form_field->show_on_startpage) ?> value="1" /></td>
 			<td><input type="checkbox" name="formfields[<?php echo $form_field->id ?>][show_in_profile]"<?php checked ( 1, $form_field->show_in_profile) ?> value="1" /></td>
 			<td><input type="text" size="2" name="formfields[<?php echo $form_field->id ?>][order]" value="<?php echo $form_field->order ?>" /></td>
@@ -139,7 +142,8 @@ $options = get_option('projectmanager');
 	</tbody>
 	</table>
 	<!--<p class="submit" style="float: right; margin: 1em 0 0 0; padding: 0;"><input type="submit" name="addFormField" value="<?php _e( 'Add Form Field', 'projectmanager' ) ?> &raquo;" class="button-secondary action" /></p>-->
-	<p style="margin: 0.5em 0 0 0; padding: 0;">*<?php _e('The Options field is used to store meta-data of formfields. Separate values by ; to save options for selectable fields (i.e. dropdown, checkbox or radio list). It can be also used to specify the columns and rows of a Textfield.', 'projectmanager') ?></p>
+	<p style="margin: 0.5em 0 0 0; padding: 0;">*<?php _e('The Options field is used to store meta-data of formfields. Separate values by ; to save options for selectable fields (i.e. dropdown, checkbox or radio list).', 'projectmanager') ?></p>
+	<p style="margin: 0.5em 0 0 0; padding: 0;">*<?php _e('The Options field can be also used to set a maximum number of characters for given formfield in the format `max:XX`.', 'projectmanager') ?></p>
 	<!--<p><a href='#' onclick='return ProjectManager.addFormField(<?php echo $project->id ?>);'><?php _e( 'Add new formfield', 'projectmanager' ) ?></a></p>-->
 	<p class="submit"><input type="submit" name="saveFormFields" value="<?php _e( 'Save Form Fields', 'projectmanager' ) ?> &raquo;" class="button-primary" /></p>
 	</form>

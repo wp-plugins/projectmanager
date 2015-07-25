@@ -21,8 +21,13 @@ msgid "Add Form Field"
 msgstr "Formularfeld hinzufügen"
 
 #: admin/formfields.php:
-msgid "The Options field is used to store meta-data of formfields. Separate values by ; to save options for selectable fields (i.e. dropdown, checkbox or radio list). It can be also used to specify the columns and rows of a Textfield."
-msgstr "Das Optionen Feld wird verwendet um Metadaten von Formularfeldern zu speichern. Trenne Werte mit ; um Optionen für selektierbare Felder (z.B. Dropdown, Checkbox- oder Radiolisten) zu speichern. Es kann auch verwendet werden, um die Spalten und Zeilen eines Textfeldes einzustellen."
+msgid "The Options field is used to store meta-data of formfields. Separate values by ; to save options for selectable fields (i.e. dropdown, checkbox or radio list)."
+msgstr "Das Optionen Feld wird verwendet um Metadaten von Formularfeldern zu speichern. Trenne Werte mit ; um Optionen für selektierbare Felder (z.B. Dropdown, Checkbox- oder Radiolisten) zu speichern."
+
+#: admin/formfields.php:
+msgid "The Options field can be also used to set a maximum number of characters for given formfield in the format `max:XX`."
+msgstr "Das Optionen Feld kann auch verwendet werden, um eine maximale Anzahl Zeichen für ein Formularfeld im Format `max:XX` zu setzen."
+
 
 #: admin/admin.php:47 admin/admin.php:59
 msgid "Overview"
@@ -219,6 +224,10 @@ msgstr "Pflichtfeld"
 #: admin/formfields.php
 msgid "Unique"
 msgstr "Einmalig"
+
+#: admin/formfields.php
+msgid "Private"
+msgstr "Privat"
 
 #: admin/formfields.php:31 admin/formfields.php:41
 msgid "Startpage"
@@ -1861,3 +1870,43 @@ msgstr "Sambia"
 #: Countries Database
 msgid "Zimbabwe"
 msgstr "Simbabwe"
+
+# templates/dataset-form.php templates/dataset-form-petition.php
+msgid "Maximum of %d characters"
+msgstr "Maximal %d Zeichen"
+
+#: TinyMCE Button
+msgid "Show Selections"
+msgstr "Auswahlmenu anzeigen"
+
+#: TinyMCE Button
+msgid "Dataset Form"
+msgstr "Datensatz Formular"
+
+#: TinyMCE Button
+msgid "Number of datasets"
+msgstr "Anzahl Datensätze"
+
+#: TinyMCE Button
+msgid "Optional Text"
+msgstr "Optionaler Text"
+
+#: TinyMCE Button
+msgid "Petitions Landingpage"
+msgstr "Petitionen Landingpage"
+
+#: TinyMCE Button
+msgid "Formfield ID for Comment"
+msgstr "Formularfeld ID für Kommentar"
+
+#: TinyMCE Button
+msgid "City"
+msgstr "Stadt"
+
+#: TinyMCE Button
+msgid "Signing Page ID"
+msgstr "Unterschreiben Seiten ID"
+
+#: TinyMCE Button
+msgid "Supporter Page ID"
+msgstr "Unterstützer Seiten ID"

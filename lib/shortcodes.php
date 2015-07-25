@@ -38,6 +38,7 @@ class ProjectManagerShortcodes
 		add_shortcode( 'dataset_form', array(&$this, 'displayDatasetForm') );
 		add_shortcode( 'project_search', array(&$this, 'displaySearchForm') );
 		add_shortcode( 'projectmanager_num_datasets', array(&$this, 'displayNumDatasets') );
+		add_shortcode( 'petition_landingpage', array(&$this, 'displayPetitionLandingpage') );
 		add_action( 'projectmanager_selections', array(&$this, 'displaySelections') );
 		add_action( 'projectmanager_tablenav', array(&$this, 'displaySelections') );
 		add_action( 'projectmanager_dataset', array(&$this, 'displayDataset'), 10, 2 );
@@ -138,7 +139,7 @@ class ProjectManagerShortcodes
 			$category = isset($_POST['post_category']) ? $_POST['post_category'] : '';
 			$admin->addDataset( intval($_POST['project_id']), htmlspecialchars($_POST['d_name']), $category, $_POST['form_field'], $user_id, false );
 			
-			$message = htmlspecialchars($_POST['d_message']);
+			if (!$admin->isError()) $message = htmlspecialchars($_POST['d_message']);
 		}
 		
 		$options = get_option('projectmanager');
@@ -197,8 +198,10 @@ class ProjectManagerShortcodes
 			//$project = $projectmanager->getCurrentProject();
 			
 		$orderby = array( '' => __('Order By', 'projectmanager'), 'name' => __('Name','projectmanager'), 'id' => __('ID','projectmanager') );
-		foreach ( $projectmanager->getFormFields() AS $form_field )
-			$orderby['formfields_'.$form_field->id] = $form_field->label;
+		foreach ( $projectmanager->getFormFields() AS $form_field ) {
+			if ($form_field->private == 0)
+				$orderby['formfields_'.$form_field->id] = $form_field->label;
+		}
 
 		$order = array( '' => __('Order','projectmanager'), 'asc' => __('Ascending','projectmanager'), 'desc' => __('Descending','projectmanager') );
 		
@@ -435,6 +438,91 @@ class ProjectManagerShortcodes
 			return "<span class='projectmanager_num_datasets'>".$num_datasets."</span>";
 		else
 			return "<div class='projectmanager_num_datasets'><p><span class='text'>". $text."</span> <span class='num_datasets'>".$num_datasets."</span></p></div>";
+	}
+	
+	
+	/**
+	 * Function to display petition landing page
+	 *
+	 *	[petition_landingpage project_id="x" number= comment= country= city= ncol= title= sign_page_id= list_page_id= template=]
+	 *
+	 * - project_id is the ID of the project to display
+	 * - number is the number of random datasets
+	 * - comment, country, city are the formfield IDs for those dataset
+	 * - ncol is the number of columns
+	 * - title is an optional title
+	 * - sign_page_id is the page ID containing the petition signing form. Can be also an anker if formular is on the same page
+	 * - list_page_id is the page ID containing a list of all supporters
+	 * - template is an optional template
+	 *
+	 * @param array $atts
+	 * @return the content
+	 */
+	function displayPetitionLandingpage( $atts )
+	{
+		global $wp, $wpdb, $projectmanager;
+		
+		extract(shortcode_atts(array(
+			'project_id' => 0,
+			'number' => 5,
+			'comment' => 0,
+			'country' => 0,
+			'city' => 0,
+			'ncol' => 3,
+			'title' => '',
+			'sign_page_id' => 0,
+			'list_page_id' => 0,
+			'template' => 'petition-landingpage',
+		), $atts ));
+		$project_id = intval($project_id);
+		$number = intval($number);
+		$comment_id = intval($comment);
+		$country_id = intval($country);
+		$ncol = intval($ncol);
+		$city_id = intval($city);
+		//$sign_page_id = intval($sign_page_id);
+		$list_page_id = intval($list_page_id);
+		
+		$projectmanager->init($project_id);
+		$project = $projectmanager->getCurrentProject();
+		
+		if (!empty($sign_page_id))
+			$sign_petition_href = is_numeric($sign_page_id) ? get_permalink($sign_page_id) : htmlspecialchars($sign_page_id);
+		else
+			$sign_petition_href = "";
+		
+		$datasets = $projectmanager->getDatasets( array( 'project_id' => $project_id, 'limit' => $number, 'random' => true) );
+		$project->num_datasets = $projectmanager->getNumDatasets($projectmanager->getProjectID(), true);
+		
+		$single = false;
+		
+		$i = 0;
+		foreach ( $datasets AS $dataset ) {
+			$class = ( !isset($class) || "alternate" == $class ) ? '' : "alternate"; 
+				
+			$dataset->name = stripslashes($dataset->name);
+			
+			$comment = $wpdb->get_results($wpdb->prepare( "SELECT value FROM {$wpdb->projectmanager_datasetmeta} WHERE dataset_id = '%d' AND form_id = '%d'", intval($dataset->id), $comment_id));
+			$dataset->comment = $comment[0]->value;
+			$country = $wpdb->get_results($wpdb->prepare( "SELECT value FROM {$wpdb->projectmanager_datasetmeta} WHERE dataset_id = '%d' AND form_id = '%d'", intval($dataset->id), $country_id));
+			$dataset->country = __($projectmanager->getCountryName($country[0]->value), 'projectmanager');
+			$city = $wpdb->get_results($wpdb->prepare( "SELECT value FROM {$wpdb->projectmanager_datasetmeta} WHERE dataset_id = '%d' AND form_id = '%d'", intval($dataset->id), $city_id));
+			$dataset->city = $city[0]->value;
+				
+			$datasets[$i]->class = $class;
+			if ($dataset->image == "") {
+				$dataset->image = $project->default_image;
+				$datasets[$i]->image = $dataset->image;
+			}
+			$datasets[$i]->thumbURL = $projectmanager->getFileURL('/thumb.'.$dataset->image);
+			$datasets[$i]->nameURL = ($projectmanager->hasDetails($single)) ? '<a href="'.$url.'">'.$dataset->name.'</a>' : $dataset->name;
+				
+			$i++;
+		}
+				
+		$out = $this->loadTemplate( $template, array('project' => $project, 'datasets' => $datasets, 'title' => $title, 'sign_petition_href' => $sign_petition_href, 'list_page_id' => $list_page_id, 'ncol' => $ncol) );
+		
+		return $out;
 	}
 }
 ?>

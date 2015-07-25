@@ -11,39 +11,51 @@ if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) 
 
 <form name="datasetform" id="datasetform_<?php echo $project->id ?>" class="datasetform" action="" method="post" enctype="multipart/form-data">
 	<?php wp_nonce_field('projectmanager_insert_dataset'); ?>
-	<label for="d_name"><?php _e( 'Name', 'projectmanager' ) ?>*</label><input type="text" name="d_name" id="d_name" value="<?php echo $name ?>" size="30" /><br />
+	<label for="d_name"><?php _e( 'Name', 'projectmanager' ) ?>*</label><input type="text" placeholder="<?php printf(__('Maximum of %d characters', 'projectmanager'), 30) ?>" class="form-input" name="d_name" id="d_name" value="<?php echo $name ?>" /><br />
 	
 	<?php if ( $form_fields = $projectmanager->getFormFields() ) : ?>
-		<?php foreach ( $form_fields AS $form_field ) : $dat = isset($meta_data[$form_field->id]) ? $meta_data[$form_field->id] : ''; $formfield_options = explode(";", $form_field->options); ?>
-		
+		<?php foreach ( $form_fields AS $form_field ) : $dat = isset($meta_data[$form_field->id]) ? $meta_data[$form_field->id] : ''; ?>
+		<?php 
+			$formfield_options = explode(";", $form_field->options);
+			// check if there is a maximum input length given
+			$match = preg_grep("/max:/", $formfield_options);
+			if (count($match) == 1) {
+				$max = explode(":", $match[0]);
+				$placeholder = sprintf(__("Maximum of %d characters", 'projectmanager'), $max[1]);
+			} else {
+				$placeholder = "";
+			}
+		?>
+			
 			<label for="form_field_<?php echo $form_field->id ?>"><?php echo $form_field->label ?><?php if ($form_field->mandatory == 1) echo '*'; ?></label>
 			
 			<?php if ( 'text' == $form_field->type || 'email' == $form_field->type || 'uri' == $form_field->type || 'numeric' == $form_field->type || 'currency' == $form_field->type ) : ?>
-				<input type="text" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" value="<?php echo $dat ?>" size="30" />
+				<input type="text" placeholder="<?php echo $placeholder ?>" class="form-input" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" value="<?php echo $dat ?>" />
 			<?php elseif ( 'textfield' == $form_field->type ) : ?>
-				<div style="width: 80%;">
-					<textarea <?php if ( 'tinymce' == $form_field->type ) echo 'class="theEditor"' ?> name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" cols="<?php if (empty($formfield_options[0])) echo '50'; else echo $formfield_options[0]; ?>" rows="<?php if (empty($formfield_options[1])) echo '10'; else echo $formfield_options[1]; ?>"><?php echo $dat ?></textarea>
+				<div>
+					<!--<textarea <?php if ( 'tinymce' == $form_field->type ) echo 'class="theEditor"' ?> name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" cols="<?php if (empty($formfield_options[0])) echo '50'; else echo $formfield_options[0]; ?>" rows="<?php if (empty($formfield_options[1])) echo '10'; else echo $formfield_options[1]; ?>"><?php echo $dat ?></textarea>-->
+					<textarea placeholder="<?php echo $placeholder ?>" class="form-input" <?php if ( 'tinymce' == $form_field->type ) echo 'class="theEditor"' ?> name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" rows="4"><?php echo $dat ?></textarea>
 				</div>
 			<?php elseif ( 'tinymce' == $form_field->type ) : ?>
-				<div style="width: 80%;">
+				<div class="form-input">
 					<?php wp_editor($dat, "form_field_".$form_field->id, $settings = array("textarea_name" => "form_field[".$form_field->id."]")); ?>
 				</div>
 			<?php elseif ( 'date' == $form_field->type ) : ?>
-				<select size="1" name="form_field[<?php echo $form_field->id ?>][day]">
+				<select size="1" class="form-input-date" name="form_field[<?php echo $form_field->id ?>][day]">
 					<option value=""><?php _e( 'Day', 'projectmanager' ) ?></option>
 					<option value="">&#160;</option>
 					<?php for ( $day = 1; $day <= 31; $day++ ) : ?>
 						<option value="<?php echo str_pad($day, 2, 0, STR_PAD_LEFT) ?>"<?php selected ( $day, intval(substr($dat, 8, 2)) ); ?>><?php echo $day ?></option>
 					<?php endfor; ?>
 				</select>
-				<select size="1" name="form_field[<?php echo $form_field->id ?>][month]">
+				<select size="1" class="form-input-date" name="form_field[<?php echo $form_field->id ?>][month]">
 					<option value=""><?php _e( 'Month', 'projectmanager' ) ?></option>
 					<option value="">&#160;</option>
 					<?php foreach ( $projectmanager->getMonths() AS $key => $month ) : ?>
 						<option value="<?php echo str_pad($key, 2, 0, STR_PAD_LEFT) ?>"<?php selected ( $key, intval(substr($dat, 5, 2)) ); ?>><?php echo $month ?></option>
 					<?php endforeach; ?>
 				</select>
-				<select size="1" name="form_field[<?php echo $form_field->id ?>][year]">
+				<select size="1" class="form-input-date" name="form_field[<?php echo $form_field->id ?>][year]">
 					<option value="0000"><?php _e('Year', 'projectmanager') ?></option>
 					<option value="0000">&#160;</option>
 					<?php for ( $year = 1970; $year <= date('Y')+10; $year++ ) : ?>
@@ -51,25 +63,25 @@ if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) 
 					<?php endfor; ?>
 				</select>
 			<?php elseif ( 'time' == $form_field->type ) : ?>
-				<select size="1" name="form_field[<?php echo  $form_field->id ?>][hour]">
+				<select size="1" class="form-input-time" name="form_field[<?php echo  $form_field->id ?>][hour]">
 					<?php for ( $hour = 0; $hour <= 23; $hour++ ) : ?>
 					<option value="<?php echo str_pad($hour, 2, 0, STR_PAD_LEFT) ?>"<?php selected( $hour, intval(substr($dat, 0, 2)) ) ?>><?php echo str_pad($hour, 2, 0, STR_PAD_LEFT) ?></option>
 					<?php endfor; ?>
 				</select>
-				<select size="1" name="form_field[<?php echo $form_field->id ?>][minute]">
+				<select size="1" class="form-input-time" name="form_field[<?php echo $form_field->id ?>][minute]">
 					<?php for ( $minute = 0; $minute <= 59; $minute++ ) : ?>
 					<option value="<?php  echo str_pad($minute, 2, 0, STR_PAD_LEFT) ?>"<?php selected( $minute, intval(substr($dat, 3, 2)) ) ?>><?php echo str_pad($minute, 2, 0, STR_PAD_LEFT) ?></option>
 					<?php endfor; ?>
 				</select>
 			<?php elseif ( 'country' == $form_field->type ) : ?>
-				<select size="1" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>">
+				<select size="1" class="form-input" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>">
 					<option value="">&#160;</option>
 					<?php foreach ( $projectmanager->getCountries() AS $country ) : ?>
 					<option value="<?php echo $country->code ?>"<?php selected( $country->code, $dat ) ?>><?php echo $country->name ?></option>
 					<?php endforeach; ?>
 				</select>
 			<?php elseif ( 'file' == $form_field->type || 'image' == $form_field->type || 'video' == $form_field->type ) : ?>
-					<input type="file" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" size="40" />
+					<input type="file" class="form-input" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" size="40" />
 					<input type="hidden" name="form_field[<?php echo $form_field->id ?>][current]" value="<?php echo $dat ?>" />
 					<?php if (!empty($dat)) : ?>
 					<p>
