@@ -106,7 +106,8 @@ else
 	
 	<?php if ( $datasets ) : ?>
 	
-	<form id="dataset-filter" method="post" action="" name="form">
+	<?php $action = get_permalink(); $action = remove_query_arg('order', $action); $action = remove_query_arg('orderby', $action); $action = remove_query_arg('paged', $action); ?>
+	<form id="dataset-filter" method="post" action="<?php echo $action ?>" name="form">
 	<?php wp_nonce_field( 'projectmanager_dataset-bulk' ) ?>
 	<div class="tablenav">
 		<div class="alignleft actions">

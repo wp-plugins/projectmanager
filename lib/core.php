@@ -393,7 +393,15 @@ class ProjectManager extends ProjectManagerLoader
 		if (!$current_page) $current_page = $this->getCurrentPage();
 		
 		if (is_admin()) $query_args = array('project_id' => $this->getProjectID());
-		else $query_args = (isset($this->query_args)) ? $this->query_args : '';
+		else $query_args = (isset($this->query_args)) ? $this->query_args : array();
+		
+		if (isset($_POST['orderby'])) {
+			$query_args['orderby'] = htmlspecialchars($_POST['orderby']);
+		}
+		if (isset($_POST['order'])) {
+			$query_args['order'] = htmlspecialchars($_POST['order']);
+		}
+		
 		$page_links = paginate_links( array(
 			'base' => add_query_arg( $base, '%#%' ),
 			'format' => '',
@@ -403,6 +411,7 @@ class ProjectManager extends ProjectManagerLoader
 			'current' => $current_page,
 			'add_args' => $query_args
 		));
+			
 		return $page_links;
 	}
 	
@@ -914,7 +923,7 @@ class ProjectManager extends ProjectManagerLoader
 	 * @param int|false $id ID of formfield
 	 * @return array
 	 */
-	function getFormFields( $id = false )
+	function getFormFields( $id = false, $all = false )
 	{
 		global $wpdb;
 	
@@ -924,7 +933,7 @@ class ProjectManager extends ProjectManagerLoader
 			$search = "`project_id` = ".intval($this->getProjectID()); 
 
 		// Only get private formfields in admin interface
-		if (!is_admin()) {
+		if (!is_admin() && !$all) {
 			$search .= " AND `private` = 0";
 		}
 		
@@ -1108,15 +1117,6 @@ class ProjectManager extends ProjectManagerLoader
 		
 			$sql .=  " ORDER BY ".$sql_order;
 
-			if ( is_numeric($limit) && $limit > 0 ) 
-				$sql .= " LIMIT 0, ".intval($limit).";";
-			elseif ( $limit && $this->getPerPage() != 'NaN' )
-				$sql .= " LIMIT ".intval($offset).",".$this->getPerPage().";";
-			else
-				$sql .= ";";	
-
-			$datasets = $wpdb->get_results($sql);
-
 			/*
 			* Determine whether to sort by formfields or not
 			* Selection Menus and Shortcode Attributes override Project Settings
@@ -1126,8 +1126,30 @@ class ProjectManager extends ProjectManagerLoader
 			else
 				$orderby_formfields = false;
 	
+	
+			/*
+			* If datasets are ordered by formfields first get all
+			*/
+			if (!$orderby_formfields) {
+				if ( is_numeric($limit) && $limit > 0 ) 
+					$sql .= " LIMIT 0, ".intval($limit).";";
+				elseif ( $limit && $this->getPerPage() != 'NaN' )
+					$sql .= " LIMIT ".intval($offset).",".$this->getPerPage().";";
+				else
+					$sql .= ";";	
+			} else {
+				$sql .= ";";
+			}
+			
+			$datasets = $wpdb->get_results($sql);
+			
+			if (is_numeric($limit) && $limit > 0)
+				$number = intval($limit);
+			else
+				$number = $this->getPerPage();
+			
 			if ( $orderby_formfields )
-				$datasets = $this->orderDatasetsByFormFields($datasets, $formfield_id);
+				$datasets = $this->orderDatasetsByFormFields($datasets, $formfield_id, $offset, $number);
 		}
 
 		$i = 0;
@@ -1217,9 +1239,11 @@ class ProjectManager extends ProjectManagerLoader
 	 *
 	 * @param array $datasets
 	 * @param int|false $form_field_id
+	 * @param int $offset
+	 * @param int $limit
 	 * @return array
 	 */
-	function orderDatasetsByFormFields( $datasets, $form_field_id = false )
+	function orderDatasetsByFormFields( $datasets, $form_field_id = false, $offset = 0, $limit = false )
 	{
 		global $wpdb;
 
@@ -1309,8 +1333,11 @@ class ProjectManager extends ProjectManagerLoader
 				$x++;
 			}
 				
-			return $datasets_ordered;
+			$datasets = $datasets_ordered;
 		}
+		
+		// return only part of datasets corresponding to current offset and number of datasets
+		$datasets = array_slice($datasets, $offset, $limit);
 		
 		// simply return unsorted datasets
 		return $datasets;

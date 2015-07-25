@@ -65,6 +65,7 @@ The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons
 * NEW: set maximum number of characters for formfields in the formfield options field in the format `max:XX`
 * NEW: TinyMCE Button for petitions landingpage
 * BUGFIX: fixed some styling issues with respect to formfield input width
+* BUGFIX: ordering of datasets by formfields with pagination in frontend and admin panel
 * REMOVED: option to set columns and rows for textarea
 
 = 3.1.7.3 =

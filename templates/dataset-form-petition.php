@@ -13,7 +13,7 @@ if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) 
 	<?php wp_nonce_field('projectmanager_insert_dataset'); ?>
 	<label for="d_name"><?php _e( 'Name', 'projectmanager' ) ?>*</label><input type="text" placeholder="<?php printf(__('Maximum of %d characters', 'projectmanager'), 30) ?>" class="form-input" name="d_name" id="d_name" value="<?php echo $name ?>" /><br />
 	
-	<?php if ( $form_fields = $projectmanager->getFormFields() ) : ?>
+	<?php if ( $form_fields = $projectmanager->getFormFields(false, true) ) : ?>
 		<?php foreach ( $form_fields AS $form_field ) : $dat = isset($meta_data[$form_field->id]) ? $meta_data[$form_field->id] : ''; ?>
 		<?php 
 			$formfield_options = explode(";", $form_field->options);

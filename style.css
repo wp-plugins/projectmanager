@@ -4,6 +4,7 @@ div.projectmanager { margin-bottom: 1em; }
 div.projectmanager_selections {
 	float: left;
 	margin-top: 1em;
+	margin-bottom: 1em;
 	clear: both;
 }
 div.projectmanager_selections select.postform {
