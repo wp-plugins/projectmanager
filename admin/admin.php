@@ -834,7 +834,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 		}
 		
 		// Check each formfield for mandatory and unique values
-		foreach (parent::getFormFields() AS $formfield) {
+		foreach (parent::getFormFields(false, true) AS $formfield) {
 			$formfield_options = explode(";", $formfield->options);
 			
 			// check if there is a maximum input length given

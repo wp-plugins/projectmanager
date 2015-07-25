@@ -38,6 +38,7 @@ The following variables are usable:
 		<?php endforeach; ?>
 	</select>
 	<?php endif; ?>
+	
 	<input type='submit' value='<?php _e( 'Apply' ) ?>' class='button' />
 </div>
 </form>

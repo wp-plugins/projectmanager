@@ -1962,16 +1962,31 @@ class ProjectManager extends ProjectManagerLoader
 
 			$datasets = $wpdb->get_results($sql);
 		} else {
-			$sql = "SELECT t1.dataset_id AS id,
-					t2.name,
-					t2.image,
-					t2.cat_ids
-				FROM {$wpdb->projectmanager_datasetmeta} AS t1, {$wpdb->projectmanager_dataset} AS t2
-				WHERE t1.value REGEXP CONVERT( _utf8 '%s' USING latin1 )
-					AND t1.form_id = '%d'
-					AND t1.dataset_id = t2.id
-				ORDER BY t1.dataset_id ASC";
-			$datasets = $wpdb->get_results($wpdb->prepare($sql, $search, intval($option)) );
+			
+			// Try to get country code from search string
+			$formfield = $this->getFormFields(intval($option));
+			if ('country' == $formfield->type) {
+				$country = $wpdb->get_results($wpdb->prepare("SELECT `id`, `code`, `name` FROM {$wpdb->projectmanager_countries} WHERE `name` REGEXP CONVERT( _utf8 '%s' USING latin1 ) ORDER BY `name` ASC", $search) );
+				if (count($country) > 0) {
+					$search = $country[0]->code;
+				} else {
+					$search = "";
+				}
+			}
+			if (empty($search)) {
+				$datasets = array();
+			} else {
+				$sql = "SELECT t1.dataset_id AS id,
+						t2.name,
+						t2.image,
+						t2.cat_ids
+					FROM {$wpdb->projectmanager_datasetmeta} AS t1, {$wpdb->projectmanager_dataset} AS t2
+					WHERE t1.value REGEXP CONVERT( _utf8 '%s' USING latin1 )
+						AND t1.form_id = '%d'
+						AND t1.dataset_id = t2.id
+					ORDER BY t1.dataset_id ASC";
+				$datasets = $wpdb->get_results($wpdb->prepare($sql, $search, intval($option)) );
+			}
 		}
 		
 		$this->datasets = $datasets;

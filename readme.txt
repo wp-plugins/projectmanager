@@ -66,6 +66,7 @@ The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons
 * NEW: TinyMCE Button for petitions landingpage
 * BUGFIX: fixed some styling issues with respect to formfield input width
 * BUGFIX: ordering of datasets by formfields with pagination in frontend and admin panel
+* BUGFIX: fixed search for country-type formfield (This only works searching for english country names!)
 * REMOVED: option to set columns and rows for textarea
 
 = 3.1.7.3 =
