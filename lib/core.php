@@ -1147,7 +1147,7 @@ class ProjectManager extends ProjectManagerLoader
 				elseif ( $limit && $this->getPerPage() != 'NaN' )
 					$sql .= " LIMIT ".intval($offset).",".$this->getPerPage().";";
 				else
-					$sql .= ";";	
+					$sql .= ";";
 			} else {
 				$sql .= ";";
 			}
@@ -1158,6 +1158,8 @@ class ProjectManager extends ProjectManagerLoader
 				$number = intval($limit);
 			else
 				$number = $this->getPerPage();
+			
+			if ($number == 0) $number = NULL;
 			
 			if ( $orderby_formfields )
 				$datasets = $this->orderDatasetsByFormFields($datasets, $formfield_id, $offset, $number);

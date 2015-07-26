@@ -3,7 +3,7 @@ Contributors: Kolja Schleich
 Tags: datamanager, CMS, Content Management System
 Requires at least: 3.9
 Tested up to 4.2.2
-Stable tag: 3.1.7.5
+Stable tag: 3.1.7.6
 
 This plugin can be used to manage any number of projects with recurrent datasets (e.g. portrait system, dvd collection, petition)
 
@@ -58,6 +58,9 @@ The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons
 
 
 == Changelog ==
+
+= 3.1.7.6 =
+* BUGFIX: fixed error with dataset ordering by formfield and no limit to number of datasets per_page = "NaN"
 
 = 3.1.7.5 =
 * NEW: set limit for string length cut-off of textarea and TinyMCE Editor using the options field in the formfields in the format `limit:XX`
