@@ -31,7 +31,7 @@ if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) 
 		<?php 
 			$formfield_options = explode(";", $form_field->options);
 			// check if there is a maximum input length given
-			$match = preg_grep("/max:/", $formfield_options);
+			$match = array_values(preg_grep("/max:/", $formfield_options));
 			if (count($match) == 1) {
 				$max = explode(":", $match[0]);
 				$placeholder = sprintf(__("Maximum of %d characters", 'projectmanager'), $max[1]);

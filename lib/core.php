@@ -61,7 +61,7 @@ class ProjectManager extends ProjectManagerLoader
 	 *
 	 * @var string
 	 */
-	var $order = 'ASC';
+	var $order = 'asc';
 	
 	
 	/**
@@ -462,7 +462,8 @@ class ProjectManager extends ProjectManagerLoader
 		elseif ( $orderby || $order ) {
 			if ( $orderby ) {
 				$tmp = explode("_",$orderby);
-				$this->orderby = $tmp[0];
+				//$this->orderby = $tmp[0];
+				$this->orderby = $orderby;
 				$formfield_id = isset($tmp[1]) ? $tmp[1] : "";
 			}
 			if ( $order ) $this->order = $order;
@@ -477,26 +478,36 @@ class ProjectManager extends ProjectManagerLoader
 		// Default
 		else {
 			$this->orderby = 'name';
-			$this->order = 'ASC';
+			$this->order = 'asc';
 		}
 		return $formfield_id;
 	}
 	
-
 	/**
-	 * get SQL order
+	 * get dataset order
 	 *
 	 * @param none
 	 * @return string
 	 */
 	function getDatasetOrder()
 	{
-		global $wpdb;
-		//return "`{$this->orderby}` {$this->order}";
-		return $wpdb->prepare("%s %s", $this->orderby, $this->order);
+		//global $wpdb;
+		//return $wpdb->prepare("%s %s", $this->orderby, $this->order);
+		
+		return $this->order;
 	}
-
-
+	
+	/**
+	 * get dataset order
+	 *
+	 * @param none
+	 * @return string
+	 */
+	function getDatasetOrderBy()
+	{
+		return $this->orderby;
+	}
+	
 	/**
 	 * returns array of form field types
 	 *
@@ -1104,6 +1115,7 @@ class ProjectManager extends ProjectManagerLoader
 
 			if (!isset($current_page)) $current_page = $this->getCurrentPage();
 			if ( $limit && $this->getPerPage() != 'NaN' ) $offset = ( $current_page - 1 ) * $this->getPerPage();
+			else $offset = 0;
 
 			if ( isset($meta_key )&& !empty($meta_value) ) {
 				if ( $meta_key != 'name' )
@@ -1125,7 +1137,6 @@ class ProjectManager extends ProjectManagerLoader
 				$orderby_formfields = true;
 			else
 				$orderby_formfields = false;
-	
 	
 			/*
 			* If datasets are ordered by formfields first get all
@@ -1354,16 +1365,16 @@ class ProjectManager extends ProjectManagerLoader
 	{
 		if ( !$this->getPerPage() )
 			return false;
-			
+		
+		if ( 'NaN' == $this->getPerPage() )
+			return 1;
+		
 		$datasets = $this->getDatasets();
 		$offsets = array();
 		foreach ( $datasets AS $o => $d ) {
 			$offsets[$d->id] = $o;
 		}
 		$number = $offsets[$dataset_id] + 1;
-		
-		if ( 'NaN' == $this->getPerPage() )
-			return 1;
 
 		return ceil($number/$this->getPerPage());
 	}
@@ -1379,7 +1390,7 @@ class ProjectManager extends ProjectManagerLoader
 	function getDatasetMeta( $dataset_id, $args = array() )
 	{
 	 	global $wpdb;
-		$sql = "SELECT form.id AS form_field_id, form.label AS label, form.private AS is_private, form.unique AS is_unique, form.mandatory AS is_mandatory, data.value AS value, form.type AS type, form.show_on_startpage AS show_on_startpage FROM {$wpdb->projectmanager_datasetmeta} AS data LEFT JOIN {$wpdb->projectmanager_projectmeta} AS form ON form.id = data.form_id WHERE data.dataset_id = '".intval($dataset_id)."'";
+		$sql = "SELECT form.id AS form_field_id, form.label AS label, form.options AS formfield_options, form.private AS is_private, form.unique AS is_unique, form.mandatory AS is_mandatory, data.value AS value, form.type AS type, form.show_on_startpage AS show_on_startpage FROM {$wpdb->projectmanager_datasetmeta} AS data LEFT JOIN {$wpdb->projectmanager_projectmeta} AS form ON form.id = data.form_id WHERE data.dataset_id = '".intval($dataset_id)."'";
 
 		if ( !empty($args) ) {
 			if ( isset($args['meta_id']) && is_numeric($args['meta_id']) ) $sql .= " AND form.`id` = '".intval($args['meta_id'])."'";
@@ -1517,14 +1528,30 @@ class ProjectManager extends ProjectManagerLoader
 					$list .= "</ul>";
 					$meta_value = $list;
 				}
-				
+			
+				// get formfield options
+				//$formfield = $this->getFormFields($meta->form_field_id);
+				$formfield_options = explode(";", $meta->formfield_options);
+			
 				$pattern = is_admin() ? "<span id='datafield".$meta->form_field_id."_".$dataset->id."'>%s</span>" : "%s";
 				if ( 'text' == $meta->type || 'select' == $meta->type || 'checkbox' == $meta->type || 'radio' == $meta->type || 'project' == $meta->type ) {
 					$meta_value = apply_filters( 'projectmanager_text', $meta_value );
 					$meta_value = sprintf($pattern, $meta_value, $dataset);
 				} elseif ( 'textfield' == $meta->type || 'tinymce' == $meta->type ) {
-					if ( strlen($meta_value) > 100 && !$show_all && empty($include) )
-						$meta_value = substr($meta_value, 0, 100)."...";
+					$match = array_values(preg_grep("/limit:/", $formfield_options));
+					if (count($match) == 1) {
+						$str_limit = explode(":", $match[0]);
+						$str_limit = $str_limit[1];
+					} else {
+						$str_limit = 100;
+					}
+					
+					if ( strlen($meta_value) > $str_limit && !$show_all && empty($include) ) {
+						$meta_value = substr($meta_value, 0, $str_limit)." ...";
+						
+						if (!is_admin())
+							$meta_value = $meta_value . " <a href='".get_permalink()."?show_".$this->getProjectID()."=".$dataset->id."&order_".$this->getProjectID()."=".$this->getDatasetOrder()."&orderby_".$this->getProjectID()."=".$this->getDatasetOrderBy()."'>".__('More', 'projectmanager')."</a>";
+					}
 					  if (!is_admin()) $meta_value = nl2br($meta_value);
 						
 					$meta_value = apply_filters( 'projectmanager_textfield', $meta_value );

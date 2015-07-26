@@ -27,7 +27,7 @@ document.forms[0].encoding = "multipart/form-data";
 		<?php 
 			$formfield_options = explode(";", $form_field->options);
 			// check if there is a maximum input length given
-			$match = preg_grep("/max:/", $formfield_options);
+			$match = array_values(preg_grep("/max:/", $formfield_options));
 			if (count($match) == 1) {
 				$max = explode(":", $match[0]);
 				$placeholder = "Maximum of ".$max[1]." characters";

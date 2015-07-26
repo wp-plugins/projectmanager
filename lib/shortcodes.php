@@ -228,7 +228,7 @@ class ProjectManagerShortcodes
 	 * It follows a list of optional attributes
 	 *
 	 * - cat_id: specify a category to only display those datasets. all datasets will be displayed if missing
-	 * - orderby: 'name', 'id' or 'formfield-X' where x is the formfield ID (default 'name')
+	 * - orderby: 'name', 'id' or 'formfield_X' where x is the formfield ID (default 'name')
 	 * - order: 'asc' or 'desc' (default 'asc')
 	 * - single: control if link to sigle dataset is displayed. Either 'true' or 'false' (default 'true')
 	 * - selections: control wether or not selection panel is dislayed (default 'true')
@@ -314,6 +314,10 @@ class ProjectManagerShortcodes
 				$url = add_query_arg($show, $dataset->id, $url);
 				//$url = add_query_arg('project_id', $project_id, $url);
 				$url = ($projectmanager->isCategory()) ? add_query_arg('cat_id', $projectmanager->getCatID(), $url) : $url;
+				if (!isset($_GET['order_'.$project->id]))
+					$url = add_query_arg('order_'.$project->id, $projectmanager->getDatasetOrder(), $url);
+				if (!isset($_GET['orderby_'.$project->id]))
+					$url = add_query_arg('orderby_'.$project->id, $projectmanager->getDatasetOrderBy(), $url);
 				
 				foreach ( $matches = preg_grep("/cat_id_\d+/", array_keys($_GET)) AS $key )
 					$url = add_query_arg($key, $_GET[$key], $url);
@@ -369,6 +373,8 @@ class ProjectManagerShortcodes
 		
 		$id = intval($id);
 
+		$projectmanager->setDatasetOrder();
+		
 		$dataset = $projectmanager->getDataset($id);
 		if ($dataset->image == "") {
 			$project = $projectmanager->getProject($dataset->project_id);

@@ -144,6 +144,7 @@ $options = get_option('projectmanager');
 	<!--<p class="submit" style="float: right; margin: 1em 0 0 0; padding: 0;"><input type="submit" name="addFormField" value="<?php _e( 'Add Form Field', 'projectmanager' ) ?> &raquo;" class="button-secondary action" /></p>-->
 	<p style="margin: 0.5em 0 0 0; padding: 0;">*<?php _e('The Options field is used to store meta-data of formfields. Separate values by ; to save options for selectable fields (i.e. dropdown, checkbox or radio list).', 'projectmanager') ?></p>
 	<p style="margin: 0.5em 0 0 0; padding: 0;">*<?php _e('The Options field can be also used to set a maximum number of characters for given formfield in the format `max:XX`.', 'projectmanager') ?></p>
+	<p style="margin: 0.5em 0 0 0; padding: 0;">*<?php _e('The Options field can be also used to set a maximum number of characters for textfields and TinyMCE editors after which the data will be cut `limit:XX`.', 'projectmanager') ?></p>
 	<!--<p><a href='#' onclick='return ProjectManager.addFormField(<?php echo $project->id ?>);'><?php _e( 'Add new formfield', 'projectmanager' ) ?></a></p>-->
 	<p class="submit"><input type="submit" name="saveFormFields" value="<?php _e( 'Save Form Fields', 'projectmanager' ) ?> &raquo;" class="button-primary" /></p>
 	</form>

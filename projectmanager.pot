@@ -744,6 +744,10 @@ msgstr ""
 msgid "The Options field can be also used to set a maximum number of characters for given formfield in the format `max:XX`."
 msgstr ""
 
+#: admin/formfields.php:
+msgid "The Options field can be also used to set a maximum number of characters for textfields and TinyMCE editors after which the data will be cut `limit:XX`."
+msgstr ""
+
 #: admin/formfields.php:96 lib/ajax.php:332
 msgid "Delete Option"
 msgstr ""

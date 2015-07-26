@@ -28,6 +28,9 @@ msgstr "Das Optionen Feld wird verwendet um Metadaten von Formularfeldern zu spe
 msgid "The Options field can be also used to set a maximum number of characters for given formfield in the format `max:XX`."
 msgstr "Das Optionen Feld kann auch verwendet werden, um eine maximale Anzahl Zeichen für ein Formularfeld im Format `max:XX` zu setzen."
 
+#: admin/formfields.php:
+msgid "The Options field can be also used to set a maximum number of characters for textfields and TinyMCE editors after which the data will be cut `limit:XX`."
+msgstr "Das Optionen Feld kann auch verwendet werden, um eine maximale Anzahl Zeichen für Textfelder und TinyMCE Editoren zu setzen ab dem der Inhalt gekürzt wird im Format `limit:XX` zu setzen."
 
 #: admin/admin.php:47 admin/admin.php:59
 msgid "Overview"

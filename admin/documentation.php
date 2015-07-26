@@ -58,7 +58,7 @@ else :
 		<tr class="alternate" valign="top">
 			<td>orderby</td>
 			<td><?php _e( 'order datasets by given field', 'projectmanager' ) ?></td>
-			<td><?php _e( '<em>name</em>, <em>id</em>, <em>formfields-ID</em> (replace ID with respective ID or <em>rand</em>. <em>rand</em> must be used together with the results attribute to limit the number of datastes.', 'projectmanager' ) ?></td>
+			<td><?php _e( '<em>name</em>, <em>id</em>, <em>formfields_ID</em> (replace ID with respective ID or <em>rand</em>. <em>rand</em> must be used together with the results attribute to limit the number of datastes.', 'projectmanager' ) ?></td>
 			<td>name</td>
 			<td><?php _e( 'Yes', 'projectmanager' ) ?></td>
 		</tr>
