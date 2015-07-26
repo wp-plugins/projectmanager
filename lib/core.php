@@ -1159,7 +1159,7 @@ class ProjectManager extends ProjectManagerLoader
 			else
 				$number = $this->getPerPage();
 			
-			if ($number == 0) $number = NULL;
+			if ($number == 0 || $number == "NaN") $number = NULL;
 			
 			if ( $orderby_formfields )
 				$datasets = $this->orderDatasetsByFormFields($datasets, $formfield_id, $offset, $number);
