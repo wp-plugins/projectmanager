@@ -65,10 +65,10 @@ global $wpdb;
 			<li id="search_tab"><span><a href="javascript:mcTabs.displayTab('search_tab', 'search_panel');" onmouseover="return false;"><?php _e('Search Form','projectmanager') ?></a></span></li>
 			<li id="datasetform_tab"><span><a href="javascript:mcTabs.displayTab('datasetform_tab', 'datasetform_panel');" onmouseover="return false;"><?php _e('Dataset Form','projectmanager') ?></a></span></li>
 			<li id="num_datasets_tab"><span><a href="javascript:mcTabs.displayTab('num_datasets_tab', 'num_datasets_panel');" onmouseover="return false;"><?php _e('Number of datasets','projectmanager') ?></a></span></li>
-			<li id="petitions_landingpage_tab"><span><a href="javascript:mcTabs.displayTab('petitions_landingpage_tab', 'petitions_landingpage_panel');" onmouseover="return false;"><?php _e('Petitions Landingpage','projectmanager') ?></a></span></li>
+			<li id="testimonials_tab"><span><a href="javascript:mcTabs.displayTab('testimonials_tab', 'testimonials_panel');" onmouseover="return false;"><?php _e('Testimonials','projectmanager') ?></a></span></li>
 		</ul>
 	</div>
-	<div class="panel_wrapper" style="height: 165px;">
+	<div class="panel_wrapper" style="height: 170px;">
 		
 	<!-- project panel -->
 	<div id="project_panel" class="panel current">
@@ -145,12 +145,19 @@ global $wpdb;
 		<td><label for="datasets"><?php _e("Dataset", 'projectmanager'); ?></label></td>
 		<td>
 		<select id="datasets" name="datasets" style="width: 200px">
-		<option value="0"><?php _e("No Dataset", 'projectmanager'); ?></option>
+		<option value="0"><?php _e("", 'projectmanager'); ?></option>
 		<?php
-			$datasets = $wpdb->get_results("SELECT * FROM {$wpdb->projectmanager_dataset} ORDER BY id ASC");
-			if( ($datasets) ) {
-				foreach( $datasets as $dataset )
-					echo '<option value="'.$dataset->id.'" >'.$dataset->name.'</option>'."\n";
+			$projects = $wpdb->get_results("SELECT * FROM {$wpdb->projectmanager_projects} ORDER BY id ASC");
+			if ($projects) {
+				foreach ($projects AS $project) {
+					echo '<optgroup label="'.$project->title.'">';
+					$datasets = $wpdb->get_results( $wpdb->prepare("SELECT * FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = '%d' ORDER BY id ASC", $project->id) );
+					if( ($datasets) ) {
+						foreach( $datasets as $dataset )
+							echo '<option value="'.$dataset->id.'" >'.$dataset->name.'</option>'."\n";
+					}
+					echo '</optgroup>';
+				}
 			}
 		?>
         	</select>
@@ -243,12 +250,12 @@ global $wpdb;
 	</div>
 	
 	<!-- petitions landingpage panel -->
-	<div id="petitions_landingpage_panel" class="panel">
+	<div id="testimonials_panel" class="panel">
 	<table style="border: 0;">
 	<tr>
-		<td><label for="petitions_landingpage_projects"><?php _e("Project", 'projectmanager'); ?></label></td>
+		<td><label for="testimonials_projects"><?php _e("Project", 'projectmanager'); ?></label></td>
 		<td>
-		<select id="petitions_landingpage_projects" name="petitions_landingpage_projects" style="width: 200px">
+		<select id="testimonials_projects" name="testimonials_projects" style="width: 200px">
 		<option value="0"><?php _e("No Project", 'projectmanager'); ?></option>
 		<?php
 			$projects = $wpdb->get_results("SELECT * FROM {$wpdb->projectmanager_projects} ORDER BY id ASC");
@@ -261,34 +268,41 @@ global $wpdb;
 		</td>
 	</tr>
 	<tr>
-		<td><label for="petitions_landingpage_number"><?php _e("Number of datasets", 'projectmanager'); ?></label></td>
+		<td><label for="testimonials_template"><?php _e('Template', 'projectmanager'); ?></label></td>
 		<td>
-			<input type="text" size="5" name="petitions_landingpage_number" id="petitions_landingpage_number" />
-			<label for="petitions_landingpage_ncol"><?php _e("Number of Columns", 'projectmanager'); ?></label>
-			<input type="text" size="5" name="petitions_landingpage_ncol" id="petitions_landingpage_ncol" />
+		<?php $templates = array('intro' => __('Intro', 'projectmanager'), '' => __('List', 'projectmanager')) ?>
+		<select size="1" name="testimonials_template" id="testimonials_template">
+		<?php foreach ($templates AS $value => $template_name) : ?>
+		<option value="<?php echo $value ?>"><?php echo $template_name ?></option>
+		<?php endforeach; ?>
+		</select>
 		</td>
 	</tr>
 	<tr>
-		<td><label for="petitions_landingpage_comment_id"><?php _e("Formfield ID for Comment", 'projectmanager'); ?></label></td>
+		<td><label for="testimonials_number"><?php _e("Number of datasets", 'projectmanager'); ?></label></td>
 		<td>
-			<input type="text" size="5" name="petitions_landingpage_comment_id" id="petitions_landingpage_comment_id" />
-			<label for="petitions_landingpage_country_id"><?php _e("Country", 'projectmanager'); ?></label>
-			<input type="text" size="5" name="petitions_landingpage_country_id" id="petitions_landingpage_country_id" />
-			<label for="petitions_landingpage_city_id"><?php _e("City", 'projectmanager'); ?></label>
-			<input type="text" size="5" name="petitions_landingpage_city_id" id="petitions_landingpage_city_id" />
+			<input type="text" size="5" name="testimonials_number" id="testimonials_number" />
+			<label for="testimonials_ncol"><?php _e("Number of Columns", 'projectmanager'); ?></label>
+			<input type="text" size="5" name="testimonials_ncol" id="testimonials_ncol" />
 		</td>
 	</tr>
 	<tr>
-		<td><label for="petitions_landingpage_title"><?php _e("Title", 'projectmanager'); ?></label></td>
-		<td><input type="text" size="20" placeholder="<?php _e('Optional', 'projectmanager') ?>" name="petitions_landingpage_title" id="petitions_landingpage_title" /></td>
+		<td><label for="testimonials_comment_id"><?php _e("Formfield ID for Comment", 'projectmanager'); ?></label></td>
+		<td>
+			<input type="text" size="5" name="testimonials_comment_id" id="testimonials_comment_id" />
+			<label for="testimonials_country_id"><?php _e("Country", 'projectmanager'); ?></label>
+			<input type="text" size="5" name="testimonials_country_id" id="testimonials_country_id" />
+			<label for="testimonials_city_id"><?php _e("City", 'projectmanager'); ?></label>
+			<input type="text" size="5" name="testimonials_city_id" id="testimonials_city_id" />
+		</td>
 	</tr>
 	<tr>
-		<td><label for="petitions_landingpage_sign_page_id"><?php _e("Signing Page ID", 'projectmanager'); ?></label></td>
-		<td><input type="text" size="10" placeholder="<?php _e('Optional', 'projectmanager') ?>" name="petitions_landingpage_sign_page_id" id="petitions_landingpage_sign_page_id" /></td>
+		<td><label for="testimonials_sign_page_id"><?php _e("Signing Page ID", 'projectmanager'); ?></label></td>
+		<td><input type="text" size="10" placeholder="<?php _e('Optional', 'projectmanager') ?>" name="testimonials_sign_page_id" id="testimonials_sign_page_id" /></td>
 	</tr>
 	<tr>
-		<td><label for="petitions_landingpage_list_page_id"><?php _e("Supporter Page ID", 'projectmanager'); ?></label></td>
-		<td><input type="text" size="10" placeholder="<?php _e('Optional', 'projectmanager') ?>" name="petitions_landingpage_list_page_id" id="petitions_landingpage_list_page_id" /></td>
+		<td><label for="testimonials_list_page_id"><?php _e("Supporter Page ID", 'projectmanager'); ?></label></td>
+		<td><input type="text" size="10" placeholder="<?php _e('Optional', 'projectmanager') ?>" name="testimonials_list_page_id" id="testimonials_list_page_id" /></td>
 	</tr>
 	</table>
 	</div>

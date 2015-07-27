@@ -1,6 +1,6 @@
 <?php
 /**
-Template page for petition landing page
+Template page for testimonials intro box
 
 The following variables are usable:
 
@@ -13,18 +13,18 @@ The following variables are usable:
 ?>
 
 <style type="text/css">
-/*--- Petition Landingpage ---*/
-div#projectmanager_petition_landingpage {
+/*--- Testimonials Intro ---*/
+div#testimonials-intro {
 }
-div#projectmanager_petition_landingpage div.petition_landingpage {
+div#testimonials-intro div.testimonials-intro {
 	clear: both;
 	margin-bottom: 2em;
 }
-div#projectmanager_petition_landingpage ul {
+div#testimonials-intro ul {
 	margin-left: 0;
 	list-style-type: none;
 }
-div#projectmanager_petition_landingpage ul li {
+div#testimonials-intro ul li {
 	background-color: white;
 	border: 2px solid #efefef;
 	padding: 0.5em;
@@ -33,32 +33,28 @@ div#projectmanager_petition_landingpage ul li {
 	margin: 0.3em 0.3em 0.3em 0;
 	float: left;
 }
-div#projectmanager_petition_landingpage ul li p {
+div#testimonials-intro ul li p {
 	margin: 0.2em;
 }
-div#projectmanager_petition_landingpage ul li p.comment {
+div#testimonials-intro ul li p.comment {
 	font-style: italic;
 }
-div#projectmanager_petition_landingpage .num_supporters {
+div#testimonials-intro .num_supporters {
 	font-size: 1.5em;
 	font-weight: bold;
 	text-align: center;
 	clear: both;
 	margin-top: 1em;
 }
-div#projectmanager_petition_landingpage .num_supporters .signpetition {
+div#testimonials-intro .num_supporters .join {
 	font-weight: normal;
 }
 </style>
 
-<div id="projectmanager_petition_landingpage">
-
-<?php if (!empty($title)) : ?>
-<h2><?php echo $title ?></h2>
-<?php endif; ?>
+<div id="testimonials-intro">
 
 <?php if ( $datasets ) : $i = 0; ?>
-<div class='petition_landingpage'>
+<div class='testimonials-intro'>
 	<ul>
 	<?php foreach ( $datasets AS $dataset ) : $i++; ?>
 		<li style="width: <?php echo (100/$ncol)-(0.10*100/$ncol) ?>%;">
@@ -76,7 +72,7 @@ div#projectmanager_petition_landingpage .num_supporters .signpetition {
 <p class="num_supporters">
 	<?php echo $project->num_datasets ?> <?php _e('Supporters Already.', 'projectmanager') ?>
 	<?php if ($sign_petition_href != "") : ?>
-	<span class="signpetition"><a href="<?php echo $sign_petition_href ?>"> <?php _e('Become part of our cause.', 'projectmanager') ?></a></span>
+	<span class="join"><a href="<?php echo $sign_petition_href ?>"> <?php _e('Become part of our cause.', 'projectmanager') ?></a></span>
 	<?php endif; ?>
 </p>
 <?php endif; ?>

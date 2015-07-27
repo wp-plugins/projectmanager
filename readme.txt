@@ -59,6 +59,12 @@ The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons
 
 == Changelog ==
 
+= 3.1.7.7 =
+* NEW: new list view template for testimonials
+* UPDATED: documentation update
+* CHANGED: testimonials/petitions shortcode tag and templates
+* BUGFIX: some small fixes regarding testimonials/petitions templates and shortcode
+
 = 3.1.7.6 =
 * BUGFIX: fixed error with dataset ordering by formfield and no limit to number of datasets per_page = "NaN"
 

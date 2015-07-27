@@ -44,7 +44,7 @@ else :
 		<tr class="alternate" valign="top">
 			<td>template</td>
 			<td><?php _e( 'Template file used to display', 'projectmanager' ) ?></td>
-			<td><?php _e( '<em>table</em>, <em>gallery</em> or template file without extension', 'projectmanager' ) ?></td>
+			<td><?php _e( '<em>table</em>, <em>table-image</em>, <em>gallery</em> or template file without extension', 'projectmanager' ) ?></td>
 			<td>table</td>
 			<td><?php _e( 'Yes', 'projectmanager' ) ?></td>
 		</tr>
@@ -224,6 +224,86 @@ else :
 	</tbody>
 	</table>
 	
+	<!-- Shortcode to include testimonials -->
+	<p><?php _e( 'It is possible to include the number datasets', 'projectmanager' ) ?></p>
+	<blockquote><p>[testimonials project_id=ID comment=X country=X city=X]</p></blockquote>
+	<table class="widefat">
+	<thead>
+		<tr>
+			<th scope="col"><?php _e( 'Parameter', 'projectmanager' ) ?></th>
+			<th scope="col"><?php _e( 'Description', 'projectmanager' ) ?></th>
+			<th scope="col"><?php _e( 'Possible Values', 'projectmanager' ) ?></th>
+			<th scope="col"><?php _e( 'Default', 'projectmanager' ) ?></th>
+			<th scope="col"><?php _e( 'Optional', 'projectmanager' ) ?></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr class="" valign="top">
+			<td>project_id</td>
+			<td><?php _e( 'ID of Project', 'projectmanager' ) ?></td>
+			<td><em>integer</em></td>
+			<td>&#160;</td>
+			<td><?php _e( 'No', 'projectmanager' ) ?></td>
+		</tr>
+		<tr class="" valign="top">
+			<td>comment</td>
+			<td><?php _e( 'Formfield ID containing comment', 'projectmanager' ) ?></td>
+			<td><em>integer</em></td>
+			<td>&#160;</td>
+			<td><?php _e( 'No', 'projectmanager' ) ?></td>
+		</tr>
+		<tr class="" valign="top">
+			<td>country</td>
+			<td><?php _e( 'Formfield ID containing country', 'projectmanager' ) ?></td>
+			<td><em>integer</em></td>
+			<td>&#160;</td>
+			<td><?php _e( 'No', 'projectmanager' ) ?></td>
+		</tr>
+		<tr class="" valign="top">
+			<td>city</td>
+			<td><?php _e( 'Formfield ID containing city', 'projectmanager' ) ?></td>
+			<td><em>integer</em></td>
+			<td>&#160;</td>
+			<td><?php _e( 'No', 'projectmanager' ) ?></td>
+		</tr>
+		<tr class="" valign="top">
+			<td>number</td>
+			<td><?php _e( 'Number of datasets to display in intro template', 'projectmanager' ) ?></td>
+			<td><em>integer</em></td>
+			<td>6</td>
+			<td><?php _e( 'Yes', 'projectmanager' ) ?></td>
+		</tr>
+		<tr class="" valign="top">
+			<td>template</td>
+			<td><?php _e( 'Template to use', 'projectmanager' ) ?></td>
+			<td><em>empty, intro or X with a template named testimonials-X.php</em></td>
+			<td></td>
+			<td><?php _e( 'Yes', 'projectmanager' ) ?></td>
+		</tr>
+		<tr class="" valign="top">
+			<td>ncol</td>
+			<td><?php _e( 'Number of columns in intro template', 'projectmanager' ) ?></td>
+			<td><em>integer</em></td>
+			<td>3</td>
+			<td><?php _e( 'Yes', 'projectmanager' ) ?></td>
+		</tr>
+		<tr class="" valign="top">
+			<td>sign_page_id</td>
+			<td><?php _e( 'Page ID containing datasetform', 'projectmanager' ) ?></td>
+			<td><em>integer</em></td>
+			<td>&#160;</td>
+			<td><?php _e( 'Yes', 'projectmanager' ) ?></td>
+		</tr>
+		<tr class="" valign="top">
+			<td>list_page_id</td>
+			<td><?php _e( 'Page ID containing list of testimonials', 'projectmanager' ) ?></td>
+			<td><em>integer</em></td>
+			<td>&#160;</td>
+			<td><?php _e( 'Yes', 'projectmanager' ) ?></td>
+		</tr>
+	</tbody>
+	</table>
+	
 	<a href="#top" class="alignright"><?php _e( 'Top', 'projectmanager' ) ?></a>
   	<h3 id="templates"><?php _e( 'Templates', 'projectmanager' ) ?></h3>
     <p><?php _e( 'Templates are special files that are used to display plugin data in the website frontend. They reside in the following directory', 'projectmanager' ) ?></p>
@@ -274,14 +354,27 @@ else :
 			<td>search-compact.php</td>
 			<td><?php _e( 'Compact Search formular', 'projectmanager' ) ?></td>
 		</tr>
+		<tr class="alternate" valign="top">
+			<td>testimonials.php</td>
+			<td><?php _e( 'list view of datasets specifically for testimonials or petitions', 'projectmanager') ?></td>
+		</tr>
+		<tr class="" valign="top">
+			<td>testimonials-intro.php</td>
+			<td><?php _e( 'landing page specifically for testimonials or petitions displaying random datasets', 'projectmanager') ?></td>
+		</tr>
 	</tbody>
 	</table>
 	<p><?php _e( 'If you want to modify existing templates copy it to', 'projectmanager' ) ?></p>
 	<blockquote><p>your_theme_dir/projectmanager/</p></blockquote>
 	<p><?php _e( 'The plugin will then first look in your theme directory. Further it is possible to design own templates. Assume you created a file <strong>sample1.php</strong>, to display datasets of a project. To use the template use the following tag.', 'projectmanager' ) ?></p>
 	<blockquote><p>[project id=ID template=<strong>sample1</strong>]</p></blockquote>
-	<p><?php _e( 'For single datasets templates must be named <strong>dataset-X.php</strong> and searchform <strong>search-X.php</strong>. The files are then loaded with the following tags.', 'projectmanager' ) ?></p>
-	<blockquote><p>[dataset id=ID template=<strong>X</strong>]</p><p>[project_search project_id=ID template=<strong>X</strong>]</p></blockquote>
+	<p><?php _e( 'For single datasets templates must be named <strong>dataset-X.php</strong>, searchform <strong>search-X.php</strong>, dataset form <strong>dataset-form-X.php</strong> and testimonials <strong>testimonials-X</strong>. The files are then loaded with the following tags.', 'projectmanager' ) ?></p>
+	<blockquote>
+		<p>[dataset id=ID template=<strong>X</strong>]</p>
+		<p>[project_search project_id=ID template=<strong>X</strong>]</p>
+		<p>[datasetform project_id=ID template=<strong>X</strong>]</p>
+		<p>[testimonials project_id=ID template=<strong>X</strong>]</p>
+	</blockquote>
 	
 	
 	<a href="#top" class="alignright"><?php _e( 'Top', 'projectmanager' ) ?></a>

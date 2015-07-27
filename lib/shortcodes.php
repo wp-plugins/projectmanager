@@ -38,7 +38,7 @@ class ProjectManagerShortcodes
 		add_shortcode( 'dataset_form', array(&$this, 'displayDatasetForm') );
 		add_shortcode( 'project_search', array(&$this, 'displaySearchForm') );
 		add_shortcode( 'projectmanager_num_datasets', array(&$this, 'displayNumDatasets') );
-		add_shortcode( 'petition_landingpage', array(&$this, 'displayPetitionLandingpage') );
+		add_shortcode( 'testimonials', array(&$this, 'displayTestimonials') );
 		add_action( 'projectmanager_selections', array(&$this, 'displaySelections') );
 		add_action( 'projectmanager_tablenav', array(&$this, 'displaySelections') );
 		add_action( 'projectmanager_dataset', array(&$this, 'displayDataset'), 10, 2 );
@@ -445,40 +445,38 @@ class ProjectManagerShortcodes
 		else
 			return "<div class='projectmanager_num_datasets'><p><span class='text'>". $text."</span> <span class='num_datasets'>".$num_datasets."</span></p></div>";
 	}
-	
+
 	
 	/**
-	 * Function to display petition landing page
+	 * Function to display testimonials
 	 *
-	 *	[petition_landingpage project_id="x" number= comment= country= city= ncol= title= sign_page_id= list_page_id= template=]
+	 *	[testimonials project_id="x" number= comment= country= city= ncol= title= sign_page_id= list_page_id= template=]
 	 *
 	 * - project_id is the ID of the project to display
 	 * - number is the number of random datasets
 	 * - comment, country, city are the formfield IDs for those dataset
 	 * - ncol is the number of columns
-	 * - title is an optional title
 	 * - sign_page_id is the page ID containing the petition signing form. Can be also an anker if formular is on the same page
 	 * - list_page_id is the page ID containing a list of all supporters
-	 * - template is an optional template
+	 * - template should be either empty or "intro"
 	 *
 	 * @param array $atts
 	 * @return the content
 	 */
-	function displayPetitionLandingpage( $atts )
+	function displayTestimonials( $atts )
 	{
 		global $wp, $wpdb, $projectmanager;
 		
 		extract(shortcode_atts(array(
 			'project_id' => 0,
-			'number' => 5,
+			'number' => 6,
 			'comment' => 0,
 			'country' => 0,
 			'city' => 0,
 			'ncol' => 3,
-			'title' => '',
 			'sign_page_id' => 0,
 			'list_page_id' => 0,
-			'template' => 'petition-landingpage',
+			'template' => '',
 		), $atts ));
 		$project_id = intval($project_id);
 		$number = intval($number);
@@ -492,13 +490,31 @@ class ProjectManagerShortcodes
 		$projectmanager->init($project_id);
 		$project = $projectmanager->getCurrentProject();
 		
+		$page_get = "paged_".$project_id;
+		if (isset($_GET['paged']) && isset($_GET['project_id']) && $_GET['project_id'] == $project_id)
+			$current_page = intval($_GET['paged']);
+		elseif (isset($wp->query_vars['paged']) && isset($_GET['project_id']) && $_GET['project_id'] == $project_id)
+			$current_page = max(1, intval($wp->query_vars['paged']));
+		elseif (isset($_GET[$page_get]))
+			$current_page = intval($_GET[$page_get]);
+		elseif (isset($wp->query_vars[$page_get]))
+			$current_page = max(1, intval($wp->query_vars[$page_get]));
+		else
+			$current_page = 1;
+			
 		if (!empty($sign_page_id))
 			$sign_petition_href = is_numeric($sign_page_id) ? get_permalink($sign_page_id) : htmlspecialchars($sign_page_id);
 		else
 			$sign_petition_href = "";
 		
-		$datasets = $projectmanager->getDatasets( array( 'project_id' => $project_id, 'limit' => $number, 'random' => true) );
+		if ($template == "intro")
+			$datasets = $projectmanager->getDatasets( array( 'project_id' => $project_id, 'limit' => $number, 'random' => true) );
+		else
+			$datasets = $projectmanager->getDatasets( array( 'project_id' => $project_id, 'current_page' => $current_page, 'limit' => true, 'orderby' => 'id', 'order' => 'DESC', 'random' => false) );
+		
 		$project->num_datasets = $projectmanager->getNumDatasets($projectmanager->getProjectID(), true);
+		
+		$pagination = $projectmanager->getPageLinks($current_page, $page_get);
 		
 		$single = false;
 		
@@ -510,6 +526,23 @@ class ProjectManagerShortcodes
 			
 			$comment = $wpdb->get_results($wpdb->prepare( "SELECT value FROM {$wpdb->projectmanager_datasetmeta} WHERE dataset_id = '%d' AND form_id = '%d'", intval($dataset->id), $comment_id));
 			$dataset->comment = $comment[0]->value;
+			
+			// Trim comment in intro template
+			if ($template == "intro") {
+				$comment_field = $wpdb->get_results($wpdb->prepare( "SELECT options FROM {$wpdb->projectmanager_projectmeta} WHERE id = '%d'", $comment_id));
+				$formfield_options = explode(";", $comment_field[0]->options);
+				$match = array_values(preg_grep("/limit:/", $formfield_options));
+				if (count($match) == 1) {
+					$str_limit = explode(":", $match[0]);
+					$str_limit = $str_limit[1];
+				} else {
+					$str_limit = 150;
+				}
+				
+				if (strlen($dataset->comment) > $str_limit)
+					$dataset->comment = substr($dataset->comment, 0, $str_limit)." ...";
+			}
+			
 			$country = $wpdb->get_results($wpdb->prepare( "SELECT value FROM {$wpdb->projectmanager_datasetmeta} WHERE dataset_id = '%d' AND form_id = '%d'", intval($dataset->id), $country_id));
 			$dataset->country = __($projectmanager->getCountryName($country[0]->value), 'projectmanager');
 			$city = $wpdb->get_results($wpdb->prepare( "SELECT value FROM {$wpdb->projectmanager_datasetmeta} WHERE dataset_id = '%d' AND form_id = '%d'", intval($dataset->id), $city_id));
@@ -525,8 +558,13 @@ class ProjectManagerShortcodes
 				
 			$i++;
 		}
-				
-		$out = $this->loadTemplate( $template, array('project' => $project, 'datasets' => $datasets, 'title' => $title, 'sign_petition_href' => $sign_petition_href, 'list_page_id' => $list_page_id, 'ncol' => $ncol) );
+		
+		if ($template == "")
+			$template = "testimonials";
+		else
+			$template = "testimonials-".$template;
+		
+		$out = $this->loadTemplate( $template, array('project' => $project, 'datasets' => $datasets, 'pagination' => $pagination, 'sign_petition_href' => $sign_petition_href, 'list_page_id' => $list_page_id, 'ncol' => $ncol) );
 		
 		return $out;
 	}

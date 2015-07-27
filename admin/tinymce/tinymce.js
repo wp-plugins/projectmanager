@@ -29,7 +29,7 @@ function ProjectManagerInsertLink() {
 	var search = document.getElementById('search_panel');
 	var datasetform = document.getElementById('datasetform_panel');
 	var num_datasets = document.getElementById('num_datasets_panel');
-	var petitions_landingpage = document.getElementById('petitions_landingpage_panel');
+	var testimonials = document.getElementById('testimonials_panel');
 	
 	// who is active ?
 	if (project.className.indexOf('current') != -1) {
@@ -109,16 +109,17 @@ function ProjectManagerInsertLink() {
 			tinyMCEPopup.close();
 	}
 	
-	if (petitions_landingpage.className.indexOf('current') != -1) {
-		var projectId = document.getElementById('petitions_landingpage_projects').value;
-		var number = document.getElementById('petitions_landingpage_number').value;
-		var ncol = document.getElementById('petitions_landingpage_ncol').value;
-		var comment_id = document.getElementById('petitions_landingpage_comment_id').value;
-		var country_id = document.getElementById('petitions_landingpage_country_id').value;
-		var city_id = document.getElementById('petitions_landingpage_city_id').value;
-		var title = document.getElementById('petitions_landingpage_title').value;
-		var list_page_id = document.getElementById('petitions_landingpage_list_page_id').value;
-		var sign_page_id = document.getElementById('petitions_landingpage_sign_page_id').value;
+	if (testimonials.className.indexOf('current') != -1) {
+		var projectId = document.getElementById('testimonials_projects').value;
+		var number = document.getElementById('testimonials_number').value;
+		var ncol = document.getElementById('testimonials_ncol').value;
+		var comment_id = document.getElementById('testimonials_comment_id').value;
+		var country_id = document.getElementById('testimonials_country_id').value;
+		var city_id = document.getElementById('testimonials_city_id').value;
+		var title = document.getElementById('testimonials_title').value;
+		var list_page_id = document.getElementById('testimonials_list_page_id').value;
+		var sign_page_id = document.getElementById('testimonials_sign_page_id').value;
+		var template = document.getElementById('testimonials_template').value;
 		
 		if (number == "") number = 6;
 		if (ncol == "") ncol = 3;
@@ -133,7 +134,7 @@ function ProjectManagerInsertLink() {
 			sign_page_id = " sign_page_id=" + sign_page_id;
 		
 		if (projectId != 0)
-			tagtext = "[petition_landingpage project_id=" + projectId + " number=" + number + " comment=" + comment_id + " country=" + country_id + " city=" + city_id + " ncol=" + ncol + title + list_page_id + sign_page_id + "]";
+			tagtext = "[testimonials project_id=" + projectId + " template=" + template + " number=" + number + " comment=" + comment_id + " country=" + country_id + " city=" + city_id + " ncol=" + ncol + title + list_page_id + sign_page_id + "]";
 		else
 			tinyMCEPopup.close();
 	}
