@@ -43,6 +43,8 @@ div.testimonials p.cite {
 }
 </style>
 
+<?php if ( isset($project->selections) && $project->selections ) do_action('projectmanager_selections'); ?>
+
 <div class="testimonials">
 
 <?php if ( $datasets ) : $i = 0; ?>
@@ -50,8 +52,7 @@ div.testimonials p.cite {
 	<?php foreach ( $datasets AS $dataset ) : $i++; ?>
 		<li>
 			<p class='comment'>&ldquo;<?php echo $dataset->comment ?>&rdquo;</p>
-			<p class='cite'><?php echo $dataset->name ?> - <?php echo $dataset->city ?>,<?php echo $dataset->country ?></p>
-			<!--<img class="supporter" src="<?php echo $dataset->thumbURL ?>" alt="<?php echo $dataset->name ?>, <?php echo $dataset->country ?>" data-container="body" data-toggle="popover" data-placement="auto" data-html="true" data-content="<q><?php echo $dataset->comment ?></q><cite><?php echo $dataset->name ?> - <?php echo $dataset->city ?>,<?php echo $dataset->country ?></cite>" />-->
+			<p class='cite'><?php echo $dataset->name ?> - <?php echo $dataset->city ?>, <?php echo $dataset->country ?></p>
 		</li>
 	<?php endforeach; ?>
 	</ul>

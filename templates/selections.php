@@ -39,6 +39,22 @@ The following variables are usable:
 	</select>
 	<?php endif; ?>
 	
+	<?php if ($projectmanager->hasCountryFormField()) : ?>
+	<?php foreach ($projectmanager->getCountryFormFields() AS $field) : ?>
+	<?php 
+		if ($key = array_values(preg_grep("/country_".$field->id."/", array_keys($_GET)))) $selected_country = htmlspecialchars($_GET[$key[0]]);
+		else $selected_country = "";
+	?>
+			
+	<select size="1" style="width: 200px;" name="country_<?php echo $field->id ?>">
+		<option value=""><?php printf(__('Filter by %s', 'projectmanager'), $field->label) ?></option>
+		<?php foreach ($projectmanager->getCountries() AS $country) : ?>
+		<option value="<?php echo $country->code ?>" <?php selected($country->code, $selected_country ); ?>><?php echo $country->name ?></option>
+		<?php endforeach; ?>
+	</select>
+	<?php endforeach; ?>
+	<?php endif; ?>
+	
 	<input type='submit' value='<?php _e( 'Apply' ) ?>' class='button' />
 </div>
 </form>

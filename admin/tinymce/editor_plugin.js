@@ -20,7 +20,7 @@
 				ed.windowManager.open({
 					file : url + '/window.php',
 					width : 700, // + ed.getLang('ProjectManager.delta_width', 0),
-					height : 270, // + ed.getLang('ProjectManager.delta_height', 0),
+					height : 290, // + ed.getLang('ProjectManager.delta_height', 0),
 					inline : 1
 				}, {
 					plugin_url : url // Plugin absolute URL

@@ -60,7 +60,9 @@ The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons
 == Changelog ==
 
 = 3.1.7.7 =
+* NEW: selection menu to filter for countries
 * NEW: new list view template for testimonials
+* UPDATED: updated TinyMCE button
 * UPDATED: documentation update
 * CHANGED: testimonials/petitions shortcode tag and templates
 * BUGFIX: some small fixes regarding testimonials/petitions templates and shortcode

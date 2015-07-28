@@ -89,6 +89,22 @@ class ProjectManager extends ProjectManagerLoader
 	
 	
 	/**
+	 * formfield id to filter datasets for
+	 *
+	 * @var id or array
+	 */
+	var $meta_key = null;
+	
+	
+	/**
+	 * value for formfield id
+	 *
+	 * @var string
+	 */
+	var $meta_value;
+	
+	
+	/**
 	 * Initialize project settings
 	 *
 	 * @param int $project_id ID of selected project. false if none is selected
@@ -640,6 +656,41 @@ class ProjectManager extends ProjectManagerLoader
 	
 	
 	/**
+	 * get only `country`-type formfields
+	 *
+	 * @param none
+	 * @return array
+	 */
+	function getCountryFormFields()
+	{
+		global $wpdb;
+		$sql = "SELECT `label`, `type`, `id` FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = '%d' AND `type` = 'country' ORDER BY `order` ASC";
+		$formfields = $wpdb->get_results( $wpdb->prepare($sql, $this->getProjectID()) );
+		return $formfields;
+	}
+	
+	
+	/**
+	 * check if country formfield type is active
+	 *
+	 * @param none
+	 * @return boolean
+	 */
+	function hasCountryFormField()
+	{
+		global $wpdb;
+		$formfields = $this->getFormFields(false, true);
+		
+		foreach ($formfields AS $formfield) {
+			if ($formfield->type == "country")
+				return true;
+		}
+		
+		return false;
+	}
+	
+	
+	/**
 	 * set a message
 	 *
 	 * @param string $message
@@ -1052,6 +1103,23 @@ class ProjectManager extends ProjectManagerLoader
 			if ( $this->isCategory() )
 				$sql .= $this->getCategorySearchString();
 
+			// country filters could lead to multiple selections
+			$meta_key = $this->meta_key;
+			$meta_value = $this->meta_value;
+			
+			if ($meta_key && is_array($meta_key)) {
+				foreach ($meta_key AS $key => $value) {
+					$sql .= $wpdb->prepare(" AND `id` IN ( SELECT `dataset_id` FROM {$wpdb->projectmanager_datasetmeta} AS meta WHERE meta.form_id = '%d' AND meta.value LIKE '%s' )", intval($key), $value);
+				}
+			} else {
+				if ( $meta_key && !empty($meta_value) ) {
+					if ( $meta_key != 'name' )
+						$sql .= $wpdb->prepare(" AND `id` IN ( SELECT `dataset_id` FROM {$wpdb->projectmanager_datasetmeta} AS meta WHERE meta.form_id = '%d' AND meta.value LIKE '%s' )", intval($meta_key), $meta_value);
+					else
+						$sql .= $wpdb->prepare(" AND `name` = '%s'", $meta_value);
+				}
+			}
+		
 			return intval($wpdb->get_var( $sql ));
 		}
 	}
@@ -1072,17 +1140,46 @@ class ProjectManager extends ProjectManagerLoader
 		
 		$project = $this->getCurrentProject();
 
+		/*
+		* get country selection
+		*/
+		$country_filter = array();
+		foreach ( $matches = preg_grep("/country_\d+/", array_keys($_GET)) AS $key ) {
+			$x = explode("_", $key);
+			if (!empty($_GET[$key]))
+				$country_filter[$x[1]] = $_GET[$key];
+		}
+			
+		foreach ( $matches = preg_grep("/country_\d+/", array_keys($_POST)) AS $key ) {
+			$x = explode("_", $key);
+			if (!empty($_POST[$key]))
+				$country_filter[$x[1]] = $_POST[$key];
+		}
+	
+		if (count($country_filter) > 0)
+			$meta_key = $country_filter;
+		
+		$this->meta_key = $meta_key;
+		$this->meta_value = $meta_value;
+		
 		// Start basic MySQL Query
 		$sql = "SELECT dataset.`id` AS id, dataset.`name` AS name, dataset.`image` AS image, `cat_ids`, `user_id` FROM {$wpdb->projectmanager_dataset} AS dataset  WHERE dataset.`project_id` = '".intval($this->getProjectID())."'";
 
-		if ( $random ) {
+		// country filters could lead to multiple selections
+		if ($meta_key && is_array($meta_key)) {
+			foreach ($meta_key AS $key => $value) {
+				$sql .= $wpdb->prepare(" AND `id` IN ( SELECT `dataset_id` FROM {$wpdb->projectmanager_datasetmeta} AS meta WHERE meta.form_id = '%d' AND meta.value LIKE '%s' )", intval($key), $value);
+			}
+		} else {
 			if ( $meta_key && !empty($meta_value) ) {
 				if ( $meta_key != 'name' )
 					$sql .= $wpdb->prepare(" AND `id` IN ( SELECT `dataset_id` FROM {$wpdb->projectmanager_datasetmeta} AS meta WHERE meta.form_id = '%d' AND meta.value LIKE '%s' )", intval($meta_key), $meta_value);
 				else
 					$sql .= $wpdb->prepare(" AND `name` = '%s'", $meta_value);
-			}		
-
+			}
+		}
+		
+		if ( $random ) {
 			// get all datasets of project
 			$results = $wpdb->get_results($sql);
 			$all = array();
@@ -1116,13 +1213,6 @@ class ProjectManager extends ProjectManagerLoader
 			if (!isset($current_page)) $current_page = $this->getCurrentPage();
 			if ( $limit && $this->getPerPage() != 'NaN' ) $offset = ( $current_page - 1 ) * $this->getPerPage();
 			else $offset = 0;
-
-			if ( isset($meta_key )&& !empty($meta_value) ) {
-				if ( $meta_key != 'name' )
-					$sql .= $wpdb->prepare(" AND `id` IN ( SELECT `dataset_id` FROM {$wpdb->projectmanager_datasetmeta} AS meta WHERE meta.form_id = '%d' AND meta.value LIKE '%s' )", intval($meta_key), $meta_value);
-				else
-					$sql .= $wpdb->prepare(" AND `name` = '%s'", $meta_value);
-			}		
 
 			if ( $this->isCategory() )
 				$sql .= $this->getCategorySearchString();
@@ -1182,6 +1272,9 @@ class ProjectManager extends ProjectManagerLoader
 			}
 		}
 
+		$this->setNumDatasets($this->getNumDatasets($this->getProjectID()));
+		$this->setNumPages();
+		
 		return $datasets;
 	}
 	

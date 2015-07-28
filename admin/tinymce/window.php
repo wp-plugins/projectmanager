@@ -68,7 +68,7 @@ global $wpdb;
 			<li id="testimonials_tab"><span><a href="javascript:mcTabs.displayTab('testimonials_tab', 'testimonials_panel');" onmouseover="return false;"><?php _e('Testimonials','projectmanager') ?></a></span></li>
 		</ul>
 	</div>
-	<div class="panel_wrapper" style="height: 170px;">
+	<div class="panel_wrapper" style="height: 190px;">
 		
 	<!-- project panel -->
 	<div id="project_panel" class="panel current">
@@ -303,6 +303,10 @@ global $wpdb;
 	<tr>
 		<td><label for="testimonials_list_page_id"><?php _e("Supporter Page ID", 'projectmanager'); ?></label></td>
 		<td><input type="text" size="10" placeholder="<?php _e('Optional', 'projectmanager') ?>" name="testimonials_list_page_id" id="testimonials_list_page_id" /></td>
+	</tr>
+	<tr>
+		<td><label for="testimonials_selections"><?php _e('Show Selections', 'projectmanager') ?></label></td>
+		<td><input type="checkbox" name="testimonials_selections" value="true" id="testimonials_selections" checked="checked" /></td>
 	</tr>
 	</table>
 	</div>

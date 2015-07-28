@@ -116,16 +116,13 @@ function ProjectManagerInsertLink() {
 		var comment_id = document.getElementById('testimonials_comment_id').value;
 		var country_id = document.getElementById('testimonials_country_id').value;
 		var city_id = document.getElementById('testimonials_city_id').value;
-		var title = document.getElementById('testimonials_title').value;
 		var list_page_id = document.getElementById('testimonials_list_page_id').value;
 		var sign_page_id = document.getElementById('testimonials_sign_page_id').value;
 		var template = document.getElementById('testimonials_template').value;
+		var selections = getCheckedValue(document.getElementById('testimonials_selections'));
 		
 		if (number == "") number = 6;
 		if (ncol == "") ncol = 3;
-		
-		if (title != "")
-			title = " title=" + title;
 		
 		if (list_page_id != "")
 			list_page_id = " list_page_id=" + list_page_id;
@@ -133,8 +130,13 @@ function ProjectManagerInsertLink() {
 		if (sign_page_id != "")
 			sign_page_id = " sign_page_id=" + sign_page_id;
 		
+		if (selections == "")
+			selections = " selections=false";
+		else
+			selections = "";
+		
 		if (projectId != 0)
-			tagtext = "[testimonials project_id=" + projectId + " template=" + template + " number=" + number + " comment=" + comment_id + " country=" + country_id + " city=" + city_id + " ncol=" + ncol + title + list_page_id + sign_page_id + "]";
+			tagtext = "[testimonials project_id=" + projectId + " template=" + template + " number=" + number + " comment=" + comment_id + " country=" + country_id + " city=" + city_id + " ncol=" + ncol + list_page_id + sign_page_id + selections + "]";
 		else
 			tinyMCEPopup.close();
 	}

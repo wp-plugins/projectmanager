@@ -3,7 +3,7 @@ div.projectmanager { margin-bottom: 1em; }
 /* Header above simple Output */
 div.projectmanager_selections {
 	float: left;
-	margin-top: 1em;
+	margin-top: 0em;
 	margin-bottom: 1em;
 	clear: both;
 }

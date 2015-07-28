@@ -477,6 +477,7 @@ class ProjectManagerShortcodes
 			'sign_page_id' => 0,
 			'list_page_id' => 0,
 			'template' => '',
+			'selections' => 'true',
 		), $atts ));
 		$project_id = intval($project_id);
 		$number = intval($number);
@@ -513,6 +514,7 @@ class ProjectManagerShortcodes
 			$datasets = $projectmanager->getDatasets( array( 'project_id' => $project_id, 'current_page' => $current_page, 'limit' => true, 'orderby' => 'id', 'order' => 'DESC', 'random' => false) );
 		
 		$project->num_datasets = $projectmanager->getNumDatasets($projectmanager->getProjectID(), true);
+		$project->selections = ( $selections == 'true' ) ? true : false;
 		
 		$pagination = $projectmanager->getPageLinks($current_page, $page_get);
 		

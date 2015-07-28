@@ -59,7 +59,7 @@ div#testimonials-intro .num_supporters .join {
 	<?php foreach ( $datasets AS $dataset ) : $i++; ?>
 		<li style="width: <?php echo (100/$ncol)-(0.10*100/$ncol) ?>%;">
 			<p class='comment'>&ldquo;<?php echo $dataset->comment ?>&rdquo;</p>
-			<p class='cite'><?php echo $dataset->name ?> - <?php echo $dataset->city ?>,<?php echo $dataset->country ?></p>
+			<p class='cite'><?php echo $dataset->name ?> - <?php echo $dataset->city ?>, <?php echo $dataset->country ?></p>
 			<!--<img class="supporter" src="<?php echo $dataset->thumbURL ?>" alt="<?php echo $dataset->name ?>, <?php echo $dataset->country ?>" data-container="body" data-toggle="popover" data-placement="auto" data-html="true" data-content="<q><?php echo $dataset->comment ?></q><cite><?php echo $dataset->name ?> - <?php echo $dataset->city ?>,<?php echo $dataset->country ?></cite>" />-->
 			<?php if ( 0 == $i % $ncol ) : ?>
 			<br style="clear: both;" />

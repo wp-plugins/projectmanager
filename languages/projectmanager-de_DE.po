@@ -67,6 +67,9 @@ msgstr "Import/Export"
 msgid "Projects"
 msgstr "Projekte"
 
+msgid "Filter by %s"
+msgstr "Nach %s filtern"
+
 #: admin/admin.php:175 admin/show-project.php:162 admin/show-project.php:177
 #: lib/core.php:932
 msgid "Edit"
