@@ -1182,19 +1182,22 @@ class ProjectManager extends ProjectManagerLoader
 		if ( $random ) {
 			// get all datasets of project
 			$results = $wpdb->get_results($sql);
-			$all = array();
-			foreach ( $results AS $result ) {
-				$all[] = $result;
-			}
-
 			$datasets = array();
-			while ( count($datasets) < intval($limit) ) {
-				$id = mt_rand(0, count($all)-1);
-				if ( $all[$id] && !array_key_exists($all[$id]->id, $datasets) )
-					$datasets[$all[$id]->id] = $all[$id];
-			}
 			
-			$datasets = array_values($datasets);
+			if (count($results) > 0) {
+				$all = array();
+				foreach ( $results AS $result ) {
+					$all[] = $result;
+				}
+
+				while ( count($datasets) < intval($limit) ) {
+					$id = mt_rand(0, count($all)-1);
+					if ( $all[$id] && !array_key_exists($all[$id]->id, $datasets) )
+						$datasets[$all[$id]->id] = $all[$id];
+				}
+				
+				$datasets = array_values($datasets);
+			}
 		} else {
 			// Set ordering
 			$formfield_id = $this->setDatasetOrder($orderby, $order);
