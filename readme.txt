@@ -59,6 +59,9 @@ The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons
 
 == Changelog ==
 
+= 3.1.7.9 =
+* NEW: updated TinyMCE button to allow formfield IDs and page IDs selection from dropdown menus
+
 = 3.1.7.8 =
 * BUGFIX: fixed infinite loop when getting random datasets without any datasets in database
 

@@ -118,11 +118,15 @@ function ProjectManagerInsertLink() {
 		var city_id = document.getElementById('testimonials_city_id').value;
 		var list_page_id = document.getElementById('testimonials_list_page_id').value;
 		var sign_page_id = document.getElementById('testimonials_sign_page_id').value;
+		var sign_page_id_text = document.getElementById('testimonials_sign_page_id_text').value;
 		var template = document.getElementById('testimonials_template').value;
 		var selections = getCheckedValue(document.getElementById('testimonials_selections'));
 		
 		if (number == "") number = 6;
 		if (ncol == "") ncol = 3;
+		
+		if (sign_page_id_text != "")
+			sign_page_id = sign_page_id_text;
 		
 		if (list_page_id != "")
 			list_page_id = " list_page_id=" + list_page_id;

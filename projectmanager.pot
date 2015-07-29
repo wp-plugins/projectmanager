@@ -2348,11 +2348,11 @@ msgid "Petitions Landingpage"
 msgstr ""
 
 #: TinyMCE Button
-msgid "Formfield ID for Comment"
+msgid "City"
 msgstr ""
 
 #: TinyMCE Button
-msgid "City"
+msgid "Comment"
 msgstr ""
 
 #: TinyMCE Button

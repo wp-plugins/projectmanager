@@ -135,6 +135,6 @@ if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) 
 <input type="hidden" name="user_id" value="<?php if ($dataset) echo intval($dataset->user_id) ?>" />
 <input type="hidden" name="d_message" value="Dataset added to the database" />
 
-<p class="submit"><input type="submit" name="insertDataset" value="<?php echo $form_title ?> &raquo;" class="button" /></p>
+<p class="submit"><input type="submit" name="insertDataset" value="<?php _e('Submit', 'projectmanager') ?> &raquo;" class="button" /></p>
 </form>
 <?php endif; ?>

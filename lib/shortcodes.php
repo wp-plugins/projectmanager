@@ -508,6 +508,11 @@ class ProjectManagerShortcodes
 		else
 			$sign_petition_href = "";
 		
+		if (!empty($list_page_id))
+			$list_page_href = get_permalink($list_page_id);
+		else
+			$list_page_href = "";
+		
 		if ($template == "intro")
 			$datasets = $projectmanager->getDatasets( array( 'project_id' => $project_id, 'limit' => $number, 'random' => true) );
 		else
@@ -566,7 +571,7 @@ class ProjectManagerShortcodes
 		else
 			$template = "testimonials-".$template;
 		
-		$out = $this->loadTemplate( $template, array('project' => $project, 'datasets' => $datasets, 'pagination' => $pagination, 'sign_petition_href' => $sign_petition_href, 'list_page_id' => $list_page_id, 'ncol' => $ncol) );
+		$out = $this->loadTemplate( $template, array('project' => $project, 'datasets' => $datasets, 'pagination' => $pagination, 'sign_petition_href' => $sign_petition_href, 'list_page_href' => $list_page_href, 'ncol' => $ncol) );
 		
 		return $out;
 	}

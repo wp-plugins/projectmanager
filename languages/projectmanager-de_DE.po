@@ -1910,6 +1910,10 @@ msgid "City"
 msgstr "Stadt"
 
 #: TinyMCE Button
+msgid "Comment"
+msgstr "Kommentar"
+
+#: TinyMCE Button
 msgid "Signing Page ID"
 msgstr "Unterschreiben Seiten ID"
 

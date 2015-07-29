@@ -46,7 +46,7 @@ div#testimonials-intro .num_supporters {
 	clear: both;
 	margin-top: 1em;
 }
-div#testimonials-intro .num_supporters .join {
+div#testimonials-intro .num_supporters .join, div#testimonials-intro .num_supporters .testimonials-list {
 	font-weight: normal;
 }
 </style>
@@ -73,6 +73,9 @@ div#testimonials-intro .num_supporters .join {
 	<?php echo $project->num_datasets ?> <?php _e('Supporters Already.', 'projectmanager') ?>
 	<?php if ($sign_petition_href != "") : ?>
 	<span class="join"><a href="<?php echo $sign_petition_href ?>"> <?php _e('Become part of our cause.', 'projectmanager') ?></a></span>
+	<?php endif; ?>
+	<?php if ($list_page_href != "") : ?>
+	<span class="testimonials-list"><a href="<?php echo $list_page_href ?>"> <?php _e('List of supporters.', 'projectmanager') ?></a></span>
 	<?php endif; ?>
 </p>
 <?php endif; ?>

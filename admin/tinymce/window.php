@@ -249,13 +249,13 @@ global $wpdb;
 	</table>
 	</div>
 	
-	<!-- petitions landingpage panel -->
+	<!-- testimonials panel -->
 	<div id="testimonials_panel" class="panel">
 	<table style="border: 0;">
 	<tr>
 		<td><label for="testimonials_projects"><?php _e("Project", 'projectmanager'); ?></label></td>
 		<td>
-		<select id="testimonials_projects" name="testimonials_projects" style="width: 200px">
+		<select size="1" id="testimonials_projects" name="testimonials_projects" style="width: 200px">
 		<option value="0"><?php _e("No Project", 'projectmanager'); ?></option>
 		<?php
 			$projects = $wpdb->get_results("SELECT * FROM {$wpdb->projectmanager_projects} ORDER BY id ASC");
@@ -287,22 +287,92 @@ global $wpdb;
 		</td>
 	</tr>
 	<tr>
-		<td><label for="testimonials_comment_id"><?php _e("Formfield ID for Comment", 'projectmanager'); ?></label></td>
+		<td><label for="testimonials_comment_id"><?php _e("Fromfields", 'projectmanager'); ?></label></td>
 		<td>
-			<input type="text" size="5" name="testimonials_comment_id" id="testimonials_comment_id" />
-			<label for="testimonials_country_id"><?php _e("Country", 'projectmanager'); ?></label>
-			<input type="text" size="5" name="testimonials_country_id" id="testimonials_country_id" />
-			<label for="testimonials_city_id"><?php _e("City", 'projectmanager'); ?></label>
-			<input type="text" size="5" name="testimonials_city_id" id="testimonials_city_id" />
+			<select size="1" id="testimonials_comment_id" name="testimonials_comment_id" style="width: 100px">
+			<option value=""><?php _e("Comment", 'projectmanager'); ?></option>
+			<?php
+			$projects = $wpdb->get_results("SELECT * FROM {$wpdb->projectmanager_projects} ORDER BY id ASC");
+			if( ($projects) ) {
+				foreach( $projects as $project ) {
+					echo "<optgroup label='".$project->title."'>";
+					$formfields = $wpdb->get_results($wpdb->prepare("SELECT `label`, `id` FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = '%d' ORDER BY `order` ASC", $project->id) );
+					if ($formfields) {
+						foreach ($formfields AS $formfield)
+							echo '<option value="'.$formfield->id.'" >'.$formfield->label.'</option>'."\n";
+					}
+					echo "</optgroup>";
+				}
+			}
+			?>
+			</select>
+			<select size="1" id="testimonials_country_id" name="testimonials_country_id" style="width: 100px">
+			<option value=""><?php _e("Country", 'projectmanager'); ?></option>
+			<?php
+			$projects = $wpdb->get_results("SELECT * FROM {$wpdb->projectmanager_projects} ORDER BY id ASC");
+			if( ($projects) ) {
+				foreach( $projects as $project ) {
+					echo "<optgroup label='".$project->title."'>";
+					$formfields = $wpdb->get_results($wpdb->prepare("SELECT `label`, `id` FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = '%d' ORDER BY `order` ASC", $project->id) );
+					if ($formfields) {
+						foreach ($formfields AS $formfield)
+							echo '<option value="'.$formfield->id.'" >'.$formfield->label.'</option>'."\n";
+					}
+					echo "</optgroup>";
+				}
+			}
+			?>
+			</select>
+			<select size="1" id="testimonials_city_id" name="testimonials_city_id" style="width: 100px">
+			<option value=""><?php _e("City", 'projectmanager'); ?></option>
+			<?php
+			$projects = $wpdb->get_results("SELECT * FROM {$wpdb->projectmanager_projects} ORDER BY id ASC");
+			if( ($projects) ) {
+				foreach( $projects as $project ) {
+					echo "<optgroup label='".$project->title."'>";
+					$formfields = $wpdb->get_results($wpdb->prepare("SELECT `label`, `id` FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = '%d' ORDER BY `order` ASC", $project->id) );
+					if ($formfields) {
+						foreach ($formfields AS $formfield)
+							echo '<option value="'.$formfield->id.'" >'.$formfield->label.'</option>'."\n";
+					}
+					echo "</optgroup>";
+				}
+			}
+			?>
+			</select>
 		</td>
 	</tr>
 	<tr>
 		<td><label for="testimonials_sign_page_id"><?php _e("Signing Page ID", 'projectmanager'); ?></label></td>
-		<td><input type="text" size="10" placeholder="<?php _e('Optional', 'projectmanager') ?>" name="testimonials_sign_page_id" id="testimonials_sign_page_id" /></td>
+		<td>
+			<select size="1" id="testimonials_sign_page_id" name="testimonials_sign_page_id" style="width: 100px;">
+				<option value=""></option>
+			<?php if ($pages = get_pages()) : ?>
+			<?php foreach ($pages AS $page) : ?>
+				<option value="<?php echo $page->ID ?>"><?php echo $page->post_title ?></option>
+			<?php endforeach; ?>
+			<?php endif; ?>
+			</select>
+			<span><?php _e('or', 'projectmanager') ?></span>
+			<span><input type="text" size="20" name="testimonials_sign_page_id_text" id="testimonials_sign_page_id_text" placeholder="<?php _e('Anker on same page', 'projectmanager') ?>" /></span>
+			<span>(<?php _e('Optional', 'projectmanager') ?>)</span>
+			<!--<input type="text" size="10" placeholder="<?php _e('Optional', 'projectmanager') ?>" name="testimonials_sign_page_id" id="testimonials_sign_page_id" />-->
+		</td>
 	</tr>
 	<tr>
 		<td><label for="testimonials_list_page_id"><?php _e("Supporter Page ID", 'projectmanager'); ?></label></td>
-		<td><input type="text" size="10" placeholder="<?php _e('Optional', 'projectmanager') ?>" name="testimonials_list_page_id" id="testimonials_list_page_id" /></td>
+		<td>
+			<select size="1" id="testimonials_list_page_id" name="testimonials_list_page_id" style="width: 100px;">
+				<option value=""></option>
+			<?php if ($pages = get_pages()) : ?>
+			<?php foreach ($pages AS $page) : ?>
+				<option value="<?php echo $page->ID ?>"><?php echo $page->post_title ?></option>
+			<?php endforeach; ?>
+			<?php endif; ?>
+			</select>
+			<span>(<?php _e('Optional', 'projectmanager') ?>)</span>
+			<!--<input type="text" size="10" placeholder="<?php _e('Optional', 'projectmanager') ?>" name="testimonials_list_page_id" id="testimonials_list_page_id" />-->
+		</td>
 	</tr>
 	<tr>
 		<td><label for="testimonials_selections"><?php _e('Show Selections', 'projectmanager') ?></label></td>
