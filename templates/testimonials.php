@@ -41,6 +41,10 @@ div.testimonials ul.testimonials li p.comment {
 div.testimonials p.cite {
 	text-align: right;
 }
+div.testimonials img {
+	float: left;
+	border-radius: 200px;
+}
 </style>
 
 <?php if ( isset($project->selections) && $project->selections ) do_action('projectmanager_selections'); ?>
@@ -51,8 +55,13 @@ div.testimonials p.cite {
 	<ul class="testimonials">
 	<?php foreach ( $datasets AS $dataset ) : $i++; ?>
 		<li>
-			<p class='comment'>&ldquo;<?php echo $dataset->comment ?>&rdquo;</p>
-			<p class='cite'><?php echo $dataset->name ?> - <?php echo $dataset->city ?>, <?php echo $dataset->country ?></p>
+			<div class="testimonial">
+				<?php if ($project->show_image == 1 && !empty($dataset->image)) : ?>
+				<img src="<?php echo $projectmanager->getFileURL('tiny.'.$dataset->image)?>" />
+				<?php endif; ?>
+				<p class='comment'>&ldquo;<?php echo $dataset->comment ?>&rdquo;</p>
+				<p class='cite'><?php echo $dataset->name ?> - <?php echo $dataset->city ?>, <?php echo $dataset->country ?></p>
+			</div>
 		</li>
 	<?php endforeach; ?>
 	</ul>

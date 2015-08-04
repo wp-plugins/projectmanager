@@ -591,7 +591,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 							$dims = array( 'width' => $project->thumb_size['width'], 'height' => $project->thumb_size['height'] );
 							$image->createThumbnail( $dims, parent::getFilePath().'/thumb.'.basename($file['name']), $project->chmod );
 									
-							$dims = array( 'width' => 80, 'height' => 50 );
+							$dims = array( 'width' => $project->tiny_size['width'], 'height' => $project->tiny_size['height'] );
 							$image->createThumbnail( $dims, parent::getFilePath().'/tiny.'.basename($file['name']), $project->chmod );
 						}
 						// set image filename in settings
@@ -828,9 +828,17 @@ class ProjectManagerAdminPanel extends ProjectManager
 			$this->error = true;
 		}
 		if (!$is_admin && strlen($name) > 50) {
-			$this->setMessage( __("Your name must not  exceed 50 characters", 'projectmanager'), true );
+			$this->setMessage( __("Your name must not exceed 50 characters", 'projectmanager'), true );
 			$this->printMessage();
 			$this->error = true;
+		}
+		
+		if ($project->image_mandatory == 1) {
+			if (!isset($_FILES['projectmanager_image']) || (isset($_FILES['projectmanager_image']) && $_FILES['projectmanager_image']['name'] == '')) {
+				$this->setMessage( __("You have to provide an image to upload", 'projectmanager'), true );
+				$this->printMessage();
+				$this->error = true;
+			}
 		}
 		
 		// Check each formfield for mandatory and unique values
@@ -849,7 +857,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 			// make sure that mandatory fields are not empty
 			if ($formfield->mandatory == 1) {
 				if( !isset($dataset_meta[$formfield->id]) || (isset($dataset_meta[$formfield->id]) && $dataset_meta[$formfield->id] == "") ) {
-					$this->setMessage( __(sprintf("Mandatory field %s is empty", $formfield->label), 'projectmanager'), true );
+					$this->setMessage( sprintf(__("Mandatory field %s is empty", 'projectmanager'), $formfield->label), true );
 					$this->printMessage();
 					$this->error = true;
 				}
@@ -858,16 +866,16 @@ class ProjectManagerAdminPanel extends ProjectManager
 			// make sure unique fields have no match in database
 			if ($formfield->unique == 1) {
 				if (!$this->datasetMetaValueIsUnique($project_id, $formfield->id, $dataset_meta[$formfield->id])) {
-					$this->setMessage(__(sprintf("Provided %s `%s` is already present in the database", $formfield->label, $dataset_meta[$formfield->id]), 'projectmanager'), true);
+					$this->setMessage(sprintf(__("Provided %s `%s` is not a valid e-mail address", 'projectmanager'), $formfield->label, $dataset_meta[$formfield->id]), true);
 					$this->printMessage();
-					$this->error = true;				
+					$this->error = true;
 				}
 			}
 			
 			// check email validity
 			if ($formfield->type == "email") {
 				if (!filter_var($dataset_meta[$formfield->id], FILTER_VALIDATE_EMAIL)) {
-					$this->setMessage(__(sprintf("Provided %s `%s` is not a valid e-mail address", $formfield->label, $dataset_meta[$formfield->id]), "projectmanager"), true);
+					$this->setMessage(sprintf(__("Provided %s `%s` is not a valid e-mail address", 'projectmanager'), $formfield->label, $dataset_meta[$formfield->id]), true);
 					$this->printMessage();
 					$this->error = true;
 				}
@@ -875,7 +883,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 			
 			// check that provided input is not longer than $max
 			if ($max > 0 && strlen($dataset_meta[$formfield->id]) > $max) {
-				$this->setMessage(__(sprintf("Provided %s is longer than the allowed length of %s characters", $formfield->label, $max), "projectmanager"), true);
+				$this->setMessage(sprintf(__("Provided %s is longer than the allowed length of %s characters", 'projectmanager'), $formfield->label, $max),true);
 				$this->printMessage();
 				$this->error = true;
 			}
@@ -893,7 +901,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 			foreach ( $dataset_meta AS $meta_id => $meta_value ) {
 				$meta_id = intval($meta_id);
 				$formfield = parent::getFormFields($meta_id);
-					
+				
 				// Manage file upload
 				if ( 'file' == $formfield->type || 'image' == $formfield->type || 'video' == $formfield->type ) {
 					$file = array('name' => $_FILES['form_field']['name'][$meta_id], 'tmp_name' => $_FILES['form_field']['tmp_name'][$meta_id], 'size' => $_FILES['form_field']['size'][$meta_id], 'type' => $_FILES['form_field']['type'][$meta_id]);
@@ -913,7 +921,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 						$dims = array( 'width' => $project->thumb_size['width'], 'height' => $project->thumb_size['height'] );
 						$image->createThumbnail( $dims, parent::getFilePath().'/thumb.'.$meta_value, $project->chmod );
 						
-						$dims = array( 'width' => 80, 'height' => 50 );
+						$dims = array( 'width' => $project->tiny_size['width'], 'height' => $project->tiny_size['height'] );
 						$image->createThumbnail( $dims, parent::getFilePath().'/tiny.'.$meta_value, $project->chmod );
 					}		
 				} elseif ( 'numeric' == $formfield->type || 'currency' == $formfield->type ) {
@@ -1093,7 +1101,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 						$dims = array( 'width' => $project->thumb_size['width'], 'height' => $project->thumb_size['height'] );
 						$image->createThumbnail( $dims, parent::getFilePath().'/thumb.'.$meta_value, $project->chmod );
 						
-						$dims = array( 'width' => 80, 'height' => 50 );
+						$dims = array( 'width' => $project->tiny_size['width'], 'height' => $project->tiny_size['height'] );
 						$image->createThumbnail( $dims, parent::getFilePath().'/tiny.'.$meta_value, $project->chmod );
 					}		
 				} elseif ( 'numeric' == $formfield->type || 'currency' == $formfield->type ) {
@@ -1269,7 +1277,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 							$dims = array( 'width' => $project->thumb_size['width'], 'height' => $project->thumb_size['height'] );
 							$image->createThumbnail( $dims, parent::getFilePath().'/thumb.'.basename($file['name']), $project->chmod );
 							
-							$dims = array( 'width' => 80, 'height' => 50 );
+							$dims = array( 'width' => $project->tiny_size['width'], 'height' => $project->tiny_size['height'] );
 							$image->createThumbnail( $dims, parent::getFilePath().'/tiny.'.basename($file['name']), $project->chmod );
 						}
 					} else {
@@ -1552,17 +1560,18 @@ class ProjectManagerAdminPanel extends ProjectManager
 		
 					$img_filename = $dataset->image;
 					$meta_data = array();
-					foreach ( $dataset_meta AS $meta )
-						if ( is_string($meta_data[$meta->form_field_id] ) )
+					foreach ( $dataset_meta AS $meta ) {
+						if ( is_string($meta->value) )
 							$meta_data[$meta->form_field_id] = htmlspecialchars(stripslashes_deep($meta->value), ENT_QUOTES);
 						else
 							$meta_data[$meta->form_field_id] = stripslashes_deep($meta->value);
-			
+					}
+					
 					echo '<h3>'.$projectmanager->getProjectTitle().'</h3>';
 					echo '<input type="hidden" name="project_id['.$dataset_id.']" value="'.$project_id.'" /><input type="hidden" name="dataset_id[]" value="'.$dataset_id.'" /><input type="hidden" name="dataset_user_id" value="'.$current_user->ID.'" />';
 				
 					$projectmanager->loadTinyMCE();
-					include( dirname(__FILE__). '/dataset-form-profile.php' );
+					include( dirname(__FILE__). '/dataset-form.php' );
 				}
 			}
 		}
@@ -1575,9 +1584,9 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 * @param none
 	 * @return none
 	 */
-	function updateProfile()
+	function updateProfile($user_id)
 	{
-		$user_id = intval($_POST['dataset_user_id']);
+		//$user_id = intval($_POST['dataset_user_id']);
 
 		foreach ( (array)$_POST['dataset_id'] AS $id ) {
 			$id = intval($id);

@@ -1,4 +1,11 @@
+<?php if ($is_profile_page) : ?>
+<script type="text/javascript">
+document.forms[0].encoding = "multipart/form-data";
+</script>
+<?php endif; ?>
+
 <table class="form-table">
+	<?php if (!$is_profile_page) : ?>
 	<tr valign="top">
 		<th scope="row"><label for="name"><?php _e( 'Name', 'projectmanager' ) ?>*</label></th>
 		<td>
@@ -8,9 +15,10 @@
 			<?php endif; ?>
 		</td>
 	</tr>
+	<?php endif; ?>
 	<?php if ( 1 == $project->show_image ) : ?>
 	<tr valign="top">
-		<th scope="row"><label for="projectmanager_image"><?php _e( 'Image', 'projectmanager' ) ?></label></th>
+		<th scope="row"><label for="projectmanager_image"><?php _e( 'Image', 'projectmanager' ) ?><?php if ($project->image_mandatory == 1) echo '*'; ?></label></th>
 		<td>
 			<?php if ( '' != $img_filename ) : ?>
 			<div class="alignright">
@@ -18,7 +26,7 @@
 				<p style="text-align: center;"><input type="checkbox" id="del_old_image" name="del_old_image" value="1" style="margin-left: 1em;" />&#160;<label for="del_old_image"><?php _e( 'Delete', 'projectmanager' ) ?></label></p>
 			</div>
 			<?php endif; ?>
-			<input type="file" name="projectmanager_image" id="projectmanager_image" size="45"/><p><?php _e( 'Supported file types', 'projectmanager' ) ?>: <?php echo implode( ',',$projectmanager->getSupportedImageTypes() ); ?></p>
+			<input type="file" name="projectmanager_image" id="projectmanager_image" class="form-input" /><p><?php _e( 'Supported file types', 'projectmanager' ) ?>: <?php echo implode( ',',$projectmanager->getSupportedImageTypes() ); ?></p>
 			<?php if ( '' != $img_filename ) : ?>
 				<p class="alignleft"><label for="overwrite_image"><?php _e( 'Overwrite existing image', 'projectmanager' ) ?></label><input type="checkbox" id="overwrite_image" name="overwrite_image" value="1" style="margin-left: 1em;" /></p>
 				<input type="hidden" name="image_file" value="<?php echo $img_filename ?>" />
@@ -131,23 +139,25 @@
 		
 		<?php endforeach; ?>
 	<?php endif; ?>
-	<?php if ( isset($project->category) && -1 != $project->category && current_user_can('edit_other_datasets') ) : ?>
-	<!-- category selection form -->
-	<tr valign="top">
-		<th scope="row"><label for="post_category"><?php _e( 'Categories', 'projectmanager' ) ?></label></th>
-		<td>
-			<div id="projectmanager-category-adder">
-			<ul class="categorychecklist">
-				<?php $this->categoryChecklist( $project->category, $cat_ids ) ?>
-			</ul>
-			</div>
-		</td>
-	</tr>
-	<?php endif; ?>
-	<?php if ( isset($_GET['edit']) && current_user_can('edit_other_datasets') && !$is_profile_page ) : ?>
-	<tr valign="top">
-		<th scope="row"><label for="owner"><?php _e( 'WP User', 'projectmanager' ) ?></label></th>
-		<td><?php wp_dropdown_users( array('selected' => $dataset->user_id, 'name' => 'owner') ) ?></td>
-	</tr>
+	<?php if (!$is_profile_page) : ?>
+		<?php if ( isset($project->category) && -1 != $project->category && current_user_can('edit_other_datasets') ) : ?>
+		<!-- category selection form -->
+		<tr valign="top">
+			<th scope="row"><label for="post_category"><?php _e( 'Categories', 'projectmanager' ) ?></label></th>
+			<td>
+				<div id="projectmanager-category-adder">
+				<ul class="categorychecklist">
+					<?php $this->categoryChecklist( $project->category, $cat_ids ) ?>
+				</ul>
+				</div>
+			</td>
+		</tr>
+		<?php endif; ?>
+		<?php if ( isset($_GET['edit']) && current_user_can('edit_other_datasets') && !$is_profile_page ) : ?>
+		<tr valign="top">
+			<th scope="row"><label for="owner"><?php _e( 'WP User', 'projectmanager' ) ?></label></th>
+			<td><?php wp_dropdown_users( array('selected' => $dataset->user_id, 'name' => 'owner') ) ?></td>
+		</tr>
+		<?php endif; ?>
 	<?php endif; ?>
 </table>

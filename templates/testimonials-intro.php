@@ -26,9 +26,7 @@ div#testimonials-intro ul {
 }
 div#testimonials-intro ul li {
 	background-color: white;
-	border: 2px solid #efefef;
 	padding: 0.5em;
-	border-radius: 10px;
 	opacity: 1;
 	margin: 0.3em 0.3em 0.3em 0;
 	float: left;
@@ -37,7 +35,21 @@ div#testimonials-intro ul li p {
 	margin: 0.2em;
 }
 div#testimonials-intro ul li p.comment {
+	background-color: #efefef;
+	color: #000000;
+	padding: 0.3em;
 	font-style: italic;
+}
+div#testimonials-intro ul li img {
+	float: left;
+	border-radius: 200px;
+}
+div#testimonials-intro div.supporter {
+	margin-top: 0.5em;
+}
+div#testimonials-intro ul li p.cite, div#testimonials-intro ul li p.location {
+	margin: 0em;
+	margin-left: 70px;
 }
 div#testimonials-intro .num_supporters {
 	font-size: 1.5em;
@@ -58,9 +70,18 @@ div#testimonials-intro .num_supporters .join, div#testimonials-intro .num_suppor
 	<ul>
 	<?php foreach ( $datasets AS $dataset ) : $i++; ?>
 		<li style="width: <?php echo (100/$ncol)-(0.10*100/$ncol) ?>%;">
-			<p class='comment'>&ldquo;<?php echo $dataset->comment ?>&rdquo;</p>
-			<p class='cite'><?php echo $dataset->name ?> - <?php echo $dataset->city ?>, <?php echo $dataset->country ?></p>
-			<!--<img class="supporter" src="<?php echo $dataset->thumbURL ?>" alt="<?php echo $dataset->name ?>, <?php echo $dataset->country ?>" data-container="body" data-toggle="popover" data-placement="auto" data-html="true" data-content="<q><?php echo $dataset->comment ?></q><cite><?php echo $dataset->name ?> - <?php echo $dataset->city ?>,<?php echo $dataset->country ?></cite>" />-->
+			<div class="testimonial">
+				<p class='comment'>&ldquo;<?php echo $dataset->comment ?>&rdquo;</p>
+				<div class='supporter'>					
+					<?php if ($project->show_image == 1 && !empty($dataset->image)) : ?>
+					<img src="<?php echo $projectmanager->getFileURL('tiny.'.$dataset->image)?>" />
+					<?php endif; ?>
+					
+					<p class="cite"><?php echo $dataset->name ?></p>
+					<p class="location"><?php echo $dataset->city ?>, <?php echo $dataset->country ?></p>
+				<!--<img class="supporter" src="<?php echo $dataset->thumbURL ?>" alt="<?php echo $dataset->name ?>, <?php echo $dataset->country ?>" data-container="body" data-toggle="popover" data-placement="auto" data-html="true" data-content="<q><?php echo $dataset->comment ?></q><cite><?php echo $dataset->name ?> - <?php echo $dataset->city ?>,<?php echo $dataset->country ?></cite>" />-->
+				</div>
+			</div>
 			<?php if ( 0 == $i % $ncol ) : ?>
 			<br style="clear: both;" />
 			<?php endif; ?>

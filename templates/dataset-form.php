@@ -13,20 +13,20 @@ if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) 
 	<?php wp_nonce_field('projectmanager_insert_dataset'); ?>
 	<label for="d_name"><?php _e( 'Name', 'projectmanager' ) ?>*</label><input type="text" placeholder="<?php printf(__('Maximum of %d characters', 'projectmanager'), 30) ?>" class="form-input" name="d_name" id="d_name" value="<?php echo $name ?>" /><br />
 	<?php if ( 1 == $project->show_image ) : ?>
-	<label for="projectmanager_image"><?php _e( 'Image', 'projectmanager' ) ?></label>
+	<label for="projectmanager_image"><?php _e( 'Image', 'projectmanager' ) ?><?php if ($project->image_mandatory == 1) echo '*'; ?></label>
 	<?php if ( '' != $img_filename ) : ?>
 	<div class="alignright">
 		<img src="<?php echo $projectmanager->getFileURL('tiny.'.$img_filename)?>" />
 		<p style="text-align: center;"><input type="checkbox" id="del_old_image" name="del_old_image" value="1" style="margin-left: 1em;" />&#160;<label for="del_old_image"><?php _e( 'Delete', 'projectmanager' ) ?></label></p>
 	</div>
 	<?php endif; ?>
-	<input type="file" name="projectmanager_image" id="projectmanager_image" size="25" />
+	<input type="file" name="projectmanager_image" id="projectmanager_image" class="form-input" /><p><?php _e( 'Supported file types', 'projectmanager' ) ?>: <?php echo implode( ',',$projectmanager->getSupportedImageTypes() ); ?></p>
 	<?php if ( '' != $img_filename ) : ?>
 		<p class="alignleft"><label for="overwrite_image"><?php _e( 'Overwrite existing image', 'projectmanager' ) ?></label><input type="checkbox" id="overwrite_image" name="overwrite_image" value="1" style="margin-left: 1em;" /></p>
 		<input type="hidden" name="image_file" value="<?php echo $img_filename ?>" />
 	<?php endif; ?>
 	<?php endif; ?><br />
-	<?php if ( $form_fields = $projectmanager->getFormFields() ) : ?>
+	<?php if ( $form_fields = $projectmanager->getFormFields(false, true) ) : ?>
 		<?php foreach ( $form_fields AS $form_field ) : $dat = isset($meta_data[$form_field->id]) ? $meta_data[$form_field->id] : ''; ?>
 		<?php 
 			$formfield_options = explode(";", $form_field->options);
@@ -86,14 +86,14 @@ if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) 
 					<?php endfor; ?>
 				</select>
 			<?php elseif ( 'country' == $form_field->type ) : ?>
-				<select size="1" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>">
+				<select size="1" class="form-input" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>">
 					<option value="">&#160;</option>
 					<?php foreach ( $projectmanager->getCountries() AS $country ) : ?>
 					<option value="<?php echo $country->code ?>"<?php selected( $country->code, $dat ) ?>><?php echo $country->name ?></option>
 					<?php endforeach; ?>
 				</select>
 			<?php elseif ( 'file' == $form_field->type || 'image' == $form_field->type || 'video' == $form_field->type ) : ?>
-					<input type="file" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" size="40" />
+					<input type="file" class="form-input" name="form_field[<?php echo $form_field->id ?>]" id="form_field_<?php echo $form_field->id ?>" size="40" />
 					<input type="hidden" name="form_field[<?php echo $form_field->id ?>][current]" value="<?php echo $dat ?>" />
 					<?php if (!empty($dat)) : ?>
 					<p>
@@ -130,11 +130,17 @@ if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) 
 		<?php endforeach; ?>
 	<?php endif; ?>
 
+	<?php if ($use_captcha == "true") : ?>
+		<?php $captcha = $projectmanager->generateCaptcha(); ?>
+		<label for="captcha"><?php _e('Code', 'projectmanager') ?>*</label>
+		<img src="<?php echo $projectmanager->getFileURL($captcha['filename']) ?>" style="width: 200px; margin-right: 10px;" /><input type="text" name="projectmanager_captcha" id="captcha" style="width: 90px;" />
+	<?php endif; ?>
+	
 <input type="hidden" name="project_id" value="<?php echo intval($project->id) ?>" />
 <input type="hidden" name="dataset_id" value="<?php echo $dataset_id ?>" />
 <input type="hidden" name="user_id" value="<?php if ($dataset) echo intval($dataset->user_id) ?>" />
-<input type="hidden" name="d_message" value="Dataset added to the database" />
+<!--<input type="hidden" name="d_message" value="Dataset added to the database" />-->
 
-<p class="submit"><input type="submit" name="insertDataset" value="<?php _e('Submit', 'projectmanager') ?> &raquo;" class="button" /></p>
+<p class="submit"><input type="submit" name="insertDataset" value="<?php echo $button_title ?> &raquo;" class="button" /></p>
 </form>
 <?php endif; ?>

@@ -170,6 +170,34 @@ msgstr "Du hast keine Berechtigung Datensätze hinzuzufügen"
 msgid "Dataset updated."
 msgstr "Datensatz aktualisiert"
 
+#: admin/admin.php:
+msgid "You have to provide an image to upload"
+msgstr "Du musst ein Bild hochladen"
+
+#: admin/admin.php:
+msgid "You have to provide a name"
+msgstr "Du musst einen Namen angeben"
+
+#: admin/admin.php:
+msgid "Your name must not exceed 50 characters"
+msgstr "Deine Name darf nicht länger als 50 Zeichen sein"
+
+#: admin/admin.php:
+msgid "Mandatory field %s is empty"
+msgstr "Pflichtfeld %s ist leer"
+
+#: admin/admin.php:
+msgid "Provided %s `%s` is already present in the database"
+msgstr "Übergebene % `%s` ist bereits in der Datenbank vorhanden"
+
+#: admin/admin.php:
+msgid "Provided %s `%s` is not a valid e-mail address"
+msgstr "Übergebene %s `%s` ist keine valide e-mail Adresse"
+
+#: admin/admin.php:
+msgid "Provided %s is longer than the allowed length of %s characters"
+msgstr "Übergebene(r) %s ist länger als die erlaubte Länge von %s Zeichen"
+
 #: admin/admin.php:567
 msgid "You don't have the permission to edit this dataset"
 msgstr "Du hast nicht die Berechtigung Datensätze zu bearbeiten"
@@ -382,8 +410,8 @@ msgid "Use Widget"
 msgstr "Verwende Widget"
 
 #: admin/settings.php:62
-msgid "Navi Link"
-msgstr "Navi Link"
+msgid "Top-level Menu"
+msgstr "Top-level Menu"
 
 #: admin/settings.php:62
 msgid "Set this option to add a direct link in the navigation panel."
@@ -420,6 +448,10 @@ msgstr "Aktuelles Bild:"
 #: admin/settings.php:85
 msgid "Thumbnail size"
 msgstr "Vorschaubild-Größe"
+
+#: admin/settings.php:77
+msgid "Tiny size"
+msgstr "Kleinstbild-Größe"
 
 #: admin/settings.php:85 lib/widget.php:151
 msgid "Width"
@@ -1889,6 +1921,14 @@ msgstr "Auswahlmenu anzeigen"
 msgid "Dataset Form"
 msgstr "Datensatz Formular"
 
+#: admin/tinymce/window.php
+msgid "Submit Message"
+msgstr "Nachricht"
+
+#: admin/tinymce/window.php
+msgid "Button Title"
+msgstr "Button Titel"
+
 #: TinyMCE Button
 msgid "Number of datasets"
 msgstr "Anzahl Datensätze"
@@ -1920,3 +1960,7 @@ msgstr "Unterschreiben Seiten ID"
 #: TinyMCE Button
 msgid "Supporter Page ID"
 msgstr "Unterstützer Seiten ID"
+
+#: admin/documentation.php:205 admin/tinymce/window.php:78
+msgid "Template"
+msgstr "Template"

@@ -1,4 +1,4 @@
-	# Translation of the WordPress plugin ProjectManager 2.9.8 by Kolja Schleich.
+# Translation of the WordPress plugin ProjectManager 2.9.8 by Kolja Schleich.
 # Copyright (C) 2010 Kolja Schleich
 # This file is distributed under the same license as the ProjectManager package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
@@ -210,6 +210,34 @@ msgstr ""
 msgid "Dataset updated."
 msgstr ""
 
+#: admin/admin.php:
+msgid "You have to provide an image to upload"
+msgstr ""
+
+#: admin/admin.php:
+msgid "You have to provide a name"
+msgstr ""
+
+#: admin/admin.php:
+msgid "Your name must not exceed 50 characters"
+msgstr ""
+
+#: admin/admin.php:
+msgid "Mandatory field %s is empty"
+msgstr ""
+
+#: admin/admin.php:
+msgid "Provided %s `%s` is already present in the database"
+msgstr ""
+
+#: admin/admin.php:
+msgid "Provided %s `%s` is not a valid e-mail address"
+msgstr ""
+
+#: admin/admin.php:
+msgid "Provided %s is longer than the allowed length of %s characters"
+msgstr ""
+
 #: admin/admin.php:973 admin/admin.php:1009
 msgid ""
 "File exists and is not uploaded. Set the overwrite option if you want to "
@@ -327,10 +355,6 @@ msgstr ""
 
 #: admin/documentation.php:16
 msgid "Howto"
-msgstr ""
-
-#: admin/documentation.php:17 admin/documentation.php:328
-msgid "Donations"
 msgstr ""
 
 #: admin/documentation.php:20 admin/documentation.php:197
@@ -912,7 +936,7 @@ msgid "To order datasets manually there must be no limit on datasets."
 msgstr ""
 
 #: admin/settings.php:49
-msgid "Navi Link"
+msgid "Top-level Menu"
 msgstr ""
 
 #: admin/settings.php:49
@@ -953,6 +977,10 @@ msgstr ""
 
 #: admin/settings.php:77
 msgid "Thumbnail size"
+msgstr ""
+
+#: admin/settings.php:77
+msgid "Tiny size"
 msgstr ""
 
 #: admin/settings.php:77 lib/widget.php:159
@@ -1043,6 +1071,14 @@ msgstr ""
 
 #: admin/tinymce/window.php:54
 msgid "Dataset Form"
+msgstr ""
+
+#: admin/tinymce/window.php
+msgid "Submit Message"
+msgstr ""
+
+#: admin/tinymce/window.php
+msgid "Button Title"
 msgstr ""
 
 #: admin/tinymce/window.php:66 admin/tinymce/window.php:139

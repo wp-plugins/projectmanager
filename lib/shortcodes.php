@@ -122,6 +122,9 @@ class ProjectManagerShortcodes
 
 		extract(shortcode_atts(array(
 			'project_id' => 0,
+			'submit_message' => 'Dataset added to the database',
+			'submit_title' => 'Submit',
+			'use_captcha' => 'true',
 			'template' => '',
 		), $atts ));
 
@@ -134,12 +137,26 @@ class ProjectManagerShortcodes
 			require_once (PROJECTMANAGER_PATH . '/admin/admin.php');	
 			$admin = new ProjectManagerAdminPanel();
 
-			check_admin_referer( 'projectmanager_insert_dataset' );
-			$user_id = !empty($_POST['user_id']) ? intval($_POST['user_id']) : false;
-			$category = isset($_POST['post_category']) ? $_POST['post_category'] : '';
-			$admin->addDataset( intval($_POST['project_id']), htmlspecialchars($_POST['d_name']), $category, $_POST['form_field'], $user_id, false );
+			$error = false;
+			if (isset($_POST['projectmanager_captcha'])) {
+				$code = $_SESSION['projectmanager_captcha']['code'];
+				if ($_POST['projectmanager_captcha'] != $code)
+					$error = true;
+				
+				// delete captcha image
+				@unlink($projectmanager->getFilePath($_SESSION['projectmanager_captcha']['filename']));
+			}
 			
-			if (!$admin->isError()) $message = htmlspecialchars($_POST['d_message']);
+			if (!$error) {
+				check_admin_referer( 'projectmanager_insert_dataset' );
+				$user_id = !empty($_POST['user_id']) ? intval($_POST['user_id']) : false;
+				$category = isset($_POST['post_category']) ? $_POST['post_category'] : '';
+				$admin->addDataset( intval($_POST['project_id']), htmlspecialchars($_POST['d_name']), $category, $_POST['form_field'], $user_id, false );
+				
+				if (!$admin->isError()) $message = htmlspecialchars($submit_message);
+			} else {
+				$message = __('Wrong Captcha Code', 'projectmanager');
+			}
 		}
 		
 		$options = get_option('projectmanager');
@@ -173,7 +190,7 @@ class ProjectManagerShortcodes
 
 		$filename = 'dataset-form';
 		if ($template != "") $filename = 'dataset-form-'.$template;
-		$out = $this->loadTemplate( $filename, array('projectmanager' => $projectmanager, 'dataset_id' => $dataset_id, 'dataset' => $dataset, 'project' => $project, 'name' => $name, 'img_filename' => $img_filename, 'meta_data' => $meta_data, 'edit' => $edit, 'cat_ids' => $cat_ids, 'form_title' => $form_title, 'message' => $message) );
+		$out = $this->loadTemplate( $filename, array('projectmanager' => $projectmanager, 'dataset_id' => $dataset_id, 'dataset' => $dataset, 'project' => $project, 'name' => $name, 'img_filename' => $img_filename, 'meta_data' => $meta_data, 'edit' => $edit, 'cat_ids' => $cat_ids, 'form_title' => $form_title, 'button_title' => $submit_title, 'use_captcha' => $use_captcha, 'message' => $message) );
 
 		return $out;
 	}

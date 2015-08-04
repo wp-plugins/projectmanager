@@ -213,13 +213,20 @@ global $wpdb;
 		</td>
 	</tr>
 	<tr>
+		<td nowrap="nowrap" valign="top"><label for="datasetform_captcha"><?php _e('Use Captcha', 'projectmanager') ?></label></td>
+		<td><input type="checkbox" name="datasetform_captcha" value="true" id="datasetform_captcha" checked="checked" /></td>
+	</tr>
+	<tr>
+		<td><label for="datasetform_submit_message"><?php _e("Submit Message", 'projectmanager'); ?></label></td>
+		<td><input type="text" name="datasetform_submit_message" id="datasetform_submit_message" style="width: 200px" /> (<?php _e('Optional', 'projectmanager') ?>)</td>
+	</tr>
+	<tr>
+		<td><label for="datasetform_submit_title"><?php _e("Button Title", 'projectmanager'); ?></label></td>
+		<td><input type="text" name="datasetform_submit_title" id="datasetform_submit_title" style="width: 200px" /> (<?php _e('Optional', 'projectmanager') ?>)</td>
+	</tr>
+	<tr>
 		<td><label for="datasetform_templates"><?php _e("Template", 'projectmanager'); ?></label></td>
-		<td>
-		<select id="datasetform_templates" name="datasetform_templates", style="width: 200px">
-		<option value=""><?php _e('Default', 'projectmanager'); ?></option>
-		<option value="petition"><?php _e('Petition', 'projectmanager'); ?></option>
-		</select>
-		</td>
+		<td><input type="text" name="datasetform_template" id="datasetform_template" style="width: 200px" /></td>
 	</tr>
 	</table>
 	</div>

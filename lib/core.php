@@ -970,7 +970,9 @@ class ProjectManager extends ProjectManagerLoader
 		if (!isset($project->menu_icon)) $project->menu_icon = "databases.png";
 		if (!isset($project->gallery_num_cols)) $project->gallery_num_cols = "";
 		if (!isset($project->show_image)) $project->show_image = 0;
+		if (!isset($project->image_mandatory)) $project->image_mandatory = 0;
 		if (!isset($project->default_image)) $project->default_image = "";
+		if (!isset($project->tiny_size)) $project->tiny_size = array("width" => 80, "height" => 50);
 		if (!isset($project->thumb_size)) $project->thumb_size = array("width" => "", "height" => "");
 		if (!isset($project->medium_size)) $project->medium_size = array("width" => "", "height" => "");
 		if (!isset($project->chmod)) $project->chmod = "755";
@@ -995,7 +997,7 @@ class ProjectManager extends ProjectManagerLoader
 			$search = "`project_id` = ".intval($this->getProjectID()); 
 
 		// Only get private formfields in admin interface
-		if (!is_admin() && !$all) {
+		if (!is_admin() && !$all && !$id) {
 			$search .= " AND `private` = 0";
 		}
 		
@@ -2285,6 +2287,60 @@ class ProjectManager extends ProjectManagerLoader
 			echo '<input type="hidden" name="'.$key.'" value="'.$_POST[$key].'" />';
 		foreach ( $matches = preg_grep("/search_option_\d+/", array_keys($_POST)) AS $key )
 			echo '<input type="hidden" name="'.$key.'" value="'.$_POST[$key].'" />';
+	}
+	
+	
+	/**
+	 * Generate Captcha
+	 *
+	 * @param none
+	 * @return string
+	 */
+	function generateCaptcha($strlen = 6, $width = 200, $height = 50, $nlines = 5, $ndots = 500)
+	{
+		wp_mkdir_p( $this->getFilePath("captchas/") );
+		
+		// initalize black image
+		$image = imagecreatetruecolor($width, $height);
+		// make white background color
+		$background_color = imagecolorallocate($image, 255, 255, 255);
+		imagefilledrectangle($image,0,0,$width,$height,$background_color);
+		
+		// generate some random lines
+		$line_color = imagecolorallocate($image, 64,64,64); 
+		for($i = 0; $i < $nlines; $i++) {
+			imageline($image,0,rand()%$height,$width,rand()%$height,$line_color);
+		}
+		
+		// generate some random dots
+		$pixel_color = imagecolorallocate($image, 0,0,255);
+		for($i = 0; $i < $ndots; $i++) {
+			imagesetpixel($image,rand()%$width,rand()%$height,$pixel_color);
+		} 
+
+		// Letters and text color for captcha string
+		$letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890';
+		$len = strlen($letters);
+		$text_color = imagecolorallocate($image, 0,0,0);
+		
+		// Generate random captcha string
+		$code = "";
+		for ($i = 0; $i < $strlen; $i++) {
+			$letter = $letters[rand(0, $len-1)];
+			imagestring($image, 5,  5+($i*30), rand()%($height/2), $letter, $text_color);
+			$code .= $letter;
+		}
+		
+		// generate unique captcha name
+		$filename = "captchas/captcha_" . uniqid(rand(), true) . ".png";
+		
+		// generate png and save it
+		imagepng($image, $this->getFilePath($filename));
+		
+		// Save captcha filename and code in PHP SESSION
+		$_SESSION['projectmanager_captcha'] = array('filename' => $filename, 'code' => $code);
+		
+		return array("filename" => $filename, "captcha" => $code);
 	}
 }
 ?>

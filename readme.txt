@@ -3,7 +3,7 @@ Contributors: Kolja Schleich
 Tags: datamanager, CMS, Content Management System
 Requires at least: 3.9
 Tested up to 4.2.2
-Stable tag: 3.1.7.9
+Stable tag: 3.1.7.8
 
 This plugin can be used to manage any number of projects with recurrent datasets (e.g. portrait system, dvd collection, petition)
 
@@ -58,6 +58,15 @@ The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons
 
 
 == Changelog ==
+
+= 3.1.8 =
+* NEW: add captcha security code to datasetform in frontend
+* NEW: incorporated tiny image dimensions into project settings
+* NEW: define image as mandatory field
+* NEW: define return message and form submit button label in datasetform shortcode
+* CHANGED: merged dataset-form templates in frontend and backend (keeping the old templates for now)
+* UPDATED: updated testimonials templates design and include image
+* UPDATED: updated translation template
 
 = 3.1.7.9 =
 * NEW: updated TinyMCE button to allow formfield IDs and page IDs selection from dropdown menus

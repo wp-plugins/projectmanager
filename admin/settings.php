@@ -46,7 +46,7 @@ if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) 
 			
 		</tr>
 		<tr valign="top">
-			<th scope="row"><label for="navi_link"><?php _e( 'Navi Link', 'projectmanager' ) ?></th><td><input type="checkbox" name="settings[navi_link]" id="navi_link" value="1" <?php checked( 1, $project->navi_link ) ?> />&#160;<span class="setting-description"><?php _e( 'Set this option to add a direct link in the navigation panel.', 'projectmanager' ) ?></span></td>
+			<th scope="row"><label for="navi_link"><?php _e( 'Top-level Menu', 'projectmanager' ) ?></th><td><input type="checkbox" name="settings[navi_link]" id="navi_link" value="1" <?php checked( 1, $project->navi_link ) ?> />&#160;<span class="setting-description"><?php _e( 'Set this option to add a direct link in the navigation panel.', 'projectmanager' ) ?></span></td>
 		</tr>
 		<tr valign="top">
 			<th scope="row"><label for="profile_hook"><?php _e( 'Hook into Profile', 'projectmanager' ) ?></th><td><input type="checkbox" name="settings[profile_hook]" id="profile_hook" value="1" <?php checked( 1, $project->profile_hook ) ?> /></td>
@@ -73,14 +73,20 @@ if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) 
 		<tr valign="top">
 			<th scope="row"><label for="show_image"><?php _e( 'Show Image', 'projectmanager' ) ?></label></th><td><input type="checkbox" name="settings[show_image]" id="show_image"<?php if ( 1 == $project->show_image ) echo ' checked="checked"' ?> value="1"></td>
 		</tr>
-			<tr valign="top">
-		<th scope="row"><label for="default_image"><?php _e( 'Default Image', 'projectmanager' ) ?></label></th>
+		<tr valign="top">
+			<th scope="row"><label for="image_mandatory"><?php _e( 'Mandatory', 'projectmanager' ) ?></label></th><td><input type="checkbox" name="settings[image_mandatory]" id="image_mandatory"<?php if ( 1 == $project->image_mandatory ) echo ' checked="checked"' ?> value="1"></td>
+		</tr>
+		<tr valign="top">
+			<th scope="row"><label for="default_image"><?php _e( 'Default Image', 'projectmanager' ) ?></label></th>
 		<td>
 			<input type="file" name="project_default_image" id="default_image" size="45"/>
 			<p><?php _e( 'Supported file types', 'projectmanager' ) ?>: <?php echo implode( ',',$projectmanager->getSupportedImageTypes() ); ?></p>
 			<p><?php _e('Current Image:', 'projectmanager') ?><?php if ($project->default_image != "") : ?> <a href="<?php echo $projectmanager->getFileURL($project->default_image) ?>" target="_blank"><?php echo $project->default_image ?></a><input type="checkbox" id="del_default_image" name="settings[del_default_image]" value="1" style="margin-left: 1em;" />&#160;<label for="del_default_image"><?php _e( 'Delete', 'projectmanager' ) ?></label><?php endif; ?></p>
 		</td>
 	</tr>
+		<tr valign="top">
+			<th scope="row"><label for="thumb_size"><?php _e( 'Tiny size', 'projectmanager' ) ?></label></th><td><label for="tiny_width"><?php _e( 'Width' ) ?>&#160;</label><input type="text" name="settings[tiny_size][width]" id="tiny_width" size="3" value="<?php echo $project->tiny_size['width'] ?>" />  <label for="tiny_height"><?php _e( 'Height' ) ?>&#160;</label><input type="text" name="settings[tiny_size][height]" id="tiny_height" size="3" value="<?php echo $project->tiny_size['height'] ?>" /></td>
+		</tr>
 		<tr valign="top">
 			<th scope="row"><label for="thumb_size"><?php _e( 'Thumbnail size', 'projectmanager' ) ?></label></th><td><label for="thumb_width"><?php _e( 'Width' ) ?>&#160;</label><input type="text" name="settings[thumb_size][width]" id="thumb_width" size="3" value="<?php echo $project->thumb_size['width'] ?>" />  <label for="thumb_height"><?php _e( 'Height' ) ?>&#160;</label><input type="text" name="settings[thumb_size][height]" id="thumb_height" size="3" value="<?php echo $project->thumb_size['height'] ?>" /></td>
 		</tr>

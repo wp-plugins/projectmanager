@@ -91,10 +91,27 @@ function ProjectManagerInsertLink() {
 
 	if (datasetform.className.indexOf('current') != -1) {
 		var projectId = document.getElementById('datasetform_projects').value;
-		var template = document.getElementById('datasetform_templates').value;
+		var template = document.getElementById('datasetform_template').value;
+		var submit_message = document.getElementById('datasetform_submit_message').value;
+		var submit_title = document.getElementById('datasetform_submit_title').value;
+		var captcha = getCheckedValue(document.getElementById('datasetform_captcha'));
+		
+		if (template != "")
+			template = " template=" + template;
+		
+		if (submit_message != "")
+			submit_message = " submit_message='" + submit_message + "'";
+		
+		if (submit_title != "")
+			submit_title = " submit_title='" + submit_title + "'";
+		
+		if (captcha == "")
+			captcha = " use_captcha=false";
+		else
+			captcha = "";
 		
 		if (projectId != 0)
-			tagtext = "[dataset_form project_id=" + projectId + " template=" + template + "]";
+			tagtext = "[dataset_form project_id=" + projectId + template + submit_message + submit_title + captcha + "]";
 		else
 			tinyMCEPopup.close();
 	}
