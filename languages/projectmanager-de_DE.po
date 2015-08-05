@@ -293,6 +293,34 @@ msgstr "Formularfelder speichern"
 msgid "Import Datasets"
 msgstr "Datensätze importieren"
 
+#: admin/import.php
+msgid "Import Data"
+msgstr "Daten importieren"
+
+#: admin/import.php
+msgid "Import Media"
+msgstr "Mediadateien importieren"
+
+#: admin/import.php-format
+msgid "Upload Media"
+msgstr "Mediadatei hochladen"
+
+#: admin/import.php
+msgid "You can upload media files in zip format to the webserver"
+msgstr "Du kannst Mediadateien im zip-Format auf den Server hochladen"
+
+#: admin/admin.php
+msgid "You have to select a media file in zip format"
+msgstr "Du musst eine Mediadatei im zip Format auswählen"
+
+#: admin/admin.php
+msgid "Media file have been successfully imported"
+msgstr "Mediadateien wurden erfolgreich importiert"
+
+#: admin/admin.php
+msgid "Media zip file could not be unpacked"
+msgstr "Media zip Datei konnte nicht entpackt werden"
+
 #: admin/import.php:25
 msgid "File"
 msgstr "Datei"
@@ -325,6 +353,14 @@ msgstr "Spalte %d"
 #: admin/import.php:57 admin/import.php:60
 msgid "Export Datasets"
 msgstr "Datensätze exportieren"
+
+#: admin/import.php:62 admin/import.php:65
+msgid "Export Data"
+msgstr "Daten exportieren"
+
+#: admin/import.php
+msgid "Export Media"
+msgstr "Mediadateien exportieren"
 
 #: admin/index.php:48 admin/index.php:57 admin/tinymce/window.php:58
 #: admin/tinymce/window.php:89 admin/tinymce/window.php:119

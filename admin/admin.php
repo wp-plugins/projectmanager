@@ -19,6 +19,22 @@ class ProjectManagerAdminPanel extends ProjectManager
 	
 	
 	/**
+	 * project media array
+	 *
+	 * @param array
+	 */
+	var $media = array();
+	
+	
+	/**
+	 * export media?
+	 *
+	 * @param boolean
+	 */
+	var $export_media = false;
+	
+	
+	/**
 	 * load admin area
 	 *
 	 * @param none
@@ -623,6 +639,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 */
 	function importDatasets( $project_id, $file, $delimiter, $cols )
 	{
+		global $wpdb;
+		
 		if ( !current_user_can('import_datasets') ) {
 			$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
 			return;
@@ -646,12 +664,13 @@ class ProjectManagerAdminPanel extends ProjectManager
 						  $line = explode($delimiter, $buffer);
 						  
 						  if ( $l > 0 && $line ) {
-  						  $name = $line[0];
-  						  $categories = empty($line[1]) ? '' : explode(",", $line[1]);
+							$name = $line[0];
+							$image = $line[1];
+							$categories = empty($line[2]) ? '' : explode(",", $line[2]);
 							/*
     						 * get Category IDs from titles
     						 */						
-    						$cat_ids = array();
+							$cat_ids = array();
     						if ( !empty($categories) ) {
 								foreach ( $categories AS $category ) {
 									$cat_ids[] = get_cat_ID($category);
@@ -663,9 +682,10 @@ class ProjectManagerAdminPanel extends ProjectManager
     						foreach ( $cols AS $col => $form_field_id ) {
     							$meta[$form_field_id] = $line[$col];
     						}
-    						
+    		
     						if ( $line && !empty($name) ) {
-    							$this->addDataset($project_id, $name, $cat_ids, $meta);
+    							$dataset_id = $this->addDataset($project_id, $name, $cat_ids, $meta, $user_id = false, $is_admin = true, $import = true);
+								$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `image` = '%s' WHERE id = '%d'", $image, $dataset_id ) );
     							$i++;
     						}
   					  }
@@ -683,6 +703,34 @@ class ProjectManagerAdminPanel extends ProjectManager
 			@unlink($new_file); // remove file from server after import is done
 		} else {
 			$this->setMessage( __('The uploaded file seems to be empty', 'projectmanager'), true );
+		}
+	}
+	
+	
+	/**
+	 * import media to webserver
+	 *
+	 * @param none
+	 */
+	function importMedia()
+	{
+		global $projectmanager;
+		
+		if (!isset($_FILES['projectmanager_media_zip']) || empty($_FILES['projectmanager_media_zip']['name'])) {
+			$this->setMessage(__('You have to select a media file in zip format', 'projectmanager'), true);
+			return false;
+		} else {
+			$media_file = $_FILES['projectmanager_media_zip'];
+			$file = $this->uploadFile($media_file, true );
+		
+			if (file_exists($file)) {
+				if ($projectmanager->unzipMedia($file)) {
+					$this->setMessage(__('Media file have been successfully imported', 'projectmanager'));
+					@unlink($file);
+				} else {
+					$this->setMessage(__('Media zip file could not be unpacked','projectmanager'), true);
+				}
+			}
 		}
 	}
 	
@@ -715,7 +763,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 * @param int $project_id
 	 * @return file
 	 */
-	function exportDatasets( $project_id )
+	function exportData( $project_id, $type = "media" )
 	{
 		global $projectmanager;
 		
@@ -728,28 +776,63 @@ class ProjectManagerAdminPanel extends ProjectManager
 		$this->project_id = $project_id;
 		$projectmanager->init($project_id);
 		$project = $projectmanager->getProject();
-			
+		
+		// Initialize array with media files
+		$media = array();
+		$media_filename = "Media-ProjectID_".$project->id.".zip";
+		
 		$filename = $project->title."_".date("Y-m-d").".csv";
 		/*
 		* Generate Header
 		*/
-		$contents = __('Name','projectmanager')."\t".__('Categories','projectmanager');
+		$contents = __('Name','projectmanager')."\t".__('Image','projectmanager')."\t".__('Categories','projectmanager');
 		foreach ( $projectmanager->getFormFields() AS $form_field )
 			$contents .= "\t".$form_field->label;
 		
 		foreach ( $projectmanager->getDatasets() AS $dataset ) {
-			$contents .= "\n".$dataset->name."\t".$projectmanager->getSelectedCategoryTitles(maybe_unserialize($dataset->cat_ids));
+			// add main image to media array
+			if ($dataset->image != "") {
+				$media[] = $projectmanager->getFilePath($dataset->image);
+				$media[] = $projectmanager->getFilePath("thumb.".$dataset->image);
+				$media[] = $projectmanager->getFilePath("tiny.".$dataset->image);
+			}
+			
+			$contents .= "\n".$dataset->name."\t".$dataset->image."\t".$projectmanager->getSelectedCategoryTitles(maybe_unserialize($dataset->cat_ids));
 
 			foreach ( $projectmanager->getDatasetMeta( $dataset->id ) AS $meta ) {
+				// Add media files to array
+				if (($meta->type == "file" || $meta->type == "video") && $meta->value != "") {
+					$media[] = $projectmanager->getFilePath($meta->value);
+				}
+				if ($meta->type == "image" && $meta->value != "") {
+					$media[] = $projectmanager->getFilePath($meta->value);
+					$media[] = $projectmanager->getFilePath("thumb.".$meta->value);
+					$media[] = $projectmanager->getFilePath("tiny.".$meta->value);
+				}
+				
 				// Remove line breaks
 				$meta->value = str_replace("\r\n", "", stripslashes($meta->value));
 				$contents .= "\t".strip_tags($meta->value);
 			}
 		}
 		
-		header('Content-Type: text/csv');
-		header('Content-Disposition: inline; filename="'.$filename.'"');
-		echo $contents;
+		// create zip Archive of media files
+		$projectmanager->createZip($media, $projectmanager->getFilePath($media_filename));
+		
+		if ($type == "media") {
+			header("Content-Description: File Transfer");
+			header("Content-type: application/octet-stream");
+			header("Content-Disposition: attachment; filename=\"".$media_filename."\"");
+			header("Content-Transfer-Encoding: binary");
+			header("Content-Length: ".filesize($projectmanager->getFilePath($media_filename)));
+			ob_end_flush();
+			@readfile($projectmanager->getFilePath($media_filename));
+		}
+		if ($type == "data") {
+			header('Content-Type: text/csv');
+			header('Content-Disposition: inline; filename="'.$filename.'"');
+			echo $contents;
+		}
 		exit();
 	}
 	
@@ -783,10 +866,11 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 * @param array $cat_ids
 	 * @param array $dataset_meta
 	 * @param false|int $user_id
-	 * @param boolean is_admin
+	 * @param boolean $is_admin
+	 * @param boolean $import
 	 * @return string
 	 */
-	function addDataset( $project_id, $name, $cat_ids, $dataset_meta = false, $user_id = false, $is_admin = true )
+	function addDataset( $project_id, $name, $cat_ids, $dataset_meta = false, $user_id = false, $is_admin = true, $import = false )
 	{
 		global $wpdb, $current_user, $projectmanager;
 		require_once (PROJECTMANAGER_PATH . '/lib/image.php');
@@ -833,7 +917,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 			$this->error = true;
 		}
 		
-		if ($project->image_mandatory == 1) {
+		if ($project->image_mandatory == 1 && !$import) {
 			if (!isset($_FILES['projectmanager_image']) || (isset($_FILES['projectmanager_image']) && $_FILES['projectmanager_image']['name'] == '')) {
 				$this->setMessage( __("You have to provide an image to upload", 'projectmanager'), true );
 				$this->printMessage();
@@ -902,14 +986,15 @@ class ProjectManagerAdminPanel extends ProjectManager
 				$meta_id = intval($meta_id);
 				$formfield = parent::getFormFields($meta_id);
 				
-				// Manage file upload
-				if ( 'file' == $formfield->type || 'image' == $formfield->type || 'video' == $formfield->type ) {
+				// Manage file upload - Not available in dataset import
+				if ( !$import && ('file' == $formfield->type || 'image' == $formfield->type || 'video' == $formfield->type )) {
 					$file = array('name' => $_FILES['form_field']['name'][$meta_id], 'tmp_name' => $_FILES['form_field']['tmp_name'][$meta_id], 'size' => $_FILES['form_field']['size'][$meta_id], 'type' => $_FILES['form_field']['type'][$meta_id]);
 					if ( !empty($file['name']) )
 						$this->uploadFile($file);
-
+					
 					$meta_value = basename($file['name']);
-
+					
+					
 					// Create Thumbails for Image
 					if ( 'image' == $formfield->type && !empty($meta_value) ) {
 						$new_file = parent::getFilePath().'/'.$meta_value;
@@ -962,6 +1047,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 		$this->setMessage( __( 'New dataset added to the database.', 'projectmanager' ) );
 		
 		do_action('projectmanager_add_dataset', $dataset_id);
+		
+		return $dataset_id;
 	}
 		
 		
@@ -979,7 +1066,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 * @param int|false $owner
 	 * @return string
 	 */
-	function editDataset( $project_id, $name, $cat_ids, $dataset_id, $dataset_meta = false, $user_id, $del_image = false, $image_file = '', $overwrite_image = false, $owner = false )
+	function editDataset( $project_id, $name, $cat_ids, $dataset_id, $dataset_meta = false, $user_id, $del_image = false, $image_file = '', $overwrite_image = false, $owner = false, $is_admin = true )
 	{
 		global $wpdb, $current_user, $projectmanager;
 		
@@ -1087,8 +1174,9 @@ class ProjectManagerAdminPanel extends ProjectManager
 				// Manage file upload
 				if ( 'file' == $formfield->type || 'image' == $formfield->type || 'video' == $formfield->type ) {
 					$file = array('name' => $_FILES['form_field']['name'][$meta_id], 'tmp_name' => $_FILES['form_field']['tmp_name'][$meta_id], 'size' => $_FILES['form_field']['size'][$meta_id], 'type' => $_FILES['form_field']['type'][$meta_id], 'current' => $meta_value['current']);
-					$delete = (1 == $meta_value['del']) ? true : false;
-					$meta_value = $this->editFile($file, $meta_value['overwrite'], $delete);
+					$delete = (isset($meta_value['del']) && 1 == $meta_value['del']) ? true : false;
+					$overwrite = isset($meta_value['overwrite']) ? true : false;
+					$meta_value = $this->editFile($file, $overwrite, $delete);
 					
 					// Create Thumbnails for Image
 					if ( 'image' == $formfield->type && !empty($meta_value) ) {
@@ -1206,6 +1294,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 			return;
 		
 			
+		// Delete files
 		$this->delImage( $dataset->image );
 		foreach ( parent::getDatasetMeta($dataset_id) AS $dataset_meta ) {
 			if ( 'file' == $dataset_meta->type || 'video' == $dataset_meta->type) {
@@ -1303,8 +1392,12 @@ class ProjectManagerAdminPanel extends ProjectManager
 		} else {
 			if ( !move_uploaded_file($file['tmp_name'], $new_file) ) {
 				$this->setMessage( sprintf( __('The uploaded file could not be moved to %s.' ), parent::getFilePath() ), true );
+			} else {
+				return $new_file;
 			}
 		}
+		
+		return false;
 	}
 	
 	

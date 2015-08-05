@@ -775,12 +775,12 @@ class ProjectManager extends ProjectManagerLoader
 	function getFileImage( $filename )
 	{
 		$type = $this->getFileType($filename);
-		$out .= PROJECTMANAGER_URL . "/admin/icons/files/";
+		$out = PROJECTMANAGER_URL . "/admin/icons/files/";
 
 		switch ( $type ) {
-			case'ods':
+			case 'ods':
 			case 'doc':
-			case'docx':
+			case 'docx':
 				$out .= "document_word.png";
 				break;
 			case 'xls':
@@ -2300,6 +2300,11 @@ class ProjectManager extends ProjectManagerLoader
 	{
 		wp_mkdir_p( $this->getFilePath("captchas/") );
 		
+		// clean up old captcha
+		if (isset($_SESSION['projectmanager_captcha'])) {
+			@unlink($this->getFilePath($_SESSION['projectmanager_captcha']['filename']));
+		}
+		
 		// initalize black image
 		$image = imagecreatetruecolor($width, $height);
 		// make white background color
@@ -2341,6 +2346,72 @@ class ProjectManager extends ProjectManagerLoader
 		$_SESSION['projectmanager_captcha'] = array('filename' => $filename, 'code' => $code);
 		
 		return array("filename" => $filename, "captcha" => $code);
+	}
+	
+	
+	/**
+	 * archive files in zip format
+	 *
+	 * @param array $files
+	 * @param string $destination
+	 * @param boolean $overwrite
+	 */
+	function createZip($files, $destination, $overwrite = true)
+	{
+		//if the zip file already exists and overwrite is false, return false
+		if(file_exists($destination) && !$overwrite)
+			return false;
+	
+		$valid_files = array();
+		
+		// make sure that files are an array
+		if (!is_array($files)) $files = array($files);
+		
+		foreach ($files AS $file) {
+			if (file_exists($file))
+				$valid_files[] = $file;
+		}
+		
+		// Only proceed if we have valid files
+		if (count($valid_files)) {
+			// create zip Archive
+			$zip = new ZipArchive();
+			$res = $zip->open($destination, $overwrite ? ZIPARCHIVE::OVERWRITE : ZipArchive::CREATE);
+
+			if ($res == TRUE) {
+				foreach ($valid_files AS $file) {
+					$zip->addFile($file, basename($file));
+				}
+
+				$zip->close();
+			} else {
+				return false;
+			}
+			
+			return file_exists($destination);
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * unzip media files to upload folder
+	 *
+	 * @param string $zip_file
+	 */
+	function unzipMedia($zip_file)
+	{
+		$zip = new ZipArchive();
+		$res = $zip->open($zip_file);
+		
+		if ($res == TRUE) {
+			$zip->extractTo($this->getFilePath());
+			$zip->close();
+			
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
 ?>

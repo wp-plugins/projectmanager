@@ -6,17 +6,53 @@ else :
 $project_id = $projectmanager->getProjectID();
 $project = $projectmanager->getCurrentProject();
 
-if ( isset($_POST['export']) ) {
-	$this->exportDatasets( $project_id );
-} elseif ( isset($_POST['import']) ) {
+$media_filename = "Media-ProjectID_".$project->id.".zip";
+$media_filename = $projectmanager->getFilePath($media_filename);
+
+// clean up media zip file
+if (file_exists($media_filename))
+	@unlink($media_filename);
+
+// Import data here. Data export is handled in /projectmanager.php
+if ( isset($_POST['import_datasets']) ) {
 	$this->importDatasets( $project_id, $_FILES['projectmanager_import'], $_POST['delimiter'], $_POST['cols'] );
+	$this->printMessage();
+} elseif ( isset($_POST['import_media']) ) {
+	$this->importMedia();
 	$this->printMessage();
 }
 ?>
 
 <div class="wrap">
 	<?php $this->printBreadcrumb( __('Import/Export', 'projectmanager') ) ?>
-	<h2><?php _e( 'Import Datasets', 'projectmanager' ) ?></h2>
+	<h2><?php _e( 'Export Data', 'projectmanager' ) ?></h2>
+	
+	<?php if (file_exists($media_filename)) : ?>
+	<!--<p><?php printf(__('Your media files are ready to <a href="%s">download</a>. (Last modified: %s)','projectmanager'), $projectmanager->getFileURL(basename($media_filename)), date ("F d Y H:i:s.", filemtime($media_filename))); ?></p>-->
+	<?php endif; ?>
+	
+	<form action="" method="post">
+		<input type="hidden" name="project_id" value="<?php echo $project_id ?>" />
+		<p class="submit">
+			<input type="submit" name="projectmanager_export_data" value="<?php _e('Export Datasets', 'projectmanager') ?> &raquo;" class="button-primary" />
+			<input type="submit" name="projectmanager_export_media" value="<?php _e('Export Media', 'projectmanager') ?> &raquo;" class="button-primary" />
+		</p>
+	</form>
+</div>
+
+<div class="wrap">
+	<h2><?php _e( 'Import Data', 'projectmanager' ) ?></h2>
+	
+	<h3><?php _e( 'Import Media', 'projectmanager' ) ?></h3>
+	<p><?php _e( 'You can upload media files in zip format to the webserver', 'projectmanager' ) ?></p>
+	<form action="" method="post" enctype="multipart/form-data">
+		<?php wp_nonce_field( 'projectmanager_import-media' ) ?>
+		<input type="hidden" name="project_id" value="<?php echo $project_id ?>" />
+		<input type="file" name="projectmanager_media_zip" id="projectmanager_media_zip" size="40"/>
+		<p class="submit"><input type="submit" name="import_media" value="<?php _e('Upload Media', 'projectmanager') ?> &raquo;" class="button-primary" /></p>
+	</form>
+	
+	<h3><?php _e( 'Import Datasets', 'projectmanager' ) ?></h3>
 	
 	<form action="" method="post" enctype="multipart/form-data">
 	<?php wp_nonce_field( 'projectmanager_import-datasets' ) ?>
@@ -38,9 +74,12 @@ if ( isset($_POST['export']) ) {
 		<th scope="row"><?php printf(__( 'Column %d', 'projectmanager'), 1 ) ?></th><td><?php _e( 'Name', 'projectmanager' ) ?></td>
 	</tr>
 	<tr valign="top">
-		<th scope="row"><?php printf(__( 'Column %d', 'projectmanager'), 2 ) ?></th><td><?php _e( 'Categories', 'projectmanager' ) ?></td>
+		<th scope="row"><?php printf(__( 'Column %d', 'projectmanager'), 2 ) ?></th><td><?php _e( 'Image', 'projectmanager' ) ?></td>
 	</tr>
-	<?php for ( $i = 2; $i <= $projectmanager->getNumFormFields()+1; $i++ ) : ?>
+	<tr valign="top">
+		<th scope="row"><?php printf(__( 'Column %d', 'projectmanager'), 3 ) ?></th><td><?php _e( 'Categories', 'projectmanager' ) ?></td>
+	</tr>
+	<?php for ( $i = 3; $i <= $projectmanager->getNumFormFields()+2; $i++ ) : ?>
 	<tr valign="top">
 		<th scope="row"><label for="col_<?php echo $i ?>"><?php printf(__( 'Column %d', 'projectmanager'), ($i+1)) ?></label></th>
 		<td>
@@ -54,15 +93,7 @@ if ( isset($_POST['export']) ) {
 	<?php endfor; ?>
 	</table>
 	
-	<p class="submit"><input type="submit" name="import" value="<?php _e('Import Datasets', 'projectmanager') ?> &raquo;" class="button-primary" /></p>
-	</form>
-</div>
-
-<div class="wrap">
-	<h2><?php _e( 'Export Datasets', 'projectmanager' ) ?></h2>
-	<form action="" method="post">
-		<input type="hidden" name="project_id" value="<?php echo $project_id ?>" />
-		<p class="submit"><input type="submit" name="projectmanager_export" value="<?php _e('Export Datasets', 'projectmanager') ?> &raquo;" class="button-primary" /></p>
+	<p class="submit"><input type="submit" name="import_datasets" value="<?php _e('Import Datasets', 'projectmanager') ?> &raquo;" class="button-primary" /></p>
 	</form>
 </div>
 <?php endif; ?>

@@ -465,6 +465,9 @@ global $projectmanager_loader;
 $projectmanager_loader = new ProjectManagerLoader();
 
 // Export datasets
-if ( isset($_POST['projectmanager_export']) )
-	$projectmanager_loader->adminPanel->exportDatasets($_POST['project_id']);
+if ( isset($_POST['projectmanager_export_data']) )
+	$projectmanager_loader->adminPanel->exportData($_POST['project_id'], "data");
+
+if ( isset($_POST['projectmanager_export_media']) )
+	$projectmanager_loader->adminPanel->exportData($_POST['project_id'], "media");
 ?>

@@ -795,6 +795,34 @@ msgstr ""
 msgid "Save Form Fields"
 msgstr ""
 
+#: admin/import.php
+msgid "Import Data"
+msgstr ""
+
+#: admin/import.php
+msgid "Import Media"
+msgstr ""
+
+#: admin/import.php-format
+msgid "Upload Media"
+msgstr ""
+
+#: admin/import.php
+msgid "You can upload media files in zip format to the webserver"
+msgstr ""
+
+#: admin/admin.php
+msgid "You have to select a media file in zip format"
+msgstr ""
+
+#: admin/admin.php
+msgid "Media file have been successfully imported"
+msgstr ""
+
+#: admin/admin.php
+msgid "Media zip file could not be unpacked"
+msgstr ""
+
 #: admin/import.php:19 admin/import.php:57
 msgid "Import Datasets"
 msgstr ""
@@ -830,6 +858,14 @@ msgstr ""
 
 #: admin/import.php:62 admin/import.php:65
 msgid "Export Datasets"
+msgstr ""
+
+#: admin/import.php:62 admin/import.php:65
+msgid "Export Data"
+msgstr ""
+
+#: admin/import.php
+msgid "Export Media"
 msgstr ""
 
 #: admin/index.php:39 admin/show-project.php:111
