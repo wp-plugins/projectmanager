@@ -95,6 +95,8 @@ function ProjectManagerInsertLink() {
 		var submit_message = document.getElementById('datasetform_submit_message').value;
 		var submit_title = document.getElementById('datasetform_submit_title').value;
 		var captcha = getCheckedValue(document.getElementById('datasetform_captcha'));
+		var timeout = document.getElementById('datasetform_captcha_timeout').value;
+		
 		
 		if (template != "")
 			template = " template=" + template;
@@ -110,8 +112,13 @@ function ProjectManagerInsertLink() {
 		else
 			captcha = "";
 		
+		if (captcha == "" && timeout != "")
+			timeout = " captcha_timeout=" + timeout;
+		else
+			timeout = "";
+		
 		if (projectId != 0)
-			tagtext = "[dataset_form project_id=" + projectId + template + submit_message + submit_title + captcha + "]";
+			tagtext = "[dataset_form project_id=" + projectId + template + submit_message + submit_title + captcha + timeout + "]";
 		else
 			tinyMCEPopup.close();
 	}

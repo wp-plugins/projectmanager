@@ -133,7 +133,7 @@ if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) 
 	<?php if ($use_captcha == "true") : ?>
 		<?php $captcha = $projectmanager->generateCaptcha(); ?>
 		<label for="captcha"><?php _e('Code', 'projectmanager') ?>*</label>
-		<img src="<?php echo $projectmanager->getFileURL($captcha['filename']) ?>" style="width: 200px; margin-right: 10px;" /><input type="text" name="projectmanager_captcha" id="captcha" style="width: 90px;" />
+		<img src="<?php echo $projectmanager->getCaptchaURL($captcha['filename']) ?>" style="width: 200px; margin-right: 10px;" /><input type="text" name="projectmanager_captcha" id="captcha" style="width: 90px;" />
 	<?php endif; ?>
 	
 <input type="hidden" name="project_id" value="<?php echo intval($project->id) ?>" />

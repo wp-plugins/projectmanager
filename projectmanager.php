@@ -43,7 +43,7 @@ class ProjectManagerLoader
 	  *
 	  * @var string
 	  */
-	 var $dbversion = '3.1.3';
+	 var $dbversion = '3.1.4';
 	 
 
 	 /**
@@ -465,9 +465,6 @@ global $projectmanager_loader;
 $projectmanager_loader = new ProjectManagerLoader();
 
 // Export datasets
-if ( isset($_POST['projectmanager_export_data']) )
-	$projectmanager_loader->adminPanel->exportData($_POST['project_id'], "data");
-
-if ( isset($_POST['projectmanager_export_media']) )
-	$projectmanager_loader->adminPanel->exportData($_POST['project_id'], "media");
+if ( isset($_POST['projectmanager_export']) )
+	$projectmanager_loader->adminPanel->exportData(intval($_POST['project_id']), htmlspecialchars($_POST['export_type']));
 ?>

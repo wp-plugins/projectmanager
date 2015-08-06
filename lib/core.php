@@ -102,7 +102,7 @@ class ProjectManager extends ProjectManagerLoader
 	 * @var string
 	 */
 	var $meta_value;
-	
+
 	
 	/**
 	 * Initialize project settings
@@ -120,6 +120,10 @@ class ProjectManager extends ProjectManagerLoader
 		if ( $project_id ) $this->init(intval($project_id));
 
 		$this->admin = parent::getAdminPanel();
+		
+		// cleanup captchas, which are older than 2 hours
+		$this->cleanupOldFiles($this->getCaptchaPath(), 2);
+		
 		return;
 	}
 	/**
@@ -723,17 +727,53 @@ class ProjectManager extends ProjectManagerLoader
 	
 	
 	/**
+	 * return path to captcha directory
+	 *
+	 * @param none
+	 * @return string
+	 */
+	function getCaptchaPath( $file = false )
+	{
+		if ( $file )
+			return $this->getFilePath("captchas/".$file, true);
+		else
+			return $this->getFilePath("captchas", true);
+	}
+	
+	
+	/**
+	 * return url to captcha directory
+	 *
+	 * @param none
+	 * @return string
+	 */
+	function getCaptchaURL( $file = false )
+	{
+		if ( $file )
+			return $this->getFileURL("captchas/".$file, true);
+		else
+			return $this->getFileURL("captchas", true);
+	}
+	
+	
+	/**
 	 * returns upload directory
 	 *
 	 * @param string | false $file
+	 * @param boolean $root
 	 * @return string upload path
 	 */
-	function getFilePath( $file = false )
+	function getFilePath( $file = false, $root = false )
 	{
-		if ( $file )
-			return WP_CONTENT_DIR.'/uploads/projects/'.$file;
+		if ($root || $this->getProjectID() == 0)
+			$base = WP_CONTENT_DIR.'/uploads/projects';
 		else
-			return WP_CONTENT_DIR.'/uploads/projects';
+			$base = WP_CONTENT_DIR.'/uploads/projects/Project-'.$this->getProjectID();
+			
+		if ( $file )
+			return $base .'/'. $file;
+		else
+			return $base;
 	}
 	
 	
@@ -741,14 +781,20 @@ class ProjectManager extends ProjectManagerLoader
 	 * returns url of upload directory
 	 *
 	 * @param string | false $file image file
+	 * @param boolean $root
 	 * @return string upload url
 	 */
-	function getFileURL( $file = false )
+	function getFileURL( $file = false, $root = false )
 	{
-		if ( $file )
-			return WP_CONTENT_URL.'/uploads/projects/'.$file;
+		if ($root || $this->getProjectID() == 0)
+			$base = WP_CONTENT_URL.'/uploads/projects';
 		else
-			return WP_CONTENT_URL.'/uploads/projects';
+			$base = WP_CONTENT_URL.'/uploads/projects/Project-'.$this->getProjectID();
+			
+		if ( $file )
+			return $base .'/'. $file;
+		else
+			return $base;
 	}
 	
 	
@@ -2298,11 +2344,11 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function generateCaptcha($strlen = 6, $width = 200, $height = 50, $nlines = 5, $ndots = 500)
 	{
-		wp_mkdir_p( $this->getFilePath("captchas/") );
+		wp_mkdir_p( $this->getCaptchaPath() );
 		
 		// clean up old captcha
 		if (isset($_SESSION['projectmanager_captcha'])) {
-			@unlink($this->getFilePath($_SESSION['projectmanager_captcha']['filename']));
+			@unlink($this->getCaptchaPath($_SESSION['projectmanager_captcha']['filename']));
 		}
 		
 		// initalize black image
@@ -2337,15 +2383,42 @@ class ProjectManager extends ProjectManagerLoader
 		}
 		
 		// generate unique captcha name
-		$filename = "captchas/captcha_" . uniqid(rand(), true) . ".png";
+		$filename = uniqid(rand(), true) . ".png";
 		
 		// generate png and save it
-		imagepng($image, $this->getFilePath($filename));
+		imagepng($image, $this->getCaptchaPath($filename));
 		
-		// Save captcha filename and code in PHP SESSION
-		$_SESSION['projectmanager_captcha'] = array('filename' => $filename, 'code' => $code);
+		// Save captcha creation time, filename and code in PHP SESSION
+		$_SESSION['projectmanager_captcha'] = array('time' => time(), 'filename' => $filename, 'code' => $code);
 		
 		return array("filename" => $filename, "captcha" => $code);
+	}
+	
+	
+	/**
+	 * clean up old files
+	 *
+	 * @param string $dir
+	 * @param int $time time in h for captcha removal
+	 * @return void
+	 */
+	function cleanupOldFiles($dir, $time = 24)
+	{
+		$files = $this->readFolder($dir);
+		
+		// get current time in seconds
+		$now = time();
+		foreach ($files AS $file) {
+			$file = $dir."/".$file;
+			// get file modification time as unix timestamp in seconds
+			$filetime = filemtime($file);
+			// get difference between current time and file modification time in hours
+			$diff = ($now-$filetime)/(60*60);
+
+			// remove file if it is older than $time
+			if ($diff > $time)
+				@unlink($file);
+		}
 	}
 	
 	
@@ -2399,13 +2472,15 @@ class ProjectManager extends ProjectManagerLoader
 	 *
 	 * @param string $zip_file
 	 */
-	function unzipMedia($zip_file)
+	function unzipFiles($zip_file, $destination = NULL)
 	{
 		$zip = new ZipArchive();
 		$res = $zip->open($zip_file);
 		
+		if (is_null($destination)) $destination = $this->getFilePath();
+		
 		if ($res == TRUE) {
-			$zip->extractTo($this->getFilePath());
+			$zip->extractTo($destination);
 			$zip->close();
 			
 			return true;

@@ -180,6 +180,49 @@ function projectmanager_upgrade() {
 		$wpdb->query( "ALTER TABLE {$wpdb->projectmanager_projectmeta} ADD `private` tinyint( 1 ) NOT NULL default '0' AFTER `unique`" );
 	}
 	
+	if (version_compare($installed, '3.1.4', '<')) {
+		$project_id_old = $projectmanager->getProjectID();
+		foreach ($projects = $projectmanager->getProjects() AS $project) {
+			$projectmanager->setProjectID($project->id);
+			
+			// create new project subdirectory
+			wp_mkdir_p( $projectmanager->getFilePath() );
+			
+			// move default image
+			if ($project->default_image != "" && file_exists($projectmanager->getFilePath($project->default_image, true))) {
+				rename($projectmanager->getFilePath($project->default_image, true), $projectmanager->getFilePath($project->default_image));
+				rename($projectmanager->getFilePath("thumb.".$project->default_image, true), $projectmanager->getFilePath("thumb.".$project->default_image));
+				rename($projectmanager->getFilePath("tiny.".$project->default_image, true), $projectmanager->getFilePath("tiny.".$project->default_image));
+			}
+				
+			foreach ($datasets = $projectmanager->getDatasets() AS $dataset) {
+				// move main image
+				if ($dataset->image != "" && file_exists($projectmanager->getFilePath($dataset->image, true))) {
+					rename($projectmanager->getFilePath($dataset->image, true), $projectmanager->getFilePath($dataset->image));
+					rename($projectmanager->getFilePath("thumb.".$dataset->image, true), $projectmanager->getFilePath("thumb.".$dataset->image));
+					rename($projectmanager->getFilePath("tiny.".$dataset->image, true), $projectmanager->getFilePath("tiny.".$dataset->image));
+				}
+				
+				$meta = $projectmanager->getDatasetMeta($dataset->id);
+				if ( $meta ) {
+					foreach ( $meta AS $m ) {
+						// move media files to new directory
+						if ('file' == $m->type || 'image' == $m->type || 'video' == $m->type) {
+							if ($m->value != "" && file_exists($projectmanager->getFilePath($m->value, true))) {
+								rename($projectmanager->getFilePath($m->value, true), $projectmanager->getFilePath($m->value));
+								if ('image' == $m->type) {
+									rename($projectmanager->getFilePath("thumb.".$m->value, true), $projectmanager->getFilePath("thumb.".$m->value));
+									rename($projectmanager->getFilePath("tiny.".$m->value, true), $projectmanager->getFilePath("tiny.".$m->value));
+								}
+							}			
+						}
+					}
+				}
+			}
+		}
+		$projectmanager->setProjectID($project_id_old);
+	}
+	
 	// Update dbversion
 	$options['dbversion'] = PROJECTMANAGER_DBVERSION;
 	$options['version'] = PROJECTMANAGER_VERSION;

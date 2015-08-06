@@ -125,6 +125,7 @@ class ProjectManagerShortcodes
 			'submit_message' => 'Dataset added to the database',
 			'submit_title' => 'Submit',
 			'use_captcha' => 'true',
+			'captcha_timeout' => 0,
 			'template' => '',
 		), $atts ));
 
@@ -140,11 +141,18 @@ class ProjectManagerShortcodes
 			$error = false;
 			if (isset($_POST['projectmanager_captcha'])) {
 				$code = $_SESSION['projectmanager_captcha']['code'];
-				if ($_POST['projectmanager_captcha'] != $code)
+				$now = time();
+				// if timeout is specified in minutes
+				if ($captcha_timeout > 0 && ($now - $_SESSION['projectmanager_captcha']['time'])/60 > $captcha_timeout) {
 					$error = true;
+					$message = __('Your session has expired', 'projectmanager');
+				} elseif ($_POST['projectmanager_captcha'] != $code) {
+					$error = true;
+					$message = __('Wrong Captcha Code', 'projectmanager');
+				}
 				
 				// delete captcha image
-				@unlink($projectmanager->getFilePath($_SESSION['projectmanager_captcha']['filename']));
+				@unlink($projectmanager->getCaptchaPath($_SESSION['projectmanager_captcha']['filename']));
 			}
 			
 			if (!$error) {
@@ -154,8 +162,6 @@ class ProjectManagerShortcodes
 				$admin->addDataset( intval($_POST['project_id']), htmlspecialchars($_POST['d_name']), $category, $_POST['form_field'], $user_id, false );
 				
 				if (!$admin->isError()) $message = htmlspecialchars($submit_message);
-			} else {
-				$message = __('Wrong Captcha Code', 'projectmanager');
 			}
 		}
 		

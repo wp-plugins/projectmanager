@@ -16,24 +16,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 * @param boolean
 	 */
 	var $error = false;
-	
-	
-	/**
-	 * project media array
-	 *
-	 * @param array
-	 */
-	var $media = array();
-	
-	
-	/**
-	 * export media?
-	 *
-	 * @param boolean
-	 */
-	var $export_media = false;
-	
-	
+
+
 	/**
 	 * load admin area
 	 *
@@ -48,6 +32,9 @@ class ProjectManagerAdminPanel extends ProjectManager
 		//add_action('admin_print_scripts', array(&$this, 'loadScripts') );
 		add_action('admin_print_styles', array(&$this, 'loadStyles') );
 		add_action('wp_dashboard_setup', array( $this, 'registerDashboardWidget'));
+		
+		// cleanup backups that are older than 24 hours
+		parent::cleanupOldFiles($this->getBackupPath(), 24);
 	}
 	function ProjectManagerAdminPanel()
 	{
@@ -64,6 +51,21 @@ class ProjectManagerAdminPanel extends ProjectManager
 	function isError()
 	{
 		return $this->error;
+	}
+	
+	
+	/**
+	 * retrieve path to project backups
+	 *
+	 * @param none
+	 * @return string
+	 */
+	function getBackupPath( $file = false )
+	{
+		if ($file)
+			return parent::getFilePath("backups/".$file, true);
+		else
+			return parent::getFilePath("backups", true);
 	}
 	
 	
@@ -507,6 +509,10 @@ class ProjectManagerAdminPanel extends ProjectManager
 		$wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->projectmanager_projects} (title) VALUES ('%s')", htmlspecialchars($title) ) );
 		$project_id = $wpdb->insert_id;
 		
+		parent::setProjectID($project_id);
+		// create media directory for project
+		wp_mkdir_p( parent::getFilePath() );
+		
 		$this->setMessage( __('Project added','projectmanager') );
 		
 		do_action('projectmanager_add_project', $project_id);
@@ -646,6 +652,11 @@ class ProjectManagerAdminPanel extends ProjectManager
 			return;
 		}
 
+		if ($delimiter == ",") {
+			$this->setMessage(__('Dataset columns must not be separated by comma as multiple categories use this delimiter', 'projectmanager'), true);
+			return false;
+		}
+		
 		$project_id = intval($project_id);
 
 		if ( $file['size'] > 0 ) {
@@ -724,8 +735,9 @@ class ProjectManagerAdminPanel extends ProjectManager
 			$file = $this->uploadFile($media_file, true );
 		
 			if (file_exists($file)) {
-				if ($projectmanager->unzipMedia($file)) {
+				if ($projectmanager->unzipFiles($file)) {
 					$this->setMessage(__('Media file have been successfully imported', 'projectmanager'));
+					// remove zip file
 					@unlink($file);
 				} else {
 					$this->setMessage(__('Media zip file could not be unpacked','projectmanager'), true);
@@ -763,15 +775,17 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 * @param int $project_id
 	 * @return file
 	 */
-	function exportData( $project_id, $type = "media" )
+	function exportData( $project_id, $type = "data" )
 	{
 		global $projectmanager;
+		
+		wp_mkdir_p( $this->getBackupPath() );
 		
 		//if ( !current_user_can('import_datasets') ) {
 		//	$this->setMessage( __("You don't have permission to perform this task", 'projectmanager'), true );
 		//	return;
 		//}
-
+ 
 		$project_id = intval($project_id);
 		$this->project_id = $project_id;
 		$projectmanager->init($project_id);
@@ -779,7 +793,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 		
 		// Initialize array with media files
 		$media = array();
-		$media_filename = "Media-ProjectID_".$project->id.".zip";
+		$media_filename = $project->title."_Media_".date("Y-m-d").".zip";
 		
 		$filename = $project->title."_".date("Y-m-d").".csv";
 		/*
@@ -816,24 +830,30 @@ class ProjectManagerAdminPanel extends ProjectManager
 			}
 		}
 		
-		// create zip Archive of media files
-		$projectmanager->createZip($media, $projectmanager->getFilePath($media_filename));
-		
 		if ($type == "media") {
-			header("Content-Description: File Transfer");
-			header("Content-type: application/octet-stream");
-			header("Content-Disposition: attachment; filename=\"".$media_filename."\"");
-			header("Content-Transfer-Encoding: binary");
-			header("Content-Length: ".filesize($projectmanager->getFilePath($media_filename)));
-			ob_end_flush();
-			@readfile($projectmanager->getFilePath($media_filename));
+			// create zip Archive of media files
+			$ret = $projectmanager->createZip($media, $this->getBackupPath($media_filename));
+			
+			if ($ret) {
+				header("Content-Description: File Transfer");
+				header("Content-type: application/octet-stream");
+				header("Content-Disposition: attachment; filename=\"".$media_filename."\"");
+				header("Content-Transfer-Encoding: binary");
+				header("Content-Length: ".filesize($this->getBackupPath($media_filename)));
+				ob_end_flush();
+				@readfile($this->getBackupPath($media_filename));
+				exit();
+			} else {
+				$this->setMessage(__('No media files found to export', 'projectmanager'), true);
+				$this->printMessage();
+			}
 		}
 		if ($type == "data") {
 			header('Content-Type: text/csv');
 			header('Content-Disposition: inline; filename="'.$filename.'"');
 			echo $contents;
+			exit();
 		}
-		exit();
 	}
 	
 	
@@ -1351,6 +1371,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 				if ( file_exists($new_file) && !$overwrite ) {
 					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->projectmanager_dataset} SET `image` = '%s' WHERE id = '%d'", basename($file['name']), $dataset_id ) );
 					$this->setMessage( __('File exists and is not uploaded. Set the overwrite option if you want to replace it.','projectmanager'), true );
+					$this->error = true;
 				} else {
 					if ( move_uploaded_file($file['tmp_name'], $new_file) ) {
 						if ( $dataset = parent::getDataset($dataset_id) )
@@ -1371,11 +1392,13 @@ class ProjectManagerAdminPanel extends ProjectManager
 						}
 					} else {
 						$this->setMessage( sprintf( __('The uploaded file could not be moved to %s.' ), parent::getFilePath() ), true );
+						$this->error = true;
 					}
 				}
 			}
 		} else {
 			$this->setMessage( __('The file type is not supported.','projectmanager'), true );
+			$this->error = true;
 		}
 	}
 	

@@ -145,6 +145,10 @@ msgstr "Projekt hinzugefügt"
 msgid "Project updated"
 msgstr "Projekt aktualisiert"
 
+#: admin/admin.php
+msgid "Dataset columns must not be separated by comma as multiple categories use this delimiter"
+msgstr "Datensatz Spalten dürfen nicht durch Komma getrennt sein, da mehrere Kategorien dadurch getrennt werden"
+
 #: admin/admin.php:402
 #, php-format
 msgid "%d Datasets successfully imported"
@@ -289,6 +293,14 @@ msgstr "Neues Formularfeld hinzufügen"
 msgid "Save Form Fields"
 msgstr "Formularfelder speichern"
 
+#: admin/import.php
+msgid "You can export datasets in tab-delimited format or media files as zip archive"
+msgstr "Du kannst die Datensätze als tab-getrennte Datei oder Media Dateien als zip Archive exportieren"
+
+#: admin/import.php
+msgid "Media Files"
+msgstr "Mediadateien"
+
 #: admin/import.php:17 admin/import.php:52
 msgid "Import Datasets"
 msgstr "Datensätze importieren"
@@ -349,6 +361,10 @@ msgstr "Daten müssen das Format <strong>JJJJ-MM-TT</strong> haben."
 #, php-format
 msgid "Column %d"
 msgstr "Spalte %d"
+
+#: admin/import.php
+msgid "multiple categories separated by comma"
+msgstr "mehrere Kategorien müssen durch Komma getrennt sein"
 
 #: admin/import.php:57 admin/import.php:60
 msgid "Export Datasets"
@@ -781,6 +797,34 @@ msgstr "Geordnet"
 #, php-format
 msgid "Search: %d of %d"
 msgstr "Suche: %d von %d"
+
+#: admin/tinymce/window.php
+msgid "or"
+msgstr "oder"
+
+#: admin/tinymce/window.php
+msgid "Anker on same page"
+msgstr "Anker auf selber Seite"
+
+#: admin/tinymce/window.php
+msgid "Use Captcha"
+msgstr "Captcha verwenden"
+
+#: admin/tinymce/window.php
+msgid "Timeout"
+msgstr "Timeout"
+
+#: admin/tinymce/window.php
+msgid "minutes"
+msgstr "Minuten"
+
+#: lib/shortcodes.php
+msgid "Your session has expired"
+msgstr "Deine Sitzung ist abgelaufen"
+
+#: lib/shortcodes.php
+msgid "Wrong Captcha Code"
+msgstr "Falscher Captcha Code"
 
 #: view/single.php:13
 msgid "Back to list"

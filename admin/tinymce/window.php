@@ -214,7 +214,11 @@ global $wpdb;
 	</tr>
 	<tr>
 		<td nowrap="nowrap" valign="top"><label for="datasetform_captcha"><?php _e('Use Captcha', 'projectmanager') ?></label></td>
-		<td><input type="checkbox" name="datasetform_captcha" value="true" id="datasetform_captcha" checked="checked" /></td>
+		<td>
+			<input type="checkbox" name="datasetform_captcha" value="true" id="datasetform_captcha" checked="checked" />
+			<label for="datasetform_captcha_timeout"><?php _e('Timeout', 'projectmanager') ?></label>
+			<input type="text" name="datasetform_captcha_timeout" id="datasetform_captcha_timeout" size="3" value="30" /> <span><?php _e('minutes', 'projectmanager') ?></span>
+		</td>
 	</tr>
 	<tr>
 		<td><label for="datasetform_submit_message"><?php _e("Submit Message", 'projectmanager'); ?></label></td>

@@ -60,9 +60,10 @@ The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons
 == Changelog ==
 
 = 3.1.8 =
-* NEW: export/import of media files in zip format
+* NEW: Introducing separate media upload directories for each project
+* NEW: export/import of media files in zip format (kept on server for 24h)
 * NEW: include main image in dataset export
-* NEW: add captcha security code to datasetform in frontend
+* NEW: add captcha security code to datasetform in frontend including timeout shortcode in minutes. Captchas older than 2h are deleted
 * NEW: incorporated tiny image dimensions into project settings
 * NEW: define image as mandatory field
 * NEW: define return message and form submit button label in datasetform shortcode
@@ -70,6 +71,7 @@ The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons
 * UPDATED: updated testimonials templates design and include image
 * UPDATED: updated translation template
 * BUGFIX: fixed issues with dataset import
+* BUGFIX: fixed image upload in frontend dataset
 
 = 3.1.7.9 =
 * NEW: updated TinyMCE button to allow formfield IDs and page IDs selection from dropdown menus

@@ -31,11 +31,18 @@ if ( isset($_POST['import_datasets']) ) {
 	<!--<p><?php printf(__('Your media files are ready to <a href="%s">download</a>. (Last modified: %s)','projectmanager'), $projectmanager->getFileURL(basename($media_filename)), date ("F d Y H:i:s.", filemtime($media_filename))); ?></p>-->
 	<?php endif; ?>
 	
+	<p><?php _e('You can export datasets in tab-delimited format or media files as zip archive', 'projectmanager') ?></p>
+	
 	<form action="" method="post">
 		<input type="hidden" name="project_id" value="<?php echo $project_id ?>" />
-		<p class="submit">
-			<input type="submit" name="projectmanager_export_data" value="<?php _e('Export Datasets', 'projectmanager') ?> &raquo;" class="button-primary" />
-			<input type="submit" name="projectmanager_export_media" value="<?php _e('Export Media', 'projectmanager') ?> &raquo;" class="button-primary" />
+		
+		<p>
+			<select size="1" name="export_type" id="export_type">
+				<option value="data"><?php _e('Datasets', 'projectmanager') ?></option>
+				<option value="media"><?php _e('Media Files', 'projectmanager') ?></option>
+			</select>
+		
+			<input type="submit" name="projectmanager_export" value="<?php _e('Export Data', 'projectmanager') ?> &raquo;" class="button-primary" />
 		</p>
 	</form>
 </div>
@@ -77,7 +84,7 @@ if ( isset($_POST['import_datasets']) ) {
 		<th scope="row"><?php printf(__( 'Column %d', 'projectmanager'), 2 ) ?></th><td><?php _e( 'Image', 'projectmanager' ) ?></td>
 	</tr>
 	<tr valign="top">
-		<th scope="row"><?php printf(__( 'Column %d', 'projectmanager'), 3 ) ?></th><td><?php _e( 'Categories', 'projectmanager' ) ?></td>
+		<th scope="row"><?php printf(__( 'Column %d', 'projectmanager'), 3 ) ?></th><td><?php _e( 'Categories', 'projectmanager' ) ?> - <?php _e('multiple categories separated by comma', 'projectmanager') ?></td>
 	</tr>
 	<?php for ( $i = 3; $i <= $projectmanager->getNumFormFields()+2; $i++ ) : ?>
 	<tr valign="top">
