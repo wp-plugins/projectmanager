@@ -597,7 +597,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 			require_once (PROJECTMANAGER_PATH . '/lib/image.php');
 			$file = $_FILES['project_default_image'];
 		
-			$new_file = parent::getFilePath().'/'.basename($file['name']);
+			$new_file = parent::getFilePath(basename($file['name']));
 			$image = new ProjectManagerImage($new_file);
 			if ( $image->supported($file['name']) ) {
 				if ( $file['size'] > 0 ) {
@@ -663,7 +663,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 			/*
 			* Upload CSV file to image directory, temporarily
 			*/
-			$new_file =  parent::getFilePath().'/'.basename($file['name']);
+			$new_file =  parent::getFilePath(basename($file['name']));
 			if ( move_uploaded_file($file['tmp_name'], $new_file) ) {
 				$handle = @fopen($new_file, "r");
 				if ($handle) {
@@ -760,7 +760,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 
 		$project_id = intval($project_id);
 		$user_id = intval($user_id);
-		$count= $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$project_id} AND `user_id` = '".$user_id."'" );
+		$count= $wpdb->get_var( $wpdb->prepare("SELECT COUNT(ID) FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = '%d' AND `user_id` = '%d'", $project_id, $user_id) );
 
 		if ( $count > 0 )
 			return true;
@@ -1342,8 +1342,8 @@ class ProjectManagerAdminPanel extends ProjectManager
 	function delImage( $image )
 	{
 		@unlink( parent::getFilePath($image) );
-		@unlink( parent::getFilePath('/thumb.'.$image) );
-		@unlink( parent::getFilePath('/tiny.'.$image) );
+		@unlink( parent::getFilePath('thumb.'.$image) );
+		@unlink( parent::getFilePath('tiny.'.$image) );
 	}
 	
 	

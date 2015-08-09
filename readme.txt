@@ -72,6 +72,7 @@ The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons
 * UPDATED: updated translation template
 * BUGFIX: fixed issues with dataset import
 * BUGFIX: fixed image upload in frontend dataset
+* BUGFIX: fixed intinite loop for getting random datasets if there are not more datasets in the database than the number to obtain
 
 = 3.1.7.9 =
 * NEW: updated TinyMCE button to allow formfield IDs and page IDs selection from dropdown menus

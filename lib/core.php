@@ -324,7 +324,7 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function getProjectTitle( )
 	{
-		return $this->project->title;
+		return stripslashes($this->project->title);
 	}
 
 
@@ -972,6 +972,7 @@ class ProjectManager extends ProjectManagerLoader
 			$projects[$i] = (object) array_merge( (array)$project, (array)maybe_unserialize($project->settings) );
 			unset($projects[$i]->settings);
 			$projects[$i] = $this->getDefaultProjectSettings($projects[$i]);
+			$projects[$i] = stripslashes($project->title);
 			$i++;
 		}
 		return $projects;
@@ -994,6 +995,7 @@ class ProjectManager extends ProjectManagerLoader
 		$project = (object) array_merge( (array)$project, (array)maybe_unserialize($project->settings) );
 		unset($project->settings);
 		$project = $this->getDefaultProjectSettings($project);
+		$project->title = stripslashes($project->title);
 
 		$this->project = $project;
 		return $project;
@@ -1067,7 +1069,7 @@ class ProjectManager extends ProjectManagerLoader
 	{
 		global $wpdb;
 	
-		$num_form_fields = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = ".$this->getProjectID() );
+		$num_form_fields = $wpdb->get_var( $wpdb->prepare("SELECT COUNT(ID) FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = '%d'", $this->getProjectID() ));
 		return intval($num_form_fields);
 	}
 	
@@ -1238,10 +1240,15 @@ class ProjectManager extends ProjectManagerLoader
 					$all[] = $result;
 				}
 
-				while ( count($datasets) < intval($limit) ) {
-					$id = mt_rand(0, count($all)-1);
-					if ( $all[$id] && !array_key_exists($all[$id]->id, $datasets) )
-						$datasets[$all[$id]->id] = $all[$id];
+				// Simply return all datasets if there are less or equal number of datasets than the number to get
+				if (count($all) <= intval($limit)) {
+					$datasets = $all;
+				} else {
+					while ( count($datasets) < intval($limit) ) {
+						$id = mt_rand(0, count($all)-1);
+						if ( $all[$id] && !array_key_exists($all[$id]->id, $datasets) )
+							$datasets[$all[$id]->id] = $all[$id];
+					}
 				}
 				
 				$datasets = array_values($datasets);
