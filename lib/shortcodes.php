@@ -92,14 +92,15 @@ class ProjectManagerShortcodes
 		), $atts ));
 		
 		$projectmanager->init(intval($project_id));
-
+		$project = $projectmanager->getCurrentProject();
+		
 		$search_option = $projectmanager->getSearchOption();
 		$search_string = $projectmanager->getSearchString();
 		$form_fields = $projectmanager->getFormFields();
 		
 		$filename = 'searchform-'.$template;
 		if ( !isset($_GET['show'])) {
-			$out = $this->loadTemplate( $filename, array( 'project_id' => intval($project_id), 'form_fields' => $form_fields, 'search' => $search_string, 'search_option' => $search_option ) );
+			$out = $this->loadTemplate( $filename, array( 'project' => $project, 'project_id' => intval($project_id), 'form_fields' => $form_fields, 'search' => $search_string, 'search_option' => $search_option ) );
 		} else {
 			$out = "";
 		}

@@ -24,7 +24,9 @@ The following variables are usable:
 		<option value='<?php echo $form_field->id ?>'<?php if ( $search_option == $form_field->id ) echo " selected='selected'" ?>><?php echo $form_field->label ?></option>
 		<?php endif; ?>
 		<?php endforeach; ?>
+		<?php if ($project->category > 0) : ?>
 		<option value='-1' <?php if ( -1 == $search_option ) echo " selected='selected'" ?>><?php _e( 'Categories', 'projectmanager' ) ?></option>
+		<?php endif; ?>
 	</select>
 	
 	<input type="hidden" name="project_id" value="<?php echo $project_id ?>" />

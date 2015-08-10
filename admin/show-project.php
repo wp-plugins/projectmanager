@@ -64,6 +64,7 @@ else
 	$datasets = $projectmanager->getDatasets(array('limit' => true));
 
 ?>
+			
 <div class="wrap">
 	<?php $this->printBreadcrumb( $projectmanager->getProjectTitle(), true ) ?>
 	
@@ -95,7 +96,9 @@ else
 			<?php endif; ?>
 
 			<?php endforeach; ?>
+			<?php if ($project->category > 0) : ?>
 			<option value='-1' <?php selected( -1, $projectmanager->getSearchOption() ) ?>><?php _e( 'Categories', 'projectmanager' ) ?></option>
+			<?php endif; ?>
 		</select>
 		<?php else : ?>
 		<input type='hidden' name='form_field' value='0' />
@@ -104,8 +107,7 @@ else
 		<input type='submit' value='<?php _e( 'Search', 'projectmanager' ) ?>' class='button-secondary action' />
 	</form></p>
 	
-	<?php if ( $datasets ) : ?>
-	
+
 	<?php $action = get_permalink(); $action = remove_query_arg('order', $action); $action = remove_query_arg('orderby', $action); $action = remove_query_arg('paged', $action); ?>
 	<form id="dataset-filter" method="post" action="<?php echo $action ?>" name="form">
 	<?php wp_nonce_field( 'projectmanager_dataset-bulk' ) ?>
@@ -119,6 +121,7 @@ else
 			</select>
 			<input type="submit" value="<?php _e('Apply'); ?>" name="doaction" id="doaction" class="button-secondary action" />
 		</div>
+
 		<div class="alignleft actions">
 			<?php if ( -1 != $project->category ) : ?>
 			<!-- Category Filter -->
@@ -170,6 +173,7 @@ else
 		<?php endif; ?>
 	</div>
 
+	<?php if ( $datasets ) : ?>
 	<table class="widefat" id="datasets">
 	<thead>
 		<tr>
@@ -194,7 +198,7 @@ else
 		</tr>
 	</tfoot>
 	<tbody id="the-list">
-<?php
+	<?php
 	foreach ( $datasets AS $dataset ) :
 		$class = ( !isset($class) || 'alternate' == $class ) ? '' : 'alternate';
 		if ( count($projectmanager->getSelectedCategoryIDs($dataset)) > 0 )
@@ -223,11 +227,11 @@ else
 	<?php endforeach ?>
 	</tbody>
 	</table>
+	<?php else  : ?>
+		<div class="aligncenter" style="clear: both; margin-top: 3em; text-align: center;"><p><?php _e( 'Nothing found', 'projectmanager') ?></p></div>
+	<?php endif ?>
 	</form>
 		
-	<?php else  : ?>
-		<div class="error aligncenter" style="clear: both; margin-top: 3em; text-align: center;"><p><?php _e( 'Nothing found', 'projectmanager') ?></p></div>
-	<?php endif ?>
 	<div class="tablenav">
 		<?php if ( $projectmanager->getPageLinks() ) echo "<div class='tablenav-pages'>$page_links_text</div>"; ?>
 	</div>

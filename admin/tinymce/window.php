@@ -82,7 +82,7 @@ global $wpdb;
 			$projects = $wpdb->get_results("SELECT * FROM {$wpdb->projectmanager_projects} ORDER BY id ASC");
 			if( ($projects) ) {
 				foreach( $projects as $project )
-					echo '<option value="'.$project->id.'" >'.$project->title.'</option>'."\n";
+					echo '<option value="'.$project->id.'" >'.stripslashes($project->title).'</option>'."\n";
 			}
 		?>
         </select>
@@ -150,11 +150,11 @@ global $wpdb;
 			$projects = $wpdb->get_results("SELECT * FROM {$wpdb->projectmanager_projects} ORDER BY id ASC");
 			if ($projects) {
 				foreach ($projects AS $project) {
-					echo '<optgroup label="'.$project->title.'">';
+					echo '<optgroup label="'.stripslashes($project->title).'">';
 					$datasets = $wpdb->get_results( $wpdb->prepare("SELECT * FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = '%d' ORDER BY id ASC", $project->id) );
 					if( ($datasets) ) {
 						foreach( $datasets as $dataset )
-							echo '<option value="'.$dataset->id.'" >'.$dataset->name.'</option>'."\n";
+							echo '<option value="'.$dataset->id.'" >'.stripslashes($dataset->name).'</option>'."\n";
 					}
 					echo '</optgroup>';
 				}
@@ -178,7 +178,7 @@ global $wpdb;
 			$projects = $wpdb->get_results("SELECT * FROM {$wpdb->projectmanager_projects} ORDER BY id ASC");
 			if( ($projects) ) {
 				foreach( $projects as $project )
-					echo '<option value="'.$project->id.'" >'.$project->title.'</option>'."\n";
+					echo '<option value="'.$project->id.'" >'.stripslashes($project->title).'</option>'."\n";
 			}
 		?>
         	</select>
@@ -206,7 +206,7 @@ global $wpdb;
 			$projects = $wpdb->get_results("SELECT * FROM {$wpdb->projectmanager_projects} ORDER BY id ASC");
 			if( ($projects) ) {
 				foreach( $projects as $project )
-					echo '<option value="'.$project->id.'" >'.$project->title.'</option>'."\n";
+					echo '<option value="'.$project->id.'" >'.stripslashes($project->title).'</option>'."\n";
 			}
 		?>
         </select>
@@ -247,7 +247,7 @@ global $wpdb;
 			$projects = $wpdb->get_results("SELECT * FROM {$wpdb->projectmanager_projects} ORDER BY id ASC");
 			if( ($projects) ) {
 				foreach( $projects as $project )
-					echo '<option value="'.$project->id.'" >'.$project->title.'</option>'."\n";
+					echo '<option value="'.$project->id.'" >'.stripslashes($project->title).'</option>'."\n";
 			}
 		?>
         </select>
@@ -272,7 +272,7 @@ global $wpdb;
 			$projects = $wpdb->get_results("SELECT * FROM {$wpdb->projectmanager_projects} ORDER BY id ASC");
 			if( ($projects) ) {
 				foreach( $projects as $project )
-					echo '<option value="'.$project->id.'" >'.$project->title.'</option>'."\n";
+					echo '<option value="'.$project->id.'" >'.stripslashes($project->title).'</option>'."\n";
 			}
 		?>
         </select>
@@ -306,11 +306,11 @@ global $wpdb;
 			$projects = $wpdb->get_results("SELECT * FROM {$wpdb->projectmanager_projects} ORDER BY id ASC");
 			if( ($projects) ) {
 				foreach( $projects as $project ) {
-					echo "<optgroup label='".$project->title."'>";
+					echo "<optgroup label=\"".stripslashes($project->title)."\">";
 					$formfields = $wpdb->get_results($wpdb->prepare("SELECT `label`, `id` FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = '%d' ORDER BY `order` ASC", $project->id) );
 					if ($formfields) {
 						foreach ($formfields AS $formfield)
-							echo '<option value="'.$formfield->id.'" >'.$formfield->label.'</option>'."\n";
+							echo '<option value="'.$formfield->id.'" >'.stripslashes($formfield->label).'</option>'."\n";
 					}
 					echo "</optgroup>";
 				}
@@ -323,11 +323,11 @@ global $wpdb;
 			$projects = $wpdb->get_results("SELECT * FROM {$wpdb->projectmanager_projects} ORDER BY id ASC");
 			if( ($projects) ) {
 				foreach( $projects as $project ) {
-					echo "<optgroup label='".$project->title."'>";
+					echo "<optgroup label=\"".stripslashes($project->title)."\">";
 					$formfields = $wpdb->get_results($wpdb->prepare("SELECT `label`, `id` FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = '%d' ORDER BY `order` ASC", $project->id) );
 					if ($formfields) {
 						foreach ($formfields AS $formfield)
-							echo '<option value="'.$formfield->id.'" >'.$formfield->label.'</option>'."\n";
+							echo '<option value="'.$formfield->id.'" >'.stripslashes($formfield->label).'</option>'."\n";
 					}
 					echo "</optgroup>";
 				}
@@ -340,11 +340,11 @@ global $wpdb;
 			$projects = $wpdb->get_results("SELECT * FROM {$wpdb->projectmanager_projects} ORDER BY id ASC");
 			if( ($projects) ) {
 				foreach( $projects as $project ) {
-					echo "<optgroup label='".$project->title."'>";
+					echo "<optgroup label=\"".stripslashes($project->title)."\">";
 					$formfields = $wpdb->get_results($wpdb->prepare("SELECT `label`, `id` FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = '%d' ORDER BY `order` ASC", $project->id) );
 					if ($formfields) {
 						foreach ($formfields AS $formfield)
-							echo '<option value="'.$formfield->id.'" >'.$formfield->label.'</option>'."\n";
+							echo '<option value="'.$formfield->id.'" >'.stripslashes($formfield->label).'</option>'."\n";
 					}
 					echo "</optgroup>";
 				}

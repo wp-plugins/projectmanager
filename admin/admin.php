@@ -34,6 +34,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 		add_action('wp_dashboard_setup', array( $this, 'registerDashboardWidget'));
 		
 		// cleanup backups that are older than 24 hours
+		wp_mkdir_p( $this->getBackupPath() );
 		parent::cleanupOldFiles($this->getBackupPath(), 24);
 	}
 	function ProjectManagerAdminPanel()
@@ -585,6 +586,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 
 		$project_id = intval($project_id);
 		$project = $projectmanager->getProject($project_id);
+		$projectmanager->setProjectID($project_id);
 		$settings['default_image'] = $project->default_image;
 		
 		if (isset($settings['del_default_image']) && $settings['del_default_image'] == 1) {
@@ -597,7 +599,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 			require_once (PROJECTMANAGER_PATH . '/lib/image.php');
 			$file = $_FILES['project_default_image'];
 		
-			$new_file = parent::getFilePath(basename($file['name']));
+			$new_file = $projectmanager->getFilePath(basename($file['name']));
 			$image = new ProjectManagerImage($new_file);
 			if ( $image->supported($file['name']) ) {
 				if ( $file['size'] > 0 ) {
@@ -611,10 +613,10 @@ class ProjectManagerAdminPanel extends ProjectManager
 							$image->createThumbnail( $dims, $new_file, $project->chmod );
 
 							$dims = array( 'width' => $project->thumb_size['width'], 'height' => $project->thumb_size['height'] );
-							$image->createThumbnail( $dims, parent::getFilePath().'/thumb.'.basename($file['name']), $project->chmod );
+							$image->createThumbnail( $dims, $projectmanager->getFilePath('/thumb.'.basename($file['name'])), $project->chmod );
 									
 							$dims = array( 'width' => $project->tiny_size['width'], 'height' => $project->tiny_size['height'] );
-							$image->createThumbnail( $dims, parent::getFilePath().'/tiny.'.basename($file['name']), $project->chmod );
+							$image->createThumbnail( $dims, $projectmanager->getFilePath('/tiny.'.basename($file['name'])), $project->chmod );
 						}
 						// set image filename in settings
 						$settings['default_image'] = basename($file['name']);
@@ -793,7 +795,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 		
 		// Initialize array with media files
 		$media = array();
-		$media_filename = $project->title."_Media_".date("Y-m-d").".zip";
+		$media_filename = sanitize_title($project->title)."_Media_".date("Y-m-d").".zip";
 		
 		$filename = $project->title."_".date("Y-m-d").".csv";
 		/*
@@ -802,6 +804,13 @@ class ProjectManagerAdminPanel extends ProjectManager
 		$contents = __('Name','projectmanager')."\t".__('Image','projectmanager')."\t".__('Categories','projectmanager');
 		foreach ( $projectmanager->getFormFields() AS $form_field )
 			$contents .= "\t".$form_field->label;
+		
+		// add default project image
+		if ($project->default_image != "") {
+			$media[] = $projectmanager->getFilePath($project->default_image);
+			$media[] = $projectmanager->getFilePath("thumb.".$project->default_image);
+			$media[] = $projectmanager->getFilePath("tiny.".$project->default_image);
+		}
 		
 		foreach ( $projectmanager->getDatasets() AS $dataset ) {
 			// add main image to media array
@@ -1190,7 +1199,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 			foreach ( $dataset_meta AS $meta_id => $meta_value ) {
 				$meta_id = intval($meta_id);
 				$formfield = parent::getFormFields($meta_id);
-					
+				
 				// Manage file upload
 				if ( 'file' == $formfield->type || 'image' == $formfield->type || 'video' == $formfield->type ) {
 					$file = array('name' => $_FILES['form_field']['name'][$meta_id], 'tmp_name' => $_FILES['form_field']['tmp_name'][$meta_id], 'size' => $_FILES['form_field']['size'][$meta_id], 'type' => $_FILES['form_field']['type'][$meta_id], 'current' => $meta_value['current']);
@@ -1362,9 +1371,10 @@ class ProjectManagerAdminPanel extends ProjectManager
 		require_once (PROJECTMANAGER_PATH . '/lib/image.php');
 
 		$project = $this->project;
+		parent::setProjectID($project->id);
 		$dataset_id = intval($dataset_id);
 		
-		$new_file = parent::getFilePath().'/'.basename($file['name']);
+		$new_file = parent::getFilePath(basename($file['name']));
 		$image = new ProjectManagerImage($new_file);
 		if ( $image->supported($file['name']) ) {
 			if ( $file['size'] > 0 ) {
@@ -1385,10 +1395,10 @@ class ProjectManagerAdminPanel extends ProjectManager
 							$image->createThumbnail( $dims, $new_file, $project->chmod );
 
 							$dims = array( 'width' => $project->thumb_size['width'], 'height' => $project->thumb_size['height'] );
-							$image->createThumbnail( $dims, parent::getFilePath().'/thumb.'.basename($file['name']), $project->chmod );
+							$image->createThumbnail( $dims, parent::getFilePath('/thumb.'.basename($file['name'])), $project->chmod );
 							
 							$dims = array( 'width' => $project->tiny_size['width'], 'height' => $project->tiny_size['height'] );
-							$image->createThumbnail( $dims, parent::getFilePath().'/tiny.'.basename($file['name']), $project->chmod );
+							$image->createThumbnail( $dims, parent::getFilePath('/tiny.'.basename($file['name'])), $project->chmod );
 						}
 					} else {
 						$this->setMessage( sprintf( __('The uploaded file could not be moved to %s.' ), parent::getFilePath() ), true );
@@ -1409,7 +1419,7 @@ class ProjectManagerAdminPanel extends ProjectManager
 	 */
 	function uploadFile( $file, $overwrite = false )
 	{
-		$new_file = parent::getFilePath().'/'.basename($file['name']);
+		$new_file = parent::getFilePath(basename($file['name']));
 		if ( file_exists($new_file) && !$overwrite ) {
 			$this->setMessage( __('File exists and is not uploaded. Set the overwrite option if you want to replace it.','projectmanager'), true );
 		} else {

@@ -304,7 +304,7 @@ class ProjectManagerLoader
 	 */
 	function activate()
 	{
-		global $wpdb;
+		global $wpdb, $projectmanager;
 		include_once( ABSPATH.'/wp-admin/includes/upgrade.php' );
 		
 		$options = array();
@@ -366,14 +366,22 @@ class ProjectManagerLoader
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->projectmanager_datasetmeta, $create_datasetmeta_sql );
 		
+		$add_countries = false;
+		if($wpdb->get_var("SHOW TABLES LIKE '$wpdb->projectmanager_countries'") != $wpdb->projectmanager_countries) {
+			$add_countries = true;
+		}
 		$create_countries_sql = "CREATE TABLE {$wpdb->projectmanager_countries} (
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT,
 						`code` varchar( 3 ) NOT NULL default '',
 						`name` varchar( 200 ) NOT NULL default '',
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->projectmanager_countries, $create_countries_sql );
-		require_once("CountriesSQL.php");
+		if ($add_countries) require_once("CountriesSQL.php");
 
+		// create directories
+		wp_mkdir_p($projectmanager->getFilePath(false, true));
+		wp_mkdir_p($projectmanager->getCaptchaPath());
+		wp_mkdir_p($projectmanager->getFilePath("backups", true));
 
 		// Set default options
 		add_option( 'projectmanager', $options, 'ProjectManager Options', 'yes' );
@@ -433,8 +441,7 @@ class ProjectManagerLoader
 		delete_option( 'projectmanager_widget' );
 		
 		// Delete media files
-		$dir = $projectmanager->getFilePath(false, true);
-		$this->removeDirRecursively($dir);
+		$this->removeDirRecursively($projectmanager->getFilePath(false, true));
 		/*if ( $handle = opendir($dir) ) {
 			while (false !== ($file = readdir($handle))) {
 				if ($file != "." && $file != "..")

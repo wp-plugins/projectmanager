@@ -7,7 +7,7 @@ $project_id = $projectmanager->getProjectID();
 $project = $projectmanager->getCurrentProject();
 
 $media_filename = $project->title."_Media_".date("Y-m-d").".zip";
-$media_filename = $projectmanager->getBackupPath($media_filename);
+$media_filename = $this->getBackupPath($media_filename);
 
 // clean up media zip file
 if (file_exists($media_filename))

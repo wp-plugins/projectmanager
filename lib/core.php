@@ -122,6 +122,7 @@ class ProjectManager extends ProjectManagerLoader
 		$this->admin = parent::getAdminPanel();
 		
 		// cleanup captchas, which are older than 2 hours
+		wp_mkdir_p( $this->getCaptchaPath() );
 		$this->cleanupOldFiles($this->getCaptchaPath(), 2);
 		
 		return;
@@ -666,6 +667,9 @@ class ProjectManager extends ProjectManagerLoader
 		global $wpdb;
 		$sql = "SELECT `label`, `type`, `id` FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = '%d' AND `type` = 'country' ORDER BY `order` ASC";
 		$formfields = $wpdb->get_results( $wpdb->prepare($sql, $this->getProjectID()) );
+		foreach ($formfields AS $i => $formfield) {
+			$formfields[$i]->label = stripslashes($formfield->label);
+		}
 		return $formfields;
 	}
 	
@@ -679,7 +683,7 @@ class ProjectManager extends ProjectManagerLoader
 	function hasCountryFormField()
 	{
 		global $wpdb;
-		$sql = "SELECT COUNT(ID) FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = '%d' and `type` = 'country'";
+		$sql = "SELECT COUNT(ID) FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = '%d' and `type` = 'country'";
 		$num = $wpdb->get_var($wpdb->prepare($sql, $this->getProjectID()));
 		
 		if ($num > 0)
@@ -973,7 +977,7 @@ class ProjectManager extends ProjectManagerLoader
 			$projects[$i] = (object) array_merge( (array)$project, (array)maybe_unserialize($project->settings) );
 			unset($projects[$i]->settings);
 			$projects[$i] = $this->getDefaultProjectSettings($projects[$i]);
-			$projects[$i] = stripslashes($project->title);
+			$projects[$i]->title = stripslashes($project->title);
 			$i++;
 		}
 		return $projects;
@@ -1022,8 +1026,8 @@ class ProjectManager extends ProjectManagerLoader
 		if (!isset($project->image_mandatory)) $project->image_mandatory = 0;
 		if (!isset($project->default_image)) $project->default_image = "";
 		if (!isset($project->tiny_size)) $project->tiny_size = array("width" => 80, "height" => 50);
-		if (!isset($project->thumb_size)) $project->thumb_size = array("width" => "", "height" => "");
-		if (!isset($project->medium_size)) $project->medium_size = array("width" => "", "height" => "");
+		if (!isset($project->thumb_size)) $project->thumb_size = array("width" => 100, "height" => 100);
+		if (!isset($project->medium_size)) $project->medium_size = array("width" => 300, "height" => 300);
 		if (!isset($project->chmod)) $project->chmod = "755";
 		
 		return $project;
@@ -1053,8 +1057,11 @@ class ProjectManager extends ProjectManagerLoader
 		$sql = "SELECT `label`, `type`, `order`, `order_by`, `mandatory`, `unique`, `private`, `show_on_startpage`, `show_in_profile`, `options`, `id` FROM {$wpdb->projectmanager_projectmeta} WHERE $search ORDER BY `order` ASC;";
 		$formfields = $wpdb->get_results( $sql );
 	
-		foreach ($formfields AS $i => $formfield) {
+		$i = 0;
+		foreach ($formfields AS $formfield) {
 			$formfields[$i]->label = stripslashes($formfield->label);
+			$formfields[$i]->options = stripslashes($formfield->options);
+			$i++;
 		}
 		
 		if ($id)
@@ -1329,7 +1336,8 @@ class ProjectManager extends ProjectManagerLoader
 						$key = sanitize_title($m->label);
 						if ( !empty($key) ) {
 							$value = empty($m->value) ? '' : $m->value;
-							$datasets[$i]->{$key} = stripslashes($m->value);
+							//$datasets[$i]->{$key} = stripslashes($m->value);
+							$datasets[$i]->{$key} = $m->value;
 						}
 					}
 				}
@@ -1361,7 +1369,7 @@ class ProjectManager extends ProjectManagerLoader
 		if ( $meta ) {
 			foreach ( $meta AS $m ) {
 				$key = sanitize_title($m->label);
-				if ($key != "") $dataset->{$key} = stripslashes($m->value);
+				if ($key != "") $dataset->{$key} = $m->value;
 			}
 		}
 					
@@ -2013,9 +2021,9 @@ class ProjectManager extends ProjectManagerLoader
 			$out .= "<select size='1' class='form-input' name='".$name."' id='form_field_".$form_id."_".$dataset_id."'>";
 			foreach ( $options AS $option_name ) {
 				if ( $option_name == $selected )
-					$out .= "<option value='".$option_name."' selected='selected'>".$option_name."</option>";
+					$out .= "<option value=\"".$option_name."\" selected='selected'>".$option_name."</option>";
 				else
-					$out .= "<option value='".$option_name."'>".$option_name."</option>"; 
+					$out .= "<option value=\"".$option_name."\">".$option_name."</option>"; 
 			}
 			$out .= "</select>";
 		}
@@ -2048,9 +2056,9 @@ class ProjectManager extends ProjectManagerLoader
 			$out .= "<ul class='checkboxlist'>";
 			foreach ( $options AS $id => $option_name ) {
 				if ( count($selected) > 0 && in_array($option_name, $selected) )
-					$out .= "<li><input type='checkbox' name='".$name."' checked='checked' value='".$option_name."' id='".$name."_".$form_id."_".$id."'><label for='".$name."_".$form_id."_".$id."'> ".$option_name."</label></li>";
+					$out .= "<li><input type='checkbox' name='".$name."' checked='checked' value=\"".$option_name."\" id='".$name."_".$form_id."_".$id."'><label for='".$name."_".$form_id."_".$id."'> ".$option_name."</label></li>";
 				else
-					$out .= "<li><input type='checkbox' name='".$name."' value='".$option_name."' id='".$name."_".$form_id."_".$id."'><label for='".$name."_".$form_id."_".$id."'> ".$option_name."</label></li>";
+					$out .= "<li><input type='checkbox' name='".$name."' value=\"".$option_name."\" id='".$name."_".$form_id."_".$id."'><label for='".$name."_".$form_id."_".$id."'> ".$option_name."</label></li>";
 			}
 			$out .= "</ul>";
 		}
@@ -2081,9 +2089,9 @@ class ProjectManager extends ProjectManagerLoader
 			$out .= "<ul class='radiolist'>";
 			foreach ( $options AS $id => $option_name ) {
 				if ( $option_name == $selected )
-					$out .= "<li><input type='radio' name='".$name."' value='".$option_name."' checked='checked'  id='".$name."_".$form_id."_".$id."'><label for='".$name."_".$form_id."_".$id."'> ".$option_name."</label></li>";
+					$out .= "<li><input type='radio' name=\"".$name."\" value=\"".$option_name."\" checked='checked'  id='".$name."_".$form_id."_".$id."'><label for='".$name."_".$form_id."_".$id."'> ".$option_name."</label></li>";
 				else
-					$out .= "<li><input type='radio' name='".$name."' value='".$option_name."' id='".$name."_".$form_id."_".$id."'><label for='".$name."_".$form_id."_".$id."'> ".$option_name."</label></li>";
+					$out .= "<li><input type='radio' name=\"".$name."\" value=\"".$option_name."\" id='".$name."_".$form_id."_".$id."'><label for='".$name."_".$form_id."_".$id."'> ".$option_name."</label></li>";
 			}
 			$out .= "</ul>";
 		}
@@ -2450,6 +2458,9 @@ class ProjectManager extends ProjectManagerLoader
 		if(file_exists($destination) && !$overwrite)
 			return false;
 	
+		if (!file_exists($destination))
+			$overwrite = false;
+		
 		$valid_files = array();
 		
 		// make sure that files are an array
