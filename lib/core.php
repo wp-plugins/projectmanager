@@ -380,7 +380,7 @@ class ProjectManager extends ProjectManagerLoader
 		$c = get_category($cat_id);
 		
 		if ( isset($c->name) )
-			return $c->name;
+			return stripslashes($c->name);
 			
 		return false;
 	}
@@ -539,8 +539,6 @@ class ProjectManager extends ProjectManagerLoader
 	function getFormFieldTypes($index = false)
 	{
 		$form_field_types = array( 'text' => __('Text', 'projectmanager'), 'textfield' => __('Textfield', 'projectmanager'), 'tinymce' => __('TinyMCE Editor', 'projectmanager'), 'email' => __('E-Mail', 'projectmanager'), 'date' => __('Date', 'projectmanager'), 'uri' => __('URL', 'projectmanager'), 'select' => __('Selection', 'projectmanager'), 'checkbox' => __( 'Checkbox List', 'projectmanager'), 'radio' => __( 'Radio List', 'projectmanager'), 'file' => __('File', 'projectmanager'), 'image' => __( 'Image', 'projectmanager' ), 'video' => __('Video', 'projectmanager'), 'numeric' => __( 'Numeric', 'projectmanager' ), 'currency' => __('Currency', 'projectmanager'), 'country' => __('Country', 'projectmanager'), 'project' => __( 'Internal Link', 'projectmanager' ), 'time' => __('Time', 'projectmanager'), 'wp_user' => __( 'WP User', 'projectmanager' ) );
-		//$form_field_types = array( 'text' => __('Text', 'projectmanager'), 'textfield' => __('Textfield', 'projectmanager'), 'email' => __('E-Mail', 'projectmanager'), 'date' => __('Date', 'projectmanager'), 'uri' => __('URL', 'projectmanager'), 'select' => __('Selection', 'projectmanager'), 'checkbox' => __( 'Checkbox List', 'projectmanager'), 'radio' => __( 'Radio List', 'projectmanager'), 'file' => __('File', 'projectmanager'), 'image' => __( 'Image', 'projectmanager' ), 'video' => __('Video', 'projectmanager'), 'numeric' => __( 'Numeric', 'projectmanager' ), 'currency' => __('Currency', 'projectmanager'), 'project' => __( 'Internal Link', 'projectmanager' ), 'time' => __('Time', 'projectmanager'), 'wp_user' => __( 'WP User', 'projectmanager' ) );
-		
 		$form_field_types = apply_filters( 'projectmanager_formfields', $form_field_types );
 		
 		if ( $index )
@@ -610,13 +608,11 @@ class ProjectManager extends ProjectManagerLoader
 		foreach ($countries AS $country) {
 			$to_sort[] = __($country->name, 'projectmanager');
 		}
-		//setlocale(LC_ALL, get_locale() . "@euro", get_locale(), substr(get_locale(), 0, 2));
-		//asort($to_sort, SORT_LOCALE_STRING);
-		$to_sort = $this->sortArray($to_sort);
+		$sorted = $this->sortArray($to_sort);
 		
 		$c = array();
-		foreach ($to_sort AS $key => $name) {
-			$c[] = (object) array("code" => $countries[$key]->code, "name" => $name, "id" => $countries[$key]->id);
+		foreach ($sorted AS $key => $name) {
+			$c[] = (object) array("code" => $countries[$key]->code, "name" => stripslashes($name), "id" => $countries[$key]->id);
 		}
 		
 		return $c;
@@ -637,7 +633,7 @@ class ProjectManager extends ProjectManagerLoader
 			return "";
 		
 		$country = $wpdb->get_results( $wpdb->prepare( "SELECT `code`, `name`, `id` FROM {$wpdb->projectmanager_countries} WHERE `code` = '%s'", $code ) );
-		return $country[0]->name;
+		return __(stripslashes($country[0]->name), 'projectmanager');
 	}
 	
 	
@@ -683,12 +679,17 @@ class ProjectManager extends ProjectManagerLoader
 	function hasCountryFormField()
 	{
 		global $wpdb;
-		$formfields = $this->getFormFields(false, true);
+		$sql = "SELECT COUNT(ID) FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = '%d' and `type` = 'country'";
+		$num = $wpdb->get_var($wpdb->prepare($sql, $this->getProjectID()));
+		
+		if ($num > 0)
+			return true;
+		/*$formfields = $this->getFormFields(false, true);
 		
 		foreach ($formfields AS $formfield) {
 			if ($formfield->type == "country")
 				return true;
-		}
+		}*/
 		
 		return false;
 	}
@@ -1052,6 +1053,10 @@ class ProjectManager extends ProjectManagerLoader
 		$sql = "SELECT `label`, `type`, `order`, `order_by`, `mandatory`, `unique`, `private`, `show_on_startpage`, `show_in_profile`, `options`, `id` FROM {$wpdb->projectmanager_projectmeta} WHERE $search ORDER BY `order` ASC;";
 		$formfields = $wpdb->get_results( $sql );
 	
+		foreach ($formfields AS $i => $formfield) {
+			$formfields[$i]->label = stripslashes($formfield->label);
+		}
+		
 		if ($id)
 			return $formfields[0];
 		else
@@ -1316,17 +1321,19 @@ class ProjectManager extends ProjectManagerLoader
 		$i = 0;
 		if ( $datasets ) {
 			foreach ( $datasets AS $dataset ) {
+				$datasets[$i]->name = stripslashes($dataset->name);
+				
 				$meta = $this->getDatasetMeta($dataset->id);
 				if ( $meta ) {
 					foreach ( $meta AS $m ) {
 						$key = sanitize_title($m->label);
 						if ( !empty($key) ) {
 							$value = empty($m->value) ? '' : $m->value;
-							$datasets[$i]->{$key} = $m->value;
+							$datasets[$i]->{$key} = stripslashes($m->value);
 						}
 					}
-					$i++;
 				}
+				$i++;
 			}
 		}
 
@@ -1348,12 +1355,13 @@ class ProjectManager extends ProjectManagerLoader
 		global $wpdb;
 		$dataset = $wpdb->get_results( $wpdb->prepare("SELECT `id`, `name`, `image`, `cat_ids`, `user_id`, `project_id` FROM {$wpdb->projectmanager_dataset} WHERE `id` = '%d'", intval($dataset_id)) );
 		$dataset = $dataset[0];
-
+		$dataset->name = stripslashes($dataset->name);
+		
 		$meta = $this->getDatasetMeta($dataset->id);
 		if ( $meta ) {
 			foreach ( $meta AS $m ) {
 				$key = sanitize_title($m->label);
-				if ($key != "") $dataset->{$key} = $m->value;
+				if ($key != "") $dataset->{$key} = stripslashes($m->value);
 			}
 		}
 					
@@ -1387,7 +1395,7 @@ class ProjectManager extends ProjectManagerLoader
 		$datasets = $wpdb->get_results( $wpdb->prepare("SELECT `id`, `name` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = '%d'", intval($project->id)) );
 		$out = "<select name='".$name."' id='".$name."'>";
 		foreach ($datasets AS $dataset) {
-			$out .= "<option value='".$dataset->id."' ".selected($selected,$dataset->id,false).">".$dataset->name."</option>";
+			$out .= "<option value='".$dataset->id."' ".selected($selected,$dataset->id,false).">".stripslashes($dataset->name)."</option>";
 		}
 		$out .= "</select>";
 		return $out;
@@ -1972,7 +1980,7 @@ class ProjectManager extends ProjectManagerLoader
 			foreach ( $datasets AS $dataset ) {
 				$out .= "<li><input type='checkbox' name='".$name."' id='".$name."_".$dataset->id."' value='".$dataset->id."'";
 				if ( is_array($selected) && in_array($dataset->id, $selected) ) $out .= " checked='checked'";
-				$out .= "/><label for='".$name."_".$dataset->id."'>".$dataset->name."</label>";
+				$out .= "/><label for='".$name."_".$dataset->id."'>".stripslashes($dataset->name)."</label>";
 			}
 			$out .= "</ul>";
 		} else {
@@ -2099,7 +2107,7 @@ class ProjectManager extends ProjectManagerLoader
 		
 		if ( !$single ) return false;
 		
-		$num_form_fields = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = '".intval($this->getProjectID())."' AND `show_on_startpage` = 0 AND `private` = 0" );
+		$num_form_fields = $wpdb->get_var( $wpdb->prepare("SELECT COUNT(ID) FROM {$wpdb->projectmanager_projectmeta} WHERE `project_id` = '%d' AND `show_on_startpage` = 0 AND `private` = 0", intval($this->getProjectID())) );
 			
 		if ( $num_form_fields > 0 )
 			return true;
