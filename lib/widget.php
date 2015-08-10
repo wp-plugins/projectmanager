@@ -62,7 +62,7 @@ class ProjectManagerWidget extends WP_Widget
 		$args = array_merge( $defaults, $args );
 		extract( $args, EXTR_SKIP );
 		
-		$limit = ( 0 != $instance['limit'] ) ? "LIMIT 0,".intval($instance['limit']) : '';
+		$limit = ( 0 != intval($instance['limit']) ) ? "LIMIT 0,".intval($instance['limit']) : '';
 		$datasets = $wpdb->get_results( "SELECT `id`, `name`, `image` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$project_id} ORDER BY `id` DESC ".$limit." " ); 
 
 		$slideshow = ( 1 == $instance['slideshow']['show'] ) ? true : false;
@@ -92,7 +92,7 @@ class ProjectManagerWidget extends WP_Widget
 		
 		echo $before_widget;
 		
-		if ( !empty($widget_title) ) echo $before_title . $widget_title . $after_title;
+		if ( !empty($widget_title) ) echo $before_title . stripslashes($widget_title) . $after_title;
 
 		if ( $slideshow )
 			echo '<div id="projectmanager_slideshow_'.$number.'" class="projectmanager_slideshow">';

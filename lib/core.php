@@ -606,7 +606,7 @@ class ProjectManager extends ProjectManagerLoader
 		*/
 		$to_sort = array();
 		foreach ($countries AS $country) {
-			$to_sort[] = __($country->name, 'projectmanager');
+			$to_sort[] = __(stripslashes($country->name), 'projectmanager');
 		}
 		$sorted = $this->sortArray($to_sort);
 		

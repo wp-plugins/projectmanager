@@ -432,14 +432,35 @@ class ProjectManagerLoader
 		delete_option( 'projectmanager' );
 		delete_option( 'projectmanager_widget' );
 		
-		// Delete Images
-		$dir = $projectmanager->getFilePath();
-		if ( $handle = opendir($dir) ) {
+		// Delete media files
+		$dir = $projectmanager->getFilePath(false, true);
+		$this->removeDirRecursively($dir);
+		/*if ( $handle = opendir($dir) ) {
 			while (false !== ($file = readdir($handle))) {
 				if ($file != "." && $file != "..")
 					@unlink($file);
 			}
 			closedir($handle);
+		}
+		@rmdir($dir);
+		*/
+	}
+	
+	
+	/**
+	 * recursively remove directory
+	 *
+	 * @param string $dir
+	 *
+	 */
+	function removeDirRecursively($dir)
+	{
+		$files = array_diff(scandir($dir), array('.','..'));
+		foreach ($files AS $file) {
+			if (is_dir("$dir/$file"))
+				$this->removeDirRecursively("$dir/$file");
+			else
+				@unlink("$dir/$file");
 		}
 		@rmdir($dir);
 	}
