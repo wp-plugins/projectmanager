@@ -43,7 +43,7 @@ class ProjectManagerLoader
 	  *
 	  * @var string
 	  */
-	 var $dbversion = '3.1.4';
+	 var $dbversion = '3.1.5';
 	 
 
 	 /**
@@ -307,15 +307,23 @@ class ProjectManagerLoader
 		global $wpdb, $projectmanager;
 		include_once( ABSPATH.'/wp-admin/includes/upgrade.php' );
 		
-		$options = array();
-		$options['version'] = $this->version;
-		$options['dbversion'] = $this->dbversion;
-		$options['colors'] = array( 'headers' => '#ddd', 'rows' => array( '#efefef', '#ffffff' ) );
-		$options['dashboard_widget']['num_items'] = 3;
-		$options['dashboard_widget']['show_author'] = 1;
-		$options['dashboard_widget']['show_date'] = 1;
-		$options['dashboard_widget']['show_summary'] = 1;
+		$options = $this->getOptions();
 		
+		if (!$options) {
+			$installed = false;
+			
+			$options = array();
+			$options['version'] = $this->version;
+			$options['dbversion'] = $this->dbversion;
+			$options['colors'] = array( 'headers' => '#ddd', 'rows' => array( '#efefef', '#ffffff' ) );
+			$options['dashboard_widget']['num_items'] = 3;
+			$options['dashboard_widget']['show_author'] = 1;
+			$options['dashboard_widget']['show_date'] = 1;
+			$options['dashboard_widget']['show_summary'] = 1;
+		} else {
+			$installed = true;
+		}
+			
 		$charset_collate = '';
 		if ( $wpdb->supports_collation() ) {
 			if ( ! empty($wpdb->charset) )
@@ -366,17 +374,13 @@ class ProjectManagerLoader
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->projectmanager_datasetmeta, $create_datasetmeta_sql );
 		
-		$add_countries = false;
-		if($wpdb->get_var("SHOW TABLES LIKE '$wpdb->projectmanager_countries'") != $wpdb->projectmanager_countries) {
-			$add_countries = true;
-		}
 		$create_countries_sql = "CREATE TABLE {$wpdb->projectmanager_countries} (
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT,
 						`code` varchar( 3 ) NOT NULL default '',
 						`name` varchar( 200 ) NOT NULL default '',
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->projectmanager_countries, $create_countries_sql );
-		if ($add_countries) require_once("CountriesSQL.php");
+		if (!$installed) require_once("CountriesSQL.php");
 
 		// create directories
 		wp_mkdir_p($projectmanager->getFilePath(false, true));
@@ -436,6 +440,7 @@ class ProjectManagerLoader
 		$wpdb->query( "DROP TABLE {$wpdb->projectmanager_projectmeta}" );
 		$wpdb->query( "DROP TABLE {$wpdb->projectmanager_dataset}" );
 		$wpdb->query( "DROP TABLE {$wpdb->projectmanager_datasetmeta}" );
+		$wpdb->query( "DROP TABLE {$wpdb->projectmanager_countries}" );
 
 		delete_option( 'projectmanager' );
 		delete_option( 'projectmanager_widget' );

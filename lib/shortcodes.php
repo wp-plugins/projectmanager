@@ -134,6 +134,8 @@ class ProjectManagerShortcodes
 		$projectmanager->init(intval($project_id));
 		$project = $projectmanager->getCurrentProject();
 		
+		print_r($_SESSION['projectmanager_captcha']);
+		
 		$message = "";
 		if (isset($_POST['insertDataset'])) {
 			require_once (PROJECTMANAGER_PATH . '/admin/admin.php');	

@@ -2413,7 +2413,6 @@ class ProjectManager extends ProjectManagerLoader
 		
 		// Save captcha creation time, filename and code in PHP SESSION
 		$_SESSION['projectmanager_captcha'] = array('time' => time(), 'filename' => $filename, 'code' => $code);
-		
 		return array("filename" => $filename, "captcha" => $code);
 	}
 	

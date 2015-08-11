@@ -223,6 +223,32 @@ function projectmanager_upgrade() {
 		$projectmanager->setProjectID($project_id_old);
 	}
 	
+	/* 
+	* Fix a bug that would duplicate countries when activating/deactivating the plugin
+	* Simply delete table and re-add countries
+	*/	
+	if (version_compare($installed, '3.1.5', '<')) {
+		$wpdb->query( "DROP TABLE {$wpdb->projectmanager_countries}" );
+		/*
+		* create countries table and dump data
+		*/
+		include_once( ABSPATH.'/wp-admin/includes/upgrade.php' );
+		$charset_collate = '';
+		if ( $wpdb->supports_collation() ) {
+			if ( ! empty($wpdb->charset) )
+				$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
+			if ( ! empty($wpdb->collate) )
+				$charset_collate .= " COLLATE $wpdb->collate";
+		}
+		$create_countries_sql = "CREATE TABLE {$wpdb->projectmanager_countries} (
+						`id` int( 11 ) NOT NULL AUTO_INCREMENT,
+						`code` varchar( 3 ) NOT NULL default '',
+						`name` varchar( 200 ) NOT NULL default '',
+						PRIMARY KEY ( `id` )) $charset_collate";
+		maybe_create_table( $wpdb->projectmanager_countries, $create_countries_sql );
+		require_once(PROJECTMANAGER_PATH . "/CountriesSQL.php");
+	}
+	
 	// Update dbversion
 	$options['dbversion'] = PROJECTMANAGER_DBVERSION;
 	$options['version'] = PROJECTMANAGER_VERSION;
