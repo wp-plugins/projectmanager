@@ -105,6 +105,14 @@ class ProjectManager extends ProjectManagerLoader
 
 	
 	/**
+	 * captcha data
+	 *
+	 * @var array
+	 */
+	var $captcha = array("filename" => null, "code" => false, "time" => null);
+	
+	
+	/**
 	 * Initialize project settings
 	 *
 	 * @param int $project_id ID of selected project. false if none is selected
@@ -2370,9 +2378,9 @@ class ProjectManager extends ProjectManagerLoader
 		wp_mkdir_p( $this->getCaptchaPath() );
 		
 		// clean up old captcha
-		if (isset($_SESSION['projectmanager_captcha'])) {
-			@unlink($this->getCaptchaPath($_SESSION['projectmanager_captcha']['filename']));
-		}
+		/*if (!is_null($this->getCaptchaData('filename'))) {
+			@unlink($this->getCaptchaPath($this->getCaptchaData('filename')));
+		}*/
 		
 		// initalize black image
 		$image = imagecreatetruecolor($width, $height);
@@ -2413,7 +2421,36 @@ class ProjectManager extends ProjectManagerLoader
 		
 		// Save captcha creation time, filename and code in PHP SESSION
 		$_SESSION['projectmanager_captcha'] = array('time' => time(), 'filename' => $filename, 'code' => $code);
-		return array("filename" => $filename, "captcha" => $code);
+		$this->saveCaptchaData($filename, $code);
+		
+		return array("filename" => $filename, "code" => $code, "time" => time());
+	}
+	
+	
+	/**
+	 * set captcha data
+	 *
+	 * @param string $filename
+	 * @param string $code
+	 */
+	function saveCaptchaData($filename, $code)
+	{
+		$this->captcha = array("filename" => $filename, "code" => $code, "time" => time());
+	}
+
+	
+	/**
+	 * get captcha data
+	 *
+	 * @param none
+	 * @return array
+	 */
+	function getCaptchaData($key = "")
+	{
+		if ($key == "")
+			return $this->captcha;
+		else
+			return $this->captcha[$key];
 	}
 	
 	

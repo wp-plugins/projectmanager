@@ -134,7 +134,15 @@ class ProjectManagerShortcodes
 		$projectmanager->init(intval($project_id));
 		$project = $projectmanager->getCurrentProject();
 		
-		print_r($_SESSION['projectmanager_captcha']);
+		$captcha = false;
+		if (!isset($_POST['insertDataset'])) {
+			if ($use_captcha == "true")
+				$captcha = $projectmanager->generateCaptcha();
+			else
+				$captcha = false;
+		}
+		
+		print_r($projectmanager->getCaptchaData());
 		
 		$message = "";
 		if (isset($_POST['insertDataset'])) {
@@ -143,19 +151,26 @@ class ProjectManagerShortcodes
 
 			$error = false;
 			if (isset($_POST['projectmanager_captcha'])) {
-				$code = $_SESSION['projectmanager_captcha']['code'];
+				$code = $projectmanager->getCaptchaData("code");//$_SESSION['projectmanager_captcha']['code'];
+				$captcha_time = $projectmanager->getCaptchaData("time");//$_SESSION['projectmanager_captcha']['time'];
+				$captcha_filename = $projectmanager->getCaptchaData("filename");//$_SESSION['projectmanager_captcha']['filename'];
+				
 				$now = time();
+				
 				// if timeout is specified in minutes
-				if ($captcha_timeout > 0 && ($now - $_SESSION['projectmanager_captcha']['time'])/60 > $captcha_timeout) {
+				if ($captcha_timeout > 0 && ($now - $captcha_time)/60 > $captcha_timeout) {
 					$error = true;
 					$message = __('Your session has expired', 'projectmanager');
+				} elseif ($code == "") {
+					$error = true;
+					$message = __('Something went wrong with the captcha', 'projectmanager');
 				} elseif ($_POST['projectmanager_captcha'] != $code) {
 					$error = true;
 					$message = __('Wrong Captcha Code', 'projectmanager');
 				}
 				
 				// delete captcha image
-				@unlink($projectmanager->getCaptchaPath($_SESSION['projectmanager_captcha']['filename']));
+				@unlink($projectmanager->getCaptchaPath($captcha_filename));
 			}
 			
 			if (!$error) {
@@ -199,7 +214,7 @@ class ProjectManagerShortcodes
 
 		$filename = 'dataset-form';
 		if ($template != "") $filename = 'dataset-form-'.$template;
-		$out = $this->loadTemplate( $filename, array('projectmanager' => $projectmanager, 'dataset_id' => $dataset_id, 'dataset' => $dataset, 'project' => $project, 'name' => $name, 'img_filename' => $img_filename, 'meta_data' => $meta_data, 'edit' => $edit, 'cat_ids' => $cat_ids, 'form_title' => $form_title, 'button_title' => $submit_title, 'use_captcha' => $use_captcha, 'message' => $message) );
+		$out = $this->loadTemplate( $filename, array('projectmanager' => $projectmanager, 'dataset_id' => $dataset_id, 'dataset' => $dataset, 'project' => $project, 'name' => $name, 'img_filename' => $img_filename, 'meta_data' => $meta_data, 'edit' => $edit, 'cat_ids' => $cat_ids, 'form_title' => $form_title, 'button_title' => $submit_title, 'captcha' => $captcha, 'message' => $message) );
 
 		return $out;
 	}
