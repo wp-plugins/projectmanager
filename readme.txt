@@ -59,6 +59,9 @@ The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons
 
 == Changelog ==
 
+= 3.1.8.1 =
+* BUGFIX: stripslashes on dataset name in widget
+
 = 3.1.8 =
 * NEW: Introducing separate media upload directories for each project
 * NEW: export/import of media files in zip format (kept on server for 24h)
