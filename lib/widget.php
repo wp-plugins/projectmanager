@@ -105,7 +105,7 @@ class ProjectManagerWidget extends WP_Widget
 				//$url = add_query_arg('show', $dataset->id, $url);
 				$url = add_query_arg("show_".$project_id, $dataset->id, $url);
 				$url = add_query_arg('project_id', $project_id, $url);
-				$name = ($projectmanager->hasDetails()) ? '<a href="'.$url.'"><img src="'.$projectmanager->getFileURL('thumb.'.$dataset->image).'" alt="'.$dataset->name.'" title="'.$dataset->name.'" /></a>' : '<img src="'.$projectmanager->getFileURL('thumb.'.$dataset->image).'" alt="'.$dataset->name.'" title="'.$dataset->name.'" />';
+				$name = ($projectmanager->hasDetails()) ? '<a href="'.$url.'"><img src="'.$projectmanager->getFileURL('thumb.'.$dataset->image).'" alt="'.stripslashes($dataset->name).'" title="'.stripslashes($dataset->name).'" /></a>' : '<img src="'.$projectmanager->getFileURL('thumb.'.$dataset->image).'" alt="'.stripslashes($dataset->name).'" title="'.stripslashes($dataset->name).'" />';
 				
 				if ( $slideshow )
 					echo "<div>".$name."</div>";
