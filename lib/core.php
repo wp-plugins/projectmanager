@@ -102,14 +102,6 @@ class ProjectManager extends ProjectManagerLoader
 	 * @var string
 	 */
 	var $meta_value;
-
-	
-	/**
-	 * captcha data
-	 *
-	 * @var array
-	 */
-	var $captcha = array("filename" => null, "code" => false, "time" => null);
 	
 	
 	/**
@@ -132,6 +124,21 @@ class ProjectManager extends ProjectManagerLoader
 		// cleanup captchas, which are older than 2 hours
 		wp_mkdir_p( $this->getCaptchaPath() );
 		$this->cleanupOldFiles($this->getCaptchaPath(), 2);
+		
+		// cleanup old captcha options
+		$options = get_option('projectmanager');
+		if (isset($options['captcha']) && count($options['captcha']) > 0) {
+			$now = time();
+			foreach ($options['captcha'] AS $key => $dat) {
+				if (!file_exists($this->getCaptchaPath($key))) {
+					unset($options['captcha'][$key]);
+				}
+			}
+		}
+		if (isset($options['captcha']) && count($options['captcha']) == 0)
+			unset($options['captcha']);
+
+		update_option('projectmanager', $options);
 		
 		return;
 	}
@@ -2212,33 +2219,30 @@ class ProjectManager extends ProjectManagerLoader
 	
 	
 	/**
-	 * read in contents from directory
+	 * read in contents from directory, optionally recursively
 	 *
 	 * @param string/array $dir
+	 * @param boolean $recursive
+	 * @param array $files
 	 * @return array of files
 	 */
-	function readFolder( $dir )
+	function readFolder( $dir, $recursive = false, $files = array() )
 	{
-		$files = array();
-		
-		if ( is_array($dir) ) {
-			foreach ( $dir AS $d ) {
-				if ($handle = opendir($d)) {
-					while (false !== ($file = readdir($handle))) {
-						if ( $file != '.' && $file != '..' && substr($file,0,1) != '.' )
-							$files[] = $file;
-					}
-			
-					closedir($handle);
-				}
-			}
-		} else {
-			if ($handle = opendir($dir)) {
+		if (!is_array($dir)) $dir = array($dir);
+
+		foreach ( $dir AS $d ) {
+			if ($handle = opendir($d)) {
 				while (false !== ($file = readdir($handle))) {
-					if ( $file != '.' && $file != '..' && substr($file,0,1) != '.' )
-						$files[] = $file;
+					if ( $file != '.' && $file != '..' ) {
+						if ($recursive) $file = $d."/".$file;
+						
+						if (is_dir($file) && $recursive) {
+							$files = $this->readFolder($file, true, $files);
+						} else {
+							$files[] = $file;
+						}
+					}
 				}
-			
 				closedir($handle);
 			}
 		}
@@ -2377,11 +2381,6 @@ class ProjectManager extends ProjectManagerLoader
 	{
 		wp_mkdir_p( $this->getCaptchaPath() );
 		
-		// clean up old captcha
-		/*if (!is_null($this->getCaptchaData('filename'))) {
-			@unlink($this->getCaptchaPath($this->getCaptchaData('filename')));
-		}*/
-		
 		// initalize black image
 		$image = imagecreatetruecolor($width, $height);
 		// make white background color
@@ -2416,41 +2415,15 @@ class ProjectManager extends ProjectManagerLoader
 		// generate unique captcha name
 		$filename = uniqid(rand(), true) . ".png";
 		
+		// save captcha data in options with unique filename as key
+		$options = get_option('projectmanager');
+		$options['captcha'][$filename] = array('code' => $code, 'time' => time());
+		update_option('projectmanager', $options);
+		
 		// generate png and save it
 		imagepng($image, $this->getCaptchaPath($filename));
 		
-		// Save captcha creation time, filename and code in PHP SESSION
-		$_SESSION['projectmanager_captcha'] = array('time' => time(), 'filename' => $filename, 'code' => $code);
-		$this->saveCaptchaData($filename, $code);
-		
-		return array("filename" => $filename, "code" => $code, "time" => time());
-	}
-	
-	
-	/**
-	 * set captcha data
-	 *
-	 * @param string $filename
-	 * @param string $code
-	 */
-	function saveCaptchaData($filename, $code)
-	{
-		$this->captcha = array("filename" => $filename, "code" => $code, "time" => time());
-	}
-
-	
-	/**
-	 * get captcha data
-	 *
-	 * @param none
-	 * @return array
-	 */
-	function getCaptchaData($key = "")
-	{
-		if ($key == "")
-			return $this->captcha;
-		else
-			return $this->captcha[$key];
+		return $filename;
 	}
 	
 	
@@ -2463,12 +2436,13 @@ class ProjectManager extends ProjectManagerLoader
 	 */
 	function cleanupOldFiles($dir, $time = 24)
 	{
-		$files = $this->readFolder($dir);
+		//$files = $this->readFolder($dir);
+		$files = array_diff(scandir($dir), array('.','..'));
 		
 		// get current time in seconds
 		$now = time();
 		foreach ($files AS $file) {
-			$file = $dir."/".$file;
+			$file = $dir."/".basename($file);
 			// get file modification time as unix timestamp in seconds
 			$filetime = filemtime($file);
 			// get difference between current time and file modification time in hours

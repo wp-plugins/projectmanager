@@ -62,7 +62,6 @@ if ( $projectmanager->isSearch() )
 	$datasets = $projectmanager->getSearchResults();
 else
 	$datasets = $projectmanager->getDatasets(array('limit' => true));
-
 ?>
 			
 <div class="wrap">

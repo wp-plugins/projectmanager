@@ -1308,6 +1308,10 @@ msgid "Your session has expired"
 msgstr ""
 
 #: lib/shortcodes.php
+msgid "Something went wrong with the captcha"
+msgstr ""
+
+#: lib/shortcodes.php
 msgid "Wrong Captcha Code"
 msgstr ""
 

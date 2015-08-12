@@ -823,6 +823,10 @@ msgid "Your session has expired"
 msgstr "Deine Sitzung ist abgelaufen"
 
 #: lib/shortcodes.php
+msgid "Something went wrong with the captcha"
+msgstr "Etwas ist mit dem Captcha falsch gelaufen"
+
+#: lib/shortcodes.php
 msgid "Wrong Captcha Code"
 msgstr "Falscher Captcha Code"
 

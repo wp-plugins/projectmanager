@@ -131,9 +131,9 @@ if ( 1 == $project->show_image && !wp_mkdir_p( $projectmanager->getFilePath() ) 
 	<?php endif; ?>
 
 	<?php if ($captcha) : ?>
-		<?php ; ?>
 		<label for="captcha"><?php _e('Code', 'projectmanager') ?>*</label>
-		<img src="<?php echo $projectmanager->getCaptchaURL($captcha['filename']) ?>" style="width: 200px; margin-right: 10px;" /><input type="text" name="projectmanager_captcha" id="captcha" style="width: 90px;" />
+		<img src="<?php echo $projectmanager->getCaptchaURL($captcha) ?>" style="width: 200px; margin-right: 10px;" /><input type="text" name="projectmanager_captcha" id="captcha" style="width: 90px;" />
+		<input type="hidden" name="projectmanager_captcha_id" value="<?php echo $captcha ?>" />
 	<?php endif; ?>
 	
 <input type="hidden" name="project_id" value="<?php echo intval($project->id) ?>" />

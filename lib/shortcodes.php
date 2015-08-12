@@ -134,15 +134,12 @@ class ProjectManagerShortcodes
 		$projectmanager->init(intval($project_id));
 		$project = $projectmanager->getCurrentProject();
 		
-		$captcha = false;
-		if (!isset($_POST['insertDataset'])) {
-			if ($use_captcha == "true")
-				$captcha = $projectmanager->generateCaptcha();
-			else
-				$captcha = false;
-		}
+		$captcha = ($use_captcha == "true") ? true : false;
+		// Generate captcha if form has not been submitted
+		if (!isset($_POST['insertDataset']) && $captcha)
+			$captcha = $projectmanager->generateCaptcha();
 		
-		print_r($projectmanager->getCaptchaData());
+		$options = get_option('projectmanager');
 		
 		$message = "";
 		if (isset($_POST['insertDataset'])) {
@@ -151,9 +148,9 @@ class ProjectManagerShortcodes
 
 			$error = false;
 			if (isset($_POST['projectmanager_captcha'])) {
-				$code = $projectmanager->getCaptchaData("code");//$_SESSION['projectmanager_captcha']['code'];
-				$captcha_time = $projectmanager->getCaptchaData("time");//$_SESSION['projectmanager_captcha']['time'];
-				$captcha_filename = $projectmanager->getCaptchaData("filename");//$_SESSION['projectmanager_captcha']['filename'];
+				$captcha_filename = $_POST['projectmanager_captcha_id'];
+				$code = $options['captcha'][$captcha_filename]['code'];
+				$captcha_time = $options['captcha'][$captcha_filename]['time'];
 				
 				$now = time();
 				
@@ -169,8 +166,13 @@ class ProjectManagerShortcodes
 					$message = __('Wrong Captcha Code', 'projectmanager');
 				}
 				
-				// delete captcha image
-				@unlink($projectmanager->getCaptchaPath($captcha_filename));
+				// delete captcha and data if an error occured
+				if ($error) {
+					// delete captcha image and unset options
+					@unlink($projectmanager->getCaptchaPath($captcha_filename));
+					unset($options['captcha'][$captcha_filename]);
+					update_option('projectmanager', $options);
+				}
 			}
 			
 			if (!$error) {
@@ -179,7 +181,16 @@ class ProjectManagerShortcodes
 				$category = isset($_POST['post_category']) ? $_POST['post_category'] : '';
 				$admin->addDataset( intval($_POST['project_id']), htmlspecialchars($_POST['d_name']), $category, $_POST['form_field'], $user_id, false );
 				
-				if (!$admin->isError()) $message = htmlspecialchars($submit_message);
+				if (!$admin->isError()) {
+					$message = htmlspecialchars($submit_message);
+					
+					if ($captcha) {
+						// delete captcha image and unset options
+						@unlink($projectmanager->getCaptchaPath($captcha_filename));
+						unset($options['captcha'][$captcha_filename]);
+						update_option('projectmanager', $options);
+					}
+				}
 			}
 		}
 		

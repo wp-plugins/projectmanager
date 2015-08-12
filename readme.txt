@@ -68,7 +68,7 @@ The ProjectManager menue icons and TinyMCE Button are taken from the Fugue Icons
 * NEW: define image as mandatory field
 * NEW: define return message and form submit button label in datasetform shortcode
 * CHANGED: merged dataset-form templates in frontend and backend (keeping the old templates for now)
-* UPDATED: updated testimonials templates design and include image
+* UPDATED: updated testimonials templates design and include image display
 * UPDATED: updated translation template
 * BUGFIX: fixed issues with dataset import
 * BUGFIX: fixed image upload in frontend dataset

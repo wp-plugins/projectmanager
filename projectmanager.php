@@ -446,16 +446,7 @@ class ProjectManagerLoader
 		delete_option( 'projectmanager_widget' );
 		
 		// Delete media files
-		$this->removeDirRecursively($projectmanager->getFilePath(false, true));
-		/*if ( $handle = opendir($dir) ) {
-			while (false !== ($file = readdir($handle))) {
-				if ($file != "." && $file != "..")
-					@unlink($file);
-			}
-			closedir($handle);
-		}
-		@rmdir($dir);
-		*/
+		$this->removeDir($projectmanager->getFilePath(false, true));
 	}
 	
 	
@@ -465,12 +456,12 @@ class ProjectManagerLoader
 	 * @param string $dir
 	 *
 	 */
-	function removeDirRecursively($dir)
+	function removeDir($dir)
 	{
 		$files = array_diff(scandir($dir), array('.','..'));
 		foreach ($files AS $file) {
 			if (is_dir("$dir/$file"))
-				$this->removeDirRecursively("$dir/$file");
+				$this->removeDir("$dir/$file");
 			else
 				@unlink("$dir/$file");
 		}
